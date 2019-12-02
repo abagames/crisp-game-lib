@@ -1,0 +1,18 @@
+{
+  "name": "tiny-game-lib",
+  "version": "1.0.0",
+  "description": "Develop game within one hour",
+  "scripts": {
+    "watch_games": "light-server -s docs -w \"docs/**/* # # reload\"",
+    "watch_lib": "rollup -c -w"
+  },
+  "author": "abagames",
+  "license": "MIT",
+  "devDependencies": {
+    "light-server": "^2.6.4",
+    "rollup": "^1.27.6",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-typescript2": "^0.25.2",
+    "typescript": "^3.7.2"
+  }
+}
