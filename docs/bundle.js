@@ -4,7 +4,7 @@
   function clamp$1(v, low = 0, high = 1) {
       return Math.max(low, Math.min(v, high));
   }
-  function wrap(v, low, high) {
+  function wrap$1(v, low, high) {
       const w = high - low;
       const o = v - low;
       if (o >= 0) {
@@ -80,8 +80,8 @@
           return this;
       }
       wrap(xLow, xHigh, yLow, yHigh) {
-          this.x = wrap(this.x, xLow, xHigh);
-          this.y = wrap(this.y, yLow, yHigh);
+          this.x = wrap$1(this.x, xLow, xHigh);
+          this.y = wrap$1(this.y, yLow, yHigh);
           return this;
       }
       addWithAngle(angle, length) {
@@ -876,7 +876,6 @@ w w w
   ];
 
   let rgbObjects;
-  const colorChars = "tlrgybpcwRGYBPCW";
   const colors = [
       "transparent",
       "black",
@@ -886,9 +885,17 @@ w w w
       "blue",
       "purple",
       "cyan",
-      "white"
+      "white",
+      "dark_red",
+      "dark_green",
+      "dark_yellow",
+      "dark_blue",
+      "dark_purple",
+      "dark_cyan",
+      "dark_white"
   ];
   let currentColor;
+  const colorChars = "tlrgybpcwRGYBPCW";
   const rgbNumbers = [
       undefined,
       0x000000,
@@ -920,170 +927,70 @@ w w w
           });
       });
   }
-  function setColor(colorName) {
-      currentColor = colorName;
-      const f = rgbObjects[colors.indexOf(colorName)];
-      context.fillStyle = `rgb(${f.r},${f.g},${f.b})`;
+  function setColor(colorName, isSettingCurrent = true) {
+      if (isSettingCurrent) {
+          currentColor = colorName;
+      }
+      const c = rgbObjects[colors.indexOf(colorName)];
+      context.fillStyle = `rgb(${c.r},${c.g},${c.b})`;
   }
 
   const dotCount = 6;
   const dotSize = 1;
   const letterSize = dotCount * dotSize;
-  const rotationChars = "kljhnmbvopiu9087";
-  let letterImages;
-  let symbolImages;
+  let textImages;
+  let characterImages;
   let cachedImages;
   let isCacheEnabled = false;
   let letterCanvas;
   let letterContext;
+  const defaultOptions = {
+      color: "white",
+      backgroundColor: "transparent",
+      rotation: 0,
+      mirror: { x: 1, y: 1 },
+      scale: { x: 1, y: 1 },
+      isCharacter: false
+  };
   function init$2() {
       letterCanvas = document.createElement("canvas");
       letterCanvas.width = letterCanvas.height = letterSize;
       letterContext = letterCanvas.getContext("2d");
-      letterImages = letterPatterns.map(lp => createLetterImages(lp));
-      symbolImages = range(64).map(() => undefined);
+      textImages = letterPatterns.map(lp => createLetterImages(lp));
+      characterImages = range(64).map(() => undefined);
       cachedImages = {};
   }
   function enableCache() {
       isCacheEnabled = true;
-  }
-  function print(_str, x, y, options = {}) {
-      const bx = Math.floor(x);
-      let colorLines = options.colorPattern != null ? options.colorPattern.split("\n") : undefined;
-      const backgroundColorLines = options.backgroundColorPattern != null
-          ? options.backgroundColorPattern.split("\n")
-          : undefined;
-      const rotationLines = options.rotationPattern != null
-          ? options.rotationPattern.split("\n")
-          : undefined;
-      const symbolLines = options.symbolPattern != null
-          ? options.symbolPattern.split("\n")
-          : undefined;
-      const scale = options.scale == null ? 1 : options.scale;
-      const alpha = options.alpha == null ? 1 : options.alpha;
-      let str = _str;
-      if (options.charAndColorPattern != null) {
-          const [_lines, _colorLines] = getColorLines(options.charAndColorPattern);
-          str = _lines.join("\n");
-          colorLines = _colorLines;
-      }
-      let px = bx;
-      let py = Math.floor(y);
-      let lx = 0;
-      let ly = 0;
-      for (let i = 0; i < str.length; i++) {
-          const c = str[i];
-          if (c === "\n") {
-              px = bx;
-              py += letterSize * scale;
-              lx = 0;
-              ly++;
-              continue;
-          }
-          printChar(c, px, py, Object.assign(Object.assign({}, getCharOption(options.color != null
-              ? options.color
-              : getCharFromLines(colorLines, lx, ly), options.backgroundColor != null
-              ? options.backgroundColor
-              : getCharFromLines(backgroundColorLines, lx, ly), options.rotation != null
-              ? options.rotation
-              : getCharFromLines(rotationLines, lx, ly), options.symbol != null
-              ? options.symbol
-              : getCharFromLines(symbolLines, lx, ly))), { scale, alpha }));
-          px += letterSize * scale;
-          lx++;
-      }
-  }
-  function getColorLines(str) {
-      const _cc = str.split("\n");
-      const cc = _cc.slice(1, _cc.length - 1);
-      const lines = [];
-      const colorLines = [];
-      let isNormalLine = true;
-      for (const l of cc) {
-          if (isNormalLine) {
-              lines.push(l);
-              isNormalLine = false;
-              continue;
-          }
-          if (isColorLine(l)) {
-              colorLines.push(l);
-              isNormalLine = true;
-          }
-          else {
-              lines.push(l);
-              colorLines.push("");
-          }
-      }
-      return [lines, colorLines];
-  }
-  function isColorLine(line) {
-      return (line.trim().length > 0 &&
-          line.replace(new RegExp(`[\\s${colorChars}]`, "g"), "").length === 0);
-  }
-  function getCharFromLines(lines, x, y) {
-      if (lines == null) {
-          return undefined;
-      }
-      if (y >= lines.length) {
-          return undefined;
-      }
-      const c = lines[y].charAt(x);
-      return c === "" || c === " " ? undefined : c;
-  }
-  function getCharOption(cg, bg, rg, sg) {
-      let options = {
-          color: "l",
-          backgroundColor: "t",
-          angleIndex: 0,
-          isMirrorX: false,
-          isMirrorY: false,
-          isSymbol: false
-      };
-      if (cg != null && isColorChars(cg)) {
-          options.color = cg;
-      }
-      if (bg != null && isColorChars(bg)) {
-          options.backgroundColor = bg;
-      }
-      if (rg != null) {
-          const ri = rotationChars.indexOf(rg);
-          if (ri >= 0) {
-              options.angleIndex = ri % 4;
-              options.isMirrorX = (ri & 4) > 0;
-              options.isMirrorY = (ri & 8) > 0;
-          }
-      }
-      if (sg === "s") {
-          options.isSymbol = true;
-      }
-      return options;
   }
   function printChar(c, x, y, options) {
       const cca = c.charCodeAt(0);
       if (cca < 0x20 || cca > 0x7e) {
           return;
       }
-      const scaledSize = letterSize * options.scale;
-      if (options.backgroundColor !== "t") {
-          const rgb = rgbObjects[colorChars.indexOf(options.backgroundColor)];
-          context.fillStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${Math.floor(options.alpha * 255)})`;
-          context.fillRect(x, y, scaledSize, scaledSize);
+      const scaledSize = {
+          x: letterSize * options.scale.x,
+          y: letterSize * options.scale.y
+      };
+      if (options.backgroundColor !== "transparent") {
+          setColor(options.backgroundColor, false);
+          context.fillRect(x, y, scaledSize.x, scaledSize.y);
       }
-      if (cca == 0x20 || options.color === "t") {
+      if (cca == 0x20 || options.color === "transparent") {
           return;
       }
       const cc = cca - 0x21;
-      const img = options.isSymbol ? symbolImages[cc] : letterImages[cc];
-      if (options.color === "w" &&
-          options.angleIndex % 4 === 0 &&
-          !options.isMirrorX &&
-          !options.isMirrorY &&
-          options.alpha === 1) {
-          if (options.scale === 1) {
+      const img = options.isCharacter ? characterImages[cc] : textImages[cc];
+      const rotation = wrap(options.rotation, 0, 4);
+      if (options.color === "white" &&
+          rotation === 0 &&
+          options.mirror.x === 1 &&
+          options.mirror.y === 1) {
+          if (options.scale.x === 1 && options.scale.y === 1) {
               context.drawImage(img, x, y);
           }
           else {
-              context.drawImage(img, x, y, scaledSize, scaledSize);
+              context.drawImage(img, x, y, scaledSize.x, scaledSize.y);
           }
           return;
       }
@@ -1094,38 +1001,31 @@ w w w
           return;
       }
       letterContext.clearRect(0, 0, letterSize, letterSize);
-      letterContext.globalAlpha = options.alpha;
-      if (options.angleIndex % 4 === 0 &&
-          !options.isMirrorX &&
-          !options.isMirrorY) {
+      if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
           letterContext.drawImage(img, 0, 0);
       }
       else {
           letterContext.save();
           letterContext.translate(letterSize / 2, letterSize / 2);
-          letterContext.rotate((Math.PI / 2) * options.angleIndex);
-          if (options.isMirrorX || options.isMirrorY) {
-              letterContext.scale(options.isMirrorX ? -1 : 1, options.isMirrorY ? -1 : 1);
+          letterContext.rotate((Math.PI / 2) * rotation);
+          if (options.mirror.x === -1 || options.mirror.y === -1) {
+              letterContext.scale(options.mirror.x, options.mirror.y);
           }
           letterContext.drawImage(img, -letterSize / 2, -letterSize / 2);
           letterContext.restore();
       }
-      if (options.color !== "w") {
+      if (options.color !== "white") {
           letterContext.globalCompositeOperation = "source-in";
-          const rgb = rgbObjects[colorChars.indexOf(options.color)];
-          letterContext.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+          setColor(options.color);
           letterContext.fillRect(0, 0, letterSize, letterSize);
           letterContext.globalCompositeOperation = "source-over";
       }
-      context.drawImage(letterCanvas, x, y, scaledSize, scaledSize);
+      context.drawImage(letterCanvas, x, y, scaledSize.x, scaledSize.y);
       if (isCacheEnabled) {
           const cachedImage = document.createElement("img");
           cachedImage.src = letterCanvas.toDataURL();
           cachedImages[cacheIndex] = cachedImage;
       }
-  }
-  function isColorChars(c) {
-      return colorChars.indexOf(c) >= 0;
   }
   function createLetterImages(pattern, isSkippingFirstAndLastLine = true) {
       letterContext.clearRect(0, 0, letterSize, letterSize);
@@ -1162,118 +1062,31 @@ w w w
   let isPressed = false;
   let isJustPressed = false;
   let isJustReleased = false;
-  const stick = new Vector();
-  let stickAngle;
-  const isStickPressed = range(4).map(() => false);
-  const isStickJustPressed = range(4).map(() => false);
-  const isStickJustReleased = range(4).map(() => false);
-  const defaultOptions = {
-      isUsingStickKeysAsButton: false,
-      isFourWaysStick: false,
+  const defaultOptions$1 = {
       onKeyDown: undefined
   };
   let options$1;
-  const isKeyPressing = range(256).map(() => false);
-  const isKeyPressed = range(256).map(() => false);
-  const isKeyReleased = range(256).map(() => false);
-  const stickKeys = [
-      [39, 68, 102],
-      [40, 83, 101, 98],
-      [37, 65, 100],
-      [38, 87, 104]
-  ];
-  const stickXys = [[1, 0], [0, 1], [-1, 0], [0, -1]];
-  const buttonKeys = [
-      90,
-      88,
-      67,
-      86,
-      66,
-      78,
-      77,
-      188,
-      190,
-      191,
-      17,
-      16,
-      18,
-      32,
-      13
-  ];
+  let isKeyPressing = false;
+  let isKeyPressed = false;
+  let isKeyReleased = false;
   function init$3(_options) {
-      options$1 = Object.assign(Object.assign({}, defaultOptions), _options);
+      options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
       document.addEventListener("keydown", e => {
-          isKeyPressing[e.keyCode] = isKeyPressed[e.keyCode] = true;
+          isKeyPressing = isKeyPressed = true;
           if (options$1.onKeyDown != null) {
               options$1.onKeyDown();
           }
       });
       document.addEventListener("keyup", e => {
-          isKeyPressing[e.keyCode] = false;
-          isKeyReleased[e.keyCode] = true;
+          isKeyPressing = false;
+          isKeyReleased = true;
       });
   }
   function update$1() {
-      const pp = isPressed;
-      isPressed = isJustPressed = isJustReleased = false;
-      range(4).forEach(i => {
-          isStickPressed[i] = isStickJustPressed[i] = isStickJustReleased[i] = false;
-      });
-      stick.set(0);
-      stickKeys.forEach((ks, i) => {
-          ks.forEach(k => {
-              if (isKeyPressing[k] || isKeyPressed[k]) {
-                  stick.x += stickXys[i][0];
-                  stick.y += stickXys[i][1];
-                  isStickPressed[i] = true;
-                  if (options$1.isUsingStickKeysAsButton) {
-                      isPressed = true;
-                  }
-                  if (isKeyPressed[k]) {
-                      isKeyPressed[k] = false;
-                      isStickJustPressed[i] = true;
-                      if (options$1.isUsingStickKeysAsButton && !pp) {
-                          isJustPressed = true;
-                      }
-                  }
-              }
-              if (isKeyReleased[k]) {
-                  isKeyReleased[k] = false;
-                  isStickJustReleased[i] = true;
-                  if (options$1.isUsingStickKeysAsButton && pp) {
-                      isJustReleased = true;
-                  }
-              }
-          });
-      });
-      stickAngle = -1;
-      if (stick.length > 0) {
-          setStickAngle(stick.getAngle());
-      }
-      buttonKeys.forEach(k => {
-          if (isKeyPressing[k]) {
-              isPressed = true;
-          }
-          if (isKeyPressed[k]) {
-              isKeyPressed[k] = false;
-              if (!pp) {
-                  isPressed = isJustPressed = true;
-              }
-          }
-          if (isKeyReleased[k]) {
-              isKeyReleased[k] = false;
-              if (pp) {
-                  isJustReleased = true;
-              }
-          }
-      });
-  }
-  const angleOffsets = [1, 0, 1, 1, 0, 1, -1, 1, -1, 0, -1, -1, 0, -1, 1, -1];
-  function setStickAngle(a) {
-      const wayAngle = options$1.isFourWaysStick ? Math.PI / 2 : Math.PI / 4;
-      const angleStep = options$1.isFourWaysStick ? 2 : 1;
-      stickAngle = wrap(Math.round(a / wayAngle) * angleStep, 0, 8);
-      stick.set(angleOffsets[stickAngle * 2], angleOffsets[stickAngle * 2 + 1]);
+      isJustPressed = !isPressed && isKeyPressed;
+      isJustReleased = isPressed && isKeyReleased;
+      isKeyPressed = isKeyReleased = false;
+      isPressed = isKeyPressing;
   }
   function clearJustPressed() {
       isJustPressed = false;
@@ -1325,13 +1138,10 @@ w w w
   }
 
   const pos = new Vector();
-  const move = new Vector();
-  const pressedPos = new Vector();
-  const targetPos = new Vector();
   let isPressed$1 = false;
   let isJustPressed$1 = false;
   let isJustReleased$1 = false;
-  let defaultOptions$1 = {
+  let defaultOptions$2 = {
       isDebugMode: false,
       anchor: new Vector(),
       padding: new Vector(),
@@ -1340,7 +1150,6 @@ w w w
   let screen;
   let pixelSize;
   let options$2;
-  const prevPos = new Vector();
   const debugRandom = new Random();
   const debugPos = new Vector();
   const debugMoveVel = new Vector();
@@ -1349,12 +1158,10 @@ w w w
   let isDown = false;
   let isClicked = false;
   let isReleased = false;
-  let isResettingTargetPos = false;
   function init$4(_screen, _pixelSize, _options) {
-      options$2 = Object.assign(Object.assign({}, defaultOptions$1), _options);
+      options$2 = Object.assign(Object.assign({}, defaultOptions$2), _options);
       screen = _screen;
       pixelSize = new Vector(_pixelSize.x + options$2.padding.x * 2, _pixelSize.y + options$2.padding.y * 2);
-      targetPos.set(pixelSize.x / 2, pixelSize.y / 2);
       if (options$2.isDebugMode) {
           debugPos.set(pixelSize.x / 2, pixelSize.y / 2);
       }
@@ -1394,26 +1201,11 @@ w w w
           isJustReleased$1 = isPressed$1 && isReleased;
           isPressed$1 = isDown;
       }
-      if (isJustPressed$1) {
-          pressedPos.set(pos);
-          prevPos.set(pos);
-      }
-      move.set(pos.x - prevPos.x, pos.y - prevPos.y);
-      prevPos.set(pos);
-      if (isResettingTargetPos) {
-          targetPos.set(pos);
-      }
-      else {
-          targetPos.add(move);
-      }
       isClicked = isReleased = false;
   }
   function clearJustPressed$1() {
       isJustPressed$1 = false;
       isPressed$1 = true;
-  }
-  function setTargetPos(v) {
-      targetPos.set(v);
   }
   function calcPointerPos(x, y, v) {
       if (screen == null) {
@@ -1456,43 +1248,28 @@ w w w
   function onDown(x, y) {
       cursorPos.set(x, y);
       isDown = isClicked = true;
-      isResettingTargetPos = false;
       if (options$2.onPointerDownOrUp != null) {
           options$2.onPointerDownOrUp();
       }
   }
   function onMove(x, y) {
       cursorPos.set(x, y);
-      if (!isDown) {
-          isResettingTargetPos = true;
-      }
   }
   function onUp(e) {
       isDown = false;
       isReleased = true;
-      isResettingTargetPos = false;
       if (options$2.onPointerDownOrUp != null) {
           options$2.onPointerDownOrUp();
       }
   }
 
-  let stickAngle$1 = 0;
   let pos$1 = new Vector();
   let isPressed$2 = false;
   let isJustPressed$2 = false;
   let isJustReleased$2 = false;
-  let isUsingVirtualPad;
-  let isFourWaysStick;
-  let centerPos = new Vector();
-  let offsetFromCenter = new Vector();
-  function init$5(_isUsingVirtualPad = true, _isFourWaysStick = false) {
-      isUsingVirtualPad = _isUsingVirtualPad;
-      isFourWaysStick = _isFourWaysStick;
-      centerPos.set(size.x / 2, size.y / 2);
+  function init$5() {
       init$3({
-          onKeyDown: sss.playEmpty,
-          isUsingStickKeysAsButton: true,
-          isFourWaysStick
+          onKeyDown: sss.playEmpty
       });
       init$4(canvas, size, {
           onPointerDownOrUp: sss.playEmpty,
@@ -1500,54 +1277,12 @@ w w w
       });
   }
   function update$3() {
-      stickAngle$1 = -1;
       update$1();
-      if (stickAngle >= 0) {
-          stickAngle$1 = stickAngle;
-      }
       update$2();
       pos$1 = pos;
-      if (isPressed$1) {
-          if (isJustPressed$1) {
-              setTargetPos(centerPos);
-          }
-          if (isUsingVirtualPad) {
-              offsetFromCenter.set(targetPos).sub(centerPos);
-              if (offsetFromCenter.length > 10) {
-                  const oa = offsetFromCenter.getAngle() / (Math.PI / 4);
-                  stickAngle$1 = wrap(Math.round(oa), 0, 8);
-                  if (isFourWaysStick) {
-                      stickAngle$1 = Math.floor(stickAngle$1 / 2) * 2;
-                  }
-              }
-          }
-      }
       isPressed$2 = isPressed || isPressed$1;
       isJustPressed$2 = isJustPressed || isJustPressed$1;
       isJustReleased$2 = isJustReleased || isJustReleased$1;
-  }
-  function draw() {
-      if (isUsingVirtualPad && isPressed$1) {
-          print("c", size.x / 2 - 2, size.y / 2 - 2, {
-              colorPattern: "b",
-              backgroundColorPattern: "t",
-              symbolPattern: "s",
-              alpha: 0.5
-          });
-          let cc = "c";
-          let rc = "k";
-          if (stickAngle$1 >= 0) {
-              cc = stickAngle$1 % 2 === 0 ? "a" : "z";
-              rc = "kljh".charAt(Math.floor(stickAngle$1 / 2));
-          }
-          print(cc, targetPos.x - 2, targetPos.y - 2, {
-              colorPattern: "g",
-              backgroundColorPattern: "t",
-              symbolPattern: "s",
-              rotationPattern: rc,
-              alpha: 0.5
-          });
-      }
   }
   function clearJustPressed$2() {
       clearJustPressed();
@@ -1556,21 +1291,19 @@ w w w
 
   var input = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    get stickAngle () { return stickAngle$1; },
     get pos () { return pos$1; },
     get isPressed () { return isPressed$2; },
     get isJustPressed () { return isJustPressed$2; },
     get isJustReleased () { return isJustReleased$2; },
     init: init$5,
     update: update$3,
-    draw: draw,
     clearJustPressed: clearJustPressed$2
   });
 
   let lastFrameTime = 0;
   let _init;
   let _update;
-  const defaultOptions$2 = {
+  const defaultOptions$3 = {
       viewSize: { x: 126, y: 126 },
       bodyBackground: "#111",
       viewBackground: "black",
@@ -1583,9 +1316,9 @@ w w w
   function init$6(__init, __update, _options) {
       _init = __init;
       _update = __update;
-      options$3 = Object.assign(Object.assign({}, defaultOptions$2), _options);
+      options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
       init(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing);
-      init$5(options$3.isUsingVirtualPad, options$3.isFourWaysStick);
+      init$5();
       init$2();
       _init();
       update$4();
@@ -1601,7 +1334,6 @@ w w w
       sss.update();
       update$3();
       _update();
-      draw();
       if (options$3.isCapturing) {
           capture();
       }
@@ -1615,69 +1347,34 @@ w w w
       constructor(_size) {
           this.size = new Vector();
           this.size.set(_size);
-          this.charGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
+          this.letterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
           this.colorGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
           this.backgroundColorGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
           this.rotationGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-          this.symbolGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
+          this.characterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
       }
-      print(_str, _x, _y, options = {}) {
+      print(str, _x, _y, _options = {}) {
+          const options = Object.assign(Object.assign({}, defaultOptions), _options);
           let x = Math.floor(_x);
           let y = Math.floor(_y);
           const bx = x;
-          let colorLines = options.colorPattern != null
-              ? options.colorPattern.split("\n")
-              : undefined;
-          const backgroundColorLines = options.backgroundColorPattern != null
-              ? options.backgroundColorPattern.split("\n")
-              : undefined;
-          const rotationLines = options.rotationPattern != null
-              ? options.rotationPattern.split("\n")
-              : undefined;
-          const symbolLines = options.symbolPattern != null
-              ? options.symbolPattern.split("\n")
-              : undefined;
-          let str = _str;
-          if (options.charAndColorPattern != null) {
-              const [_lines, _colorLines] = getColorLines(options.charAndColorPattern);
-              str = _lines.join("\n");
-              colorLines = _colorLines;
-          }
-          let lx = 0;
-          let ly = 0;
           for (let i = 0; i < str.length; i++) {
               const c = str[i];
               if (c === "\n") {
                   x = bx;
                   y++;
-                  lx = 0;
-                  ly++;
                   continue;
               }
               if (x < 0 || x >= this.size.x || y < 0 || y >= this.size.y) {
                   x++;
-                  lx++;
                   continue;
               }
-              this.charGrid[x][y] = c;
-              this.colorGrid[x][y] =
-                  options.color != null
-                      ? options.color
-                      : getCharFromLines(colorLines, lx, ly);
-              this.backgroundColorGrid[x][y] =
-                  options.backgroundColor != null
-                      ? options.backgroundColor
-                      : getCharFromLines(backgroundColorLines, lx, ly);
-              this.rotationGrid[x][y] =
-                  options.rotation != null
-                      ? options.rotation
-                      : getCharFromLines(rotationLines, lx, ly);
-              this.symbolGrid[x][y] =
-                  options.symbol != null
-                      ? options.symbol
-                      : getCharFromLines(symbolLines, lx, ly);
+              this.letterGrid[x][y] = c;
+              this.colorGrid[x][y] = options.color;
+              this.backgroundColorGrid[x][y] = options.backgroundColor;
+              this.rotationGrid[x][y] = options.rotation;
+              this.characterGrid[x][y] = options.isCharacter;
               x++;
-              lx++;
           }
       }
       getCharAt(_x, _y) {
@@ -1686,93 +1383,86 @@ w w w
           }
           const x = Math.floor(_x);
           const y = Math.floor(_y);
-          const char = this.charGrid[x][y];
+          const char = this.letterGrid[x][y];
           const cg = this.colorGrid[x][y];
           const bg = this.backgroundColorGrid[x][y];
           const rg = this.rotationGrid[x][y];
-          const sg = this.symbolGrid[x][y];
-          return { char, options: getCharOption(cg, bg, rg, sg) };
+          const hg = this.characterGrid[x][y];
+          return {
+              char,
+              options: { color: cg, backgroundColor: bg, rotation: rg, isCharacter: hg }
+          };
       }
-      setCharAt(_x, _y, char, options) {
+      setCharAt(_x, _y, char, _options) {
           if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
               return;
           }
+          const options = Object.assign(Object.assign({}, defaultOptions), _options);
           const x = Math.floor(_x);
           const y = Math.floor(_y);
-          this.charGrid[x][y] = char;
-          if (options == null) {
-              this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = undefined;
-              return;
-          }
+          this.letterGrid[x][y] = char;
           this.colorGrid[x][y] = options.color;
           this.backgroundColorGrid[x][y] = options.backgroundColor;
-          if (options.angleIndex == null) {
-              this.rotationGrid[x][y] = undefined;
-          }
-          else {
-              let ri = options.angleIndex;
-              if (options.isMirrorX) {
-                  ri |= 4;
-              }
-              if (options.isMirrorY) {
-                  ri |= 8;
-              }
-              this.rotationGrid[x][y] = rotationChars.charAt(ri);
-          }
-          this.symbolGrid[x][y] = options.isSymbol ? "s" : undefined;
+          this.rotationGrid[x][y] = options.rotation;
+          this.characterGrid[x][y] = options.isCharacter;
       }
       draw() {
           for (let x = 0; x < this.size.x; x++) {
               for (let y = 0; y < this.size.y; y++) {
-                  const c = this.charGrid[x][y];
+                  const c = this.letterGrid[x][y];
                   if (c == null) {
                       continue;
                   }
                   const cg = this.colorGrid[x][y];
                   const bg = this.backgroundColorGrid[x][y];
                   const rg = this.rotationGrid[x][y];
-                  const sg = this.symbolGrid[x][y];
-                  printChar(c, x * letterSize, y * letterSize, Object.assign(Object.assign({}, getCharOption(cg, bg, rg, sg)), { scale: 1, alpha: 1 }));
+                  const hg = this.characterGrid[x][y];
+                  printChar(c, x * letterSize, y * letterSize, {
+                      color: cg,
+                      backgroundColor: bg,
+                      rotation: rg,
+                      isCharacter: hg
+                  });
               }
           }
       }
       clear() {
           for (let x = 0; x < this.size.x; x++) {
               for (let y = 0; y < this.size.y; y++) {
-                  this.charGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.symbolGrid[x][y] = undefined;
+                  this.letterGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.characterGrid[x][y] = undefined;
               }
           }
       }
       scrollUp() {
           for (let x = 0; x < this.size.x; x++) {
               for (let y = 1; y < this.size.y; y++) {
-                  this.charGrid[x][y - 1] = this.charGrid[x][y];
+                  this.letterGrid[x][y - 1] = this.letterGrid[x][y];
                   this.colorGrid[x][y - 1] = this.colorGrid[x][y];
                   this.backgroundColorGrid[x][y - 1] = this.backgroundColorGrid[x][y];
                   this.rotationGrid[x][y - 1] = this.rotationGrid[x][y];
-                  this.symbolGrid[x][y - 1] = this.symbolGrid[x][y];
+                  this.characterGrid[x][y - 1] = this.characterGrid[x][y];
               }
           }
           const y = this.size.y - 1;
           for (let x = 0; x < this.size.x; x++) {
-              this.charGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.symbolGrid[x][y] = undefined;
+              this.letterGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.characterGrid[x][y] = undefined;
           }
       }
       getState() {
           return {
-              charGrid: this.charGrid.map(l => [].concat(l)),
+              charGrid: this.letterGrid.map(l => [].concat(l)),
               colorGrid: this.colorGrid.map(l => [].concat(l)),
               backgroundColorGrid: this.backgroundColorGrid.map(l => [].concat(l)),
               rotationGrid: this.rotationGrid.map(l => [].concat(l)),
-              symbolGrid: this.symbolGrid.map(l => [].concat(l))
+              symbolGrid: this.characterGrid.map(l => [].concat(l))
           };
       }
       setState(state) {
-          this.charGrid = state.charGrid.map(l => [].concat(l));
+          this.letterGrid = state.charGrid.map(l => [].concat(l));
           this.colorGrid = state.colorGrid.map(l => [].concat(l));
           this.backgroundColorGrid = state.backgroundColorGrid.map(l => [].concat(l));
           this.rotationGrid = state.rotationGrid.map(l => [].concat(l));
-          this.symbolGrid = state.symbolGrid.map(l => [].concat(l));
+          this.characterGrid = state.symbolGrid.map(l => [].concat(l));
       }
   }
 
@@ -1907,7 +1597,7 @@ w w w
       const collision = { rect: {} };
       rects.forEach(r => {
           if (testCollision(rect, r)) {
-              collision[r.color] = true;
+              collision.rect[r.color] = true;
           }
       });
       return collision;
@@ -1953,7 +1643,7 @@ w w w
       select: "s",
       lucky: "u"
   };
-  const defaultOptions$3 = {
+  const defaultOptions$4 = {
       seed: 0,
       isCapturing: false,
       viewSize: { x: 100, y: 100 },
@@ -1978,15 +1668,14 @@ w w w
       loopOptions = {
           viewSize: { x: 100, y: 100 },
           bodyBackground: "#ddd",
-          viewBackground: "#eee",
-          isUsingVirtualPad: false
+          viewBackground: "#eee"
       };
       let opts;
       if (typeof options !== "undefined" && options != null) {
-          opts = Object.assign(Object.assign({}, defaultOptions$3), options);
+          opts = Object.assign(Object.assign({}, defaultOptions$4), options);
       }
       else {
-          opts = defaultOptions$3;
+          opts = defaultOptions$4;
       }
       seed = opts.seed;
       loopOptions.isCapturing = opts.isCapturing;
@@ -2151,6 +1840,6 @@ w w w
   exports.sin = sin;
   exports.sqrt = sqrt;
   exports.vec = vec;
-  exports.wrap = wrap;
+  exports.wrap = wrap$1;
 
 }(this.window = this.window || {}));

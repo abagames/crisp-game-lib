@@ -1,7 +1,6 @@
 import * as view from "./view";
 import { currentColor, Color } from "./color";
 import { Vector } from "./vector";
-import { rgbObjects } from "./color";
 
 type Rect = { pos: VectorLike; size: VectorLike; color: Color };
 let rects: Rect[];
@@ -17,6 +16,12 @@ type Collision = {
     purple?: boolean;
     cyan?: boolean;
     white?: boolean;
+    dark_red?: boolean;
+    dark_blue?: boolean;
+    dark_green?: boolean;
+    dark_purple?: boolean;
+    dark_cyan?: boolean;
+    dark_white?: boolean;
   };
 };
 
@@ -186,7 +191,7 @@ function checkRects(rect: Rect) {
   const collision: Collision = { rect: {} };
   rects.forEach(r => {
     if (testCollision(rect, r)) {
-      collision[r.color] = true;
+      collision.rect[r.color] = true;
     }
   });
   return collision;

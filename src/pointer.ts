@@ -3,9 +3,6 @@ import { Random } from "./random";
 import { isInRange } from "./math";
 
 export const pos = new Vector();
-export const move = new Vector();
-export const pressedPos = new Vector();
-export const targetPos = new Vector();
 export let isPressed = false;
 export let isJustPressed = false;
 export let isJustReleased = false;
@@ -27,7 +24,6 @@ let screen: HTMLElement;
 let pixelSize: Vector;
 let options: Options;
 
-const prevPos = new Vector();
 const debugRandom = new Random();
 const debugPos = new Vector();
 const debugMoveVel = new Vector();
@@ -36,7 +32,6 @@ let cursorPos = new Vector(-9999, -9999);
 let isDown = false;
 let isClicked = false;
 let isReleased = false;
-let isResettingTargetPos = false;
 
 export function init(
   _screen: HTMLElement,
@@ -49,7 +44,6 @@ export function init(
     _pixelSize.x + options.padding.x * 2,
     _pixelSize.y + options.padding.y * 2
   );
-  targetPos.set(pixelSize.x / 2, pixelSize.y / 2);
   if (options.isDebugMode) {
     debugPos.set(pixelSize.x / 2, pixelSize.y / 2);
   }
@@ -97,32 +91,12 @@ export function update() {
     isJustReleased = isPressed && isReleased;
     isPressed = isDown;
   }
-  if (isJustPressed) {
-    pressedPos.set(pos);
-    prevPos.set(pos);
-  }
-  move.set(pos.x - prevPos.x, pos.y - prevPos.y);
-  prevPos.set(pos);
-  if (isResettingTargetPos) {
-    targetPos.set(pos);
-  } else {
-    targetPos.add(move);
-  }
   isClicked = isReleased = false;
 }
 
 export function clearJustPressed() {
   isJustPressed = false;
   isPressed = true;
-}
-
-export function resetPressedPointerPos(ratio = 1) {
-  pressedPos.x += (pos.x - pressedPos.x) * ratio;
-  pressedPos.y += (pos.y - pressedPos.y) * ratio;
-}
-
-export function setTargetPos(v: VectorLike) {
-  targetPos.set(v);
 }
 
 function calcPointerPos(x: number, y: number, v: Vector) {
@@ -174,7 +148,6 @@ function updateDebug() {
 function onDown(x: number, y: number) {
   cursorPos.set(x, y);
   isDown = isClicked = true;
-  isResettingTargetPos = false;
   if (options.onPointerDownOrUp != null) {
     options.onPointerDownOrUp();
   }
@@ -182,15 +155,11 @@ function onDown(x: number, y: number) {
 
 function onMove(x: number, y: number) {
   cursorPos.set(x, y);
-  if (!isDown) {
-    isResettingTargetPos = true;
-  }
 }
 
 function onUp(e: Event) {
   isDown = false;
   isReleased = true;
-  isResettingTargetPos = false;
   if (options.onPointerDownOrUp != null) {
     options.onPointerDownOrUp();
   }

@@ -31,7 +31,25 @@ declare type Color =
   | "white";
 declare function color(colorName: Color);
 
-// Draw functions return a color bit pattern of overlapping other rectangles.
+// Draw functions return a collision info.
+type Collision = {
+  rect?: {
+    transparent?: boolean;
+    black?: boolean;
+    red?: boolean;
+    blue?: boolean;
+    green?: boolean;
+    purple?: boolean;
+    cyan?: boolean;
+    white?: boolean;
+    dark_red?: boolean;
+    dark_blue?: boolean;
+    dark_green?: boolean;
+    dark_purple?: boolean;
+    dark_cyan?: boolean;
+    dark_white?: boolean;
+  };
+};
 
 // Draw rectangle
 declare function rect(
@@ -39,10 +57,14 @@ declare function rect(
   y: number,
   width: number,
   height: number
-): number;
-declare function rect(x: number, y: number, size: VectorLike): number;
-declare function rect(pos: VectorLike, width: number, height: number): number;
-declare function rect(pos: VectorLike, size: VectorLike): number;
+): Collision;
+declare function rect(x: number, y: number, size: VectorLike): Collision;
+declare function rect(
+  pos: VectorLike,
+  width: number,
+  height: number
+): Collision;
+declare function rect(pos: VectorLike, size: VectorLike): Collision;
 
 // Draw box (center-aligned rect)
 declare function box(
@@ -50,10 +72,10 @@ declare function box(
   y: number,
   width: number,
   height: number
-): number;
-declare function box(x: number, y: number, size: VectorLike): number;
-declare function box(pos: VectorLike, width: number, height: number): number;
-declare function box(pos: VectorLike, size: VectorLike): number;
+): Collision;
+declare function box(x: number, y: number, size: VectorLike): Collision;
+declare function box(pos: VectorLike, width: number, height: number): Collision;
+declare function box(pos: VectorLike, size: VectorLike): Collision;
 
 // Draw bar (angled rect)
 declare function bar(
@@ -63,14 +85,14 @@ declare function bar(
   thickness: number,
   rotate: number,
   centerPosRatio?: number
-): number;
+): Collision;
 declare function bar(
   pos: VectorLike,
   length: number,
   thickness: number,
   rotate: number,
   centerPosRatio?: number
-): number;
+): Collision;
 
 // Draw line
 declare function line(
@@ -79,24 +101,24 @@ declare function line(
   x2: number,
   y2: number,
   thickness?: number
-): number;
+): Collision;
 declare function line(
   x1: number,
   y1: number,
   p2: VectorLike,
   thickness?: number
-): number;
+): Collision;
 declare function line(
   p1: VectorLike,
   x2: number,
   y2: number,
   thickness?: number
-): number;
+): Collision;
 declare function line(
   p1: VectorLike,
   p2: VectorLike,
   thickness?: number
-): number;
+): Collision;
 
 // Return Vector
 declare function vec(x?: number | VectorLike, y?: number): Vector;

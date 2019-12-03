@@ -111,8 +111,7 @@ function onLoad() {
   loopOptions = {
     viewSize: { x: 100, y: 100 },
     bodyBackground: "#ddd",
-    viewBackground: "#eee",
-    isUsingVirtualPad: false
+    viewBackground: "#eee"
   };
   let opts;
   if (typeof options !== "undefined" && options != null) {

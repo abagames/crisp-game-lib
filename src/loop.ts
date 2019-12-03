@@ -41,7 +41,7 @@ export function init(
     options.viewBackground,
     options.isCapturing
   );
-  input.init(options.isUsingVirtualPad, options.isFourWaysStick);
+  input.init();
   text.init();
   _init();
   update();
@@ -58,7 +58,6 @@ function update() {
   sss.update();
   input.update();
   _update();
-  input.draw();
   if (options.isCapturing) {
     view.capture();
   }

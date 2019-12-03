@@ -1,24 +1,6 @@
 import * as view from "./view";
 
 export let rgbObjects: { r: number; g: number; b: number }[];
-export const colorChars = "tlrgybpcwRGYBPCW";
-export type ColorChar =
-  | "t"
-  | "l"
-  | "r"
-  | "g"
-  | "y"
-  | "b"
-  | "p"
-  | "c"
-  | "w"
-  | "R"
-  | "G"
-  | "Y"
-  | "B"
-  | "P"
-  | "C"
-  | "W";
 export const colors = [
   "transparent",
   "black",
@@ -28,7 +10,14 @@ export const colors = [
   "blue",
   "purple",
   "cyan",
-  "white"
+  "white",
+  "dark_red",
+  "dark_green",
+  "dark_yellow",
+  "dark_blue",
+  "dark_purple",
+  "dark_cyan",
+  "dark_white"
 ];
 export type Color =
   | "transparent"
@@ -39,8 +28,17 @@ export type Color =
   | "blue"
   | "purple"
   | "cyan"
-  | "white";
+  | "white"
+  | "white"
+  | "dark_red"
+  | "dark_green"
+  | "dark_yellow"
+  | "dark_blue"
+  | "dark_purple"
+  | "dark_cyan"
+  | "dark_white";
 export let currentColor: Color;
+export const colorChars = "tlrgybpcwRGYBPCW";
 
 const rgbNumbers = [
   undefined,
@@ -75,8 +73,10 @@ export function init() {
   });
 }
 
-export function setColor(colorName: Color) {
-  currentColor = colorName;
-  const f = rgbObjects[colors.indexOf(colorName)];
-  view.context.fillStyle = `rgb(${f.r},${f.g},${f.b})`;
+export function setColor(colorName: Color, isSettingCurrent = true) {
+  if (isSettingCurrent) {
+    currentColor = colorName;
+  }
+  const c = rgbObjects[colors.indexOf(colorName)];
+  view.context.fillStyle = `rgb(${c.r},${c.g},${c.b})`;
 }
