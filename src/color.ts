@@ -73,10 +73,13 @@ export function init() {
   });
 }
 
-export function setColor(colorName: Color, isSettingCurrent = true) {
+export function setColor(colorName: Color, isSettingCurrent = true, context?) {
   if (isSettingCurrent) {
     currentColor = colorName;
   }
   const c = rgbObjects[colors.indexOf(colorName)];
-  view.context.fillStyle = `rgb(${c.r},${c.g},${c.b})`;
+  (context != null
+    ? context
+    : view.context
+  ).fillStyle = `rgb(${c.r},${c.g},${c.b})`;
 }

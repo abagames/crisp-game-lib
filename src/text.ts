@@ -23,7 +23,7 @@ export type Options = {
 };
 
 export const defaultOptions: Options = {
-  color: "white",
+  color: "black",
   backgroundColor: "transparent",
   rotation: 0,
   mirror: { x: 1, y: 1 },
@@ -74,11 +74,12 @@ export function print(
   }
 }
 
-export function printChar(c: string, x: number, y: number, options: Options) {
+export function printChar(c: string, x: number, y: number, _options: Options) {
   const cca = c.charCodeAt(0);
   if (cca < 0x20 || cca > 0x7e) {
     return;
   }
+  const options: Options = { ...defaultOptions, ..._options };
   const scaledSize = {
     x: letterSize * options.scale.x,
     y: letterSize * options.scale.y
@@ -127,7 +128,7 @@ export function printChar(c: string, x: number, y: number, options: Options) {
   }
   if (options.color !== "white") {
     letterContext.globalCompositeOperation = "source-in";
-    setColor(options.color);
+    setColor(options.color, true, letterContext);
     letterContext.fillRect(0, 0, letterSize, letterSize);
     letterContext.globalCompositeOperation = "source-over";
   }
