@@ -1,438 +1,438 @@
 export const letterPatterns = [
   // !
   `
-  w
-  w
-  w
+  l
+  l
+  l
 
-  w
+  l
 `,
   `
- w w
- w w
-
-
-
-`,
-  `
- w w
-wwwww
- w w
-wwwww
- w w
-`,
-  `
- www
-w w
- www
-  w w
- www
-`,
-  `
-w   w
-w  w
-  w
- w  w
-w   w
-`,
-  `
- w
-w w
- ww w
-w  w
- ww w
-`,
-  `
-  w
-  w
+ l l
+ l l
 
 
 
 `,
   `
-   w
-  w
-  w
-  w
-   w
+ l l
+lllll
+ l l
+lllll
+ l l
 `,
   `
- w
-  w
-  w
-  w
- w
+ lll
+l l
+ lll
+  l l
+ lll
 `,
   `
-  w
-w w w
- www
-w w w
-  w
+l   l
+l  l
+  l
+ l  l
+l   l
 `,
   `
-  w
-  w
-wwwww
-  w
-  w
+ l
+l l
+ ll l
+l  l
+ ll l
 `,
   `
+  l
+  l
 
-
-
-  w
- w
-`,
-  `
-
-
-wwwww
 
 
 `,
   `
-
-
-
-
-  w
+   l
+  l
+  l
+  l
+   l
 `,
   `
-    w
-   w
-  w
- w
-w
+ l
+  l
+  l
+  l
+ l
+`,
+  `
+  l
+l l l
+ lll
+l l l
+  l
+`,
+  `
+  l
+  l
+lllll
+  l
+  l
+`,
+  `
+
+
+
+  l
+ l
+`,
+  `
+
+
+lllll
+
+
+`,
+  `
+
+
+
+
+  l
+`,
+  `
+    l
+   l
+  l
+ l
+l
 `,
   // 0
   `
- www
-w  ww
-w w w
-ww  w
- www
+ lll
+l  ll
+l l l
+ll  l
+ lll
 `,
   `
- ww
-w w
-  w
-  w
-wwwww
+ ll
+l l
+  l
+  l
+lllll
 `,
   `
- www
-w   w
-  ww
- w
-wwwww
+ lll
+l   l
+  ll
+ l
+lllll
 `,
   `
- www
-w   w
-  ww
-w   w
- www
+ lll
+l   l
+  ll
+l   l
+ lll
 `,
   `
-  ww
- w w
-w  w
-wwwww
-   w
+  ll
+ l l
+l  l
+lllll
+   l
 `,
   `
-wwwww
-w
-wwww
-    w
-wwww
+lllll
+l
+llll
+    l
+llll
 `,
   `
- www
-w
-wwww
-w   w
- www
+ lll
+l
+llll
+l   l
+ lll
 `,
   `
-wwwww
-w   w
-   w
-  w
- w
+lllll
+l   l
+   l
+  l
+ l
 `,
   `
- www
-w   w
- www
-w   w
- www
+ lll
+l   l
+ lll
+l   l
+ lll
 `,
   `
- www
-w   w
- wwww
-    w
- www
+ lll
+l   l
+ llll
+    l
+ lll
 `,
   // :
   `
 
-  w
+  l
 
-  w
-
-`,
-  `
-
-  w
-
-  w
- w
-`,
-  `
-   ww
- ww
-w
- ww
-   ww
-`,
-  `
-
-wwwww
-
-wwwww
+  l
 
 `,
   `
-ww
-  ww
-    w
-  ww
-ww
-`,
-  `
- www
-w   w
-  ww
 
-  w
+  l
+
+  l
+ l
 `,
   `
- www
-w   w
-w www
-w
- www
+   ll
+ ll
+l
+ ll
+   ll
+`,
+  `
+
+lllll
+
+lllll
+
+`,
+  `
+ll
+  ll
+    l
+  ll
+ll
+`,
+  `
+ lll
+l   l
+  ll
+
+  l
+`,
+  `
+ lll
+l   l
+l lll
+l
+ lll
 `,
   // A
   `
- www
-w   w
-wwwww
-w   w
-w   w
+ lll
+l   l
+lllll
+l   l
+l   l
 `,
   `
-wwww
-w   w
-wwww
-w   w
-wwww
+llll
+l   l
+llll
+l   l
+llll
 `,
   `
- www
-w   w
-w
-w   w
- www
+ lll
+l   l
+l
+l   l
+ lll
 `,
   `
-wwww
-w   w
-w   w
-w   w
-wwww
+llll
+l   l
+l   l
+l   l
+llll
 `,
   `
-wwwww
-w
-wwww
-w
-wwwww
+lllll
+l
+llll
+l
+lllll
 `,
   `
-wwwww
-w
-wwww
-w
-w
+lllll
+l
+llll
+l
+l
 `,
   `
- www
-w
-w  ww
-w   w
- wwww
+ lll
+l
+l  ll
+l   l
+ llll
 `,
   `
-w   w
-w   w
-wwwww
-w   w
-w   w
+l   l
+l   l
+lllll
+l   l
+l   l
 `,
   `
-wwwww
-  w
-  w
-  w
-wwwww
+lllll
+  l
+  l
+  l
+lllll
 `,
   `
- wwww
-   w
-   w
-w  w
- ww
+ llll
+   l
+   l
+l  l
+ ll
 `,
   `
-w   w
-w  w
-www
-w  w
-w   w
+l   l
+l  l
+lll
+l  l
+l   l
 `,
   `
-w
-w
-w
-w
-wwwww
+l
+l
+l
+l
+lllll
 `,
   `
-w   w
-ww ww
-w w w
-w   w
-w   w
+l   l
+ll ll
+l l l
+l   l
+l   l
 `,
   `
-w   w
-ww  w
-w w w
-w  ww
-w   w
+l   l
+ll  l
+l l l
+l  ll
+l   l
 `,
   `
- www
-w   w
-w   w
-w   w
- www
+ lll
+l   l
+l   l
+l   l
+ lll
 `,
   `
-wwww
-w   w
-wwww
-w
-w
+llll
+l   l
+llll
+l
+l
 `,
   `
- www
-w   w
-w   w
-w  ww
- wwww
+ lll
+l   l
+l   l
+l  ll
+ llll
 `,
   `
-wwww
-w   w
-wwww
-w   w
-w   w
+llll
+l   l
+llll
+l   l
+l   l
 `,
   `
- wwww
-w
- www
-    w
-wwww
+ llll
+l
+ lll
+    l
+llll
 `,
   `
-wwwww
-  w
-  w
-  w
-  w
+lllll
+  l
+  l
+  l
+  l
 `,
   `
-w   w
-w   w
-w   w
-w   w
- www
+l   l
+l   l
+l   l
+l   l
+ lll
 `,
   `
-w   w
-w   w
- w w
- w w
-  w
+l   l
+l   l
+ l l
+ l l
+  l
 `,
   `
-w   w
-w   w
-w w w
-w w w
- w w
+l   l
+l   l
+l l l
+l l l
+ l l
 `,
   `
-w   w
- w w
-  w
- w w
-w   w
+l   l
+ l l
+  l
+ l l
+l   l
 `,
   `
-w   w
- w w
-  w
-  w
-  w
+l   l
+ l l
+  l
+  l
+  l
 `,
   `
-wwwww
-   w
-  w
- w
-wwwww
+lllll
+   l
+  l
+ l
+lllll
 `,
   `
-  ww
-  w
-  w
-  w
-  ww
+  ll
+  l
+  l
+  l
+  ll
 `,
   `
-w
- w
-  w
-   w
-    w
+l
+ l
+  l
+   l
+    l
 `,
   `
- ww
-  w
-  w
-  w
- ww
+ ll
+  l
+  l
+  l
+ ll
 `,
   `
-  w
- w w
+  l
+ l l
 
 
 
@@ -442,225 +442,225 @@ w
 
 
 
-wwwww
+lllll
 `,
   `
- w
-  w
+ l
+  l
 
 
 
 `,
   // a
   `
- ww
-   w
- www
-w  w
- ww
+ ll
+   l
+ lll
+l  l
+ ll
 `,
   `
-w
-w
-www
-w  w
-www
-`,
-  `
-
- ww
-w  
-w
- ww
-`,
-  `
-   w
-   w
- www
-w  w
- www
-`,
-  `
- ww
-w  w
-www
-w
- ww
-`,
-  `
-   w
-  w 
- www
-  w
-  w
-`,
-  `
- www
-w  w
- www
-   w
- ww
-`,
-  `
-w
-w
-www
-w  w
-w  w
-`,
-  `
-  w
-
-  w
-  w
-  w
-`,
-  `
-   w
-
-   w
-   w
- ww
-`,
-  `
-w
-w
-w w
-ww
-w w
-`,
-  `
- ww
-  w
-  w
-  w
- www
+l
+l
+lll
+l  l
+lll
 `,
   `
 
-ww w
-w w w
-w w w
-w w w
+ ll
+l  
+l
+ ll
+`,
+  `
+   l
+   l
+ lll
+l  l
+ lll
+`,
+  `
+ ll
+l  l
+lll
+l
+ ll
+`,
+  `
+   l
+  l 
+ lll
+  l
+  l
+`,
+  `
+ lll
+l  l
+ lll
+   l
+ ll
+`,
+  `
+l
+l
+lll
+l  l
+l  l
+`,
+  `
+  l
+
+  l
+  l
+  l
+`,
+  `
+   l
+
+   l
+   l
+ ll
+`,
+  `
+l
+l
+l l
+ll
+l l
+`,
+  `
+ ll
+  l
+  l
+  l
+ lll
 `,
   `
 
-w ww
-ww  w
-w   w
-w   w
+ll l
+l l l
+l l l
+l l l
 `,
   `
 
- ww
-w  w
-w  w
- ww
+l ll
+ll  l
+l   l
+l   l
 `,
   `
 
-www
-w  w
-www
-w
+ ll
+l  l
+l  l
+ ll
 `,
   `
 
- www
-w  w
- www
-   w
+lll
+l  l
+lll
+l
 `,
   `
 
-w ww
-ww
-w
-w
-`,
-  `
- ww
-w
- ww  
-   w
- ww
-`,
-  `
- w
-www
- w
- w
-  w
+ lll
+l  l
+ lll
+   l
 `,
   `
 
-w  w
-w  w
-w  w
- ww
+l ll
+ll
+l
+l
+`,
+  `
+ ll
+l
+ ll  
+   l
+ ll
+`,
+  `
+ l
+lll
+ l
+ l
+  l
 `,
   `
 
-w  w
-w  w
- ww
- ww
+l  l
+l  l
+l  l
+ ll
 `,
   `
 
-w w w
-w w w
-w w w
- w w
+l  l
+l  l
+ ll
+ ll
 `,
   `
 
-w  w
- ww
- ww
-w  w
+l l l
+l l l
+l l l
+ l l
 `,
   `
 
-w  w
- ww
- w
-w
+l  l
+ ll
+ ll
+l  l
 `,
   `
 
-wwww
-  w
- w
-wwww
+l  l
+ ll
+ l
+l
+`,
+  `
+
+llll
+  l
+ l
+llll
 `,
   //{
   `
-  ww
-  w
- w
-  w
-  ww
+  ll
+  l
+ l
+  l
+  ll
 `,
   `
-  w
-  w
-  w
-  w
-  w
+  l
+  l
+  l
+  l
+  l
 `,
   `
- ww
-  w
-   w
-  w
- ww
+ ll
+  l
+   l
+  l
+ ll
 `,
   `
 
- w
-w w w
-   w
+ l
+l l l
+   l
 
 `
 ];

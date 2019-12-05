@@ -1,304 +1,304 @@
 const _ = [
   // human
   `
-wwwwww
-ww w w
-ww w w
-wwwwww
- w  w
- w  w
+llllll
+ll l l
+ll l l
+llllll
+ l  l
+ l  l
   `,
   `
-wwwwww
-ww w w
-ww w w
-wwwwww
-ww  ww
+llllll
+ll l l
+ll l l
+llllll
+ll  ll
   `,
   `
-  www
-ww w w
- wwww
- w  w
-ww  ww
+  lll
+ll l l
+ llll
+ l  l
+ll  ll
 `,
   `
-  www
-ww w w
- wwww
-  ww
- w  w
- w  w
+  lll
+ll l l
+ llll
+  ll
+ l  l
+ l  l
 `,
   `
-wwwww
-wwwwww
-ww w w
-wwwww
- w  w
-w   w
+lllll
+llllll
+ll l l
+lllll
+ l  l
+l   l
 `,
   `
-wwwww
-ww w w
-wwwwww
-wwwww
- w  w
- w   w
+lllll
+ll l l
+llllll
+lllll
+ l  l
+ l   l
 `,
   `
-  ww
-  ww
-wwwwww
-  ww
- w  w
-w    w
+  ll
+  ll
+llllll
+  ll
+ l  l
+l    l
 `,
-  // arrow"
+  // arrow
   `
-  w
-   w
-wwwww
-   w
-  w
-`,
-  `
-w
- w
-  w w
-   ww
-  www
+  l
+   l
+lllll
+   l
+  l
 `,
   `
-ww  w
-wwwwww
-ww  w
+l
+ l
+  l l
+   ll
+  lll
+`,
+  `
+ll  l
+llllll
+ll  l
   `,
   `
-ww ww
- wwwww
-ww ww
+ll ll
+ lllll
+ll ll
   `,
   // coin
   `
-w
-w
-w
+l
+l
+l
   `,
   `
- w
-www
- w
+ l
+lll
+ l
   `,
   // heart
   `
- w w
-wwwww
-wwwww
- www
-  w
+ l l
+lllll
+lllll
+ lll
+  l
   `,
   // face
   `
- wwww
-w    w
-ww  ww
-w    w
-w ww w
- wwww 
+ llll
+l    l
+ll  ll
+l    l
+l ll l
+ llll 
 `,
   // circle
   `
- ww
-wwww
-wwww
- ww
+ ll
+llll
+llll
+ ll
 `,
   `
- ww
-w  w
-w  w
- ww
+ ll
+l  l
+l  l
+ ll
 `,
   `
-www
-www
-ww
-
-
-
-`,
-  `
-wwwwww
-wwwwww
-wwwww
-wwwww
-wwww
-ww
-`,
-  `
-  w
-  w
-ww
+lll
+lll
+ll
 
 
 
 `,
   `
-     w
-     w
-    w
-    w
-  ww
-ww
+llllll
+llllll
+lllll
+lllll
+llll
+ll
+`,
+  `
+  l
+  l
+ll
+
+
+
+`,
+  `
+     l
+     l
+    l
+    l
+  ll
+ll
 `,
   // square
   `
-wwww
-wwww
-wwww
-wwww
+llll
+llll
+llll
+llll
 `,
   `
-wwww
-w  w
-w  w
-wwww
+llll
+l  l
+l  l
+llll
 `,
   `
-w w w
- w w w
-w w w
- w w w
-w w w
- w w w
+l l l
+ l l l
+l l l
+ l l l
+l l l
+ l l l
 `,
   // triangle
   `
-  w
- www
- www
-wwwww
-wwwww
+  l
+ lll
+ lll
+lllll
+lllll
 `,
   `
-  w
- w w
- w w
-w   w
-wwwww
+  l
+ l l
+ l l
+l   l
+lllll
 `,
   `
-www
-ww
-w
+lll
+ll
+l
 
 
 
 `,
   `
-wwwwww
-wwwww
-wwww
-www
-ww
-w
+llllll
+lllll
+llll
+lll
+ll
+l
 `,
   `
-w w w 
- w w
-w w
- w
-w
+l l l 
+ l l
+l l
+ l
+l
 `,
   `
-w w w 
- w w w
-  w w
-   w w
-    w
-     w
+l l l 
+ l l l
+  l l
+   l l
+    l
+     l
 `,
   `
-  w
- w
-w
+  l
+ l
+l
 
 
 
 `,
   `
-     w
-    w
-   w
-  w
- w
-w
+     l
+    l
+   l
+  l
+ l
+l
 `,
   // X
   `
-w    w
- w  w
-  ww
-  ww
- w  w
-w    w
+l    l
+ l  l
+  ll
+  ll
+ l  l
+l    l
 `,
   // line
   `
-  w
-  w
-  w
-  w
-  w
-  w  
+  l
+  l
+  l
+  l
+  l
+  l  
 `,
   `
-  w
-  w
-www
-
-
-
-`,
-  `
-  w
-  w
-wwwwww
+  l
+  l
+lll
 
 
 
 `,
   `
-  w
-  w
-wwwwwww
-  w
-  w
-  w
+  l
+  l
+llllll
+
+
+
+`,
+  `
+  l
+  l
+lllllll
+  l
+  l
+  l
 ` // dots
   `
-www
-www
-www
+lll
+lll
+lll
 
 
 
 `,
   `
-wwwwww
-wwwwww
-wwwwww
+llllll
+llllll
+llllll
 
 
 
 `,
   `
-www
-www
-www
-   www
-   www
-   www
+lll
+lll
+lll
+   lll
+   lll
+   lll
 `
 ];

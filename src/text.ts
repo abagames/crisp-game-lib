@@ -95,7 +95,7 @@ export function printChar(c: string, x: number, y: number, _options: Options) {
   const img = options.isCharacter ? characterImages[cc] : textImages[cc];
   const rotation = wrap(options.rotation, 0, 4);
   if (
-    options.color === "white" &&
+    options.color === defaultOptions.color &&
     rotation === 0 &&
     options.mirror.x === 1 &&
     options.mirror.y === 1
@@ -126,7 +126,7 @@ export function printChar(c: string, x: number, y: number, _options: Options) {
     letterContext.drawImage(img, -letterSize / 2, -letterSize / 2);
     letterContext.restore();
   }
-  if (options.color !== "white") {
+  if (options.color !== defaultOptions.color) {
     letterContext.globalCompositeOperation = "source-in";
     setColor(options.color, true, letterContext);
     letterContext.fillRect(0, 0, letterSize, letterSize);
