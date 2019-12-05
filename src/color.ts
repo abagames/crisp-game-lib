@@ -42,7 +42,7 @@ export const colorChars = "tlrgybpcwRGYBPCW";
 
 const rgbNumbers = [
   undefined,
-  0x000000,
+  0x616161,
   0xe91e63,
   0x4caf50,
   0xffeb3b,

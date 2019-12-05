@@ -111,8 +111,8 @@ window.addEventListener("load", onLoad);
 function onLoad() {
   loopOptions = {
     viewSize: { x: 100, y: 100 },
-    bodyBackground: "#ddd",
-    viewBackground: "#eee"
+    bodyBackground: "#e0e0e0",
+    viewBackground: "#eeeeee"
   };
   let opts;
   if (typeof options !== "undefined" && options != null) {

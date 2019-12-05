@@ -898,7 +898,7 @@ l l l
   const colorChars = "tlrgybpcwRGYBPCW";
   const rgbNumbers = [
       undefined,
-      0x000000,
+      0x616161,
       0xe91e63,
       0x4caf50,
       0xffeb3b,
@@ -985,7 +985,7 @@ l l l
       const cc = cca - 0x21;
       const img = options.isCharacter ? characterImages[cc] : textImages[cc];
       const rotation = wrap(options.rotation, 0, 4);
-      if (options.color === defaultOptions.color &&
+      if (options.color === "black" &&
           rotation === 0 &&
           options.mirror.x === 1 &&
           options.mirror.y === 1) {
@@ -1017,7 +1017,7 @@ l l l
           letterContext.drawImage(img, -letterSize / 2, -letterSize / 2);
           letterContext.restore();
       }
-      if (options.color !== defaultOptions.color) {
+      if (options.color !== "black") {
           letterContext.globalCompositeOperation = "source-in";
           setColor(options.color, true, letterContext);
           letterContext.fillRect(0, 0, letterSize, letterSize);
@@ -1672,8 +1672,8 @@ l l l
   function onLoad() {
       loopOptions = {
           viewSize: { x: 100, y: 100 },
-          bodyBackground: "#ddd",
-          viewBackground: "#eee"
+          bodyBackground: "#e0e0e0",
+          viewBackground: "#eeeeee"
       };
       let opts;
       if (typeof options !== "undefined" && options != null) {
