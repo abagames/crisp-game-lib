@@ -1,34 +1,13 @@
 import * as view from "./view";
 import { currentColor, Color } from "./color";
 import { Vector } from "./vector";
-
-type Rect = { pos: VectorLike; size: VectorLike; color: Color };
-let rects: Rect[];
-let tmpRects: Rect[];
-
-type Collision = {
-  rect?: {
-    transparent?: boolean;
-    black?: boolean;
-    red?: boolean;
-    blue?: boolean;
-    green?: boolean;
-    purple?: boolean;
-    cyan?: boolean;
-    white?: boolean;
-    dark_red?: boolean;
-    dark_blue?: boolean;
-    dark_green?: boolean;
-    dark_purple?: boolean;
-    dark_cyan?: boolean;
-    dark_white?: boolean;
-  };
-};
-
-export function update() {
-  rects = [];
-  tmpRects = [];
-}
+import {
+  HitBox,
+  hitBoxes,
+  tmpHitBoxes,
+  checkHitBoxes,
+  concatTmpHitBoxes
+} from "./collision";
 
 export function rect(
   x: number | VectorLike,
@@ -157,7 +136,7 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
     );
     p.add(l);
   }
-  concatTmpRects();
+  concatTmpHitBoxes();
   return collision;
 }
 
@@ -173,32 +152,12 @@ function addRect(
     ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
     : { x: Math.floor(x), y: Math.floor(y) };
   const size = { x: Math.floor(width), y: Math.floor(height) };
-  let rect = { pos, size, color: currentColor };
-  const collision = checkRects(rect);
+  let box: HitBox = { pos, size, collision: { rect: {} } };
+  box.collision.rect[currentColor] = true;
+  const collision = checkHitBoxes(box);
   if (currentColor !== "transparent") {
-    (isAddingToTmp ? tmpRects : rects).push(rect);
+    (isAddingToTmp ? tmpHitBoxes : hitBoxes).push(box);
     view.context.fillRect(pos.x, pos.y, size.x, size.y);
   }
   return collision;
-}
-
-function concatTmpRects() {
-  rects = rects.concat(tmpRects);
-  tmpRects = [];
-}
-
-function checkRects(rect: Rect) {
-  const collision: Collision = { rect: {} };
-  rects.forEach(r => {
-    if (testCollision(rect, r)) {
-      collision.rect[r.color] = true;
-    }
-  });
-  return collision;
-}
-
-function testCollision(r1: Rect, r2: Rect) {
-  const ox = r2.pos.x - r1.pos.x;
-  const oy = r2.pos.y - r1.pos.y;
-  return -r2.size.x < ox && ox < r1.size.x && -r2.size.y < oy && oy < r1.size.y;
 }

@@ -5,6 +5,7 @@ import * as input from "./input";
 import { Vector, VectorLike } from "./vector";
 import { Random } from "./random";
 import * as rects from "./rects";
+import * as collision from "./collision";
 import { init as initColor, setColor } from "./color";
 declare const sss;
 
@@ -160,7 +161,7 @@ function init() {
 function _update() {
   ticks = ticks;
   difficulty = ticks / 3600 + 1;
-  rects.update();
+  collision.clear();
   updateFunc[state]();
   ticks++;
 }

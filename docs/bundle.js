@@ -927,12 +927,14 @@ w w w
           });
       });
   }
-  function setColor(colorName, isSettingCurrent = true) {
+  function setColor(colorName, isSettingCurrent = true, context$1) {
       if (isSettingCurrent) {
           currentColor = colorName;
       }
       const c = rgbObjects[colors.indexOf(colorName)];
-      context.fillStyle = `rgb(${c.r},${c.g},${c.b})`;
+      (context$1 != null
+          ? context$1
+          : context).fillStyle = `rgb(${c.r},${c.g},${c.b})`;
   }
 
   const dotCount = 6;
@@ -945,7 +947,7 @@ w w w
   let letterCanvas;
   let letterContext;
   const defaultOptions = {
-      color: "white",
+      color: "black",
       backgroundColor: "transparent",
       rotation: 0,
       mirror: { x: 1, y: 1 },
@@ -963,11 +965,12 @@ w w w
   function enableCache() {
       isCacheEnabled = true;
   }
-  function printChar(c, x, y, options) {
+  function printChar(c, x, y, _options) {
       const cca = c.charCodeAt(0);
       if (cca < 0x20 || cca > 0x7e) {
           return;
       }
+      const options = Object.assign(Object.assign({}, defaultOptions), _options);
       const scaledSize = {
           x: letterSize * options.scale.x,
           y: letterSize * options.scale.y
@@ -1016,7 +1019,7 @@ w w w
       }
       if (options.color !== "white") {
           letterContext.globalCompositeOperation = "source-in";
-          setColor(options.color);
+          setColor(options.color, true, letterContext);
           letterContext.fillRect(0, 0, letterSize, letterSize);
           letterContext.globalCompositeOperation = "source-over";
       }
@@ -1466,12 +1469,31 @@ w w w
       }
   }
 
-  let rects;
-  let tmpRects;
-  function update$5() {
-      rects = [];
-      tmpRects = [];
+  let hitBoxes;
+  let tmpHitBoxes;
+  function clear$1() {
+      hitBoxes = [];
+      tmpHitBoxes = [];
   }
+  function concatTmpHitBoxes() {
+      hitBoxes = hitBoxes.concat(tmpHitBoxes);
+      tmpHitBoxes = [];
+  }
+  function checkHitBoxes(box) {
+      const collision = { rect: {} };
+      hitBoxes.forEach(r => {
+          if (testCollision(box, r)) {
+              Object.assign(collision, r.collision);
+          }
+      });
+      return collision;
+  }
+  function testCollision(r1, r2) {
+      const ox = r2.pos.x - r1.pos.x;
+      const oy = r2.pos.y - r1.pos.y;
+      return -r2.size.x < ox && ox < r1.size.x && -r2.size.y < oy && oy < r1.size.y;
+  }
+
   function rect(x, y, width, height) {
       return drawRect(false, x, y, width, height);
   }
@@ -1573,7 +1595,7 @@ w w w
           collision = Object.assign(collision, addRect(true, p.x, p.y, thickness, thickness, true));
           p.add(l);
       }
-      concatTmpRects();
+      concatTmpHitBoxes();
       return collision;
   }
   function addRect(isAlignCenter, x, y, width, height, isAddingToTmp = false) {
@@ -1581,31 +1603,14 @@ w w w
           ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
           : { x: Math.floor(x), y: Math.floor(y) };
       const size = { x: Math.floor(width), y: Math.floor(height) };
-      let rect = { pos, size, color: currentColor };
-      const collision = checkRects(rect);
+      let box = { pos, size, collision: { rect: {} } };
+      box.collision.rect[currentColor] = true;
+      const collision = checkHitBoxes(box);
       if (currentColor !== "transparent") {
-          (isAddingToTmp ? tmpRects : rects).push(rect);
+          (isAddingToTmp ? tmpHitBoxes : hitBoxes).push(box);
           context.fillRect(pos.x, pos.y, size.x, size.y);
       }
       return collision;
-  }
-  function concatTmpRects() {
-      rects = rects.concat(tmpRects);
-      tmpRects = [];
-  }
-  function checkRects(rect) {
-      const collision = { rect: {} };
-      rects.forEach(r => {
-          if (testCollision(rect, r)) {
-              collision.rect[r.color] = true;
-          }
-      });
-      return collision;
-  }
-  function testCollision(r1, r2) {
-      const ox = r2.pos.x - r1.pos.x;
-      const oy = r2.pos.y - r1.pos.y;
-      return -r2.size.x < ox && ox < r1.size.x && -r2.size.y < oy && oy < r1.size.y;
   }
 
   const PI = Math.PI;
@@ -1713,7 +1718,7 @@ w w w
   function _update$1() {
       exports.ticks = exports.ticks;
       exports.difficulty = exports.ticks / 3600 + 1;
-      update$5();
+      clear$1();
       updateFunc[state]();
       exports.ticks++;
   }
