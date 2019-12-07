@@ -1,4 +1,4 @@
-import * as view from "./view";
+import { context as viewContext } from "./view";
 
 export let rgbObjects: { r: number; g: number; b: number }[];
 export const colors = [
@@ -79,6 +79,6 @@ export function setColor(colorName: Color, isSettingCurrent = true, context?) {
   const c = rgbObjects[colors.indexOf(colorName)];
   (context != null
     ? context
-    : view.context
+    : viewContext
   ).fillStyle = `rgb(${c.r},${c.g},${c.b})`;
 }

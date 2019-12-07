@@ -27,7 +27,6 @@ export const ceil = Math.ceil;
 export let ticks = 0;
 export let difficulty: number;
 export let score = 0;
-export let random = new Random();
 export type SoundEffectType =
   | "coin"
   | "laser"
@@ -37,6 +36,18 @@ export type SoundEffectType =
   | "jump"
   | "select"
   | "lucky";
+
+export function rnd(lowOrHigh: number = 1, high?: number) {
+  return random.get(lowOrHigh, high);
+}
+
+export function rndi(lowOrHigh: number = 2, high?: number) {
+  return random.getInt(lowOrHigh, high);
+}
+
+export function rnds(lowOrHigh: number = 1, high?: number) {
+  return random.get(lowOrHigh, high) * random.getPlusOrMinus();
+}
 
 export function end() {
   initGameOver();
@@ -83,6 +94,7 @@ declare type Options = {
 declare let options: Options;
 declare function update();
 
+const random = new Random();
 type State = "title" | "inGame" | "gameOver";
 let state: State;
 let updateFunc = {

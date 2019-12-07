@@ -199,8 +199,10 @@ color: #888;
       }
   }
   function clear() {
+      const currentFillStyle = context.fillStyle;
       context.fillStyle = viewBackground;
       context.fillRect(0, 0, size.x, size.y);
+      context.fillStyle = currentFillStyle;
   }
   function capture() {
       captureContext.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
@@ -1725,7 +1727,15 @@ l l l
   const ceil = Math.ceil;
   exports.ticks = 0;
   exports.score = 0;
-  let random = new Random();
+  function rnd(lowOrHigh = 1, high) {
+      return random.get(lowOrHigh, high);
+  }
+  function rndi(lowOrHigh = 2, high) {
+      return random.getInt(lowOrHigh, high);
+  }
+  function rnds(lowOrHigh = 1, high) {
+      return random.get(lowOrHigh, high) * random.getPlusOrMinus();
+  }
   function end() {
       initGameOver();
   }
@@ -1754,6 +1764,7 @@ l l l
       viewSize: { x: 100, y: 100 },
       isPlayingBgm: false
   };
+  const random = new Random();
   let state;
   let updateFunc = {
       title: updateTitle,
@@ -1942,9 +1953,11 @@ l l l
   exports.line = line;
   exports.play = play;
   exports.pow = pow;
-  exports.random = random;
   exports.range = range;
   exports.rect = rect;
+  exports.rnd = rnd;
+  exports.rndi = rndi;
+  exports.rnds = rnds;
   exports.round = round;
   exports.sin = sin;
   exports.sqrt = sqrt;

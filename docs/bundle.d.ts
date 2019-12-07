@@ -168,13 +168,9 @@ declare function char(
 declare function vec(x?: number | VectorLike, y?: number): Vector;
 
 // Return random number
-declare interface Random {
-  get(lowOrHigh?: number, high?: number): number;
-  getInt(lowOrHigh?: number, high?: number): number;
-  getPlusOrMinus(): number;
-  select<T>(values: T[]): T;
-}
-declare let random: Random;
+declare function rnd(lowOrHigh?: number, high?: number);
+declare function rndi(lowOrHigh?: number, high?: number);
+declare function rnds(lowOrHigh?: number, high?: number);
 
 // Input (mouse, touch, keyboard)
 declare interface Input {

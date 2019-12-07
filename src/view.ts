@@ -64,8 +64,10 @@ color: #888;
 }
 
 export function clear() {
+  const currentFillStyle = context.fillStyle;
   context.fillStyle = viewBackground;
   context.fillRect(0, 0, size.x, size.y);
+  context.fillStyle = currentFillStyle;
 }
 
 export function saveAsBackground() {
