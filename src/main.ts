@@ -10,7 +10,7 @@ import { defineCharacters } from "./letter";
 declare const sss;
 
 export { clamp, wrap, range } from "./math";
-export { rect, box, bar, line } from "./rects";
+export { rect, box, bar, line } from "./rect";
 export { text, char } from "./letter";
 export { input };
 export const PI = Math.PI;

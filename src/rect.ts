@@ -1,5 +1,5 @@
 import * as view from "./view";
-import { currentColor, Color } from "./color";
+import { currentColor } from "./color";
 import { Vector } from "./vector";
 import {
   HitBox,
