@@ -29,7 +29,6 @@ export type Color =
   | "purple"
   | "cyan"
   | "white"
-  | "white"
   | "dark_red"
   | "dark_green"
   | "dark_yellow"

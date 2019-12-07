@@ -5,13 +5,14 @@ import * as input from "./input";
 import { Vector, VectorLike } from "./vector";
 import { Random } from "./random";
 import * as collision from "./collision";
-import { init as initColor, setColor } from "./color";
+import { init as initColor, setColor, Color } from "./color";
 import { defineCharacters } from "./letter";
 declare const sss;
 
 export { clamp, wrap, range } from "./math";
 export { rect, box, bar, line } from "./rect";
 export { text, char } from "./letter";
+export { Color };
 export { input };
 export const PI = Math.PI;
 export const abs = Math.abs;
@@ -27,15 +28,6 @@ export let ticks = 0;
 export let difficulty: number;
 export let score = 0;
 export let random = new Random();
-export type Color =
-  | "red"
-  | "blue"
-  | "green"
-  | "purple"
-  | "cyan"
-  | "white"
-  | "black"
-  | "transparent";
 export type SoundEffectType =
   | "coin"
   | "laser"

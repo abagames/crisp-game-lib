@@ -28,7 +28,14 @@ declare type Color =
   | "green"
   | "purple"
   | "cyan"
-  | "white";
+  | "white"
+  | "dark_red"
+  | "dark_green"
+  | "dark_yellow"
+  | "dark_blue"
+  | "dark_purple"
+  | "dark_cyan"
+  | "dark_white";
 declare function color(colorName: Color);
 
 // Draw functions return a collision info.
