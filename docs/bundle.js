@@ -1739,6 +1739,28 @@ l l l
   function end() {
       initGameOver();
   }
+  function addScore(value, x, y) {
+      exports.score += value;
+      if (x == null) {
+          return;
+      }
+      const str = `${value >= 1 ? "+" : ""}${Math.floor(value)}`;
+      let pos = new Vector();
+      if (typeof x === "number") {
+          pos.set(x, y);
+      }
+      else {
+          pos.set(x);
+      }
+      pos.x -= (str.length * letterSize) / 2;
+      pos.y -= letterSize / 2;
+      scoreBoards.push({
+          str,
+          pos,
+          vy: -2,
+          ticks: 30
+      });
+  }
   function color(colorName) {
       setColor(colorName);
   }
@@ -1778,6 +1800,7 @@ l l l
   let loopOptions;
   let terminalSize;
   let isPlayingBgm;
+  let scoreBoards;
   addGameScript();
   window.addEventListener("load", onLoad);
   function onLoad() {
@@ -1844,6 +1867,7 @@ l l l
           hiScore = s;
       }
       exports.score = 0;
+      scoreBoards = [];
       if (isPlayingBgm) {
           sss.playBgm();
       }
@@ -1851,6 +1875,7 @@ l l l
   function updateInGame() {
       terminal.clear();
       clear();
+      updateScoreBoards();
       update();
       drawScore();
       terminal.draw();
@@ -1917,6 +1942,18 @@ l l l
       const hs = `HI ${hiScore}`;
       terminal.print(hs, terminalSize.x - hs.length, 0);
   }
+  function updateScoreBoards() {
+      const currentFillStyle = context.fillStyle;
+      setColor("black", false);
+      scoreBoards = scoreBoards.filter(sb => {
+          print(sb.str, sb.pos.x, sb.pos.y);
+          sb.pos.y += sb.vy;
+          sb.vy *= 0.9;
+          sb.ticks--;
+          return sb.ticks > 0;
+      });
+      context.fillStyle = currentFillStyle;
+  }
   function addGameScript() {
       let gameName = window.location.search.substring(1);
       gameName = gameName.replace(/\W/g, "");
@@ -1939,6 +1976,7 @@ l l l
 
   exports.PI = PI;
   exports.abs = abs;
+  exports.addScore = addScore;
   exports.atan2 = atan2;
   exports.bar = bar;
   exports.box = box;

@@ -6,7 +6,7 @@ import { Vector, VectorLike } from "./vector";
 import { Random } from "./random";
 import * as collision from "./collision";
 import { init as initColor, setColor, Color } from "./color";
-import { defineCharacters } from "./letter";
+import { defineCharacters, print, letterSize } from "./letter";
 declare const sss;
 
 export { clamp, wrap, range } from "./math";
@@ -51,6 +51,28 @@ export function rnds(lowOrHigh: number = 1, high?: number) {
 
 export function end() {
   initGameOver();
+}
+
+export function addScore(value: number, x?: number | VectorLike, y?: number) {
+  score += value;
+  if (x == null) {
+    return;
+  }
+  const str = `${value >= 1 ? "+" : ""}${Math.floor(value)}`;
+  let pos = new Vector();
+  if (typeof x === "number") {
+    pos.set(x, y);
+  } else {
+    pos.set(x);
+  }
+  pos.x -= (str.length * letterSize) / 2;
+  pos.y -= letterSize / 2;
+  scoreBoards.push({
+    str,
+    pos,
+    vy: -2,
+    ticks: 30
+  });
 }
 
 export function color(colorName: Color) {
@@ -109,6 +131,7 @@ let seed = 0;
 let loopOptions;
 let terminalSize: VectorLike;
 let isPlayingBgm: boolean;
+let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 
 addGameScript();
 window.addEventListener("load", onLoad);
@@ -182,6 +205,7 @@ function initInGame() {
     hiScore = s;
   }
   score = 0;
+  scoreBoards = [];
   if (isPlayingBgm) {
     sss.playBgm();
   }
@@ -190,6 +214,7 @@ function initInGame() {
 function updateInGame() {
   terminal.clear();
   view.clear();
+  updateScoreBoards();
   update();
   drawScore();
   terminal.draw();
@@ -264,6 +289,19 @@ function drawScore() {
   terminal.print(`${Math.floor(score)}`, 0, 0);
   const hs = `HI ${hiScore}`;
   terminal.print(hs, terminalSize.x - hs.length, 0);
+}
+
+function updateScoreBoards() {
+  const currentFillStyle = view.context.fillStyle;
+  setColor("black", false);
+  scoreBoards = scoreBoards.filter(sb => {
+    print(sb.str, sb.pos.x, sb.pos.y);
+    sb.pos.y += sb.vy;
+    sb.vy *= 0.9;
+    sb.ticks--;
+    return sb.ticks > 0;
+  });
+  view.context.fillStyle = currentFillStyle;
 }
 
 function addGameScript() {

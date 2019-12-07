@@ -1,6 +1,8 @@
-title = "";
+title = "TARUTOBI";
 
-description = "";
+description = `
+[Slide] Move
+`;
 
 characters = [
   `
@@ -29,23 +31,26 @@ l    l
 ];
 
 options = {
-  viewSize: { x: 120, y: 60 }
+  viewSize: { x: 120, y: 60 },
+  isPlayingBgm: true
 };
 
-let p, v, isJumping, ts;
+let p, v, isJumping, ts, addedScore;
 
 function update() {
   if (ticks === 0) {
     p = vec(30, 30);
     v = vec();
     isJumping = true;
+    addedScore = 1;
     ts = [];
   }
-  if (rnd() < 0.01) {
+  if (rnd() < 0.01 * difficulty) {
     ts.push({
-      p: vec(125, 47),
-      v: vec(-rnd(0.3, 0.9), 0),
-      t: 0
+      p: vec(123, 47),
+      v: vec(-rnd(0.4, 0.8 * difficulty), 0),
+      t: 0,
+      isScoreAdded: false
     });
   }
   ts = ts.filter(t => {
@@ -56,6 +61,12 @@ function update() {
       char("c", t.p.x, t.p.y, { rotation: floor(t.t / 10) });
     }
     t.t += t.v.x;
+    if (!t.isScoreAdded && t.p.x < p.x) {
+      play("coin");
+      addScore(addedScore, t.p);
+      addedScore++;
+      t.isScoreAdded = true;
+    }
     return t.p.x > 0;
   });
   rect(0, 50, 120, 9);
@@ -68,23 +79,26 @@ function update() {
     }
   } else {
     v.mul(0.95);
+    addedScore = 1;
   }
   if (p.x < 0 || p.x > 120) {
     p.x = clamp(p.x, 0, 120);
     v.x = 0;
   }
-  v.x += clamp(input.pos.x - p.x, -10, 10) * (isJumping ? 0.0001 : 0.01);
+  v.x += clamp(input.pos.x - p.x, -7, 7) * (isJumping ? 0.004 : 0.01);
   p.add(v);
   const c = char(
     String.fromCharCode("a".charCodeAt(0) + (floor(ticks / 30) % 2)),
     p
   );
   if (c.char.c) {
+    play("jump");
     isJumping = true;
     p.y = 42;
-    v.y = -2;
+    v.y = -1.2 - Math.abs(v.x);
   }
   if (c.text["*"]) {
+    play("explosion");
     end();
   }
 }

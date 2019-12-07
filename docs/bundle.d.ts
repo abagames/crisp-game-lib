@@ -16,6 +16,11 @@ declare let difficulty: number;
 // score
 declare let score: number;
 
+// Add score
+declare function addScore(value: number);
+declare function addScore(value: number, x: number, y: number);
+declare function addScore(value: number, pos: VectorLike);
+
 // End game
 declare function end(): void;
 
@@ -169,7 +174,9 @@ declare function vec(x?: number | VectorLike, y?: number): Vector;
 
 // Return random number
 declare function rnd(lowOrHigh?: number, high?: number);
+// Return random integer
 declare function rndi(lowOrHigh?: number, high?: number);
+// Return plus of minus random number
 declare function rnds(lowOrHigh?: number, high?: number);
 
 // Input (mouse, touch, keyboard)
