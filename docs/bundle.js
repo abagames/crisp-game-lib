@@ -963,10 +963,23 @@ l l l
   }
 
   function text(str, x, y, options) {
-      return print(str, x, y, Object.assign({ isCharacter: false, isCheckCollision: true, color: currentColor }, options));
+      return letters(false, str, x, y, options);
   }
   function char(str, x, y, options) {
-      return print(str, x, y, Object.assign({ isCharacter: true, isCheckCollision: true, color: currentColor }, options));
+      return letters(true, str, x, y, options);
+  }
+  function letters(isCharacter, str, x, y, options) {
+      if (typeof x === "number") {
+          if (typeof y === "number") {
+              return print(str, x - letterSize / 2, y - letterSize / 2, Object.assign({ isCharacter, isCheckCollision: true, color: currentColor }, options));
+          }
+          else {
+              throw "invalid params";
+          }
+      }
+      else {
+          return print(str, x.x - letterSize / 2, x.y - letterSize / 2, Object.assign({ isCharacter, isCheckCollision: true, color: currentColor }, y));
+      }
   }
   const dotCount = 6;
   const dotSize = 1;
@@ -1775,7 +1788,6 @@ l l l
       isPlayingBgm = opts.isPlayingBgm;
       init$1();
       init$6(init$7, _update$1, loopOptions);
-      setColor("white");
   }
   function init$7() {
       if (typeof description !== "undefined" &&
@@ -1797,6 +1809,7 @@ l l l
       const sz = loopOptions.viewSize;
       terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };
       terminal = new Terminal(terminalSize);
+      setColor("black");
       if (isNoTitle) {
           initInGame();
           exports.ticks = 0;

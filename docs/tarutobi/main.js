@@ -4,35 +4,30 @@ description = "";
 
 characters = [
   `
-  l
- lll
-  l
-`,
+llllll
+ll l l
+ll l l
+llllll
+ l  l
+ l  l
+  `,
   `
- l l
-lllll
-lllll
- lll
-  l
-`
+llllll
+ll l l
+ll l l
+llllll
+ll  ll
+  `
 ];
 
 options = {};
 
+let p, v;
+
 function update() {
   if (ticks === 0) {
+    p = vec(50, 50);
+    v = vec();
   }
-  color("green");
-  rect(80, 40, 10, 40);
-  color("transparent");
-  const c = rect(input.pos.x, 20, 30, 40);
-  color(c.rect.green ? "green" : input.isPressed ? "red" : "blue");
-  rect(input.pos.x, 20, 30, 40);
-  if (input.isJustPressed) {
-    play("laser");
-  }
-  char("b", 50, 80);
-  if (char("a", input.pos.x, input.pos.y).char.b) {
-    text("hit", 10, 90);
-  }
+  char(String.fromCharCode("a".charCodeAt(0) + (floor(ticks / 30) % 2)), p);
 }

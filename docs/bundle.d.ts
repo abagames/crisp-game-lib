@@ -145,10 +145,22 @@ declare function text(
   options?: LetterOptions
 ): Collision;
 
+declare function text(
+  str: string,
+  pos: VectorLike,
+  options?: LetterOptions
+): Collision;
+
 declare function char(
   str: string,
   x: number,
   y: number,
+  options?: LetterOptions
+): Collision;
+
+declare function char(
+  str: string,
+  pos: VectorLike,
   options?: LetterOptions
 ): Collision;
 

@@ -15,16 +15,11 @@ export type LetterOptions = {
 
 export function text(
   str: string,
-  x: number,
-  y: number,
+  x: number | VectorLike,
+  y?: number | LetterOptions,
   options?: LetterOptions
 ) {
-  return print(str, x, y, {
-    isCharacter: false,
-    isCheckCollision: true,
-    color: currentColor,
-    ...options
-  });
+  return letters(false, str, x, y, options);
 }
 
 export function char(
@@ -33,12 +28,35 @@ export function char(
   y: number,
   options?: LetterOptions
 ) {
-  return print(str, x, y, {
-    isCharacter: true,
-    isCheckCollision: true,
-    color: currentColor,
-    ...options
-  });
+  return letters(true, str, x, y, options);
+}
+
+export function letters(
+  isCharacter: boolean,
+  str: string,
+  x: number | VectorLike,
+  y?: number | LetterOptions,
+  options?: LetterOptions
+) {
+  if (typeof x === "number") {
+    if (typeof y === "number") {
+      return print(str, x - letterSize / 2, y - letterSize / 2, {
+        isCharacter,
+        isCheckCollision: true,
+        color: currentColor,
+        ...options
+      });
+    } else {
+      throw "invalid params";
+    }
+  } else {
+    return print(str, x.x - letterSize / 2, x.y - letterSize / 2, {
+      isCharacter,
+      isCheckCollision: true,
+      color: currentColor,
+      ...(y as LetterOptions)
+    });
+  }
 }
 
 const dotCount = 6;

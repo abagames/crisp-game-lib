@@ -119,7 +119,6 @@ function onLoad() {
   isPlayingBgm = opts.isPlayingBgm;
   initColor();
   loop.init(init, _update, loopOptions);
-  setColor("white");
 }
 
 function init() {
@@ -146,6 +145,7 @@ function init() {
   const sz = loopOptions.viewSize;
   terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };
   terminal = new Terminal(terminalSize);
+  setColor("black");
   if (isNoTitle) {
     initInGame();
     ticks = 0;
