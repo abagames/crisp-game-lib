@@ -4,13 +4,14 @@ import { Terminal } from "./terminal";
 import * as input from "./input";
 import { Vector, VectorLike } from "./vector";
 import { Random } from "./random";
-import * as rects from "./rects";
 import * as collision from "./collision";
 import { init as initColor, setColor } from "./color";
+import { defineCharacters } from "./letter";
 declare const sss;
 
 export { clamp, wrap, range } from "./math";
 export { rect, box, bar, line } from "./rects";
+export { text, char } from "./letter";
 export { input };
 export const PI = Math.PI;
 export const abs = Math.abs;
@@ -145,6 +146,9 @@ function init() {
   ) {
     isNoTitle = false;
     document.title = title;
+  }
+  if (typeof characters !== "undefined" && characters != null) {
+    defineCharacters(characters, "a");
   }
   sss.init(seed);
   const sz = loopOptions.viewSize;

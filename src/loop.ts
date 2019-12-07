@@ -1,5 +1,5 @@
 import * as view from "./view";
-import * as text from "./text";
+import * as letter from "./letter";
 import * as input from "./input";
 import { VectorLike } from "./vector";
 declare const sss;
@@ -42,7 +42,7 @@ export function init(
     options.isCapturing
   );
   input.init();
-  text.init();
+  letter.init();
   _init();
   update();
 }
@@ -63,6 +63,6 @@ function update() {
   }
   textCacheEnableTicks--;
   if (textCacheEnableTicks === 0) {
-    text.enableCache();
+    letter.enableCache();
   }
 }

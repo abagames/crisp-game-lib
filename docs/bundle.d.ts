@@ -49,6 +49,8 @@ type Collision = {
     dark_cyan?: boolean;
     dark_white?: boolean;
   };
+  text?: { [k: string]: boolean };
+  char?: { [k: string]: boolean };
 };
 
 // Draw rectangle
@@ -118,6 +120,29 @@ declare function line(
   p1: VectorLike,
   p2: VectorLike,
   thickness?: number
+): Collision;
+
+// Draw letters.
+declare type LetterOptions = {
+  color?: Color;
+  backgroundColor?: Color;
+  rotation?: number;
+  mirror?: { x?: 1 | -1; y?: 1 | -1 };
+  scale?: { x?: number; y?: number };
+};
+
+declare function text(
+  str: string,
+  x: number,
+  y: number,
+  options?: LetterOptions
+): Collision;
+
+declare function char(
+  str: string,
+  x: number,
+  y: number,
+  options?: LetterOptions
 ): Collision;
 
 // Return Vector

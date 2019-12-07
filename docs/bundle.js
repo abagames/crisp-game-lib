@@ -208,7 +208,7 @@ color: #888;
       gcc.capture(captureCanvas);
   }
 
-  const letterPatterns = [
+  const textPatterns = [
       // !
       `
   l
@@ -937,6 +937,37 @@ l l l
           : context).fillStyle = `rgb(${c.r},${c.g},${c.b})`;
   }
 
+  let hitBoxes;
+  let tmpHitBoxes;
+  function clear$1() {
+      hitBoxes = [];
+      tmpHitBoxes = [];
+  }
+  function concatTmpHitBoxes() {
+      hitBoxes = hitBoxes.concat(tmpHitBoxes);
+      tmpHitBoxes = [];
+  }
+  function checkHitBoxes(box) {
+      const collision = { rect: {}, text: {}, char: {} };
+      hitBoxes.forEach(r => {
+          if (testCollision(box, r)) {
+              Object.assign(collision, r.collision);
+          }
+      });
+      return collision;
+  }
+  function testCollision(r1, r2) {
+      const ox = r2.pos.x - r1.pos.x;
+      const oy = r2.pos.y - r1.pos.y;
+      return -r2.size.x < ox && ox < r1.size.x && -r2.size.y < oy && oy < r1.size.y;
+  }
+
+  function text(str, x, y, options) {
+      return print(str, x, y, Object.assign({ isCharacter: false, isCheckCollision: true, color: currentColor }, options));
+  }
+  function char(str, x, y, options) {
+      return print(str, x, y, Object.assign({ isCharacter: true, isCheckCollision: true, color: currentColor }, options));
+  }
   const dotCount = 6;
   const dotSize = 1;
   const letterSize = dotCount * dotSize;
@@ -952,18 +983,52 @@ l l l
       rotation: 0,
       mirror: { x: 1, y: 1 },
       scale: { x: 1, y: 1 },
-      isCharacter: false
+      isCharacter: false,
+      isCheckCollision: false
   };
   function init$2() {
       letterCanvas = document.createElement("canvas");
       letterCanvas.width = letterCanvas.height = letterSize;
       letterContext = letterCanvas.getContext("2d");
-      textImages = letterPatterns.map(lp => createLetterImages(lp));
+      textImages = textPatterns.map((lp, i) => {
+          return {
+              image: createLetterImages(lp),
+              hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
+          };
+      });
       characterImages = range(64).map(() => undefined);
       cachedImages = {};
   }
+  function defineCharacters(pattern, startLetter) {
+      const index = startLetter.charCodeAt(0) - 0x21;
+      pattern.forEach((lp, i) => {
+          characterImages[index + i] = {
+              image: createLetterImages(lp),
+              hitBox: getHitBox(String.fromCharCode(0x21 + index + i), true)
+          };
+      });
+  }
   function enableCache() {
       isCacheEnabled = true;
+  }
+  function print(_str, x, y, _options = {}) {
+      const options = Object.assign(Object.assign({}, defaultOptions), _options);
+      const bx = Math.floor(x);
+      let str = _str;
+      let px = bx;
+      let py = Math.floor(y);
+      let collision = { text: {}, char: {} };
+      for (let i = 0; i < str.length; i++) {
+          const c = str[i];
+          if (c === "\n") {
+              px = bx;
+              py += letterSize * options.scale.y;
+              continue;
+          }
+          Object.assign(collision, printChar(c, px, py, options));
+          px += letterSize * options.scale.x;
+      }
+      return collision;
   }
   function printChar(c, x, y, _options) {
       const cca = c.charCodeAt(0);
@@ -971,41 +1036,30 @@ l l l
           return;
       }
       const options = Object.assign(Object.assign({}, defaultOptions), _options);
-      const scaledSize = {
-          x: letterSize * options.scale.x,
-          y: letterSize * options.scale.y
-      };
       if (options.backgroundColor !== "transparent") {
           setColor(options.backgroundColor, false);
-          context.fillRect(x, y, scaledSize.x, scaledSize.y);
+          context.fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
       }
-      if (cca == 0x20 || options.color === "transparent") {
+      if (cca <= 0x20 || options.color === "transparent") {
           return;
       }
       const cc = cca - 0x21;
-      const img = options.isCharacter ? characterImages[cc] : textImages[cc];
+      const li = options.isCharacter ? characterImages[cc] : textImages[cc];
       const rotation = wrap(options.rotation, 0, 4);
       if (options.color === "black" &&
           rotation === 0 &&
           options.mirror.x === 1 &&
           options.mirror.y === 1) {
-          if (options.scale.x === 1 && options.scale.y === 1) {
-              context.drawImage(img, x, y);
-          }
-          else {
-              context.drawImage(img, x, y, scaledSize.x, scaledSize.y);
-          }
-          return;
+          return drawLetterImage(li, x, y, options.scale, options.isCheckCollision);
       }
       const cacheIndex = JSON.stringify({ c, options });
       const ci = cachedImages[cacheIndex];
       if (ci != null) {
-          context.drawImage(ci, x, y);
-          return;
+          return drawLetterImage(ci, x, y, options.scale, options.isCheckCollision);
       }
       letterContext.clearRect(0, 0, letterSize, letterSize);
       if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
-          letterContext.drawImage(img, 0, 0);
+          letterContext.drawImage(li.image, 0, 0);
       }
       else {
           letterContext.save();
@@ -1014,7 +1068,7 @@ l l l
           if (options.mirror.x === -1 || options.mirror.y === -1) {
               letterContext.scale(options.mirror.x, options.mirror.y);
           }
-          letterContext.drawImage(img, -letterSize / 2, -letterSize / 2);
+          letterContext.drawImage(li.image, -letterSize / 2, -letterSize / 2);
           letterContext.restore();
       }
       if (options.color !== "black") {
@@ -1023,12 +1077,35 @@ l l l
           letterContext.fillRect(0, 0, letterSize, letterSize);
           letterContext.globalCompositeOperation = "source-over";
       }
-      context.drawImage(letterCanvas, x, y, scaledSize.x, scaledSize.y);
+      const hitBox = getHitBox(c, options.isCharacter);
       if (isCacheEnabled) {
           const cachedImage = document.createElement("img");
           cachedImage.src = letterCanvas.toDataURL();
-          cachedImages[cacheIndex] = cachedImage;
+          cachedImages[cacheIndex] = {
+              image: cachedImage,
+              hitBox
+          };
       }
+      return drawLetterImage({ image: letterCanvas, hitBox }, x, y, options.scale, options.isCheckCollision);
+  }
+  function drawLetterImage(li, x, y, scale, isCheckCollision) {
+      if (scale.x === 1 && scale.y === 1) {
+          context.drawImage(li.image, x, y);
+      }
+      else {
+          context.drawImage(li.image, x, y, letterSize * scale.x, letterSize * scale.x);
+      }
+      if (!isCheckCollision) {
+          return;
+      }
+      const hitBox = {
+          pos: { x: x + li.hitBox.pos.x, y: y + li.hitBox.pos.y },
+          size: { x: li.hitBox.size.x * scale.x, y: li.hitBox.size.y * scale.y },
+          collision: li.hitBox.collision
+      };
+      const collision = checkHitBoxes(hitBox);
+      hitBoxes.push(hitBox);
+      return collision;
   }
   function createLetterImages(pattern, isSkippingFirstAndLastLine = true) {
       letterContext.clearRect(0, 0, letterSize, letterSize);
@@ -1060,6 +1137,41 @@ l l l
       const img = document.createElement("img");
       img.src = letterCanvas.toDataURL();
       return img;
+  }
+  function getHitBox(c, isCharacter) {
+      const b = {
+          pos: new Vector(letterSize, letterSize),
+          size: new Vector(),
+          collision: { char: {}, text: {} }
+      };
+      if (isCharacter) {
+          b.collision.char[c] = true;
+      }
+      else {
+          b.collision.text[c] = true;
+      }
+      const d = letterContext.getImageData(0, 0, letterSize, letterSize).data;
+      let i = 0;
+      for (let y = 0; y < letterSize; y++) {
+          for (let x = 0; x < letterSize; x++) {
+              if (d[i + 3] > 0) {
+                  if (x < b.pos.x) {
+                      b.pos.x = x;
+                  }
+                  if (y < b.pos.y) {
+                      b.pos.y = y;
+                  }
+                  if (x > b.pos.x + b.size.x - 1) {
+                      b.size.x = x - b.pos.x + 1;
+                  }
+                  if (y > b.pos.y + b.size.y - 1) {
+                      b.size.y = y - b.pos.y + 1;
+                  }
+              }
+              i += 4;
+          }
+      }
+      return b;
   }
 
   let isPressed = false;
@@ -1469,31 +1581,6 @@ l l l
       }
   }
 
-  let hitBoxes;
-  let tmpHitBoxes;
-  function clear$1() {
-      hitBoxes = [];
-      tmpHitBoxes = [];
-  }
-  function concatTmpHitBoxes() {
-      hitBoxes = hitBoxes.concat(tmpHitBoxes);
-      tmpHitBoxes = [];
-  }
-  function checkHitBoxes(box) {
-      const collision = { rect: {} };
-      hitBoxes.forEach(r => {
-          if (testCollision(box, r)) {
-              Object.assign(collision, r.collision);
-          }
-      });
-      return collision;
-  }
-  function testCollision(r1, r2) {
-      const ox = r2.pos.x - r1.pos.x;
-      const oy = r2.pos.y - r1.pos.y;
-      return -r2.size.x < ox && ox < r1.size.x && -r2.size.y < oy && oy < r1.size.y;
-  }
-
   function rect(x, y, width, height) {
       return drawRect(false, x, y, width, height);
   }
@@ -1703,6 +1790,9 @@ l l l
           isNoTitle = false;
           document.title = title;
       }
+      if (typeof characters !== "undefined" && characters != null) {
+          defineCharacters(characters, "a");
+      }
       sss.init(seed);
       const sz = loopOptions.viewSize;
       terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };
@@ -1829,6 +1919,7 @@ l l l
   exports.bar = bar;
   exports.box = box;
   exports.ceil = ceil;
+  exports.char = char;
   exports.clamp = clamp$1;
   exports.color = color;
   exports.cos = cos;
@@ -1844,6 +1935,7 @@ l l l
   exports.round = round;
   exports.sin = sin;
   exports.sqrt = sqrt;
+  exports.text = text;
   exports.vec = vec;
   exports.wrap = wrap$1;
 

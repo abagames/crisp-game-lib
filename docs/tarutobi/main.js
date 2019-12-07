@@ -4,6 +4,16 @@ description = "";
 
 characters = [
   `
+  l
+ lll
+  l
+`,
+  `
+ l l
+lllll
+lllll
+ lll
+  l
 `
 ];
 
@@ -20,5 +30,9 @@ function update() {
   rect(input.pos.x, 20, 30, 40);
   if (input.isJustPressed) {
     play("laser");
+  }
+  char("b", 50, 80);
+  if (char("a", input.pos.x, input.pos.y).char.b) {
+    text("hit", 10, 90);
   }
 }

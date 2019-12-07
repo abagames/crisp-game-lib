@@ -1,4 +1,4 @@
-export const letterPatterns = [
+export const textPatterns = [
   // !
   `
   l

@@ -1,4 +1,4 @@
-import * as text from "./text";
+import * as letter from "./letter";
 import { range } from "./math";
 import { Vector, VectorLike } from "./vector";
 import { Color } from "./color";
@@ -30,8 +30,8 @@ export class Terminal {
     );
   }
 
-  print(str: string, _x: number, _y: number, _options: text.Options = {}) {
-    const options: text.Options = { ...text.defaultOptions, ..._options };
+  print(str: string, _x: number, _y: number, _options: letter.Options = {}) {
+    const options: letter.Options = { ...letter.defaultOptions, ..._options };
     let x = Math.floor(_x);
     let y = Math.floor(_y);
     const bx = x;
@@ -72,11 +72,11 @@ export class Terminal {
     };
   }
 
-  setCharAt(_x: number, _y: number, char: string, _options?: text.Options) {
+  setCharAt(_x: number, _y: number, char: string, _options?: letter.Options) {
     if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
       return;
     }
-    const options: text.Options = { ...text.defaultOptions, ..._options };
+    const options: letter.Options = { ...letter.defaultOptions, ..._options };
     const x = Math.floor(_x);
     const y = Math.floor(_y);
     this.letterGrid[x][y] = char;
@@ -97,7 +97,7 @@ export class Terminal {
         const bg = this.backgroundColorGrid[x][y];
         const rg = this.rotationGrid[x][y];
         const hg = this.characterGrid[x][y];
-        text.printChar(c, x * text.letterSize, y * text.letterSize, {
+        letter.printChar(c, x * letter.letterSize, y * letter.letterSize, {
           color: cg,
           backgroundColor: bg,
           rotation: rg,

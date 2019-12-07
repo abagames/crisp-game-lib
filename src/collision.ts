@@ -15,6 +15,8 @@ export type Collision = {
     dark_cyan?: boolean;
     dark_white?: boolean;
   };
+  text?: { [k: string]: boolean };
+  char?: { [k: string]: boolean };
 };
 export type HitBox = {
   pos: VectorLike;
@@ -35,7 +37,7 @@ export function concatTmpHitBoxes() {
 }
 
 export function checkHitBoxes(box: HitBox) {
-  const collision: Collision = { rect: {} };
+  const collision: Collision = { rect: {}, text: {}, char: {} };
   hitBoxes.forEach(r => {
     if (testCollision(box, r)) {
       Object.assign(collision, r.collision);
