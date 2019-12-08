@@ -1,6 +1,6 @@
 # crisp-game-lib
 
-Develop game within one hour.
+Develop one game within one hour.
 
 ## Demo
 
