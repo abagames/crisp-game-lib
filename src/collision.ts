@@ -1,19 +1,19 @@
 export type Collision = {
   rect?: {
     transparent?: boolean;
-    black?: boolean;
+    white?: boolean;
     red?: boolean;
     blue?: boolean;
     green?: boolean;
     purple?: boolean;
     cyan?: boolean;
-    white?: boolean;
-    dark_red?: boolean;
-    dark_blue?: boolean;
-    dark_green?: boolean;
-    dark_purple?: boolean;
-    dark_cyan?: boolean;
-    dark_white?: boolean;
+    black?: boolean;
+    light_red?: boolean;
+    light_blue?: boolean;
+    light_green?: boolean;
+    light_purple?: boolean;
+    light_cyan?: boolean;
+    light_black?: boolean;
   };
   text?: { [k: string]: boolean };
   char?: { [k: string]: boolean };

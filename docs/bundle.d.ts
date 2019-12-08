@@ -27,39 +27,39 @@ declare function end(): void;
 // color
 declare type Color =
   | "transparent"
-  | "black"
+  | "white"
   | "red"
   | "blue"
   | "green"
   | "purple"
   | "cyan"
-  | "white"
-  | "dark_red"
-  | "dark_green"
-  | "dark_yellow"
-  | "dark_blue"
-  | "dark_purple"
-  | "dark_cyan"
-  | "dark_white";
+  | "black"
+  | "light_red"
+  | "light_green"
+  | "light_yellow"
+  | "light_blue"
+  | "light_purple"
+  | "light_cyan"
+  | "light_black";
 declare function color(colorName: Color);
 
 // Draw functions return a collision info.
 type Collision = {
   rect?: {
     transparent?: boolean;
-    black?: boolean;
+    white?: boolean;
     red?: boolean;
     blue?: boolean;
     green?: boolean;
     purple?: boolean;
     cyan?: boolean;
-    white?: boolean;
-    dark_red?: boolean;
-    dark_blue?: boolean;
-    dark_green?: boolean;
-    dark_purple?: boolean;
-    dark_cyan?: boolean;
-    dark_white?: boolean;
+    black?: boolean;
+    light_red?: boolean;
+    light_blue?: boolean;
+    light_green?: boolean;
+    light_purple?: boolean;
+    light_cyan?: boolean;
+    light_black?: boolean;
   };
   text?: { [k: string]: boolean };
   char?: { [k: string]: boolean };

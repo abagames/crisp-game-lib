@@ -3,52 +3,52 @@ import { context as viewContext } from "./view";
 export let rgbObjects: { r: number; g: number; b: number }[];
 export const colors = [
   "transparent",
-  "black",
+  "white",
   "red",
   "green",
   "yellow",
   "blue",
   "purple",
   "cyan",
-  "white",
-  "dark_red",
-  "dark_green",
-  "dark_yellow",
-  "dark_blue",
-  "dark_purple",
-  "dark_cyan",
-  "dark_white"
+  "black",
+  "light_red",
+  "light_green",
+  "light_yellow",
+  "light_blue",
+  "light_purple",
+  "light_cyan",
+  "light_black"
 ];
 export type Color =
   | "transparent"
-  | "black"
+  | "white"
   | "red"
   | "green"
   | "yellow"
   | "blue"
   | "purple"
   | "cyan"
-  | "white"
-  | "dark_red"
-  | "dark_green"
-  | "dark_yellow"
-  | "dark_blue"
-  | "dark_purple"
-  | "dark_cyan"
-  | "dark_white";
+  | "black"
+  | "light_red"
+  | "light_green"
+  | "light_yellow"
+  | "light_blue"
+  | "light_purple"
+  | "light_cyan"
+  | "light_black";
 export let currentColor: Color;
-export const colorChars = "tlrgybpcwRGYBPCW";
+export const colorChars = "twrgybpclRGYBPCL";
 
 const rgbNumbers = [
   undefined,
-  0x616161,
+  0xeeeeee,
   0xe91e63,
   0x4caf50,
   0xffeb3b,
   0x3f51b5,
   0x9c27b0,
   0x03a9f4,
-  0xeeeeee
+  0x616161
 ];
 
 export function init() {
@@ -65,9 +65,13 @@ export function init() {
       return;
     }
     rgbObjects.push({
-      r: Math.floor((n & 0xff0000) * 0.5) >> 16,
-      g: Math.floor((n & 0xff00) * 0.5) >> 8,
-      b: Math.floor((n & 0xff) * 0.5)
+      r: Math.floor(
+        rgbObjects[1].r - (rgbObjects[1].r - ((n & 0xff0000) >> 16)) * 0.5
+      ),
+      g: Math.floor(
+        rgbObjects[1].r - (rgbObjects[1].r - ((n & 0xff00) >> 8)) * 0.5
+      ),
+      b: Math.floor(rgbObjects[1].r - (rgbObjects[1].r - (n & 0xff)) * 0.5)
     });
   });
 }
