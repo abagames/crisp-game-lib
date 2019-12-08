@@ -172,6 +172,7 @@ function init() {
   ) {
     isNoTitle = false;
     document.title = title;
+    seed += getHash(title);
   }
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");

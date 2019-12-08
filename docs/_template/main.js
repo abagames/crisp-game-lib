@@ -1,6 +1,7 @@
 title = "";
 
-description = "";
+description = `
+`;
 
 characters = [
   `
