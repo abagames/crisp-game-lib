@@ -91,13 +91,13 @@ function update() {
     String.fromCharCode("a".charCodeAt(0) + (floor(ticks / 30) % 2)),
     p
   );
-  if (c.char.c) {
+  if (c.isColliding.char.c) {
     play("jump");
     isJumping = true;
     p.y = 42;
     v.y = -1.2 - Math.abs(v.x);
   }
-  if (c.text["*"]) {
+  if (c.isColliding.text["*"]) {
     play("explosion");
     end();
   }

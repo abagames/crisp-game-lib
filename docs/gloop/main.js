@@ -78,7 +78,7 @@ function update() {
   }
   pis = pis.filter(pi => {
     let isAlive = true;
-    if (char("b", pi.p).char.a) {
+    if (char("b", pi.p).isColliding.char.a) {
       if (abs(v.y) > 1) {
         play("select");
         isAlive = false;
@@ -101,7 +101,7 @@ function update() {
   color("red");
   sps = sps.filter(sp => {
     if (sp.isAlive) {
-      if (char("c", sp.p).char.a) {
+      if (char("c", sp.p).isColliding.char.a) {
         play("explosion");
         end();
       }

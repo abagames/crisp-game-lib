@@ -1,22 +1,24 @@
 export type Collision = {
-  rect?: {
-    transparent?: boolean;
-    white?: boolean;
-    red?: boolean;
-    blue?: boolean;
-    green?: boolean;
-    purple?: boolean;
-    cyan?: boolean;
-    black?: boolean;
-    light_red?: boolean;
-    light_blue?: boolean;
-    light_green?: boolean;
-    light_purple?: boolean;
-    light_cyan?: boolean;
-    light_black?: boolean;
+  isColliding: {
+    rect?: {
+      transparent?: boolean;
+      white?: boolean;
+      red?: boolean;
+      blue?: boolean;
+      green?: boolean;
+      purple?: boolean;
+      cyan?: boolean;
+      black?: boolean;
+      light_red?: boolean;
+      light_blue?: boolean;
+      light_green?: boolean;
+      light_purple?: boolean;
+      light_cyan?: boolean;
+      light_black?: boolean;
+    };
+    text?: { [k: string]: boolean };
+    char?: { [k: string]: boolean };
   };
-  text?: { [k: string]: boolean };
-  char?: { [k: string]: boolean };
 };
 export type HitBox = {
   pos: VectorLike;
@@ -37,7 +39,9 @@ export function concatTmpHitBoxes() {
 }
 
 export function checkHitBoxes(box: HitBox) {
-  const collision: Collision = { rect: {}, text: {}, char: {} };
+  const collision: Collision = {
+    isColliding: { rect: {}, text: {}, char: {} }
+  };
   hitBoxes.forEach(r => {
     if (testCollision(box, r)) {
       Object.assign(collision, r.collision);

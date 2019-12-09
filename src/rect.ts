@@ -6,7 +6,8 @@ import {
   hitBoxes,
   tmpHitBoxes,
   checkHitBoxes,
-  concatTmpHitBoxes
+  concatTmpHitBoxes,
+  Collision
 } from "./collision";
 
 export function rect(
@@ -128,7 +129,7 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
   const ly = Math.abs(l.y);
   const rn = clamp(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
   l.div(rn - 1);
-  let collision: Collision = { rect: {} };
+  let collision: Collision = { isColliding: { rect: {} } };
   for (let i = 0; i < rn; i++) {
     collision = Object.assign(
       collision,
@@ -152,8 +153,8 @@ function addRect(
     ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
     : { x: Math.floor(x), y: Math.floor(y) };
   const size = { x: Math.floor(width), y: Math.floor(height) };
-  let box: HitBox = { pos, size, collision: { rect: {} } };
-  box.collision.rect[currentColor] = true;
+  const box: HitBox = { pos, size, collision: { isColliding: { rect: {} } } };
+  box.collision.isColliding.rect[currentColor] = true;
   const collision = checkHitBoxes(box);
   if (currentColor !== "transparent") {
     (isAddingToTmp ? tmpHitBoxes : hitBoxes).push(box);

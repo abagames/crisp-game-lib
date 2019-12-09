@@ -950,7 +950,9 @@ l l l
       tmpHitBoxes = [];
   }
   function checkHitBoxes(box) {
-      const collision = { rect: {}, text: {}, char: {} };
+      const collision = {
+          isColliding: { rect: {}, text: {}, char: {} }
+      };
       hitBoxes.forEach(r => {
           if (testCollision(box, r)) {
               Object.assign(collision, r.collision);
@@ -1011,7 +1013,12 @@ l l l
               hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
           };
       });
-      characterImages = range(64).map(() => undefined);
+      characterImages = textPatterns.map((lp, i) => {
+          return {
+              image: createLetterImages(lp),
+              hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
+          };
+      });
       cachedImages = {};
   }
   function defineCharacters(pattern, startLetter) {
@@ -1032,7 +1039,7 @@ l l l
       let str = _str;
       let px = bx;
       let py = Math.floor(y);
-      let collision = { text: {}, char: {} };
+      let collision = { isColliding: { rect: {}, text: {}, char: {} } };
       for (let i = 0; i < str.length; i++) {
           const c = str[i];
           if (c === "\n") {
@@ -1157,13 +1164,13 @@ l l l
       const b = {
           pos: new Vector(letterSize, letterSize),
           size: new Vector(),
-          collision: { char: {}, text: {} }
+          collision: { isColliding: { char: {}, text: {} } }
       };
       if (isCharacter) {
-          b.collision.char[c] = true;
+          b.collision.isColliding.char[c] = true;
       }
       else {
-          b.collision.text[c] = true;
+          b.collision.isColliding.text[c] = true;
       }
       const d = letterContext.getImageData(0, 0, letterSize, letterSize).data;
       let i = 0;
@@ -1692,7 +1699,7 @@ l l l
       const ly = Math.abs(l.y);
       const rn = clamp(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
       l.div(rn - 1);
-      let collision = { rect: {} };
+      let collision = { isColliding: { rect: {} } };
       for (let i = 0; i < rn; i++) {
           collision = Object.assign(collision, addRect(true, p.x, p.y, thickness, thickness, true));
           p.add(l);
@@ -1705,8 +1712,8 @@ l l l
           ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
           : { x: Math.floor(x), y: Math.floor(y) };
       const size = { x: Math.floor(width), y: Math.floor(height) };
-      let box = { pos, size, collision: { rect: {} } };
-      box.collision.rect[currentColor] = true;
+      const box = { pos, size, collision: { isColliding: { rect: {} } } };
+      box.collision.isColliding.rect[currentColor] = true;
       const collision = checkHitBoxes(box);
       if (currentColor !== "transparent") {
           (isAddingToTmp ? tmpHitBoxes : hitBoxes).push(box);

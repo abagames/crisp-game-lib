@@ -45,24 +45,26 @@ declare function color(colorName: Color);
 
 // Draw functions return a collision info.
 type Collision = {
-  rect?: {
-    transparent?: boolean;
-    white?: boolean;
-    red?: boolean;
-    blue?: boolean;
-    green?: boolean;
-    purple?: boolean;
-    cyan?: boolean;
-    black?: boolean;
-    light_red?: boolean;
-    light_blue?: boolean;
-    light_green?: boolean;
-    light_purple?: boolean;
-    light_cyan?: boolean;
-    light_black?: boolean;
+  isColliding: {
+    rect?: {
+      transparent?: boolean;
+      white?: boolean;
+      red?: boolean;
+      blue?: boolean;
+      green?: boolean;
+      purple?: boolean;
+      cyan?: boolean;
+      black?: boolean;
+      light_red?: boolean;
+      light_blue?: boolean;
+      light_green?: boolean;
+      light_purple?: boolean;
+      light_cyan?: boolean;
+      light_black?: boolean;
+    };
+    text?: { [k: string]: boolean };
+    char?: { [k: string]: boolean };
   };
-  text?: { [k: string]: boolean };
-  char?: { [k: string]: boolean };
 };
 
 // Draw rectangle

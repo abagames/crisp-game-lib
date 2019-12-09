@@ -2,7 +2,7 @@ import { textPatterns } from "./textPattern";
 import { context } from "./view";
 import { Color, setColor, colorChars, rgbObjects, currentColor } from "./color";
 import { Vector } from "./vector";
-import { HitBox, hitBoxes, checkHitBoxes } from "./collision";
+import { HitBox, hitBoxes, checkHitBoxes, Collision } from "./collision";
 
 export type LetterOptions = {
   color?: Color;
@@ -138,7 +138,7 @@ export function print(
   let str = _str;
   let px = bx;
   let py = Math.floor(y);
-  let collision: Collision = { text: {}, char: {} };
+  let collision: Collision = { isColliding: { rect: {}, text: {}, char: {} } };
   for (let i = 0; i < str.length; i++) {
     const c = str[i];
     if (c === "\n") {
@@ -315,12 +315,12 @@ function getHitBox(c: string, isCharacter: boolean) {
   const b: HitBox = {
     pos: new Vector(letterSize, letterSize),
     size: new Vector(),
-    collision: { char: {}, text: {} }
+    collision: { isColliding: { char: {}, text: {} } }
   };
   if (isCharacter) {
-    b.collision.char[c] = true;
+    b.collision.isColliding.char[c] = true;
   } else {
-    b.collision.text[c] = true;
+    b.collision.isColliding.text[c] = true;
   }
   const d = letterContext.getImageData(0, 0, letterSize, letterSize).data;
   let i = 0;
