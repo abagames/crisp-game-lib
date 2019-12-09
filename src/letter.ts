@@ -1,6 +1,5 @@
 import { textPatterns } from "./textPattern";
 import { context } from "./view";
-import { range } from "./math";
 import { Color, setColor, colorChars, rgbObjects, currentColor } from "./color";
 import { Vector } from "./vector";
 import { HitBox, hitBoxes, checkHitBoxes } from "./collision";
@@ -105,7 +104,12 @@ export function init() {
       hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
     };
   });
-  characterImages = range(64).map(() => undefined);
+  characterImages = textPatterns.map((lp, i) => {
+    return {
+      image: createLetterImages(lp),
+      hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
+    };
+  });
   cachedImages = {};
 }
 
