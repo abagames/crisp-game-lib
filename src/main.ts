@@ -9,7 +9,7 @@ import { init as initColor, setColor, Color } from "./color";
 import { defineCharacters, print, letterSize } from "./letter";
 declare const sss;
 
-export { clamp, wrap, range } from "./math";
+export { clamp, wrap, range, addWithCharCode } from "./math";
 export { rect, box, bar, line } from "./rect";
 export { text, char } from "./letter";
 export { Color };

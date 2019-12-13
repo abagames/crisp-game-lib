@@ -24,6 +24,10 @@ export function range(v: number) {
   return [...Array(v).keys()];
 }
 
+export function addWithCharCode(char: string, offset: number) {
+  return String.fromCharCode(char.charCodeAt(0) + offset);
+}
+
 export function stableSort(values: any[], compareFunc?: Function) {
   if (compareFunc == null) {
     compareFunc = (a, b) => a - b;
