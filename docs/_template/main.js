@@ -3,10 +3,7 @@ title = "";
 description = `
 `;
 
-characters = [
-  `
-`
-];
+characters = [];
 
 options = {};
 
