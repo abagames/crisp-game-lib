@@ -39,12 +39,27 @@ export function concatTmpHitBoxes() {
 }
 
 export function checkHitBoxes(box: HitBox) {
-  const collision: Collision = {
+  let collision: Collision = {
     isColliding: { rect: {}, text: {}, char: {} }
   };
   hitBoxes.forEach(r => {
     if (testCollision(box, r)) {
-      Object.assign(collision, r.collision);
+      collision = {
+        isColliding: {
+          rect: {
+            ...collision.isColliding.rect,
+            ...r.collision.isColliding.rect
+          },
+          text: {
+            ...collision.isColliding.text,
+            ...r.collision.isColliding.text
+          },
+          char: {
+            ...collision.isColliding.char,
+            ...r.collision.isColliding.char
+          }
+        }
+      };
     }
   });
   return collision;

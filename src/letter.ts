@@ -146,7 +146,23 @@ export function print(
       py += letterSize * options.scale.y;
       continue;
     }
-    Object.assign(collision, printChar(c, px, py, options));
+    const charCollision = printChar(c, px, py, options);
+    collision = {
+      isColliding: {
+        rect: {
+          ...collision.isColliding.rect,
+          ...charCollision.isColliding.rect
+        },
+        text: {
+          ...collision.isColliding.text,
+          ...charCollision.isColliding.text
+        },
+        char: {
+          ...collision.isColliding.char,
+          ...charCollision.isColliding.char
+        }
+      }
+    };
     px += letterSize * options.scale.x;
   }
   return collision;
