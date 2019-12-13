@@ -41,7 +41,7 @@ export function letters(
     if (typeof y === "number") {
       return print(str, x - letterSize / 2, y - letterSize / 2, {
         isCharacter,
-        isCheckCollision: true,
+        isCheckingCollision: true,
         color: currentColor,
         ...options
       });
@@ -51,7 +51,7 @@ export function letters(
   } else {
     return print(str, x.x - letterSize / 2, x.y - letterSize / 2, {
       isCharacter,
-      isCheckCollision: true,
+      isCheckingCollision: true,
       color: currentColor,
       ...(y as LetterOptions)
     });
@@ -81,7 +81,7 @@ export type Options = {
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
   isCharacter?: boolean;
-  isCheckCollision?: boolean;
+  isCheckingCollision?: boolean;
 };
 
 export const defaultOptions: Options = {
@@ -91,7 +91,7 @@ export const defaultOptions: Options = {
   mirror: { x: 1, y: 1 },
   scale: { x: 1, y: 1 },
   isCharacter: false,
-  isCheckCollision: false
+  isCheckingCollision: false
 };
 
 export function init() {
@@ -147,22 +147,24 @@ export function print(
       continue;
     }
     const charCollision = printChar(c, px, py, options);
-    collision = {
-      isColliding: {
-        rect: {
-          ...collision.isColliding.rect,
-          ...charCollision.isColliding.rect
-        },
-        text: {
-          ...collision.isColliding.text,
-          ...charCollision.isColliding.text
-        },
-        char: {
-          ...collision.isColliding.char,
-          ...charCollision.isColliding.char
+    if (options.isCheckingCollision) {
+      collision = {
+        isColliding: {
+          rect: {
+            ...collision.isColliding.rect,
+            ...charCollision.isColliding.rect
+          },
+          text: {
+            ...collision.isColliding.text,
+            ...charCollision.isColliding.text
+          },
+          char: {
+            ...collision.isColliding.char,
+            ...charCollision.isColliding.char
+          }
         }
-      }
-    };
+      };
+    }
     px += letterSize * options.scale.x;
   }
   return collision;
@@ -205,7 +207,7 @@ export function printChar(
       x,
       y,
       options.scale as VectorLike,
-      options.isCheckCollision
+      options.isCheckingCollision
     );
   }
   const cacheIndex = JSON.stringify({ c, options });
@@ -216,7 +218,7 @@ export function printChar(
       x,
       y,
       options.scale as VectorLike,
-      options.isCheckCollision
+      options.isCheckingCollision
     );
   }
   letterContext.clearRect(0, 0, letterSize, letterSize);
@@ -252,7 +254,7 @@ export function printChar(
     x,
     y,
     options.scale as VectorLike,
-    options.isCheckCollision
+    options.isCheckingCollision
   );
 }
 

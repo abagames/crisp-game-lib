@@ -24,6 +24,9 @@
   function range(v) {
       return [...Array(v).keys()];
   }
+  function addWithCharCode(char, offset) {
+      return String.fromCharCode(char.charCodeAt(0) + offset);
+  }
 
   function isVectorLike(v) {
       return v.x != null && v.y != null;
@@ -950,12 +953,18 @@ l l l
       tmpHitBoxes = [];
   }
   function checkHitBoxes(box) {
-      const collision = {
+      let collision = {
           isColliding: { rect: {}, text: {}, char: {} }
       };
       hitBoxes.forEach(r => {
           if (testCollision(box, r)) {
-              Object.assign(collision, r.collision);
+              collision = {
+                  isColliding: {
+                      rect: Object.assign(Object.assign({}, collision.isColliding.rect), r.collision.isColliding.rect),
+                      text: Object.assign(Object.assign({}, collision.isColliding.text), r.collision.isColliding.text),
+                      char: Object.assign(Object.assign({}, collision.isColliding.char), r.collision.isColliding.char)
+                  }
+              };
           }
       });
       return collision;
@@ -975,14 +984,14 @@ l l l
   function letters(isCharacter, str, x, y, options) {
       if (typeof x === "number") {
           if (typeof y === "number") {
-              return print(str, x - letterSize / 2, y - letterSize / 2, Object.assign({ isCharacter, isCheckCollision: true, color: currentColor }, options));
+              return print(str, x - letterSize / 2, y - letterSize / 2, Object.assign({ isCharacter, isCheckingCollision: true, color: currentColor }, options));
           }
           else {
               throw "invalid params";
           }
       }
       else {
-          return print(str, x.x - letterSize / 2, x.y - letterSize / 2, Object.assign({ isCharacter, isCheckCollision: true, color: currentColor }, y));
+          return print(str, x.x - letterSize / 2, x.y - letterSize / 2, Object.assign({ isCharacter, isCheckingCollision: true, color: currentColor }, y));
       }
   }
   const dotCount = 6;
@@ -1001,7 +1010,7 @@ l l l
       mirror: { x: 1, y: 1 },
       scale: { x: 1, y: 1 },
       isCharacter: false,
-      isCheckCollision: false
+      isCheckingCollision: false
   };
   function init$2() {
       letterCanvas = document.createElement("canvas");
@@ -1034,7 +1043,7 @@ l l l
       isCacheEnabled = true;
   }
   function print(_str, x, y, _options = {}) {
-      const options = Object.assign(Object.assign({}, defaultOptions), _options);
+      const options = mergeDefaultOptions(_options);
       const bx = Math.floor(x);
       let str = _str;
       let px = bx;
@@ -1047,7 +1056,16 @@ l l l
               py += letterSize * options.scale.y;
               continue;
           }
-          Object.assign(collision, printChar(c, px, py, options));
+          const charCollision = printChar(c, px, py, options);
+          if (options.isCheckingCollision) {
+              collision = {
+                  isColliding: {
+                      rect: Object.assign(Object.assign({}, collision.isColliding.rect), charCollision.isColliding.rect),
+                      text: Object.assign(Object.assign({}, collision.isColliding.text), charCollision.isColliding.text),
+                      char: Object.assign(Object.assign({}, collision.isColliding.char), charCollision.isColliding.char)
+                  }
+              };
+          }
           px += letterSize * options.scale.x;
       }
       return collision;
@@ -1057,7 +1075,7 @@ l l l
       if (cca < 0x20 || cca > 0x7e) {
           return;
       }
-      const options = Object.assign(Object.assign({}, defaultOptions), _options);
+      const options = mergeDefaultOptions(_options);
       if (options.backgroundColor !== "transparent") {
           setColor(options.backgroundColor, false);
           context.fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
@@ -1072,12 +1090,12 @@ l l l
           rotation === 0 &&
           options.mirror.x === 1 &&
           options.mirror.y === 1) {
-          return drawLetterImage(li, x, y, options.scale, options.isCheckCollision);
+          return drawLetterImage(li, x, y, options.scale, options.isCheckingCollision);
       }
       const cacheIndex = JSON.stringify({ c, options });
       const ci = cachedImages[cacheIndex];
       if (ci != null) {
-          return drawLetterImage(ci, x, y, options.scale, options.isCheckCollision);
+          return drawLetterImage(ci, x, y, options.scale, options.isCheckingCollision);
       }
       letterContext.clearRect(0, 0, letterSize, letterSize);
       if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
@@ -1108,7 +1126,7 @@ l l l
               hitBox
           };
       }
-      return drawLetterImage({ image: letterCanvas, hitBox }, x, y, options.scale, options.isCheckCollision);
+      return drawLetterImage({ image: letterCanvas, hitBox }, x, y, options.scale, options.isCheckingCollision);
   }
   function drawLetterImage(li, x, y, scale, isCheckCollision) {
       if (scale.x === 1 && scale.y === 1) {
@@ -1194,6 +1212,16 @@ l l l
           }
       }
       return b;
+  }
+  function mergeDefaultOptions(_options) {
+      let options = Object.assign(Object.assign({}, defaultOptions), _options);
+      if (_options.scale != null) {
+          options.scale = Object.assign(Object.assign({}, defaultOptions.scale), _options.scale);
+      }
+      if (_options.mirror != null) {
+          options.mirror = Object.assign(Object.assign({}, defaultOptions.mirror), _options.mirror);
+      }
+      return options;
   }
 
   let isPressed = false;
@@ -1985,6 +2013,7 @@ l l l
   exports.PI = PI;
   exports.abs = abs;
   exports.addScore = addScore;
+  exports.addWithCharCode = addWithCharCode;
   exports.atan2 = atan2;
   exports.bar = bar;
   exports.box = box;
