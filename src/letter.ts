@@ -133,7 +133,7 @@ export function print(
   y: number,
   _options: Options = {}
 ): Collision {
-  const options: Options = { ...defaultOptions, ..._options };
+  const options = mergeDefaultOptions(_options);
   const bx = Math.floor(x);
   let str = _str;
   let px = bx;
@@ -178,7 +178,7 @@ export function printChar(
   if (cca < 0x20 || cca > 0x7e) {
     return;
   }
-  const options: Options = { ...defaultOptions, ..._options };
+  const options = mergeDefaultOptions(_options);
   if (options.backgroundColor !== "transparent") {
     setColor(options.backgroundColor, false);
     context.fillRect(
@@ -360,4 +360,15 @@ function getHitBox(c: string, isCharacter: boolean) {
     }
   }
   return b;
+}
+
+function mergeDefaultOptions(_options: Options) {
+  let options: Options = { ...defaultOptions, ..._options };
+  if (_options.scale != null) {
+    options.scale = { ...defaultOptions.scale, ..._options.scale };
+  }
+  if (_options.mirror != null) {
+    options.mirror = { ...defaultOptions.mirror, ..._options.mirror };
+  }
+  return options;
 }
