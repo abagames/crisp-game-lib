@@ -273,7 +273,7 @@ function drawLetterImage(
       x,
       y,
       letterSize * scale.x,
-      letterSize * scale.x
+      letterSize * scale.y
     );
   }
   if (!isCheckCollision) {

@@ -1133,7 +1133,7 @@ l l l
           context.drawImage(li.image, x, y);
       }
       else {
-          context.drawImage(li.image, x, y, letterSize * scale.x, letterSize * scale.x);
+          context.drawImage(li.image, x, y, letterSize * scale.x, letterSize * scale.y);
       }
       if (!isCheckCollision) {
           return;
