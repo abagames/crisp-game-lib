@@ -21,6 +21,9 @@ export class Random {
       high = lowOrHigh;
       lowOrHigh = 0;
     }
+    if (high === lowOrHigh) {
+      return lowOrHigh;
+    }
     return (this.next() % (high - lowOrHigh)) + lowOrHigh;
   }
 

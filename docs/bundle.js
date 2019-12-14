@@ -1274,6 +1274,9 @@ l l l
               high = lowOrHigh;
               lowOrHigh = 0;
           }
+          if (high === lowOrHigh) {
+              return lowOrHigh;
+          }
           return (this.next() % (high - lowOrHigh)) + lowOrHigh;
       }
       getPlusOrMinus() {
