@@ -15,3 +15,7 @@ Develop one game within one hour.
 [doshin](https://abagames.github.io/crisp-game-lib/?doshin)
 
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
+
+[count](https://abagames.github.io/crisp-game-lib/?count)
+
+[![count screenshot](docs/count/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?count)
