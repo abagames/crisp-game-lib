@@ -159,7 +159,7 @@ function update() {
     });
     targets = Object.keys(targetObjs).map(to => JSON.parse(to));
     count = 0;
-    countTicks = 80;
+    countTicks = 79;
     isPressed = false;
   }
   text("How many", 4, 12);
