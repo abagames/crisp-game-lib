@@ -178,7 +178,7 @@ export function printChar(
 ): Collision {
   const cca = c.charCodeAt(0);
   if (cca < 0x20 || cca > 0x7e) {
-    return;
+    return { isColliding: { rect: {}, text: {}, char: {} } };
   }
   const options = mergeDefaultOptions(_options);
   if (options.backgroundColor !== "transparent") {
@@ -191,7 +191,7 @@ export function printChar(
     );
   }
   if (cca <= 0x20 || options.color === "transparent") {
-    return;
+    return { isColliding: { rect: {}, text: {}, char: {} } };
   }
   const cc = cca - 0x21;
   const li = options.isCharacter ? characterImages[cc] : textImages[cc];
