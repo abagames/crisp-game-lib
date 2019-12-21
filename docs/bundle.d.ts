@@ -29,8 +29,9 @@ declare type Color =
   | "transparent"
   | "white"
   | "red"
-  | "blue"
   | "green"
+  | "yellow"
+  | "blue"
   | "purple"
   | "cyan"
   | "black"
@@ -50,14 +51,16 @@ type Collision = {
       transparent?: boolean;
       white?: boolean;
       red?: boolean;
-      blue?: boolean;
       green?: boolean;
+      yellow?: boolean;
+      blue?: boolean;
       purple?: boolean;
       cyan?: boolean;
       black?: boolean;
       light_red?: boolean;
-      light_blue?: boolean;
       light_green?: boolean;
+      light_yellow?: boolean;
+      light_blue?: boolean;
       light_purple?: boolean;
       light_cyan?: boolean;
       light_black?: boolean;
