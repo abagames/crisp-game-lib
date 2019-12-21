@@ -19,3 +19,7 @@ Develop one game within one hour.
 [count](https://abagames.github.io/crisp-game-lib/?count)
 
 [![count screenshot](docs/count/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?count)
+
+[monjum](https://abagames.github.io/crisp-game-lib/?monjum)
+
+[![monjum screenshot](docs/monjum/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?monjum)
