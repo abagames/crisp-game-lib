@@ -107,7 +107,7 @@ export function init() {
   characterImages = textPatterns.map((lp, i) => {
     return {
       image: createLetterImages(lp),
-      hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
+      hitBox: getHitBox(String.fromCharCode(0x21 + i), true)
     };
   });
   cachedImages = {};
