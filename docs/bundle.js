@@ -906,7 +906,7 @@ l l l
       0xeeeeee,
       0xe91e63,
       0x4caf50,
-      0xffeb3b,
+      0xffc107,
       0x3f51b5,
       0x9c27b0,
       0x03a9f4,
@@ -1025,7 +1025,7 @@ l l l
       characterImages = textPatterns.map((lp, i) => {
           return {
               image: createLetterImages(lp),
-              hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
+              hitBox: getHitBox(String.fromCharCode(0x21 + i), true)
           };
       });
       cachedImages = {};
