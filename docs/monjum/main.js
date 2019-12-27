@@ -129,11 +129,9 @@ function update() {
     return c.p.x > -3;
   });
   color("transparent");
-  for (let i = 0; i < 5; i++) {
-    const c = box(p.x, p.y + i * 6, 6, 6).isColliding.char;
-    if (c.c || c.d) {
-      item |= mon;
-    }
+  const c = box(p.x, p.y, 6, 50).isColliding.char;
+  if (c.c || c.d) {
+    item |= mon;
   }
   const hasHole = !box(p.x, 93, 6, 6).isColliding.rect.black;
   if (hasHole) {
