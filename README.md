@@ -23,3 +23,7 @@ Develop one game within one hour.
 [monjum](https://abagames.github.io/crisp-game-lib/?monjum)
 
 [![monjum screenshot](docs/monjum/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?monjum)
+
+[interspace](https://abagames.github.io/crisp-game-lib/?interspace)
+
+[![interspace screenshot](docs/interspace/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?interspace)
