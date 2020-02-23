@@ -1,6 +1,6 @@
 import { Vector, VectorLike } from "./vector";
 import { Random } from "./random";
-import { isInRange } from "./math";
+import { isInRange } from "./util";
 
 export const pos = new Vector();
 export let isPressed = false;

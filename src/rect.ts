@@ -1,6 +1,7 @@
 import * as view from "./view";
 import { currentColor } from "./color";
-import { Vector } from "./vector";
+import { clamp } from "./util";
+import { Vector, VectorLike } from "./vector";
 import {
   HitBox,
   hitBoxes,

@@ -1,4 +1,4 @@
-import { clamp, isInRange, wrap } from "./math";
+import { clamp, isInRange, wrap } from "./util";
 
 export interface VectorLike {
   x: number;

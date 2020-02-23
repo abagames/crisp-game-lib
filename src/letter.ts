@@ -1,8 +1,16 @@
 import { textPatterns } from "./textPattern";
 import { context } from "./view";
-import { Color, setColor, colorChars, rgbObjects, currentColor } from "./color";
-import { Vector } from "./vector";
+import {
+  Color,
+  setColor,
+  colorChars,
+  currentColor,
+  colors,
+  styles as colorStyles
+} from "./color";
+import { Vector, VectorLike } from "./vector";
 import { HitBox, hitBoxes, checkHitBoxes, Collision } from "./collision";
+import { wrap } from "./util";
 
 export type LetterOptions = {
   color?: Color;
@@ -313,8 +321,7 @@ function createLetterImages(
       const c = l.charAt(x);
       let ci = colorChars.indexOf(c);
       if (c !== "" && ci >= 1) {
-        const rgb = rgbObjects[ci];
-        letterContext.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+        letterContext.fillStyle = colorStyles[colors[ci]];
         letterContext.fillRect(
           (x + xPadding) * dotSize,
           (y + yPadding) * dotSize,

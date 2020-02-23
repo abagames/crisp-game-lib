@@ -24,6 +24,17 @@ export function range(v: number) {
   return [...Array(v).keys()];
 }
 
+export function fromEntities(v: any[][]) {
+  return [...v].reduce((obj, [key, value]) => {
+    obj[key] = value;
+    return obj;
+  }, {});
+}
+
+export function entries(obj) {
+  return Object.keys(obj).map(p => [p, obj[p]]);
+}
+
 export function addWithCharCode(char: string, offset: number) {
   return String.fromCharCode(char.charCodeAt(0) + offset);
 }

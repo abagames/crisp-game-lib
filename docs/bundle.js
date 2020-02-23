@@ -1,10 +1,10 @@
 (function (exports) {
   'use strict';
 
-  function clamp$1(v, low = 0, high = 1) {
+  function clamp(v, low = 0, high = 1) {
       return Math.max(low, Math.min(v, high));
   }
-  function wrap$1(v, low, high) {
+  function wrap(v, low, high) {
       const w = high - low;
       const o = v - low;
       if (o >= 0) {
@@ -23,6 +23,15 @@
   }
   function range(v) {
       return [...Array(v).keys()];
+  }
+  function fromEntities(v) {
+      return [...v].reduce((obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+      }, {});
+  }
+  function entries(obj) {
+      return Object.keys(obj).map(p => [p, obj[p]]);
   }
   function addWithCharCode(char, offset) {
       return String.fromCharCode(char.charCodeAt(0) + offset);
@@ -78,13 +87,13 @@
           return this;
       }
       clamp(xLow, xHigh, yLow, yHigh) {
-          this.x = clamp$1(this.x, xLow, xHigh);
-          this.y = clamp$1(this.y, yLow, yHigh);
+          this.x = clamp(this.x, xLow, xHigh);
+          this.y = clamp(this.y, yLow, yHigh);
           return this;
       }
       wrap(xLow, xHigh, yLow, yHigh) {
-          this.x = wrap$1(this.x, xLow, xHigh);
-          this.y = wrap$1(this.y, yLow, yHigh);
+          this.x = wrap(this.x, xLow, xHigh);
+          this.y = wrap(this.y, yLow, yHigh);
           return this;
       }
       addWithAngle(angle, length) {
@@ -880,7 +889,8 @@ l l l
 `
   ];
 
-  let rgbObjects;
+  let values;
+  let styles;
   const colors = [
       "transparent",
       "white",
@@ -902,7 +912,6 @@ l l l
   let currentColor;
   const colorChars = "twrgybpclRGYBPCL";
   const rgbNumbers = [
-      undefined,
       0xeeeeee,
       0xe91e63,
       0x4caf50,
@@ -913,33 +922,44 @@ l l l
       0x616161
   ];
   function init$1() {
-      rgbObjects = [];
-      rgbNumbers.forEach(n => {
-          rgbObjects.push({
-              r: (n & 0xff0000) >> 16,
-              g: (n & 0xff00) >> 8,
-              b: n & 0xff
-          });
-      });
-      rgbNumbers.forEach((n, i) => {
-          if (i < 2) {
-              return;
+      const [wr, wb, wg] = getRgb(0);
+      values = fromEntities(colors.map((c, i) => {
+          if (i < 1) {
+              return [c, { r: 0, g: 0, b: 0, a: 0 }];
           }
-          rgbObjects.push({
-              r: Math.floor(rgbObjects[1].r - (rgbObjects[1].r - ((n & 0xff0000) >> 16)) * 0.5),
-              g: Math.floor(rgbObjects[1].r - (rgbObjects[1].r - ((n & 0xff00) >> 8)) * 0.5),
-              b: Math.floor(rgbObjects[1].r - (rgbObjects[1].r - (n & 0xff)) * 0.5)
-          });
-      });
+          if (i < 9) {
+              const [r, g, b] = getRgb(i - 1);
+              return [c, { r, g, b, a: 1 }];
+          }
+          const [r, g, b] = getRgb(i - 9 + 1);
+          return [
+              c,
+              {
+                  r: Math.floor(wr - (wr - r) * 0.5),
+                  g: Math.floor(wg - (wg - g) * 0.5),
+                  b: Math.floor(wb - (wb - b) * 0.5),
+                  a: 1
+              }
+          ];
+      }));
+      styles = fromEntities(entries(values).map(e => {
+          const k = e[0];
+          const v = e[1];
+          const s = v.a < 1
+              ? `rgba(${v.r},${v.g},${v.b},${v.a})`
+              : `rgb(${v.r},${v.g},${v.b})`;
+          return [k, s];
+      }));
+  }
+  function getRgb(i) {
+      const n = rgbNumbers[i];
+      return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
   }
   function setColor(colorName, isSettingCurrent = true, context$1) {
       if (isSettingCurrent) {
           currentColor = colorName;
       }
-      const c = rgbObjects[colors.indexOf(colorName)];
-      (context$1 != null
-          ? context$1
-          : context).fillStyle = `rgb(${c.r},${c.g},${c.b})`;
+      (context$1 != null ? context$1 : context).fillStyle = styles[colorName];
   }
 
   let hitBoxes;
@@ -1168,8 +1188,7 @@ l l l
               const c = l.charAt(x);
               let ci = colorChars.indexOf(c);
               if (c !== "" && ci >= 1) {
-                  const rgb = rgbObjects[ci];
-                  letterContext.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+                  letterContext.fillStyle = styles[colors[ci]];
                   letterContext.fillRect((x + xPadding) * dotSize, (y + yPadding) * dotSize, dotSize, dotSize);
               }
           }
@@ -2022,7 +2041,7 @@ l l l
   exports.box = box;
   exports.ceil = ceil;
   exports.char = char;
-  exports.clamp = clamp$1;
+  exports.clamp = clamp;
   exports.color = color;
   exports.cos = cos;
   exports.end = end;
@@ -2041,6 +2060,6 @@ l l l
   exports.sqrt = sqrt;
   exports.text = text;
   exports.vec = vec;
-  exports.wrap = wrap$1;
+  exports.wrap = wrap;
 
 }(this.window = this.window || {}));

@@ -1,6 +1,12 @@
 import { context as viewContext } from "./view";
+import { fromEntities, entries } from "./util";
 
-export let rgbObjects: { r: number; g: number; b: number }[];
+type RgbValues = {
+  [key in Color]: { r: number; g: number; b: number; a: number };
+};
+export let values: RgbValues;
+type RgbStyles = { [key in Color]: string };
+export let styles: RgbStyles;
 export const colors = [
   "transparent",
   "white",
@@ -40,7 +46,6 @@ export let currentColor: Color;
 export const colorChars = "twrgybpclRGYBPCL";
 
 const rgbNumbers = [
-  undefined,
   0xeeeeee,
   0xe91e63,
   0x4caf50,
@@ -52,37 +57,49 @@ const rgbNumbers = [
 ];
 
 export function init() {
-  rgbObjects = [];
-  rgbNumbers.forEach(n => {
-    rgbObjects.push({
-      r: (n & 0xff0000) >> 16,
-      g: (n & 0xff00) >> 8,
-      b: n & 0xff
-    });
-  });
-  rgbNumbers.forEach((n, i) => {
-    if (i < 2) {
-      return;
-    }
-    rgbObjects.push({
-      r: Math.floor(
-        rgbObjects[1].r - (rgbObjects[1].r - ((n & 0xff0000) >> 16)) * 0.5
-      ),
-      g: Math.floor(
-        rgbObjects[1].r - (rgbObjects[1].r - ((n & 0xff00) >> 8)) * 0.5
-      ),
-      b: Math.floor(rgbObjects[1].r - (rgbObjects[1].r - (n & 0xff)) * 0.5)
-    });
-  });
+  const [wr, wb, wg] = getRgb(0);
+  values = fromEntities(
+    colors.map((c, i) => {
+      if (i < 1) {
+        return [c, { r: 0, g: 0, b: 0, a: 0 }];
+      }
+      if (i < 9) {
+        const [r, g, b] = getRgb(i - 1);
+        return [c, { r, g, b, a: 1 }];
+      }
+      const [r, g, b] = getRgb(i - 9 + 1);
+      return [
+        c,
+        {
+          r: Math.floor(wr - (wr - r) * 0.5),
+          g: Math.floor(wg - (wg - g) * 0.5),
+          b: Math.floor(wb - (wb - b) * 0.5),
+          a: 1
+        }
+      ];
+    })
+  ) as RgbValues;
+  styles = fromEntities(
+    entries(values).map(e => {
+      const k = e[0];
+      const v = e[1];
+      const s =
+        v.a < 1
+          ? `rgba(${v.r},${v.g},${v.b},${v.a})`
+          : `rgb(${v.r},${v.g},${v.b})`;
+      return [k, s];
+    })
+  ) as RgbStyles;
+}
+
+function getRgb(i: number) {
+  const n = rgbNumbers[i];
+  return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
 }
 
 export function setColor(colorName: Color, isSettingCurrent = true, context?) {
   if (isSettingCurrent) {
     currentColor = colorName;
   }
-  const c = rgbObjects[colors.indexOf(colorName)];
-  (context != null
-    ? context
-    : viewContext
-  ).fillStyle = `rgb(${c.r},${c.g},${c.b})`;
+  (context != null ? context : viewContext).fillStyle = styles[colorName];
 }

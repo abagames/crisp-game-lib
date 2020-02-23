@@ -1,3 +1,5 @@
+import { VectorLike } from "./vector";
+
 export type Collision = {
   isColliding: {
     rect?: {

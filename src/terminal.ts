@@ -1,5 +1,5 @@
 import * as letter from "./letter";
-import { range } from "./math";
+import { range } from "./util";
 import { Vector, VectorLike } from "./vector";
 import { Color } from "./color";
 
