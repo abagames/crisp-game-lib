@@ -130,12 +130,25 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
   const ly = Math.abs(l.y);
   const rn = clamp(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
   l.div(rn - 1);
-  let collision: Collision = { isColliding: { rect: {} } };
+  let collision: Collision = { isColliding: { rect: {}, text: {}, char: {} } };
   for (let i = 0; i < rn; i++) {
-    collision = Object.assign(
-      collision,
-      addRect(true, p.x, p.y, thickness, thickness, true)
-    );
+    const c = addRect(true, p.x, p.y, thickness, thickness, true);
+    collision = {
+      isColliding: {
+        rect: {
+          ...collision.isColliding.rect,
+          ...c.isColliding.rect
+        },
+        text: {
+          ...collision.isColliding.text,
+          ...c.isColliding.text
+        },
+        char: {
+          ...collision.isColliding.char,
+          ...c.isColliding.char
+        }
+      }
+    };
     p.add(l);
   }
   concatTmpHitBoxes();

@@ -1749,9 +1749,16 @@ l l l
       const ly = Math.abs(l.y);
       const rn = clamp(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
       l.div(rn - 1);
-      let collision = { isColliding: { rect: {} } };
+      let collision = { isColliding: { rect: {}, text: {}, char: {} } };
       for (let i = 0; i < rn; i++) {
-          collision = Object.assign(collision, addRect(true, p.x, p.y, thickness, thickness, true));
+          const c = addRect(true, p.x, p.y, thickness, thickness, true);
+          collision = {
+              isColliding: {
+                  rect: Object.assign(Object.assign({}, collision.isColliding.rect), c.isColliding.rect),
+                  text: Object.assign(Object.assign({}, collision.isColliding.text), c.isColliding.text),
+                  char: Object.assign(Object.assign({}, collision.isColliding.char), c.isColliding.char)
+              }
+          };
           p.add(l);
       }
       concatTmpHitBoxes();
