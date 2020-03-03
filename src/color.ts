@@ -24,24 +24,8 @@ export const colors = [
   "light_purple",
   "light_cyan",
   "light_black"
-];
-export type Color =
-  | "transparent"
-  | "white"
-  | "red"
-  | "green"
-  | "yellow"
-  | "blue"
-  | "purple"
-  | "cyan"
-  | "black"
-  | "light_red"
-  | "light_green"
-  | "light_yellow"
-  | "light_blue"
-  | "light_purple"
-  | "light_cyan"
-  | "light_black";
+] as const;
+export type Color = typeof colors[number];
 export let currentColor: Color;
 export const colorChars = "twrgybpclRGYBPCL";
 
