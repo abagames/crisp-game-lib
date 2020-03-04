@@ -41,7 +41,7 @@ function update() {
   }
   circles = circles.filter(c => {
     c.p.y += sc;
-    if (c.y > 99 + c.r) {
+    if (c.p.y > 99 + c.r) {
       return false;
     }
     color(c === playerCircle || c === playerCircle.next ? "cyan" : "red");
