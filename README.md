@@ -35,3 +35,7 @@ Develop one game within one hour.
 [floater](https://abagames.github.io/crisp-game-lib/?floater)
 
 [![floater screenshot](docs/floater/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?floater)
+
+[pileup](https://abagames.github.io/crisp-game-lib/?pileup)
+
+[![pileup screenshot](docs/pileup/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pileup)
