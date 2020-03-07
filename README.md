@@ -31,3 +31,7 @@ Develop one game within one hour.
 [cywall](https://abagames.github.io/crisp-game-lib/?cywall)
 
 [![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
+
+[floater](https://abagames.github.io/crisp-game-lib/?floater)
+
+[![floater screenshot](docs/floater/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?floater)
