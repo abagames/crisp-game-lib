@@ -1877,8 +1877,9 @@ l l l
   let isNoTitle = true;
   let seed = 0;
   let loopOptions;
-  let terminalSize;
   let isPlayingBgm;
+  let isShowingScore;
+  let terminalSize;
   let scoreBoards;
   addGameScript();
   window.addEventListener("load", onLoad);
@@ -1899,6 +1900,7 @@ l l l
       loopOptions.isCapturing = opts.isCapturing;
       loopOptions.viewSize = opts.viewSize;
       isPlayingBgm = opts.isPlayingBgm;
+      isShowingScore = opts.isShowingScore;
       init$1();
       init$6(init$7, _update$1, loopOptions);
   }
@@ -2018,7 +2020,7 @@ l l l
       terminal.draw();
   }
   function drawScore() {
-      if (!options.isShowingScore) {
+      if (!isShowingScore) {
           return;
       }
       terminal.print(`${Math.floor(exports.score)}`, 0, 0);

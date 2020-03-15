@@ -131,8 +131,9 @@ let hiScore = 0;
 let isNoTitle = true;
 let seed = 0;
 let loopOptions;
-let terminalSize: VectorLike;
 let isPlayingBgm: boolean;
+let isShowingScore: boolean;
+let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 
 addGameScript();
@@ -154,6 +155,7 @@ function onLoad() {
   loopOptions.isCapturing = opts.isCapturing;
   loopOptions.viewSize = opts.viewSize;
   isPlayingBgm = opts.isPlayingBgm;
+  isShowingScore = opts.isShowingScore;
   initColor();
   loop.init(init, _update, loopOptions);
 }
@@ -289,7 +291,7 @@ function drawGameOver() {
 }
 
 function drawScore() {
-  if (!options.isShowingScore) {
+  if (!isShowingScore) {
     return;
   }
   terminal.print(`${Math.floor(score)}`, 0, 0);
