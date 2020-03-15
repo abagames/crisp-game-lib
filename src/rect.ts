@@ -167,6 +167,14 @@ function addRect(
     ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
     : { x: Math.floor(x), y: Math.floor(y) };
   const size = { x: Math.floor(width), y: Math.floor(height) };
+  if (size.x < 0) {
+    pos.x += size.x;
+    size.x *= -1;
+  }
+  if (size.y < 0) {
+    pos.y += size.y;
+    size.y *= -1;
+  }
   const box: HitBox = { pos, size, collision: { isColliding: { rect: {} } } };
   box.collision.isColliding.rect[currentColor] = true;
   const collision = checkHitBoxes(box);
