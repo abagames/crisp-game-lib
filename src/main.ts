@@ -98,10 +98,11 @@ const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
   lucky: "u"
 };
 const defaultOptions = {
-  seed: 0,
+  isPlayingBgm: false,
   isCapturing: false,
+  isShowingScore: true,
   viewSize: { x: 100, y: 100 },
-  isPlayingBgm: false
+  seed: 0
 };
 
 declare let title: string;
@@ -110,6 +111,7 @@ declare let characters: string[];
 declare type Options = {
   isPlayingBgm?: boolean;
   isCapturing?: boolean;
+  isShowingScore?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
 };
@@ -287,6 +289,9 @@ function drawGameOver() {
 }
 
 function drawScore() {
+  if (!options.isShowingScore) {
+    return;
+  }
   terminal.print(`${Math.floor(score)}`, 0, 0);
   const hs = `HI ${hiScore}`;
   terminal.print(hs, terminalSize.x - hs.length, 0);
