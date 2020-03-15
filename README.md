@@ -149,3 +149,78 @@ options = {
   isPlayingBgm: true
 };
 ```
+
+### Other variables and functions
+
+```typescript
+// Game ticks (60 ticks = 1 second)
+let ticks: number;
+// difficulty (Starts from 1, increments by a minute)
+let difficulty: number;
+// score
+let score: number;
+
+// Add score
+function addScore(value: number);
+function addScore(value: number, x: number, y: number);
+function addScore(value: number, pos: VectorLike);
+
+// End game (Game Over)
+function end(): void;
+
+// Return random number
+function rnd(lowOrHigh?: number, high?: number);
+// Return random integer
+function rndi(lowOrHigh?: number, high?: number);
+// Return plus of minus random number
+function rnds(lowOrHigh?: number, high?: number);
+
+// Return Vector instance
+function vec(x?: number | VectorLike, y?: number): Vector;
+
+class Vector {
+  x: number;
+  y: number;
+  constructor(x?: number | VectorLike, y?: number);
+  set(x?: number | VectorLike, y?: number): this;
+  add(x?: number | VectorLike, y?: number): this;
+  sub(x?: number | VectorLike, y?: number): this;
+  mul(v: number): this;
+  div(v: number): this;
+  clamp(xLow: number, xHigh: number, yLow: number, yHigh: number): this;
+  wrap(xLow: number, xHigh: number, yLow: number, yHigh: number): this;
+  addWithAngle(angle: number, length: number): this;
+  swapXy(): this;
+  normalize(): this;
+  rotate(angle: number): this;
+  angleTo(x?: number | VectorLike, y?: number): number;
+  distanceTo(x?: number | VectorLike, y?: number): number;
+  isInRect(x: number, y: number, width: number, height: number): boolean;
+  equals(other: VectorLike): boolean;
+  floor(): this;
+  round(): this;
+  ceil(): this;
+  length: number;
+  angle: number;
+}
+
+interface VectorLike {
+  x: number;
+  y: number;
+}
+
+const PI: number;
+function abs(v: number): number;
+function sin(v: number): number;
+function cos(v: number): number;
+function atan2(y: number, x: number): number;
+function pow(b: number, e: number): number;
+function sqrt(v: number): number;
+function floor(v: number): number;
+function round(v: number): number;
+function ceil(v: number): number;
+function clamp(v: number, low?: number, high?: number): number;
+function wrap(v: number, low: number, high: number): number;
+function range(v: number): number[];
+function addWithCharCode(char: string, offset: number): string;
+```
