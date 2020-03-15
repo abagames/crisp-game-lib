@@ -102,15 +102,24 @@ export class Vector {
     return this;
   }
 
-  getAngle(to?: VectorLike) {
-    return to == null
-      ? Math.atan2(this.y, this.x)
-      : Math.atan2(to.y - this.y, to.x - this.x);
+  angleTo(x: number | VectorLike, y?: number) {
+    if (isVectorLike(x)) {
+      return Math.atan2(x.y - this.y, x.x - this.x);
+    } else {
+      return Math.atan2(x - this.y, y - this.x);
+    }
   }
 
-  distanceTo(to: VectorLike) {
-    const ox = this.x - to.x;
-    const oy = this.y - to.y;
+  distanceTo(x: number | VectorLike, y?: number) {
+    let ox: number;
+    let oy: number;
+    if (isVectorLike(x)) {
+      ox = x.x - this.x;
+      oy = x.y - this.y;
+    } else {
+      ox = x - this.x;
+      oy = y - this.y;
+    }
     return Math.sqrt(ox * ox + oy * oy);
   }
 
@@ -142,5 +151,9 @@ export class Vector {
 
   get length() {
     return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+
+  get angle() {
+    return Math.atan2(this.y, this.x);
   }
 }

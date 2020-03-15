@@ -120,14 +120,25 @@
           this.y = tx * Math.sin(angle) + this.y * Math.cos(angle);
           return this;
       }
-      getAngle(to) {
-          return to == null
-              ? Math.atan2(this.y, this.x)
-              : Math.atan2(to.y - this.y, to.x - this.x);
+      angleTo(x, y) {
+          if (isVectorLike(x)) {
+              return Math.atan2(x.y - this.y, x.x - this.x);
+          }
+          else {
+              return Math.atan2(x - this.y, y - this.x);
+          }
       }
-      distanceTo(to) {
-          const ox = this.x - to.x;
-          const oy = this.y - to.y;
+      distanceTo(x, y) {
+          let ox;
+          let oy;
+          if (isVectorLike(x)) {
+              ox = x.x - this.x;
+              oy = x.y - this.y;
+          }
+          else {
+              ox = x - this.x;
+              oy = y - this.y;
+          }
           return Math.sqrt(ox * ox + oy * oy);
       }
       isInRect(x, y, width, height) {
@@ -153,6 +164,9 @@
       }
       get length() {
           return Math.sqrt(this.x * this.x + this.y * this.y);
+      }
+      get angle() {
+          return Math.atan2(this.y, this.x);
       }
   }
 
@@ -1845,10 +1859,11 @@ l l l
       lucky: "u"
   };
   const defaultOptions$4 = {
-      seed: 0,
+      isPlayingBgm: false,
       isCapturing: false,
+      isShowingScore: true,
       viewSize: { x: 100, y: 100 },
-      isPlayingBgm: false
+      seed: 0
   };
   const random = new Random();
   let state;
@@ -2003,6 +2018,9 @@ l l l
       terminal.draw();
   }
   function drawScore() {
+      if (!options.isShowingScore) {
+          return;
+      }
       terminal.print(`${Math.floor(exports.score)}`, 0, 0);
       const hs = `HI ${hiScore}`;
       terminal.print(hs, terminalSize.x - hs.length, 0);

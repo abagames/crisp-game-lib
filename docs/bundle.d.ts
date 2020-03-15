@@ -236,14 +236,15 @@ declare interface Vector {
   swapXy(): this;
   normalize(): this;
   rotate(angle: number): this;
-  getAngle(to?: VectorLike): number;
-  distanceTo(to: VectorLike): number;
+  angleTo(x?: number | VectorLike, y?: number): number;
+  distanceTo(x?: number | VectorLike, y?: number): number;
   isInRect(x: number, y: number, width: number, height: number): boolean;
   equals(other: VectorLike): boolean;
   floor(): this;
   round(): this;
   ceil(): this;
   length: number;
+  angle: number;
 }
 
 declare interface VectorLike {
