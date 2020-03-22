@@ -186,13 +186,174 @@ declare function rndi(lowOrHigh?: number, high?: number);
 declare function rnds(lowOrHigh?: number, high?: number);
 
 // Input (mouse, touch, keyboard)
-declare interface Input {
+declare type Input = {
   pos: Vector;
   isPressed: boolean;
   isJustPressed: boolean;
   isJustReleased: boolean;
-}
+};
 declare let input: Input;
+
+declare type KeyboardCode =
+  | "Escape"
+  | "Digit0"
+  | "Digit1"
+  | "Digit2"
+  | "Digit3"
+  | "Digit4"
+  | "Digit5"
+  | "Digit6"
+  | "Digit7"
+  | "Digit8"
+  | "Digit9"
+  | "Minus"
+  | "Equal"
+  | "Backspace"
+  | "Tab"
+  | "KeyQ"
+  | "KeyW"
+  | "KeyE"
+  | "KeyR"
+  | "KeyT"
+  | "KeyY"
+  | "KeyU"
+  | "KeyI"
+  | "KeyO"
+  | "KeyP"
+  | "BracketLeft"
+  | "BracketRight"
+  | "Enter"
+  | "ControlLeft"
+  | "KeyA"
+  | "KeyS"
+  | "KeyD"
+  | "KeyF"
+  | "KeyG"
+  | "KeyH"
+  | "KeyJ"
+  | "KeyK"
+  | "KeyL"
+  | "Semicolon"
+  | "Quote"
+  | "Backquote"
+  | "ShiftLeft"
+  | "Backslash"
+  | "KeyZ"
+  | "KeyX"
+  | "KeyC"
+  | "KeyV"
+  | "KeyB"
+  | "KeyN"
+  | "KeyM"
+  | "Comma"
+  | "Period"
+  | "Slash"
+  | "ShiftRight"
+  | "NumpadMultiply"
+  | "AltLeft"
+  | "Space"
+  | "CapsLock"
+  | "F1"
+  | "F2"
+  | "F3"
+  | "F4"
+  | "F5"
+  | "F6"
+  | "F7"
+  | "F8"
+  | "F9"
+  | "F10"
+  | "Pause"
+  | "ScrollLock"
+  | "Numpad7"
+  | "Numpad8"
+  | "Numpad9"
+  | "NumpadSubtract"
+  | "Numpad4"
+  | "Numpad5"
+  | "Numpad6"
+  | "NumpadAdd"
+  | "Numpad1"
+  | "Numpad2"
+  | "Numpad3"
+  | "Numpad0"
+  | "NumpadDecimal"
+  | "IntlBackslash"
+  | "F11"
+  | "F12"
+  | "F13"
+  | "F14"
+  | "F15"
+  | "F16"
+  | "F17"
+  | "F18"
+  | "F19"
+  | "F20"
+  | "F21"
+  | "F22"
+  | "F23"
+  | "F24"
+  | "Lang2"
+  | "Convert"
+  | "NonConvert"
+  | "IntlYen"
+  | "NumpadComma"
+  | "Cut"
+  | "Copy"
+  | "MediaTrackNext"
+  | "NumpadEnter"
+  | "ControlRight"
+  | "LaunchMail"
+  | "AudioVolumeMute"
+  | "MediaPlayPause"
+  | "MediaStop"
+  | "AudioVolumeDown"
+  | "VolumeUp"
+  | "BrowserHome"
+  | "NumpadDivide"
+  | "PrintScreen"
+  | "AltRight"
+  | "NumLock"
+  | "Pause"
+  | "OSLeft"
+  | "OSRight"
+  | "ContextMenu"
+  | "BrowserSearch"
+  | "BrowserFavorites"
+  | "BrowserRefresh"
+  | "BrowserStop"
+  | "BrowserForward"
+  | "BrowserBack"
+  | "LaunchApp1"
+  | "LaunchMail"
+  | "LaunchMediaPlayer"
+  | "Lang1";
+
+declare type KeyboardCodeState = {
+  [key in KeyboardCode]: {
+    isPressed: boolean;
+    isJustPressed: boolean;
+    isJustReleased: boolean;
+  };
+};
+
+declare type Keyboard = {
+  isPressed: boolean;
+  isJustPressed: boolean;
+  isJustReleased: boolean;
+  code: KeyboardCodeState;
+};
+
+declare let keyboard: Keyboard;
+
+declare type Pointer = {
+  pos: Vector;
+  isPressed: boolean;
+  isJustPressed: boolean;
+  isJustReleased: boolean;
+};
+
+declare let pointer: Pointer;
 
 // Play sound
 declare type SoundEffectType =

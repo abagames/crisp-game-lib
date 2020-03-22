@@ -1260,6 +1260,142 @@ l l l
   let isPressed = false;
   let isJustPressed = false;
   let isJustReleased = false;
+  const codes = [
+      "Escape",
+      "Digit0",
+      "Digit1",
+      "Digit2",
+      "Digit3",
+      "Digit4",
+      "Digit5",
+      "Digit6",
+      "Digit7",
+      "Digit8",
+      "Digit9",
+      "Minus",
+      "Equal",
+      "Backspace",
+      "Tab",
+      "KeyQ",
+      "KeyW",
+      "KeyE",
+      "KeyR",
+      "KeyT",
+      "KeyY",
+      "KeyU",
+      "KeyI",
+      "KeyO",
+      "KeyP",
+      "BracketLeft",
+      "BracketRight",
+      "Enter",
+      "ControlLeft",
+      "KeyA",
+      "KeyS",
+      "KeyD",
+      "KeyF",
+      "KeyG",
+      "KeyH",
+      "KeyJ",
+      "KeyK",
+      "KeyL",
+      "Semicolon",
+      "Quote",
+      "Backquote",
+      "ShiftLeft",
+      "Backslash",
+      "KeyZ",
+      "KeyX",
+      "KeyC",
+      "KeyV",
+      "KeyB",
+      "KeyN",
+      "KeyM",
+      "Comma",
+      "Period",
+      "Slash",
+      "ShiftRight",
+      "NumpadMultiply",
+      "AltLeft",
+      "Space",
+      "CapsLock",
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F7",
+      "F8",
+      "F9",
+      "F10",
+      "Pause",
+      "ScrollLock",
+      "Numpad7",
+      "Numpad8",
+      "Numpad9",
+      "NumpadSubtract",
+      "Numpad4",
+      "Numpad5",
+      "Numpad6",
+      "NumpadAdd",
+      "Numpad1",
+      "Numpad2",
+      "Numpad3",
+      "Numpad0",
+      "NumpadDecimal",
+      "IntlBackslash",
+      "F11",
+      "F12",
+      "F13",
+      "F14",
+      "F15",
+      "F16",
+      "F17",
+      "F18",
+      "F19",
+      "F20",
+      "F21",
+      "F22",
+      "F23",
+      "F24",
+      "Lang2",
+      "Convert",
+      "NonConvert",
+      "IntlYen",
+      "NumpadComma",
+      "Cut",
+      "Copy",
+      "MediaTrackNext",
+      "NumpadEnter",
+      "ControlRight",
+      "LaunchMail",
+      "AudioVolumeMute",
+      "MediaPlayPause",
+      "MediaStop",
+      "AudioVolumeDown",
+      "VolumeUp",
+      "BrowserHome",
+      "NumpadDivide",
+      "PrintScreen",
+      "AltRight",
+      "NumLock",
+      "Pause",
+      "OSLeft",
+      "OSRight",
+      "ContextMenu",
+      "BrowserSearch",
+      "BrowserFavorites",
+      "BrowserRefresh",
+      "BrowserStop",
+      "BrowserForward",
+      "BrowserBack",
+      "LaunchApp1",
+      "LaunchMail",
+      "LaunchMediaPlayer",
+      "Lang1"
+  ];
+  let code;
   const defaultOptions$1 = {
       onKeyDown: undefined
   };
@@ -1267,17 +1403,34 @@ l l l
   let isKeyPressing = false;
   let isKeyPressed = false;
   let isKeyReleased = false;
+  let pressingCode = {};
+  let pressedCode = {};
+  let releasedCode = {};
   function init$3(_options) {
       options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
+      code = fromEntities(codes.map(c => [
+          c,
+          {
+              isPressed: false,
+              isJustPressed: false,
+              isJustReleased: false
+          }
+      ]));
       document.addEventListener("keydown", e => {
           isKeyPressing = isKeyPressed = true;
+          pressingCode[e.code] = pressedCode[e.code] = true;
           if (options$1.onKeyDown != null) {
               options$1.onKeyDown();
+          }
+          if (e.code === "AltLeft" || e.code === "AltRight") {
+              e.preventDefault();
           }
       });
       document.addEventListener("keyup", e => {
           isKeyPressing = false;
           isKeyReleased = true;
+          pressingCode[e.code] = false;
+          releasedCode[e.code] = true;
       });
   }
   function update$1() {
@@ -1285,11 +1438,30 @@ l l l
       isJustReleased = isPressed && isKeyReleased;
       isKeyPressed = isKeyReleased = false;
       isPressed = isKeyPressing;
+      entries(code).forEach(([c, s]) => {
+          s.isJustPressed = !s.isPressed && pressedCode[c];
+          s.isJustReleased = s.isPressed && releasedCode[c];
+          s.isPressed = !!pressingCode[c];
+      });
+      pressedCode = {};
+      releasedCode = {};
   }
   function clearJustPressed() {
       isJustPressed = false;
       isPressed = true;
   }
+
+  var keyboard = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    get isPressed () { return isPressed; },
+    get isJustPressed () { return isJustPressed; },
+    get isJustReleased () { return isJustReleased; },
+    codes: codes,
+    get code () { return code; },
+    init: init$3,
+    update: update$1,
+    clearJustPressed: clearJustPressed
+  });
 
   class Random {
       constructor(seed = null) {
@@ -1463,6 +1635,17 @@ l l l
           options$2.onPointerDownOrUp();
       }
   }
+
+  var pointer = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    pos: pos,
+    get isPressed () { return isPressed$1; },
+    get isJustPressed () { return isJustPressed$1; },
+    get isJustReleased () { return isJustReleased$1; },
+    init: init$4,
+    update: update$2,
+    clearJustPressed: clearJustPressed$1
+  });
 
   let pos$1 = new Vector();
   let isPressed$2 = false;
@@ -2082,8 +2265,10 @@ l l l
   exports.end = end;
   exports.floor = floor;
   exports.input = input;
+  exports.keyboard = keyboard;
   exports.line = line;
   exports.play = play;
+  exports.pointer = pointer;
   exports.pow = pow;
   exports.range = range;
   exports.rect = rect;
