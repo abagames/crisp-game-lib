@@ -9,8 +9,7 @@ characters = [];
 
 options = {
   isPlayingBgm: true,
-  seed: 1,
-  isCapturing: true
+  seed: 1
 };
 
 let floaters;

@@ -8,7 +8,6 @@ characters = [];
 
 options = {
   isPlayingBgm: true,
-  isCapturing: true,
   seed: 2
 };
 
