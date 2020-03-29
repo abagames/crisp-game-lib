@@ -2170,7 +2170,7 @@ l l l
       if (exports.ticks === 0) {
           drawScore();
           if (typeof title !== "undefined" && title != null) {
-              terminal.print(title, Math.floor(terminalSize.x - title.length) / 2, 3);
+              terminal.print(title, Math.floor(terminalSize.x - title.length) / 2, Math.ceil(terminalSize.y * 0.2));
           }
           terminal.draw();
       }
