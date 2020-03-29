@@ -216,12 +216,20 @@ color: #888;
       document.body.appendChild(canvas);
       if (isCapturing) {
           captureCanvas = document.createElement("canvas");
-          const cw = size.y * 2;
-          captureCanvas.width = size.x > cw ? size.x : cw;
-          captureCanvas.height = size.y;
+          if (size.x <= size.y * 2) {
+              captureCanvas.width = size.y * 2;
+              captureCanvas.height = size.y;
+          }
+          else {
+              captureCanvas.width = size.x;
+              captureCanvas.height = size.x / 2;
+          }
           captureContext = captureCanvas.getContext("2d");
           captureContext.fillStyle = _bodyBackground;
-          gcc.setOptions({ scale: 2, capturingFps: 60 });
+          gcc.setOptions({
+              scale: Math.round(400 / captureCanvas.width),
+              capturingFps: 60
+          });
       }
   }
   function clear() {
@@ -232,7 +240,7 @@ color: #888;
   }
   function capture() {
       captureContext.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
-      captureContext.drawImage(canvas, (captureCanvas.width - canvas.width) / 2, 0);
+      captureContext.drawImage(canvas, (captureCanvas.width - canvas.width) / 2, (captureCanvas.height - canvas.height) / 2);
       gcc.capture(captureCanvas);
   }
 
