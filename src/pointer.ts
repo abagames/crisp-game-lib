@@ -18,7 +18,7 @@ let defaultOptions: Options = {
   isDebugMode: false,
   anchor: new Vector(),
   padding: new Vector(),
-  onPointerDownOrUp: undefined
+  onPointerDownOrUp: undefined,
 };
 let screen: HTMLElement;
 let pixelSize: Vector;
@@ -47,29 +47,29 @@ export function init(
   if (options.isDebugMode) {
     debugPos.set(pixelSize.x / 2, pixelSize.y / 2);
   }
-  document.addEventListener("mousedown", e => {
+  document.addEventListener("mousedown", (e) => {
     onDown(e.pageX, e.pageY);
   });
-  document.addEventListener("touchstart", e => {
+  document.addEventListener("touchstart", (e) => {
     onDown(e.touches[0].pageX, e.touches[0].pageY);
   });
-  document.addEventListener("mousemove", e => {
+  document.addEventListener("mousemove", (e) => {
     onMove(e.pageX, e.pageY);
   });
   document.addEventListener(
     "touchmove",
-    e => {
+    (e) => {
       e.preventDefault();
       onMove(e.touches[0].pageX, e.touches[0].pageY);
     },
     { passive: false }
   );
-  document.addEventListener("mouseup", e => {
+  document.addEventListener("mouseup", (e) => {
     onUp(e);
   });
   document.addEventListener(
     "touchend",
-    e => {
+    (e) => {
       e.preventDefault();
       (e.target as any).click();
       onUp(e);
@@ -103,14 +103,16 @@ function calcPointerPos(x: number, y: number, v: Vector) {
   if (screen == null) {
     return;
   }
-  v.x =
+  v.x = Math.round(
     ((x - screen.offsetLeft) / screen.clientWidth + options.anchor.x) *
       pixelSize.x -
-    options.padding.x;
-  v.y =
+      options.padding.x
+  );
+  v.y = Math.round(
     ((y - screen.offsetTop) / screen.clientHeight + options.anchor.y) *
       pixelSize.y -
-    options.padding.y;
+      options.padding.y
+  );
 }
 
 function updateDebug() {

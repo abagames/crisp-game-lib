@@ -9,6 +9,7 @@ import { Random } from "./random";
 import * as collision from "./collision";
 import { init as initColor, setColor, Color } from "./color";
 import { defineCharacters, print, letterSize } from "./letter";
+import * as replay from "./replay";
 declare const sss;
 
 export { clamp, wrap, range, addWithCharCode } from "./util";
@@ -56,6 +57,9 @@ export function end() {
 }
 
 export function addScore(value: number, x?: number | VectorLike, y?: number) {
+  if (isReplaying) {
+    return;
+  }
   score += value;
   if (x == null) {
     return;
@@ -73,7 +77,7 @@ export function addScore(value: number, x?: number | VectorLike, y?: number) {
     str,
     pos,
     vy: -2,
-    ticks: 30
+    ticks: 30,
   });
 }
 
@@ -97,14 +101,15 @@ const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
   hit: "h",
   jump: "j",
   select: "s",
-  lucky: "u"
+  lucky: "u",
 };
 const defaultOptions = {
   isPlayingBgm: false,
   isCapturing: false,
   isShowingScore: true,
+  isReplayEnabled: false,
   viewSize: { x: 100, y: 100 },
-  seed: 0
+  seed: 0,
 };
 
 declare let title: string;
@@ -114,19 +119,21 @@ declare type Options = {
   isPlayingBgm?: boolean;
   isCapturing?: boolean;
   isShowingScore?: boolean;
+  isReplayEnabled?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
 };
 declare let options: Options;
 declare function update();
 
+const seedRandom = new Random();
 const random = new Random();
 type State = "title" | "inGame" | "gameOver";
 let state: State;
 let updateFunc = {
   title: updateTitle,
   inGame: updateInGame,
-  gameOver: updateGameOver
+  gameOver: updateGameOver,
 };
 let terminal: Terminal;
 let hiScore = 0;
@@ -135,8 +142,10 @@ let seed = 0;
 let loopOptions;
 let isPlayingBgm: boolean;
 let isShowingScore: boolean;
+let isReplayEnabled: boolean;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
+let isReplaying = false;
 
 addGameScript();
 window.addEventListener("load", onLoad);
@@ -145,7 +154,7 @@ function onLoad() {
   loopOptions = {
     viewSize: { x: 100, y: 100 },
     bodyBackground: "#e0e0e0",
-    viewBackground: "#eeeeee"
+    viewBackground: "#eeeeee",
   };
   let opts;
   if (typeof options !== "undefined" && options != null) {
@@ -158,6 +167,7 @@ function onLoad() {
   loopOptions.viewSize = opts.viewSize;
   isPlayingBgm = opts.isPlayingBgm;
   isShowingScore = opts.isShowingScore;
+  isReplayEnabled = opts.isReplayEnabled;
   initColor();
   loop.init(init, _update, loopOptions);
 }
@@ -216,12 +226,26 @@ function initInGame() {
   if (isPlayingBgm) {
     sss.playBgm();
   }
+  const randomSeed = seedRandom.getInt(999999999);
+  random.setSeed(randomSeed);
+  if (isReplayEnabled) {
+    replay.initRecord(randomSeed);
+    isReplaying = false;
+  }
 }
 
 function updateInGame() {
   terminal.clear();
   view.clear();
   updateScoreBoards();
+  if (isReplayEnabled) {
+    replay.recordInput({
+      pos: vec(input.pos),
+      isPressed: input.isPressed,
+      isJustPressed: input.isJustPressed,
+      isJustReleased: input.isJustReleased,
+    });
+  }
   update();
   drawScore();
   terminal.draw();
@@ -232,9 +256,23 @@ function initTitle() {
   ticks = -1;
   terminal.clear();
   view.clear();
+  if (replay.isRecorded()) {
+    replay.initReplay(random);
+    isReplaying = true;
+  }
 }
 
 function updateTitle() {
+  if (input.isJustPressed) {
+    initInGame();
+    return;
+  }
+  if (replay.isRecorded()) {
+    replay.replayInput();
+    view.clear();
+    update();
+    terminal.draw();
+  }
   if (ticks === 0) {
     drawScore();
     if (typeof title !== "undefined" && title != null) {
@@ -249,7 +287,7 @@ function updateTitle() {
   if (ticks === 30 || ticks == 40) {
     if (typeof description !== "undefined" && description != null) {
       let maxLineLength = 0;
-      description.split("\n").forEach(l => {
+      description.split("\n").forEach((l) => {
         if (l.length > maxLineLength) {
           maxLineLength = l.length;
         }
@@ -260,9 +298,6 @@ function updateTitle() {
       });
       terminal.draw();
     }
-  }
-  if (input.isJustPressed) {
-    initInGame();
   }
 }
 
@@ -279,7 +314,7 @@ function initGameOver() {
 function updateGameOver() {
   if (ticks > 20 && input.isJustPressed) {
     initInGame();
-  } else if (ticks === 500 && !isNoTitle) {
+  } else if (ticks === 120 && !isNoTitle) {
     initTitle();
   }
   if (ticks === 10) {
@@ -288,6 +323,9 @@ function updateGameOver() {
 }
 
 function drawGameOver() {
+  if (isReplaying) {
+    return;
+  }
   terminal.print(
     "GAME OVER",
     Math.floor((terminalSize.x - 9) / 2),
@@ -308,7 +346,7 @@ function drawScore() {
 function updateScoreBoards() {
   const currentFillStyle = view.context.fillStyle;
   setColor("black", false);
-  scoreBoards = scoreBoards.filter(sb => {
+  scoreBoards = scoreBoards.filter((sb) => {
     print(sb.str, sb.pos.x, sb.pos.y);
     sb.pos.y += sb.vy;
     sb.vy *= 0.9;

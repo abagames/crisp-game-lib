@@ -1533,7 +1533,7 @@ l l l
       isDebugMode: false,
       anchor: new Vector(),
       padding: new Vector(),
-      onPointerDownOrUp: undefined
+      onPointerDownOrUp: undefined,
   };
   let screen;
   let pixelSize;
@@ -1553,23 +1553,23 @@ l l l
       if (options$2.isDebugMode) {
           debugPos.set(pixelSize.x / 2, pixelSize.y / 2);
       }
-      document.addEventListener("mousedown", e => {
+      document.addEventListener("mousedown", (e) => {
           onDown(e.pageX, e.pageY);
       });
-      document.addEventListener("touchstart", e => {
+      document.addEventListener("touchstart", (e) => {
           onDown(e.touches[0].pageX, e.touches[0].pageY);
       });
-      document.addEventListener("mousemove", e => {
+      document.addEventListener("mousemove", (e) => {
           onMove(e.pageX, e.pageY);
       });
-      document.addEventListener("touchmove", e => {
+      document.addEventListener("touchmove", (e) => {
           e.preventDefault();
           onMove(e.touches[0].pageX, e.touches[0].pageY);
       }, { passive: false });
-      document.addEventListener("mouseup", e => {
+      document.addEventListener("mouseup", (e) => {
           onUp();
       });
-      document.addEventListener("touchend", e => {
+      document.addEventListener("touchend", (e) => {
           e.preventDefault();
           e.target.click();
           onUp();
@@ -1599,14 +1599,12 @@ l l l
       if (screen == null) {
           return;
       }
-      v.x =
-          ((x - screen.offsetLeft) / screen.clientWidth + options$2.anchor.x) *
-              pixelSize.x -
-              options$2.padding.x;
-      v.y =
-          ((y - screen.offsetTop) / screen.clientHeight + options$2.anchor.y) *
-              pixelSize.y -
-              options$2.padding.y;
+      v.x = Math.round(((x - screen.offsetLeft) / screen.clientWidth + options$2.anchor.x) *
+          pixelSize.x -
+          options$2.padding.x);
+      v.y = Math.round(((y - screen.offsetTop) / screen.clientHeight + options$2.anchor.y) *
+          pixelSize.y -
+          options$2.padding.y);
   }
   function updateDebug() {
       if (debugMoveVel.length > 0) {
@@ -1668,11 +1666,11 @@ l l l
   let isJustReleased$2 = false;
   function init$5() {
       init$3({
-          onKeyDown: sss.playEmpty
+          onKeyDown: sss.playEmpty,
       });
       init$4(canvas, size, {
           onPointerDownOrUp: sss.playEmpty,
-          anchor: new Vector(0.5, 0.5)
+          anchor: new Vector(0.5, 0.5),
       });
   }
   function update$3() {
@@ -1687,6 +1685,12 @@ l l l
       clearJustPressed();
       clearJustPressed$1();
   }
+  function set(state) {
+      pos$1.set(state.pos);
+      isPressed$2 = state.isPressed;
+      isJustPressed$2 = state.isJustPressed;
+      isJustReleased$2 = state.isJustReleased;
+  }
 
   var input = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -1696,7 +1700,8 @@ l l l
     get isJustReleased () { return isJustReleased$2; },
     init: init$5,
     update: update$3,
-    clearJustPressed: clearJustPressed$2
+    clearJustPressed: clearJustPressed$2,
+    set: set
   });
 
   let lastFrameTime = 0;
@@ -1865,6 +1870,32 @@ l l l
       }
   }
 
+  let record;
+  let inputIndex;
+  function initRecord(randomSeed) {
+      record = {
+          randomSeed,
+          inputs: [],
+      };
+  }
+  function recordInput(input) {
+      record.inputs.push(input);
+  }
+  function isRecorded() {
+      return record != null;
+  }
+  function initReplay(random) {
+      inputIndex = 0;
+      random.setSeed(record.randomSeed);
+  }
+  function replayInput() {
+      if (inputIndex >= record.inputs.length) {
+          return;
+      }
+      set(record.inputs[inputIndex]);
+      inputIndex++;
+  }
+
   function rect(x, y, width, height) {
       return drawRect(false, x, y, width, height);
   }
@@ -2024,6 +2055,9 @@ l l l
       initGameOver();
   }
   function addScore(value, x, y) {
+      if (isReplaying) {
+          return;
+      }
       exports.score += value;
       if (x == null) {
           return;
@@ -2042,7 +2076,7 @@ l l l
           str,
           pos,
           vy: -2,
-          ticks: 30
+          ticks: 30,
       });
   }
   function color(colorName) {
@@ -2062,21 +2096,23 @@ l l l
       hit: "h",
       jump: "j",
       select: "s",
-      lucky: "u"
+      lucky: "u",
   };
   const defaultOptions$4 = {
       isPlayingBgm: false,
       isCapturing: false,
       isShowingScore: true,
+      isReplayEnabled: false,
       viewSize: { x: 100, y: 100 },
-      seed: 0
+      seed: 0,
   };
+  const seedRandom = new Random();
   const random = new Random();
   let state;
   let updateFunc = {
       title: updateTitle,
       inGame: updateInGame,
-      gameOver: updateGameOver
+      gameOver: updateGameOver,
   };
   let terminal;
   let hiScore = 0;
@@ -2085,15 +2121,17 @@ l l l
   let loopOptions;
   let isPlayingBgm;
   let isShowingScore;
+  let isReplayEnabled;
   let terminalSize;
   let scoreBoards;
+  let isReplaying = false;
   addGameScript();
   window.addEventListener("load", onLoad);
   function onLoad() {
       loopOptions = {
           viewSize: { x: 100, y: 100 },
           bodyBackground: "#e0e0e0",
-          viewBackground: "#eeeeee"
+          viewBackground: "#eeeeee",
       };
       let opts;
       if (typeof options !== "undefined" && options != null) {
@@ -2107,6 +2145,7 @@ l l l
       loopOptions.viewSize = opts.viewSize;
       isPlayingBgm = opts.isPlayingBgm;
       isShowingScore = opts.isShowingScore;
+      isReplayEnabled = opts.isReplayEnabled;
       init$1();
       init$6(init$7, _update$1, loopOptions);
   }
@@ -2159,11 +2198,25 @@ l l l
       if (isPlayingBgm) {
           sss.playBgm();
       }
+      const randomSeed = seedRandom.getInt(999999999);
+      random.setSeed(randomSeed);
+      if (isReplayEnabled) {
+          initRecord(randomSeed);
+          isReplaying = false;
+      }
   }
   function updateInGame() {
       terminal.clear();
       clear();
       updateScoreBoards();
+      if (isReplayEnabled) {
+          recordInput({
+              pos: vec(pos$1),
+              isPressed: isPressed$2,
+              isJustPressed: isJustPressed$2,
+              isJustReleased: isJustReleased$2,
+          });
+      }
       update();
       drawScore();
       terminal.draw();
@@ -2173,8 +2226,22 @@ l l l
       exports.ticks = -1;
       terminal.clear();
       clear();
+      if (isRecorded()) {
+          initReplay(random);
+          isReplaying = true;
+      }
   }
   function updateTitle() {
+      if (isJustPressed$2) {
+          initInGame();
+          return;
+      }
+      if (isRecorded()) {
+          replayInput();
+          clear();
+          update();
+          terminal.draw();
+      }
       if (exports.ticks === 0) {
           drawScore();
           if (typeof title !== "undefined" && title != null) {
@@ -2185,7 +2252,7 @@ l l l
       if (exports.ticks === 30 || exports.ticks == 40) {
           if (typeof description !== "undefined" && description != null) {
               let maxLineLength = 0;
-              description.split("\n").forEach(l => {
+              description.split("\n").forEach((l) => {
                   if (l.length > maxLineLength) {
                       maxLineLength = l.length;
                   }
@@ -2196,9 +2263,6 @@ l l l
               });
               terminal.draw();
           }
-      }
-      if (isJustPressed$2) {
-          initInGame();
       }
   }
   function initGameOver() {
@@ -2214,7 +2278,7 @@ l l l
       if (exports.ticks > 20 && isJustPressed$2) {
           initInGame();
       }
-      else if (exports.ticks === 500 && !isNoTitle) {
+      else if (exports.ticks === 120 && !isNoTitle) {
           initTitle();
       }
       if (exports.ticks === 10) {
@@ -2222,6 +2286,9 @@ l l l
       }
   }
   function drawGameOver() {
+      if (isReplaying) {
+          return;
+      }
       terminal.print("GAME OVER", Math.floor((terminalSize.x - 9) / 2), Math.floor(terminalSize.y / 2));
       terminal.draw();
   }
@@ -2236,7 +2303,7 @@ l l l
   function updateScoreBoards() {
       const currentFillStyle = context.fillStyle;
       setColor("black", false);
-      scoreBoards = scoreBoards.filter(sb => {
+      scoreBoards = scoreBoards.filter((sb) => {
           print(sb.str, sb.pos.x, sb.pos.y);
           sb.pos.y += sb.vy;
           sb.vy *= 0.9;

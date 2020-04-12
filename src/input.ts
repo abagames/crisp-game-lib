@@ -11,11 +11,11 @@ export let isJustReleased = false;
 
 export function init() {
   keyboard.init({
-    onKeyDown: sss.playEmpty
+    onKeyDown: sss.playEmpty,
   });
   pointer.init(view.canvas, view.size, {
     onPointerDownOrUp: sss.playEmpty,
-    anchor: new Vector(0.5, 0.5)
+    anchor: new Vector(0.5, 0.5),
   });
 }
 
@@ -31,4 +31,16 @@ export function update() {
 export function clearJustPressed() {
   keyboard.clearJustPressed();
   pointer.clearJustPressed();
+}
+
+export function set(state: {
+  pos: Vector;
+  isPressed: boolean;
+  isJustPressed: boolean;
+  isJustReleased: boolean;
+}) {
+  pos.set(state.pos);
+  isPressed = state.isPressed;
+  isJustPressed = state.isJustPressed;
+  isJustReleased = state.isJustReleased;
 }
