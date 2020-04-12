@@ -8,7 +8,8 @@ characters = [];
 
 options = {
   isPlayingBgm: true,
-  seed: 2
+  seed: 2,
+  isReplayEnabled: true,
 };
 
 let circles;
@@ -38,7 +39,7 @@ function update() {
     play("explosion");
     end();
   }
-  circles = circles.filter(c => {
+  circles = circles.filter((c) => {
     c.p.y += sc;
     if (c.p.y > 99 + c.r) {
       return false;
@@ -47,7 +48,7 @@ function update() {
     box(c.p, 3, 3);
     color("red");
     c.a += c.v;
-    range(c.num).forEach(i => {
+    range(c.num).forEach((i) => {
       const a = c.a + (i * PI * 2) / c.num;
       bar(vec(c.p).addWithAngle(a, c.r), c.l, 3, a + PI / 2);
     });
@@ -76,7 +77,7 @@ function addCircle() {
     a: rnd(PI * 2),
     v: rnds(0.02, 0.05) * difficulty,
     l: rnd(10, 20),
-    next: undefined
+    next: undefined,
   };
   if (lastCircle != null) {
     lastCircle.next = c;

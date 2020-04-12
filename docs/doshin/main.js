@@ -34,12 +34,13 @@ ll l l
   ll
  l  l
  l  l
-`
+`,
 ];
 
 options = {
   isPlayingBgm: true,
-  viewSize: { x: 200, y: 100 }
+  viewSize: { x: 200, y: 100 },
+  isReplayEnabled: true,
 };
 
 let hms, dss, bt;
@@ -47,10 +48,10 @@ let hms, dss, bt;
 function update() {
   if (ticks === 0) {
     hms = [];
-    dss = range(4).map(i => {
+    dss = range(4).map((i) => {
       return {
         x: 50 * (0.5 + i),
-        t: -1
+        t: -1,
       };
     });
     bt = 0;
@@ -69,7 +70,7 @@ function update() {
       ),
       t: 0,
       type,
-      ft: -1
+      ft: -1,
     });
   }
   color("light_black");
@@ -97,7 +98,7 @@ function update() {
     rect(ds.x - 20, 0, 40, 20);
   });
   let sc = 1;
-  hms = hms.filter(hm => {
+  hms = hms.filter((hm) => {
     hm.p.add(hm.v);
     color(hm.type === 0 ? "blue" : "red");
     if (hm.ft < 0) {

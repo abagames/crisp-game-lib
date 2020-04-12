@@ -9,7 +9,8 @@ characters = [];
 
 options = {
   isPlayingBgm: true,
-  seed: 1
+  seed: 1,
+  isReplayEnabled: true,
 };
 
 let floaters;
@@ -24,7 +25,7 @@ function update() {
     player = {
       p: vec(105, 10),
       v: vec(),
-      on: undefined
+      on: undefined,
     };
     floaterAddDist = 0;
   }
@@ -41,7 +42,7 @@ function update() {
       a: rnd(PI * 2),
       r,
       v: rnd(0.05, 0.1) * difficulty,
-      isValid: true
+      isValid: true,
     });
     fy += rnds(20);
     floaterAddDist += rnd(20, 40);
@@ -53,7 +54,7 @@ function update() {
   floaterAddDist -= sc;
   color("light_black");
   rect(0, 0, 99, 5);
-  floaters = floaters.filter(f => {
+  floaters = floaters.filter((f) => {
     f.cp.x -= sc;
     if (f.cp.x < -10) {
       return false;
@@ -88,7 +89,7 @@ function update() {
     }
     if (pc.isColliding.rect.blue) {
       play("laser");
-      floaters.forEach(f => {
+      floaters.forEach((f) => {
         if (abs(f.p.x - player.p.x) < 12) {
           player.on = f;
         }

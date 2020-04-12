@@ -8,7 +8,8 @@ characters = [];
 
 options = {
   isPlayingBgm: true,
-  seed: 3
+  seed: 3,
+  isReplayEnabled: true,
 };
 
 let board;
@@ -36,13 +37,13 @@ function update() {
   } else {
     board = {
       p: vec(rnd(99), 0),
-      vy: 0
+      vy: 0,
     };
   }
   let by = 80;
   color("black");
   rect(0, 95, 99, 5);
-  boxes = boxes.filter(b => {
+  boxes = boxes.filter((b) => {
     if (b.isFixed) {
       if (b.p.y - 9 < by) {
         by = b.p.y - 9;
@@ -73,7 +74,7 @@ function update() {
   if (boxAddTicks < 0) {
     boxes.push({
       p: vec(pp),
-      isFixed: false
+      isFixed: false,
     });
     boxAddTicks += 10 / difficulty;
   }

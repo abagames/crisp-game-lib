@@ -30,11 +30,12 @@ l   l
 l   l
  l   l
 l l l
-`
+`,
 ];
 
 options = {
-  isPlayingBgm: true
+  isPlayingBgm: true,
+  isReplayEnabled: true,
 };
 
 let p, v, vya, pis, sps;
@@ -64,7 +65,7 @@ function update() {
   char("a", p);
   while (pis.length < 7) {
     pis.push({
-      p: vec(rnd(10, 90), rnd(10, 90))
+      p: vec(rnd(10, 90), rnd(10, 90)),
     });
   }
   if (rnd() < 0.02 * difficulty) {
@@ -72,17 +73,17 @@ function update() {
     if (abs(pp.x - p.x) + abs(wrap(pp.y - p.y, -50, 50)) > 25) {
       sps.push({
         p: pp,
-        isAlive: true
+        isAlive: true,
       });
     }
   }
-  pis = pis.filter(pi => {
+  pis = pis.filter((pi) => {
     let isAlive = true;
     if (char("b", pi.p).isColliding.char.a) {
       if (abs(v.y) > 1) {
         play("select");
         isAlive = false;
-        sps.map(sp => {
+        sps.map((sp) => {
           if (sp.p.distanceTo(pi.p) < 20) {
             play("coin");
             sp.isAlive = false;
@@ -99,7 +100,7 @@ function update() {
   });
   let sc = 1;
   color("red");
-  sps = sps.filter(sp => {
+  sps = sps.filter((sp) => {
     if (sp.isAlive) {
       if (char("c", sp.p).isColliding.char.a) {
         play("explosion");

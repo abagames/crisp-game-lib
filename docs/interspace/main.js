@@ -7,7 +7,8 @@ description = `
 characters = [];
 
 options = {
-  isPlayingBgm: true
+  isPlayingBgm: true,
+  isReplayEnabled: true,
 };
 
 let p, s, wp;

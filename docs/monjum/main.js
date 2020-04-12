@@ -35,11 +35,12 @@ ll l l
   ll
  l  l
  l  l
-`
+`,
 ];
 
 options = {
-  isPlayingBgm: true
+  isPlayingBgm: true,
+  isReplayEnabled: true,
 };
 
 const hole = 1,
@@ -53,8 +54,8 @@ function update() {
     floors = [
       {
         x: 0,
-        w: 99
-      }
+        w: 99,
+      },
     ];
     mons = [];
     coins = [];
@@ -71,12 +72,12 @@ function update() {
     const w = rndi(50, 90);
     floors.push({
       x: 110,
-      w
+      w,
     });
     flt += 10 + w;
   }
   color("black");
-  floors = floors.filter(f => {
+  floors = floors.filter((f) => {
     f.x -= fvy;
     rect(f.x, 90, f.w, 9);
     return f.x + f.w > 0;
@@ -86,7 +87,7 @@ function update() {
     mons.push({ p: vec(99, 87), v: vec(-difficulty * 0.75, 0), jump: false });
     mnt += rnd(200, 300);
   }
-  mons = mons.filter(m => {
+  mons = mons.filter((m) => {
     m.p.add(m.v);
     if (m.jump) {
       m.v.y += difficulty * 0.09;
@@ -104,7 +105,7 @@ function update() {
     }
     color("purple");
     const cl = char(addWithCharCode("c", Math.floor(ticks / 30) % 2), m.p, {
-      mirror: { x: -1 }
+      mirror: { x: -1 },
     }).isColliding.char;
     if (cl.a || cl.b) {
       play("explosion");
@@ -118,7 +119,7 @@ function update() {
     cnt += rnd(50, 100);
   }
   color("yellow");
-  coins = coins.filter(c => {
+  coins = coins.filter((c) => {
     c.p.x -= difficulty;
     const cl = text("$", c.p).isColliding.char;
     if (cl.a || cl.b) {
