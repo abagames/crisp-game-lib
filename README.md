@@ -142,12 +142,14 @@ l    l
 //   isPlayingBgm?: boolean; // Play a BGM.
 //   isCapturing?: boolean; // Capture a screen by pressing 'c'.
 //   isShowingScore?: boolean; // Show a score and a hi-score.
+//   isReplayEnabled?: boolean; // Enable a replay.
 //   viewSize?: { x: number; y: number }; // Set the screen size.
 //   seed?: number; // Set the random seed for sounds.
 // }
 options = {
   viewSize: { x: 120, y: 60 },
   isPlayingBgm: true,
+  isReplayEnabled: true,
 };
 ```
 
