@@ -27,12 +27,13 @@ l    l
 l    l
  l  l
   ll
-  `
+  `,
 ];
 
 options = {
   viewSize: { x: 120, y: 60 },
-  isPlayingBgm: true
+  isPlayingBgm: true,
+  isReplayEnabled: true,
 };
 
 let p, v, isJumping, ts, addedScore;
@@ -50,10 +51,10 @@ function update() {
       p: vec(123, 47),
       v: vec(-rnd(0.4, 0.8 * difficulty), 0),
       t: 0,
-      isScoreAdded: false
+      isScoreAdded: false,
     });
   }
-  ts = ts.filter(t => {
+  ts = ts.filter((t) => {
     t.p.add(t.v);
     if (isJumping) {
       text("*", t.p.x, t.p.y, { rotation: floor(t.t / 10) });
