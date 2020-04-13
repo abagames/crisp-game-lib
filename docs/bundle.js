@@ -2267,7 +2267,9 @@ l l l
   }
   function initGameOver() {
       state = "gameOver";
-      clearJustPressed$2();
+      if (!isReplaying) {
+          clearJustPressed$2();
+      }
       exports.ticks = -1;
       drawGameOver();
       if (isPlayingBgm) {
@@ -2275,7 +2277,7 @@ l l l
       }
   }
   function updateGameOver() {
-      if (exports.ticks > 20 && isJustPressed$2) {
+      if ((isReplaying || exports.ticks > 20) && isJustPressed$2) {
           initInGame();
       }
       else if (exports.ticks === 120 && !isNoTitle) {

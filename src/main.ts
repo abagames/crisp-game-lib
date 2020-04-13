@@ -303,7 +303,9 @@ function updateTitle() {
 
 function initGameOver() {
   state = "gameOver";
-  input.clearJustPressed();
+  if (!isReplaying) {
+    input.clearJustPressed();
+  }
   ticks = -1;
   drawGameOver();
   if (isPlayingBgm) {
@@ -312,7 +314,7 @@ function initGameOver() {
 }
 
 function updateGameOver() {
-  if (ticks > 20 && input.isJustPressed) {
+  if ((isReplaying || ticks > 20) && input.isJustPressed) {
     initInGame();
   } else if (ticks === 120 && !isNoTitle) {
     initTitle();
