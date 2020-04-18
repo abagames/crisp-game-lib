@@ -2207,6 +2207,7 @@ l l l
   function _update$1() {
       exports.df = exports.difficulty = exports.ticks / 3600 + 1;
       exports.tc = exports.ticks;
+      const prevScore = exports.score;
       exports.sc = exports.score;
       const prevSc = exports.sc;
       exports.inp = {
@@ -2218,7 +2219,10 @@ l l l
       clear$1();
       updateFunc[state]();
       exports.ticks++;
-      if (exports.sc !== prevSc) {
+      if (isReplaying) {
+          exports.score = prevScore;
+      }
+      else if (exports.sc !== prevSc) {
           exports.score = exports.sc;
       }
   }

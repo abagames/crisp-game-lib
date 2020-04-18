@@ -216,6 +216,7 @@ function init() {
 function _update() {
   df = difficulty = ticks / 3600 + 1;
   tc = ticks;
+  const prevScore = score;
   sc = score;
   const prevSc = sc;
   inp = {
@@ -227,7 +228,9 @@ function _update() {
   collision.clear();
   updateFunc[state]();
   ticks++;
-  if (sc !== prevSc) {
+  if (isReplaying) {
+    score = prevScore;
+  } else if (sc !== prevSc) {
     score = sc;
   }
 }
