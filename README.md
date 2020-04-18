@@ -24,7 +24,7 @@ Develop one game within one hour.
 ```javascript
 function update() {
   // Set the drawing color.
-  // color(colorName : "transparent" | "white" | "red" | "green"  "yellow" | "blue" |
+  // color(colorName : "transparent" | "white" | "red" | "green" | "yellow" | "blue" |
   // "purple" | "cyan" | "black" | "light_red" | "light_green" | "light_yellow" |
   // | "light_blue" | "light_purple" | "light_cyan" | "light_black");
   color("red");
@@ -44,6 +44,14 @@ function update() {
   // line(x1, y1, x2, y2, thickness);
   // line(p1, p2, thickness);
   line(70, 70, 90, 80);
+  // Draw the text.
+  // text(string, x, y, options?);
+  // text(string, p, options?);
+  text("a", 10, 20);
+  // Draw the user defined character.
+  // char(string, x, y, options?);
+  // char(string, p, options?);
+  char("a", 30, 40);
 }
 ```
 
