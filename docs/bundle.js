@@ -2388,8 +2388,34 @@ l l l
               toplevel: true,
           }).code;
           const functionStartString = "function(){";
-          let minifiedUpdateScript = minifiedScript.substring(minifiedScript.indexOf(functionStartString) +
-              functionStartString.length, minifiedScript.length - 4);
+          const fi = minifiedScript.indexOf(functionStartString);
+          const optionsString = "options={";
+          const oi = minifiedScript.indexOf(optionsString);
+          let minifiedUpdateScript = minifiedScript;
+          if (fi >= 0) {
+              minifiedUpdateScript = minifiedScript.substring(minifiedScript.indexOf(functionStartString) +
+                  functionStartString.length, minifiedScript.length - 4);
+          }
+          else if (oi >= 0) {
+              let bc = 1;
+              let ui;
+              for (let i = oi + optionsString.length; i < minifiedScript.length; i++) {
+                  const c = minifiedScript.charAt(i);
+                  if (c === "{") {
+                      bc++;
+                  }
+                  else if (c === "}") {
+                      bc--;
+                      if (bc === 0) {
+                          ui = i + 2;
+                          break;
+                      }
+                  }
+              }
+              if (bc === 0) {
+                  minifiedUpdateScript = minifiedScript.substring(ui);
+              }
+          }
           minifyReplaces.forEach(([o, r]) => {
               minifiedUpdateScript = minifiedUpdateScript.split(o).join(r);
           });
