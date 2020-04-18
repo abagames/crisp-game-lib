@@ -6,6 +6,7 @@ declare type Options = {
   isCapturing?: boolean;
   isShowingScore?: boolean;
   isReplayEnabled?: boolean;
+  isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
 };

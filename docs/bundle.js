@@ -24,6 +24,9 @@
   function range(v) {
       return [...Array(v).keys()];
   }
+  function times(v, func) {
+      return range(v).map((i) => func(i));
+  }
   function fromEntities(v) {
       return [...v].reduce((obj, [key, value]) => {
           obj[key] = value;
@@ -31,7 +34,7 @@
       }, {});
   }
   function entries(obj) {
-      return Object.keys(obj).map(p => [p, obj[p]]);
+      return Object.keys(obj).map((p) => [p, obj[p]]);
   }
   function addWithCharCode(char, offset) {
       return String.fromCharCode(char.charCodeAt(0) + offset);
@@ -2103,6 +2106,7 @@ l l l
       isCapturing: false,
       isShowingScore: true,
       isReplayEnabled: false,
+      isMinifying: false,
       viewSize: { x: 100, y: 100 },
       seed: 0,
   };
@@ -2125,6 +2129,7 @@ l l l
   let terminalSize;
   let scoreBoards;
   let isReplaying = false;
+  let gameScriptFile;
   addGameScript();
   window.addEventListener("load", onLoad);
   function onLoad() {
@@ -2146,6 +2151,9 @@ l l l
       isPlayingBgm = opts.isPlayingBgm;
       isShowingScore = opts.isShowingScore;
       isReplayEnabled = opts.isReplayEnabled;
+      if (opts.isMinifying) {
+          showMinifiedScript();
+      }
       init$1();
       init$6(init$7, _update$1, loopOptions);
   }
@@ -2321,8 +2329,26 @@ l l l
           return;
       }
       const script = document.createElement("script");
-      script.setAttribute("src", `${gameName}/main.js`);
+      gameScriptFile = `${gameName}/main.js`;
+      script.setAttribute("src", gameScriptFile);
       document.head.appendChild(script);
+  }
+  function showMinifiedScript() {
+      fetch(gameScriptFile)
+          .then((res) => res.text())
+          .then((t) => {
+          const minifiedScript = Terser.minify(t + "update();", {
+              toplevel: true,
+          }).code;
+          const functionStartString = "function(){";
+          let minifiedUpdateScript = minifiedScript
+              .substring(minifiedScript.indexOf(functionStartString) +
+              functionStartString.length, minifiedScript.length - 4)
+              .replace("let ", "")
+              .replace("const ", "");
+          console.log(minifiedUpdateScript);
+          console.log(`${minifiedUpdateScript.length} letters`);
+      });
   }
   function getHash(v) {
       let hash = 0;
@@ -2363,6 +2389,7 @@ l l l
   exports.sin = sin;
   exports.sqrt = sqrt;
   exports.text = text;
+  exports.times = times;
   exports.vec = vec;
   exports.wrap = wrap;
 

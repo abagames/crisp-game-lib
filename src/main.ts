@@ -11,6 +11,7 @@ import { init as initColor, setColor, Color } from "./color";
 import { defineCharacters, print, letterSize } from "./letter";
 import * as replay from "./replay";
 declare const sss;
+declare const Terser;
 
 export { clamp, wrap, range, times, addWithCharCode } from "./util";
 export { rect, box, bar, line } from "./rect";
@@ -108,6 +109,7 @@ const defaultOptions = {
   isCapturing: false,
   isShowingScore: true,
   isReplayEnabled: false,
+  isMinifying: false,
   viewSize: { x: 100, y: 100 },
   seed: 0,
 };
@@ -120,6 +122,7 @@ declare type Options = {
   isCapturing?: boolean;
   isShowingScore?: boolean;
   isReplayEnabled?: boolean;
+  isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
 };
@@ -146,6 +149,7 @@ let isReplayEnabled: boolean;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isReplaying = false;
+let gameScriptFile: string;
 
 addGameScript();
 window.addEventListener("load", onLoad);
@@ -168,6 +172,9 @@ function onLoad() {
   isPlayingBgm = opts.isPlayingBgm;
   isShowingScore = opts.isShowingScore;
   isReplayEnabled = opts.isReplayEnabled;
+  if (opts.isMinifying) {
+    showMinifiedScript();
+  }
   initColor();
   loop.init(init, _update, loopOptions);
 }
@@ -365,8 +372,30 @@ function addGameScript() {
     return;
   }
   const script = document.createElement("script");
-  script.setAttribute("src", `${gameName}/main.js`);
+  gameScriptFile = `${gameName}/main.js`;
+  script.setAttribute("src", gameScriptFile);
   document.head.appendChild(script);
+}
+
+function showMinifiedScript() {
+  fetch(gameScriptFile)
+    .then((res) => res.text())
+    .then((t) => {
+      const minifiedScript: string = Terser.minify(t + "update();", {
+        toplevel: true,
+      }).code;
+      const functionStartString = "function(){";
+      let minifiedUpdateScript = minifiedScript
+        .substring(
+          minifiedScript.indexOf(functionStartString) +
+            functionStartString.length,
+          minifiedScript.length - 4
+        )
+        .replace("let ", "")
+        .replace("const ", "");
+      console.log(minifiedUpdateScript);
+      console.log(`${minifiedUpdateScript.length} letters`);
+    });
 }
 
 function getHash(v: string) {
