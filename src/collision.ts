@@ -1,4 +1,5 @@
 import { VectorLike } from "./vector";
+import { entries } from "./util";
 
 export type Collision = {
   isColliding: {
@@ -79,7 +80,7 @@ export function checkHitBoxes(box: HitBox) {
             ...r.collision.isColliding.char,
           },
         },
-        ...r.collision.isColliding.rect,
+        ...createShorthand(r.collision.isColliding.rect),
       };
     }
   });
@@ -90,4 +91,26 @@ function testCollision(r1: HitBox, r2: HitBox) {
   const ox = r2.pos.x - r1.pos.x;
   const oy = r2.pos.y - r1.pos.y;
   return -r2.size.x < ox && ox < r1.size.x && -r2.size.y < oy && oy < r1.size.y;
+}
+
+export function createShorthand(rects) {
+  const colorReplaces = {
+    transparent: "tr",
+    white: "wh",
+    red: "rd",
+    green: "gr",
+    yellow: "yl",
+    blue: "bl",
+    purple: "pr",
+    cyan: "cy",
+    black: "lc",
+  };
+  let shorthandRects = {};
+  entries(rects).forEach(([k, v]) => {
+    const sh = colorReplaces[k];
+    if (v && sh != null) {
+      shorthandRects[sh] = true;
+    }
+  });
+  return shorthandRects;
 }

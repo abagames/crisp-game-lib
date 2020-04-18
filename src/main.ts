@@ -446,7 +446,6 @@ export const uc = "lucky";
 
 export let minifyReplaces = [
   ["===", "=="],
-  ["isColliding.rect.", ""],
   ["input.pos", "inp.p"],
   ["input.isPressed", "inp.ip"],
   ["input.isJustPressed", "inp.ijp"],
@@ -454,6 +453,15 @@ export let minifyReplaces = [
   ["ticks", "tc"],
   ["difficulty", "df"],
   ["score", "sc"],
+  [".isColliding.rect.transparent", ".tr"],
+  [".isColliding.rect.white", ".wh"],
+  [".isColliding.rect.red", ".rd"],
+  [".isColliding.rect.green", ".gr"],
+  [".isColliding.rect.yellow", ".yl"],
+  [".isColliding.rect.blue", ".bl"],
+  [".isColliding.rect.purple", ".pr"],
+  [".isColliding.rect.cyan", ".cy"],
+  [".isColliding.rect.black", ".lc"],
   ['"transparent"', "tr"],
   ['"white"', "wh"],
   ['"red"', "rd"],

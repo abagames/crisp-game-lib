@@ -9,6 +9,7 @@ import {
   checkHitBoxes,
   concatTmpHitBoxes,
   Collision,
+  createShorthand,
 } from "./collision";
 
 export function rect(
@@ -148,7 +149,7 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
           ...c.isColliding.char,
         },
       },
-      ...c.isColliding.rect,
+      ...createShorthand(c.isColliding.rect),
     };
     p.add(l);
   }

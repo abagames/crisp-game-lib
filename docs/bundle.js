@@ -1007,7 +1007,7 @@ l l l
                       rect: Object.assign(Object.assign({}, collision.isColliding.rect), r.collision.isColliding.rect),
                       text: Object.assign(Object.assign({}, collision.isColliding.text), r.collision.isColliding.text),
                       char: Object.assign(Object.assign({}, collision.isColliding.char), r.collision.isColliding.char),
-                  } }, r.collision.isColliding.rect);
+                  } }, createShorthand(r.collision.isColliding.rect));
           }
       });
       return collision;
@@ -1016,6 +1016,27 @@ l l l
       const ox = r2.pos.x - r1.pos.x;
       const oy = r2.pos.y - r1.pos.y;
       return -r2.size.x < ox && ox < r1.size.x && -r2.size.y < oy && oy < r1.size.y;
+  }
+  function createShorthand(rects) {
+      const colorReplaces = {
+          transparent: "tr",
+          white: "wh",
+          red: "rd",
+          green: "gr",
+          yellow: "yl",
+          blue: "bl",
+          purple: "pr",
+          cyan: "cy",
+          black: "lc",
+      };
+      let shorthandRects = {};
+      entries(rects).forEach(([k, v]) => {
+          const sh = colorReplaces[k];
+          if (v && sh != null) {
+              shorthandRects[sh] = true;
+          }
+      });
+      return shorthandRects;
   }
 
   function text(str, x, y, options) {
@@ -2000,7 +2021,7 @@ l l l
                   rect: Object.assign(Object.assign({}, collision.isColliding.rect), c.isColliding.rect),
                   text: Object.assign(Object.assign({}, collision.isColliding.text), c.isColliding.text),
                   char: Object.assign(Object.assign({}, collision.isColliding.char), c.isColliding.char),
-              } }, c.isColliding.rect);
+              } }, createShorthand(c.isColliding.rect));
           p.add(l);
       }
       concatTmpHitBoxes();
@@ -2388,7 +2409,6 @@ l l l
   const uc = "lucky";
   let minifyReplaces = [
       ["===", "=="],
-      ["isColliding.rect.", ""],
       ["input.pos", "inp.p"],
       ["input.isPressed", "inp.ip"],
       ["input.isJustPressed", "inp.ijp"],
@@ -2396,6 +2416,15 @@ l l l
       ["ticks", "tc"],
       ["difficulty", "df"],
       ["score", "sc"],
+      [".isColliding.rect.transparent", ".tr"],
+      [".isColliding.rect.white", ".wh"],
+      [".isColliding.rect.red", ".rd"],
+      [".isColliding.rect.green", ".gr"],
+      [".isColliding.rect.yellow", ".yl"],
+      [".isColliding.rect.blue", ".bl"],
+      [".isColliding.rect.purple", ".pr"],
+      [".isColliding.rect.cyan", ".cy"],
+      [".isColliding.rect.black", ".lc"],
       ['"transparent"', "tr"],
       ['"white"', "wh"],
       ['"red"', "rd"],
