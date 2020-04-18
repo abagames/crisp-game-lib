@@ -999,17 +999,15 @@ l l l
   }
   function checkHitBoxes(box) {
       let collision = {
-          isColliding: { rect: {}, text: {}, char: {} }
+          isColliding: { rect: {}, text: {}, char: {} },
       };
-      hitBoxes.forEach(r => {
+      hitBoxes.forEach((r) => {
           if (testCollision(box, r)) {
-              collision = {
-                  isColliding: {
+              collision = Object.assign({ isColliding: {
                       rect: Object.assign(Object.assign({}, collision.isColliding.rect), r.collision.isColliding.rect),
                       text: Object.assign(Object.assign({}, collision.isColliding.text), r.collision.isColliding.text),
-                      char: Object.assign(Object.assign({}, collision.isColliding.char), r.collision.isColliding.char)
-                  }
-              };
+                      char: Object.assign(Object.assign({}, collision.isColliding.char), r.collision.isColliding.char),
+                  } }, r.collision.isColliding.rect);
           }
       });
       return collision;
@@ -1998,13 +1996,11 @@ l l l
       let collision = { isColliding: { rect: {}, text: {}, char: {} } };
       for (let i = 0; i < rn; i++) {
           const c = addRect(true, p.x, p.y, thickness, thickness, true);
-          collision = {
-              isColliding: {
+          collision = Object.assign({ isColliding: {
                   rect: Object.assign(Object.assign({}, collision.isColliding.rect), c.isColliding.rect),
                   text: Object.assign(Object.assign({}, collision.isColliding.text), c.isColliding.text),
-                  char: Object.assign(Object.assign({}, collision.isColliding.char), c.isColliding.char)
-              }
-          };
+                  char: Object.assign(Object.assign({}, collision.isColliding.char), c.isColliding.char),
+              } }, c.isColliding.rect);
           p.add(l);
       }
       concatTmpHitBoxes();
@@ -2188,11 +2184,19 @@ l l l
       }
   }
   function _update$1() {
-      exports.ticks = exports.ticks;
-      exports.difficulty = exports.ticks / 3600 + 1;
+      exports.df = exports.difficulty = exports.ticks / 3600 + 1;
+      exports.tc = exports.ticks;
+      exports.sc = exports.score;
+      exports.inp = {
+          p: pos$1,
+          ip: isPressed$2,
+          ijp: isJustPressed$2,
+          ijr: isJustReleased$2,
+      };
       clear$1();
       updateFunc[state]();
       exports.ticks++;
+      exports.score = exports.sc;
   }
   function initInGame() {
       state = "inGame";
@@ -2322,6 +2326,15 @@ l l l
       });
       context.fillStyle = currentFillStyle;
   }
+  function getHash(v) {
+      let hash = 0;
+      for (let i = 0; i < v.length; i++) {
+          const chr = v.charCodeAt(i);
+          hash = (hash << 5) - hash + chr;
+          hash |= 0;
+      }
+      return hash;
+  }
   function addGameScript() {
       let gameName = window.location.search.substring(1);
       gameName = gameName.replace(/\W/g, "");
@@ -2341,24 +2354,63 @@ l l l
               toplevel: true,
           }).code;
           const functionStartString = "function(){";
-          let minifiedUpdateScript = minifiedScript
-              .substring(minifiedScript.indexOf(functionStartString) +
-              functionStartString.length, minifiedScript.length - 4)
-              .replace("let ", "")
-              .replace("const ", "");
+          let minifiedUpdateScript = minifiedScript.substring(minifiedScript.indexOf(functionStartString) +
+              functionStartString.length, minifiedScript.length - 4);
+          minifyReplaces.forEach(([o, r]) => {
+              minifiedUpdateScript = minifiedUpdateScript.split(o).join(r);
+          });
           console.log(minifiedUpdateScript);
           console.log(`${minifiedUpdateScript.length} letters`);
       });
   }
-  function getHash(v) {
-      let hash = 0;
-      for (let i = 0; i < v.length; i++) {
-          const chr = v.charCodeAt(i);
-          hash = (hash << 5) - hash + chr;
-          hash |= 0;
-      }
-      return hash;
-  }
+  const tr = "transparent";
+  const wh = "white";
+  const rd = "red";
+  const gr = "green";
+  const yl = "yellow";
+  const bl = "blue";
+  const pr = "purple";
+  const cy = "cyan";
+  const lc = "black";
+  const cn = "coin";
+  const ls = "laser";
+  const ex = "explosion";
+  const pw = "powerUp";
+  const ht = "hit";
+  const jm = "jump";
+  const sl = "select";
+  const uc = "lucky";
+  let minifyReplaces = [
+      ["var ", ""],
+      ["let ", ""],
+      ["const ", ""],
+      ["===", "=="],
+      ["isColliding.rect.", ""],
+      ["input.pos", "inp.p"],
+      ["input.isPressed", "inp.ip"],
+      ["input.isJustPressed", "inp.ijp"],
+      ["input.isJustReleased", "inp.ijr"],
+      ["ticks", "tc"],
+      ["difficulty", "df"],
+      ["score", "sc"],
+      ['"transparent"', "tr"],
+      ['"white"', "wh"],
+      ['"red"', "rd"],
+      ['"green"', "gr"],
+      ['"yellow"', "yl"],
+      ['"blue"', "bl"],
+      ['"purple"', "pr"],
+      ['"cyan"', "cy"],
+      ['"black"', "lc"],
+      ['"coin"', "cn"],
+      ['"laser"', "ls"],
+      ['"explosion"', "ex"],
+      ['"powerUp"', "pw"],
+      ['"hit"', "ht"],
+      ['"jump"', "jm"],
+      ['"select"', "sl"],
+      ['"lucky"', "uc"],
+  ];
 
   exports.PI = PI;
   exports.abs = abs;
@@ -2366,31 +2418,49 @@ l l l
   exports.addWithCharCode = addWithCharCode;
   exports.atan2 = atan2;
   exports.bar = bar;
+  exports.bl = bl;
   exports.box = box;
   exports.ceil = ceil;
   exports.char = char;
   exports.clamp = clamp;
+  exports.cn = cn;
   exports.color = color;
   exports.cos = cos;
+  exports.cy = cy;
   exports.end = end;
+  exports.ex = ex;
   exports.floor = floor;
+  exports.gr = gr;
+  exports.ht = ht;
   exports.input = input;
+  exports.jm = jm;
   exports.keyboard = keyboard;
+  exports.lc = lc;
   exports.line = line;
+  exports.ls = ls;
+  exports.minifyReplaces = minifyReplaces;
   exports.play = play;
   exports.pointer = pointer;
   exports.pow = pow;
+  exports.pr = pr;
+  exports.pw = pw;
   exports.range = range;
+  exports.rd = rd;
   exports.rect = rect;
   exports.rnd = rnd;
   exports.rndi = rndi;
   exports.rnds = rnds;
   exports.round = round;
   exports.sin = sin;
+  exports.sl = sl;
   exports.sqrt = sqrt;
   exports.text = text;
   exports.times = times;
+  exports.tr = tr;
+  exports.uc = uc;
   exports.vec = vec;
+  exports.wh = wh;
   exports.wrap = wrap;
+  exports.yl = yl;
 
 }(this.window = this.window || {}));

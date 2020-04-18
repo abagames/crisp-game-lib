@@ -8,7 +8,7 @@ import {
   tmpHitBoxes,
   checkHitBoxes,
   concatTmpHitBoxes,
-  Collision
+  Collision,
 } from "./collision";
 
 export function rect(
@@ -137,17 +137,18 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
       isColliding: {
         rect: {
           ...collision.isColliding.rect,
-          ...c.isColliding.rect
+          ...c.isColliding.rect,
         },
         text: {
           ...collision.isColliding.text,
-          ...c.isColliding.text
+          ...c.isColliding.text,
         },
         char: {
           ...collision.isColliding.char,
-          ...c.isColliding.char
-        }
-      }
+          ...c.isColliding.char,
+        },
+      },
+      ...c.isColliding.rect,
     };
     p.add(l);
   }

@@ -214,11 +214,19 @@ function init() {
 }
 
 function _update() {
-  ticks = ticks;
-  difficulty = ticks / 3600 + 1;
+  df = difficulty = ticks / 3600 + 1;
+  tc = ticks;
+  sc = score;
+  inp = {
+    p: input.pos,
+    ip: input.isPressed,
+    ijp: input.isJustPressed,
+    ijr: input.isJustReleased,
+  };
   collision.clear();
   updateFunc[state]();
   ticks++;
+  score = sc;
 }
 
 function initInGame() {
@@ -365,6 +373,16 @@ function updateScoreBoards() {
   view.context.fillStyle = currentFillStyle;
 }
 
+function getHash(v: string) {
+  let hash = 0;
+  for (let i = 0; i < v.length; i++) {
+    const chr = v.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0;
+  }
+  return hash;
+}
+
 function addGameScript() {
   let gameName = window.location.search.substring(1);
   gameName = gameName.replace(/\W/g, "");
@@ -385,25 +403,69 @@ function showMinifiedScript() {
         toplevel: true,
       }).code;
       const functionStartString = "function(){";
-      let minifiedUpdateScript = minifiedScript
-        .substring(
-          minifiedScript.indexOf(functionStartString) +
-            functionStartString.length,
-          minifiedScript.length - 4
-        )
-        .replace("let ", "")
-        .replace("const ", "");
+      let minifiedUpdateScript = minifiedScript.substring(
+        minifiedScript.indexOf(functionStartString) +
+          functionStartString.length,
+        minifiedScript.length - 4
+      );
+      minifyReplaces.forEach(([o, r]) => {
+        minifiedUpdateScript = minifiedUpdateScript.split(o).join(r);
+      });
       console.log(minifiedUpdateScript);
       console.log(`${minifiedUpdateScript.length} letters`);
     });
 }
 
-function getHash(v: string) {
-  let hash = 0;
-  for (let i = 0; i < v.length; i++) {
-    const chr = v.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0;
-  }
-  return hash;
-}
+export let inp: { p: Vector; ip: boolean; ijp: boolean; ijr: boolean };
+export let tc: number;
+export let df: number;
+export let sc: number;
+export const tr = "transparent";
+export const wh = "white";
+export const rd = "red";
+export const gr = "green";
+export const yl = "yellow";
+export const bl = "blue";
+export const pr = "purple";
+export const cy = "cyan";
+export const lc = "black";
+export const cn = "coin";
+export const ls = "laser";
+export const ex = "explosion";
+export const pw = "powerUp";
+export const ht = "hit";
+export const jm = "jump";
+export const sl = "select";
+export const uc = "lucky";
+
+export let minifyReplaces = [
+  ["var ", ""],
+  ["let ", ""],
+  ["const ", ""],
+  ["===", "=="],
+  ["isColliding.rect.", ""],
+  ["input.pos", "inp.p"],
+  ["input.isPressed", "inp.ip"],
+  ["input.isJustPressed", "inp.ijp"],
+  ["input.isJustReleased", "inp.ijr"],
+  ["ticks", "tc"],
+  ["difficulty", "df"],
+  ["score", "sc"],
+  ['"transparent"', "tr"],
+  ['"white"', "wh"],
+  ['"red"', "rd"],
+  ['"green"', "gr"],
+  ['"yellow"', "yl"],
+  ['"blue"', "bl"],
+  ['"purple"', "pr"],
+  ['"cyan"', "cy"],
+  ['"black"', "lc"],
+  ['"coin"', "cn"],
+  ['"laser"', "ls"],
+  ['"explosion"', "ex"],
+  ['"powerUp"', "pw"],
+  ['"hit"', "ht"],
+  ['"jump"', "jm"],
+  ['"select"', "sl"],
+  ['"lucky"', "uc"],
+];

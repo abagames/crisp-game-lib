@@ -23,6 +23,22 @@ export type Collision = {
     text?: { [k: string]: boolean };
     char?: { [k: string]: boolean };
   };
+  transparent?: boolean;
+  white?: boolean;
+  red?: boolean;
+  green?: boolean;
+  yellow?: boolean;
+  blue?: boolean;
+  purple?: boolean;
+  cyan?: boolean;
+  black?: boolean;
+  light_red?: boolean;
+  light_green?: boolean;
+  light_yellow?: boolean;
+  light_blue?: boolean;
+  light_purple?: boolean;
+  light_cyan?: boolean;
+  light_black?: boolean;
 };
 export type HitBox = {
   pos: VectorLike;
@@ -44,25 +60,26 @@ export function concatTmpHitBoxes() {
 
 export function checkHitBoxes(box: HitBox) {
   let collision: Collision = {
-    isColliding: { rect: {}, text: {}, char: {} }
+    isColliding: { rect: {}, text: {}, char: {} },
   };
-  hitBoxes.forEach(r => {
+  hitBoxes.forEach((r) => {
     if (testCollision(box, r)) {
       collision = {
         isColliding: {
           rect: {
             ...collision.isColliding.rect,
-            ...r.collision.isColliding.rect
+            ...r.collision.isColliding.rect,
           },
           text: {
             ...collision.isColliding.text,
-            ...r.collision.isColliding.text
+            ...r.collision.isColliding.text,
           },
           char: {
             ...collision.isColliding.char,
-            ...r.collision.isColliding.char
-          }
-        }
+            ...r.collision.isColliding.char,
+          },
+        },
+        ...r.collision.isColliding.rect,
       };
     }
   });
