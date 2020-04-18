@@ -388,6 +388,7 @@ declare function ceil(v: number): number;
 declare function clamp(v: number, low?: number, high?: number): number;
 declare function wrap(v: number, low: number, high: number): number;
 declare function range(v: number): number[];
+declare function times(v: number, func: Function): any[];
 declare function addWithCharCode(char: string, offset: number): string;
 
 declare interface Vector {

@@ -12,7 +12,7 @@ import { defineCharacters, print, letterSize } from "./letter";
 import * as replay from "./replay";
 declare const sss;
 
-export { clamp, wrap, range, addWithCharCode } from "./util";
+export { clamp, wrap, range, times, addWithCharCode } from "./util";
 export { rect, box, bar, line } from "./rect";
 export { text, char } from "./letter";
 export { Color };
