@@ -284,6 +284,12 @@ function updateTitle() {
   }
   if (replay.isRecorded()) {
     replay.replayInput();
+    inp = {
+      p: input.pos,
+      ip: input.isPressed,
+      ijp: input.isJustPressed,
+      ijr: input.isJustReleased,
+    };
     view.clear();
     update();
     terminal.draw();
@@ -439,9 +445,6 @@ export const sl = "select";
 export const uc = "lucky";
 
 export let minifyReplaces = [
-  ["var ", ""],
-  ["let ", ""],
-  ["const ", ""],
   ["===", "=="],
   ["isColliding.rect.", ""],
   ["input.pos", "inp.p"],

@@ -2250,6 +2250,12 @@ l l l
       }
       if (isRecorded()) {
           replayInput();
+          exports.inp = {
+              p: pos$1,
+              ip: isPressed$2,
+              ijp: isJustPressed$2,
+              ijr: isJustReleased$2,
+          };
           clear();
           update();
           terminal.draw();
@@ -2381,9 +2387,6 @@ l l l
   const sl = "select";
   const uc = "lucky";
   let minifyReplaces = [
-      ["var ", ""],
-      ["let ", ""],
-      ["const ", ""],
       ["===", "=="],
       ["isColliding.rect.", ""],
       ["input.pos", "inp.p"],
