@@ -26,7 +26,7 @@ function update() {
   // Set the drawing color.
   // color(colorName : "transparent" | "white" | "red" | "green" | "yellow" | "blue" |
   // "purple" | "cyan" | "black" | "light_red" | "light_green" | "light_yellow" |
-  // | "light_blue" | "light_purple" | "light_cyan" | "light_black");
+  // "light_blue" | "light_purple" | "light_cyan" | "light_black");
   color("red");
   // Draw the box.
   // box(x, y, width, height);
