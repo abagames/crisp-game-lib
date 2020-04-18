@@ -7,6 +7,7 @@ Develop one game within one hour.
 [![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
 [![pileup screenshot](docs/pileup/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pileup)
 [![digi10 screenshot](docs/digi10/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?digi10)
+[![lland screenshot](docs/lland/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?lland)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 [![floater screenshot](docs/floater/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?floater)
 [![interspace screenshot](docs/interspace/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?interspace)
