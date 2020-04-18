@@ -217,6 +217,7 @@ function _update() {
   df = difficulty = ticks / 3600 + 1;
   tc = ticks;
   sc = score;
+  const prevSc = sc;
   inp = {
     p: input.pos,
     ip: input.isPressed,
@@ -226,7 +227,9 @@ function _update() {
   collision.clear();
   updateFunc[state]();
   ticks++;
-  score = sc;
+  if (sc !== prevSc) {
+    score = sc;
+  }
 }
 
 function initInGame() {
@@ -446,6 +449,7 @@ export const uc = "lucky";
 
 export let minifyReplaces = [
   ["===", "=="],
+  ["!==", "!="],
   ["input.pos", "inp.p"],
   ["input.isPressed", "inp.ip"],
   ["input.isJustPressed", "inp.ijp"],

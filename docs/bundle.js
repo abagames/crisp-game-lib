@@ -2208,6 +2208,7 @@ l l l
       exports.df = exports.difficulty = exports.ticks / 3600 + 1;
       exports.tc = exports.ticks;
       exports.sc = exports.score;
+      const prevSc = exports.sc;
       exports.inp = {
           p: pos$1,
           ip: isPressed$2,
@@ -2217,7 +2218,9 @@ l l l
       clear$1();
       updateFunc[state]();
       exports.ticks++;
-      exports.score = exports.sc;
+      if (exports.sc !== prevSc) {
+          exports.score = exports.sc;
+      }
   }
   function initInGame() {
       state = "inGame";
@@ -2409,6 +2412,7 @@ l l l
   const uc = "lucky";
   let minifyReplaces = [
       ["===", "=="],
+      ["!==", "!="],
       ["input.pos", "inp.p"],
       ["input.isPressed", "inp.ip"],
       ["input.isJustPressed", "inp.ijp"],
