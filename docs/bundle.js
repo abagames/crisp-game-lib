@@ -1018,6 +1018,9 @@ l l l
       return -r2.size.x < ox && ox < r1.size.x && -r2.size.y < oy && oy < r1.size.y;
   }
   function createShorthand(rects) {
+      if (rects == null) {
+          return {};
+      }
       const colorReplaces = {
           transparent: "tr",
           white: "wh",

@@ -94,6 +94,9 @@ function testCollision(r1: HitBox, r2: HitBox) {
 }
 
 export function createShorthand(rects) {
+  if (rects == null) {
+    return {};
+  }
   const colorReplaces = {
     transparent: "tr",
     white: "wh",
