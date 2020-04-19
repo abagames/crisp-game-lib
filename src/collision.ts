@@ -66,6 +66,8 @@ export function checkHitBoxes(box: HitBox) {
   hitBoxes.forEach((r) => {
     if (testCollision(box, r)) {
       collision = {
+        ...collision,
+        ...createShorthand(r.collision.isColliding.rect),
         isColliding: {
           rect: {
             ...collision.isColliding.rect,
@@ -80,7 +82,6 @@ export function checkHitBoxes(box: HitBox) {
             ...r.collision.isColliding.char,
           },
         },
-        ...createShorthand(r.collision.isColliding.rect),
       };
     }
   });

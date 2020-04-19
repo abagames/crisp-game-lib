@@ -1003,11 +1003,11 @@ l l l
       };
       hitBoxes.forEach((r) => {
           if (testCollision(box, r)) {
-              collision = Object.assign({ isColliding: {
+              collision = Object.assign(Object.assign(Object.assign({}, collision), createShorthand(r.collision.isColliding.rect)), { isColliding: {
                       rect: Object.assign(Object.assign({}, collision.isColliding.rect), r.collision.isColliding.rect),
                       text: Object.assign(Object.assign({}, collision.isColliding.text), r.collision.isColliding.text),
                       char: Object.assign(Object.assign({}, collision.isColliding.char), r.collision.isColliding.char),
-                  } }, createShorthand(r.collision.isColliding.rect));
+                  } });
           }
       });
       return collision;
@@ -2020,11 +2020,11 @@ l l l
       let collision = { isColliding: { rect: {}, text: {}, char: {} } };
       for (let i = 0; i < rn; i++) {
           const c = addRect(true, p.x, p.y, thickness, thickness, true);
-          collision = Object.assign({ isColliding: {
+          collision = Object.assign(Object.assign(Object.assign({}, collision), createShorthand(c.isColliding.rect)), { isColliding: {
                   rect: Object.assign(Object.assign({}, collision.isColliding.rect), c.isColliding.rect),
                   text: Object.assign(Object.assign({}, collision.isColliding.text), c.isColliding.text),
                   char: Object.assign(Object.assign({}, collision.isColliding.char), c.isColliding.char),
-              } }, createShorthand(c.isColliding.rect));
+              } });
           p.add(l);
       }
       concatTmpHitBoxes();

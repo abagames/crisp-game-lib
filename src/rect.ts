@@ -135,6 +135,8 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
   for (let i = 0; i < rn; i++) {
     const c = addRect(true, p.x, p.y, thickness, thickness, true);
     collision = {
+      ...collision,
+      ...createShorthand(c.isColliding.rect),
       isColliding: {
         rect: {
           ...collision.isColliding.rect,
@@ -149,7 +151,6 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
           ...c.isColliding.char,
         },
       },
-      ...createShorthand(c.isColliding.rect),
     };
     p.add(l);
   }
