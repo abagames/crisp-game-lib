@@ -9,6 +9,8 @@ import { Random } from "./random";
 import * as collision from "./collision";
 import { init as initColor, setColor, Color } from "./color";
 import { defineCharacters, print, letterSize } from "./letter";
+import { times } from "./util";
+
 import * as replay from "./replay";
 declare const sss;
 declare const Terser;
@@ -458,6 +460,8 @@ function showMinifiedScript() {
 
 export let inp: { p: Vector; ip: boolean; ijp: boolean; ijr: boolean };
 export let col = color;
+export let ply = play;
+export let tms = times;
 export let tc: number;
 export let df: number;
 export let sc: number;
@@ -487,6 +491,8 @@ export let minifyReplaces = [
   ["input.isJustPressed", "inp.ijp"],
   ["input.isJustReleased", "inp.ijr"],
   ["color(", "clr("],
+  ["play(", "ply("],
+  ["times(", "tms("],
   ["ticks", "tc"],
   ["difficulty", "df"],
   ["score", "sc"],

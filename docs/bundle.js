@@ -2424,6 +2424,8 @@ l l l
       });
   }
   let col = color;
+  let ply = play;
+  let tms = times;
   const tr = "transparent";
   const wh = "white";
   const rd = "red";
@@ -2449,6 +2451,8 @@ l l l
       ["input.isJustPressed", "inp.ijp"],
       ["input.isJustReleased", "inp.ijr"],
       ["color(", "clr("],
+      ["play(", "ply("],
+      ["times(", "tms("],
       ["ticks", "tc"],
       ["difficulty", "df"],
       ["score", "sc"],
@@ -2509,6 +2513,7 @@ l l l
   exports.ls = ls;
   exports.minifyReplaces = minifyReplaces;
   exports.play = play;
+  exports.ply = ply;
   exports.pointer = pointer;
   exports.pow = pow;
   exports.pr = pr;
@@ -2525,6 +2530,7 @@ l l l
   exports.sqrt = sqrt;
   exports.text = text;
   exports.times = times;
+  exports.tms = tms;
   exports.tr = tr;
   exports.uc = uc;
   exports.vec = vec;
