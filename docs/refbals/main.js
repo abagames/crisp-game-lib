@@ -33,8 +33,7 @@ function update() {
   });
   color("purple");
   balls.map((b) => {
-    b.v += 0.03;
-    if ((b.p.y += b.v) > 99) {
+    if ((b.p.y += b.v += 0.03) > 99) {
       play("explosion");
       end();
     }

@@ -29,8 +29,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
   }),
   clr(pr),
   e.map((e) => {
-    (e.v += 0.03),
-      (e.p.y += e.v) > 99 && (ply(ex), end()),
+    (e.p.y += e.v += 0.03) > 99 && (ply(ex), end()),
       box(e.p, 5, 5).bl && (ply(sl), sc++, (e.p.y += 2 * (e.v *= -1)));
   });
 ```
