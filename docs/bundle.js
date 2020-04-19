@@ -2423,7 +2423,7 @@ l l l
           console.log(`${minifiedUpdateScript.length} letters`);
       });
   }
-  let col = color;
+  let clr = color;
   let ply = play;
   let tms = times;
   const tr = "transparent";
@@ -2495,8 +2495,8 @@ l l l
   exports.ceil = ceil;
   exports.char = char;
   exports.clamp = clamp;
+  exports.clr = clr;
   exports.cn = cn;
-  exports.col = col;
   exports.color = color;
   exports.cos = cos;
   exports.cy = cy;

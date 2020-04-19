@@ -459,7 +459,7 @@ function showMinifiedScript() {
 }
 
 export let inp: { p: Vector; ip: boolean; ijp: boolean; ijr: boolean };
-export let col = color;
+export let clr = color;
 export let ply = play;
 export let tms = times;
 export let tc: number;
