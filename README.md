@@ -12,6 +12,7 @@ Develop one game within one hour.
 [![floater screenshot](docs/floater/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?floater)
 [![interspace screenshot](docs/interspace/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?interspace)
 [![golfme screenshot](docs/golfme/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?golfme)
+[![zartan screenshot](docs/zartan/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?zartan)
 [![monjum screenshot](docs/monjum/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?monjum)
 [![tarutobi screenshot](docs/tarutobi/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?tarutobi)
 [![gloop screenshot](docs/gloop/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?gloop)
