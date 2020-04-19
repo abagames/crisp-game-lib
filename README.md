@@ -170,7 +170,7 @@ l    l
 //   isCapturing?: boolean; // Capture a screen by pressing 'c'.
 //   isShowingScore?: boolean; // Show a score and a hi-score.
 //   isReplayEnabled?: boolean; // Enable a replay.
-//   isMinifying: boolean; Show a minified code to the console.
+//   isMinifying: boolean; // Show a minified code to the console.
 //   viewSize?: { x: number; y: number }; // Set the screen size.
 //   seed?: number; // Set the random seed for sounds.
 // }
@@ -259,7 +259,7 @@ function addWithCharCode(char: string, offset: number): string;
 
 ### Shorthands
 
-Minified version source code uses shorthands for functions and variables
+A minified source code uses shorthands for functions and variables.
 
 ```javascript
 // color -> clr
