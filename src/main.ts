@@ -457,6 +457,7 @@ function showMinifiedScript() {
 }
 
 export let inp: { p: Vector; ip: boolean; ijp: boolean; ijr: boolean };
+export let col = color;
 export let tc: number;
 export let df: number;
 export let sc: number;
@@ -485,6 +486,7 @@ export let minifyReplaces = [
   ["input.isPressed", "inp.ip"],
   ["input.isJustPressed", "inp.ijp"],
   ["input.isJustReleased", "inp.ijr"],
+  ["color(", "clr("],
   ["ticks", "tc"],
   ["difficulty", "df"],
   ["score", "sc"],

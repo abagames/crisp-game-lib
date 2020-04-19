@@ -2423,6 +2423,7 @@ l l l
           console.log(`${minifiedUpdateScript.length} letters`);
       });
   }
+  let col = color;
   const tr = "transparent";
   const wh = "white";
   const rd = "red";
@@ -2447,6 +2448,7 @@ l l l
       ["input.isPressed", "inp.ip"],
       ["input.isJustPressed", "inp.ijp"],
       ["input.isJustReleased", "inp.ijr"],
+      ["color(", "clr("],
       ["ticks", "tc"],
       ["difficulty", "df"],
       ["score", "sc"],
@@ -2490,6 +2492,7 @@ l l l
   exports.char = char;
   exports.clamp = clamp;
   exports.cn = cn;
+  exports.col = col;
   exports.color = color;
   exports.cos = cos;
   exports.cy = cy;
