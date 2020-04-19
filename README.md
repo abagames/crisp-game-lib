@@ -16,6 +16,25 @@ Develop one game within one hour.
 [![gloop screenshot](docs/gloop/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?gloop)
 [![count screenshot](docs/count/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?count)
 
+[![refbals screenshot](docs/refbals/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?refbals)
+
+```javascript
+tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
+  tc % 99 || e.push({ p: vec(rnd(50), 0), v: 0 }),
+  clr(bl),
+  i.map((e) => {
+    (e.x -= inp.ip ? 2 : 1),
+      box(e, 36, 3),
+      e.x < -19 && ((e.x += rnd(130, 150)), (e.y = rnd(50, 90)));
+  }),
+  clr(pr),
+  e.map((e) => {
+    (e.v += 0.03),
+      (e.p.y += e.v) > 99 && (ply(ex), end()),
+      box(e.p, 5, 5).bl && (ply(sl), sc++, (e.p.y += 2 * (e.v *= -1)));
+  });
+```
+
 ## Reference
 
 ### Drawing ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_drawing))
