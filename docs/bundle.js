@@ -1987,7 +1987,12 @@ l l l
       if (typeof x === "number") {
           if (typeof y === "number") {
               if (typeof width === "number") {
-                  return addRect(isAlignCenter, x, y, width, height);
+                  if (height == null) {
+                      return addRect(isAlignCenter, x, y, width, width);
+                  }
+                  else {
+                      return addRect(isAlignCenter, x, y, width, height);
+                  }
               }
               else {
                   return addRect(isAlignCenter, x, y, width.x, width.y);
@@ -1999,7 +2004,10 @@ l l l
       }
       else {
           if (typeof y === "number") {
-              if (typeof width === "number") {
+              if (width == null) {
+                  return addRect(isAlignCenter, x.x, x.y, y, y);
+              }
+              else if (typeof width === "number") {
                   return addRect(isAlignCenter, x.x, x.y, y, width);
               }
               else {

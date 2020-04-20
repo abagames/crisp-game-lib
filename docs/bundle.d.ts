@@ -78,13 +78,13 @@ declare function rect(
   x: number,
   y: number,
   width: number,
-  height: number
+  height?: number
 ): Collision;
 declare function rect(x: number, y: number, size: VectorLike): Collision;
 declare function rect(
   pos: VectorLike,
   width: number,
-  height: number
+  height?: number
 ): Collision;
 declare function rect(pos: VectorLike, size: VectorLike): Collision;
 
@@ -93,10 +93,14 @@ declare function box(
   x: number,
   y: number,
   width: number,
-  height: number
+  height?: number
 ): Collision;
 declare function box(x: number, y: number, size: VectorLike): Collision;
-declare function box(pos: VectorLike, width: number, height: number): Collision;
+declare function box(
+  pos: VectorLike,
+  width: number,
+  height?: number
+): Collision;
 declare function box(pos: VectorLike, size: VectorLike): Collision;
 
 // Draw bar (angled rect)

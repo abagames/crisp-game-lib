@@ -37,7 +37,7 @@ function update() {
       play("explosion");
       end();
     }
-    if (box(b.p, 5, 5).isColliding.rect.blue) {
+    if (box(b.p, 5).isColliding.rect.blue) {
       play("select");
       score++;
       b.p.y += (b.v *= -1) * 2;
