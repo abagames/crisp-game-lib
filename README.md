@@ -2,6 +2,94 @@
 
 Develop one game within one hour.
 
+## Sample game
+
+[![refbals screenshot](docs/refbals/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?refbals)
+
+```javascript
+// Title of the game
+title = "REFBALS";
+
+// Description is displayed on the title screen
+description = `
+[Hold] Accel
+`;
+
+// User defined text characters
+characters = [];
+
+// Game options
+options = {
+  isPlayingBgm: true,
+  isReplayEnabled: true,
+};
+
+let balls;
+let walls;
+
+// 'update()' is called per frame (1 frame = 1/60 second)
+function update() {
+  // 'ticks' counts the number of frames from the start of the game
+  if (!ticks) {
+    // Initialize variables at the first frame (ticks === 0)
+    balls = [];
+    // 'vec()' creates a 2d vector instance
+    walls = times(5, (i) => vec(i * -29, -9));
+  }
+  if (!(ticks % 99)) {
+    // 'rnd()' returns a random number
+    balls.push({ p: vec(rnd(50), 0), v: 0 });
+  }
+  // 'color()' sets a drawing color
+  color("blue");
+  walls.map((w) => {
+    // 'input.isPressed' returns true if
+    // a mouse button, a key or a touch screen is pressed
+    w.x -= input.isPressed ? 2 : 1;
+    // 'box()' draws a rectangle
+    box(w, 36, 3);
+    if (w.x < -19) {
+      w.x += rnd(130, 150);
+      w.y = rnd(50, 90);
+    }
+  });
+  color("purple");
+  balls.map((b) => {
+    if ((b.p.y += b.v += 0.03) > 99) {
+      // 'play()' plays a sound effect
+      play("explosion");
+      // A game is over when 'end()' is called
+      end();
+    }
+    // 'box()' returns a collision status
+    if (box(b.p, 5).isColliding.rect.blue) {
+      play("select");
+      // 'score' represents the score of the game
+      score++;
+      b.p.y += (b.v *= -1) * 2;
+    }
+  });
+}
+```
+
+The minified code is 274 letters long.
+
+```javascript
+tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
+  tc % 99 || e.push({ p: vec(rnd(50), 0), v: 0 }),
+  clr(bl),
+  i.map((e) => {
+    (e.x -= inp.ip ? 2 : 1),
+      box(e, 36, 3),
+      e.x < -19 && ((e.x += rnd(130, 150)), (e.y = rnd(50, 90)));
+  }),
+  clr(pr),
+  e.map((e) => {
+    (e.p.y += e.v += 0.03) > 99 && (ply(ex), end()),
+      box(e.p, 5).bl && (ply(sl), sc++, (e.p.y += 2 * (e.v *= -1)));
+  });
+```
+
 ## Demo
 
 [![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
@@ -19,24 +107,6 @@ Develop one game within one hour.
 [![tarutobi screenshot](docs/tarutobi/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?tarutobi)
 [![gloop screenshot](docs/gloop/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?gloop)
 [![count screenshot](docs/count/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?count)
-
-[![refbals screenshot](docs/refbals/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?refbals)
-
-```javascript
-tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
-  tc % 99 || e.push({ p: vec(rnd(50), 0), v: 0 }),
-  clr(bl),
-  i.map((e) => {
-    (e.x -= inp.ip ? 2 : 1),
-      box(e, 36, 3),
-      e.x < -19 && ((e.x += rnd(130, 150)), (e.y = rnd(50, 90)));
-  }),
-  clr(pr),
-  e.map((e) => {
-    (e.p.y += e.v += 0.03) > 99 && (ply(ex), end()),
-      box(e.p, 5, 5).bl && (ply(sl), sc++, (e.p.y += 2 * (e.v *= -1)));
-  });
-```
 
 ## Reference
 
