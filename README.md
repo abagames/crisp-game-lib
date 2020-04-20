@@ -122,11 +122,11 @@ function update() {
   // "light_blue" | "light_purple" | "light_cyan" | "light_black");
   color("red");
   // Draw the box.
-  // box(x, y, width, height);
+  // box(x, y, width, height?);
   // box(pos, size);
   box(20, 20, 15, 20);
   // Draw the rectangle.
-  // rect(x, y, width, height);
+  // rect(x, y, width, height?);
   // rect(pos, size);
   rect(70, 20, 20, 25);
   // Draw the bar.
