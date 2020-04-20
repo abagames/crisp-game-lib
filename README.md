@@ -2,7 +2,7 @@
 
 Develop one game within one hour.
 
-## Sample game
+## Sample game (Click the image to play)
 
 [![refbals screenshot](docs/refbals/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?refbals)
 
@@ -90,7 +90,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
   });
 ```
 
-## Demo
+## Demo (Click the image to play)
 
 [![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
 [![pileup screenshot](docs/pileup/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pileup)
