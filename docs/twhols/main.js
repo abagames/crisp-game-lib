@@ -9,8 +9,6 @@ characters = [];
 options = {
   isPlayingBgm: true,
   isReplayEnabled: true,
-  isCapturing: true,
-  isMinifying: true,
 };
 
 let walls;
