@@ -9,10 +9,10 @@
   "author": "abagames",
   "license": "MIT",
   "devDependencies": {
-    "light-server": "^2.6.4",
-    "rollup": "^1.27.6",
+    "light-server": "^2.7.0",
+    "rollup": "^2.17.1",
     "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-typescript2": "^0.25.2",
-    "typescript": "^3.7.2"
+    "rollup-plugin-typescript2": "^0.27.1",
+    "typescript": "^3.9.5"
   }
 }
