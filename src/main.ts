@@ -229,6 +229,9 @@ function _update() {
   };
   collision.clear();
   updateFunc[state]();
+  if (isUsingPixi) {
+    view.endFill();
+  }
   ticks++;
   if (isReplaying) {
     score = prevScore;

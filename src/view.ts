@@ -19,6 +19,7 @@ let viewBackground: Color = "black";
 
 export let currentColor: Color;
 let savedCurrentColor: Color;
+let isFilling = false;
 
 export function init(
   _size: VectorLike,
@@ -63,6 +64,7 @@ image-rendering: pixelated;
     graphics.scale.x = graphics.scale.y = graphicsScale;
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     app.stage.addChild(graphics);
+    graphics.lineStyle(0);
     canvas.style.cssText = canvasCss;
   } else {
     canvas = document.createElement("canvas");
@@ -101,10 +103,11 @@ image-rendering: pixelated;
 export function clear() {
   if (isUsingPixi) {
     graphics.clear();
-    graphics.lineStyle(0);
-    graphics.beginFill(colorToNumber(viewBackground, isDarkTheme ? 0.15 : 1));
+    isFilling = false;
+    beginFillColor(colorToNumber(viewBackground, isDarkTheme ? 0.15 : 1));
     graphics.drawRect(0, 0, size.x, size.y);
-    graphics.endFill();
+    endFill();
+    isFilling = false;
     return;
   }
   saveCurrentColor();
@@ -113,20 +116,29 @@ export function clear() {
   loadCurrentColor();
 }
 
-export function saveAsBackground() {
-  background.src = canvas.toDataURL();
-}
-
-export function drawBackground() {
-  context.drawImage(background, 0, 0);
-}
-
 export function setColor(colorName: Color) {
   currentColor = colorName;
   if (isUsingPixi) {
+    if (isFilling) {
+      graphics.endFill();
+    }
+    beginFillColor(colorToNumber(currentColor));
     return;
   }
   context.fillStyle = colorToStyle(colorName);
+}
+
+function beginFillColor(color: number) {
+  endFill();
+  graphics.beginFill(color);
+  isFilling = true;
+}
+
+export function endFill() {
+  if (isFilling) {
+    graphics.endFill();
+    isFilling = false;
+  }
 }
 
 export function saveCurrentColor() {
@@ -139,10 +151,7 @@ export function loadCurrentColor() {
 
 export function fillRect(x: number, y: number, width: number, height: number) {
   if (isUsingPixi) {
-    graphics.lineStyle(0);
-    graphics.beginFill(colorToNumber(currentColor));
     graphics.drawRect(x, y, width, height);
-    graphics.endFill();
     return;
   }
   context.fillRect(x, y, width, height);
@@ -156,7 +165,7 @@ export function drawLetterImage(
   height?: number
 ) {
   if (isUsingPixi) {
-    graphics.lineStyle(0);
+    endFill();
     graphics.beginTextureFill({
       texture: li.texture,
       matrix: new PIXI.Matrix().translate(x, y),
@@ -175,6 +184,14 @@ export function drawLetterImage(
   } else {
     context.drawImage(li.image, x, y, width, height);
   }
+}
+
+export function saveAsBackground() {
+  background.src = canvas.toDataURL();
+}
+
+export function drawBackground() {
+  context.drawImage(background, 0, 0);
 }
 
 export function capture() {

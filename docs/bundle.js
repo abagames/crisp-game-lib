@@ -1958,6 +1958,7 @@ l l l
   let viewBackground = "black";
   let currentColor;
   let savedCurrentColor;
+  let isFilling = false;
   function init$5(_size, _bodyBackground, _viewBackground, isCapturing) {
       size.set(_size);
       viewBackground = _viewBackground;
@@ -1990,6 +1991,7 @@ transform: translate(-50%, -50%);
           graphics.scale.x = graphics.scale.y = graphicsScale;
           PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
           app.stage.addChild(graphics);
+          graphics.lineStyle(0);
           canvas.style.cssText = canvasCss;
       }
       document.body.appendChild(canvas);
@@ -2019,17 +2021,33 @@ transform: translate(-50%, -50%);
   function clear$1() {
       {
           graphics.clear();
-          graphics.lineStyle(0);
-          graphics.beginFill(colorToNumber(viewBackground,  1));
+          isFilling = false;
+          beginFillColor(colorToNumber(viewBackground,  1));
           graphics.drawRect(0, 0, size.x, size.y);
-          graphics.endFill();
+          endFill();
+          isFilling = false;
           return;
       }
   }
   function setColor(colorName) {
       currentColor = colorName;
       {
+          if (isFilling) {
+              graphics.endFill();
+          }
+          beginFillColor(colorToNumber(currentColor));
           return;
+      }
+  }
+  function beginFillColor(color) {
+      endFill();
+      graphics.beginFill(color);
+      isFilling = true;
+  }
+  function endFill() {
+      if (isFilling) {
+          graphics.endFill();
+          isFilling = false;
       }
   }
   function saveCurrentColor() {
@@ -2040,16 +2058,13 @@ transform: translate(-50%, -50%);
   }
   function fillRect(x, y, width, height) {
       {
-          graphics.lineStyle(0);
-          graphics.beginFill(colorToNumber(currentColor));
           graphics.drawRect(x, y, width, height);
-          graphics.endFill();
           return;
       }
   }
   function drawLetterImage(li, x, y, width, height) {
       {
-          graphics.lineStyle(0);
+          endFill();
           graphics.beginTextureFill({
               texture: li.texture,
               matrix: new PIXI.Matrix().translate(x, y),
@@ -2277,6 +2292,9 @@ transform: translate(-50%, -50%);
       };
       clear();
       updateFunc[state]();
+      {
+          endFill();
+      }
       exports.ticks++;
       if (isReplaying) {
           exports.score = prevScore;
