@@ -7,7 +7,7 @@ import * as pointer from "./pointer";
 import { Vector, VectorLike } from "./vector";
 import { Random } from "./random";
 import * as collision from "./collision";
-import { init as initColor, setColor, Color } from "./color";
+import { Color } from "./color";
 import { defineCharacters, print, letterSize } from "./letter";
 import { times } from "./util";
 
@@ -85,7 +85,7 @@ export function addScore(value: number, x?: number | VectorLike, y?: number) {
 }
 
 export function color(colorName: Color) {
-  setColor(colorName);
+  view.setColor(colorName);
 }
 
 export function vec(x?: number | VectorLike, y?: number) {
@@ -106,7 +106,7 @@ const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
   select: "s",
   lucky: "u",
 };
-const defaultOptions = {
+const defaultOptions: Options = {
   isPlayingBgm: false,
   isCapturing: false,
   isShowingScore: true,
@@ -114,6 +114,7 @@ const defaultOptions = {
   isMinifying: false,
   viewSize: { x: 100, y: 100 },
   seed: 0,
+  theme: "simple",
 };
 
 declare let title: string;
@@ -127,6 +128,7 @@ declare type Options = {
   isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
+  theme: "simple" | "pixel";
 };
 declare let options: Options;
 declare function update();
@@ -152,15 +154,14 @@ let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isReplaying = false;
 let gameScriptFile: string;
+export let isUsingPixi = true; //false;
+export let isDarkTheme = false;
 
-addGameScript();
-window.addEventListener("load", onLoad);
-
-function onLoad() {
+export function onLoad() {
   loopOptions = {
     viewSize: { x: 100, y: 100 },
     bodyBackground: "#e0e0e0",
-    viewBackground: "#eeeeee",
+    viewBackground: "white",
   };
   let opts;
   if (typeof options !== "undefined" && options != null) {
@@ -177,7 +178,6 @@ function onLoad() {
   if (opts.isMinifying) {
     showMinifiedScript();
   }
-  initColor();
   loop.init(init, _update, loopOptions);
 }
 
@@ -206,7 +206,7 @@ function init() {
   const sz = loopOptions.viewSize;
   terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };
   terminal = new Terminal(terminalSize);
-  setColor("black");
+  view.setColor("black");
   if (isNoTitle) {
     initInGame();
     ticks = 0;
@@ -290,6 +290,7 @@ function updateTitle() {
     initInGame();
     return;
   }
+  view.clear();
   if (replay.isRecorded()) {
     replay.replayInput();
     inp = {
@@ -298,9 +299,7 @@ function updateTitle() {
       ijp: input.isJustPressed,
       ijr: input.isJustReleased,
     };
-    view.clear();
     update();
-    terminal.draw();
   }
   if (ticks === 0) {
     drawScore();
@@ -311,7 +310,6 @@ function updateTitle() {
         Math.ceil(terminalSize.y * 0.2)
       );
     }
-    terminal.draw();
   }
   if (ticks === 30 || ticks == 40) {
     if (typeof description !== "undefined" && description != null) {
@@ -325,9 +323,9 @@ function updateTitle() {
       description.split("\n").forEach((l, i) => {
         terminal.print(l, x, Math.floor(terminalSize.y / 2) + i);
       });
-      terminal.draw();
     }
   }
+  terminal.draw();
 }
 
 function initGameOver() {
@@ -347,9 +345,6 @@ function updateGameOver() {
     initInGame();
   } else if (ticks === 120 && !isNoTitle) {
     initTitle();
-  }
-  if (ticks === 10) {
-    drawGameOver();
   }
 }
 
@@ -375,8 +370,8 @@ function drawScore() {
 }
 
 function updateScoreBoards() {
-  const currentFillStyle = view.context.fillStyle;
-  setColor("black", false);
+  view.saveCurrentColor();
+  view.setColor("black");
   scoreBoards = scoreBoards.filter((sb) => {
     print(sb.str, sb.pos.x, sb.pos.y);
     sb.pos.y += sb.vy;
@@ -384,7 +379,7 @@ function updateScoreBoards() {
     sb.ticks--;
     return sb.ticks > 0;
   });
-  view.context.fillStyle = currentFillStyle;
+  view.loadCurrentColor();
 }
 
 function getHash(v: string) {
@@ -397,7 +392,7 @@ function getHash(v: string) {
   return hash;
 }
 
-function addGameScript() {
+export function addGameScript() {
   let gameName = window.location.search.substring(1);
   gameName = gameName.replace(/\W/g, "");
   if (gameName.length === 0) {

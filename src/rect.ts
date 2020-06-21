@@ -1,5 +1,4 @@
 import * as view from "./view";
-import { currentColor } from "./color";
 import { clamp } from "./util";
 import { Vector, VectorLike } from "./vector";
 import {
@@ -185,11 +184,11 @@ function addRect(
     size.y *= -1;
   }
   const box: HitBox = { pos, size, collision: { isColliding: { rect: {} } } };
-  box.collision.isColliding.rect[currentColor] = true;
+  box.collision.isColliding.rect[view.currentColor] = true;
   const collision = checkHitBoxes(box);
-  if (currentColor !== "transparent") {
+  if (view.currentColor !== "transparent") {
     (isAddingToTmp ? tmpHitBoxes : hitBoxes).push(box);
-    view.context.fillRect(pos.x, pos.y, size.x, size.y);
+    view.fillRect(pos.x, pos.y, size.x, size.y);
   }
   return collision;
 }

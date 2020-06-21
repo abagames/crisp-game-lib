@@ -1,13 +1,14 @@
 import * as view from "./view";
 import * as letter from "./letter";
 import * as input from "./input";
+import * as color from "./color";
 import { VectorLike } from "./vector";
 declare const sss;
 
 export type Options = {
   viewSize?: VectorLike;
   bodyBackground?: string;
-  viewBackground?: string;
+  viewBackground?: Color;
   isUsingVirtualPad?: boolean;
   isFourWaysStick?: boolean;
   isCapturing?: boolean;
@@ -22,7 +23,7 @@ const defaultOptions: Options = {
   viewBackground: "black",
   isUsingVirtualPad: true,
   isFourWaysStick: false,
-  isCapturing: false
+  isCapturing: false,
 };
 let options: Options;
 let textCacheEnableTicks = 10;
@@ -34,6 +35,7 @@ export function init(
 ) {
   _init = __init;
   _update = __update;
+  color.init();
   options = { ...defaultOptions, ..._options };
   view.init(
     options.viewSize,

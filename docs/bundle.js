@@ -1,4 +1,4 @@
-(function (exports) {
+(function (exports, PIXI) {
   'use strict';
 
   function clamp(v, low = 0, high = 1) {
@@ -171,80 +171,6 @@
       get angle() {
           return Math.atan2(this.y, this.x);
       }
-  }
-
-  const size = new Vector();
-  let canvas;
-  let context;
-  let bodyCss;
-  const canvasCss = `
-position: absolute;
-left: 50%;
-top: 50%;
-transform: translate(-50%, -50%);
-image-rendering: -moz-crisp-edges;
-image-rendering: -webkit-optimize-contrast;
-image-rendering: -o-crisp-edges;
-image-rendering: pixelated;
-`;
-  let background = document.createElement("img");
-  let captureCanvas;
-  let captureContext;
-  let viewBackground = "black";
-  function init(_size, _bodyBackground, _viewBackground, isCapturing) {
-      size.set(_size);
-      viewBackground = _viewBackground;
-      bodyCss = `
--webkit-touch-callout: none;
--webkit-tap-highlight-color: ${_bodyBackground};
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
-background: ${_bodyBackground};
-color: #888;
-`;
-      document.body.style.cssText = bodyCss;
-      canvas = document.createElement("canvas");
-      canvas.width = size.x;
-      canvas.height = size.y;
-      canvas.style.cssText = canvasCss;
-      const cs = 95;
-      const cw = size.x >= size.y ? cs : (cs / size.y) * size.x;
-      const ch = size.y >= size.x ? cs : (cs / size.x) * size.y;
-      canvas.style.width = `${cw}vmin`;
-      canvas.style.height = `${ch}vmin`;
-      context = canvas.getContext("2d");
-      context.imageSmoothingEnabled = false;
-      document.body.appendChild(canvas);
-      if (isCapturing) {
-          captureCanvas = document.createElement("canvas");
-          if (size.x <= size.y * 2) {
-              captureCanvas.width = size.y * 2;
-              captureCanvas.height = size.y;
-          }
-          else {
-              captureCanvas.width = size.x;
-              captureCanvas.height = size.x / 2;
-          }
-          captureContext = captureCanvas.getContext("2d");
-          captureContext.fillStyle = _bodyBackground;
-          gcc.setOptions({
-              scale: Math.round(400 / captureCanvas.width),
-              capturingFps: 60
-          });
-      }
-  }
-  function clear() {
-      const currentFillStyle = context.fillStyle;
-      context.fillStyle = viewBackground;
-      context.fillRect(0, 0, size.x, size.y);
-      context.fillStyle = currentFillStyle;
-  }
-  function capture() {
-      captureContext.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
-      captureContext.drawImage(canvas, (captureCanvas.width - canvas.width) / 2, (captureCanvas.height - canvas.height) / 2);
-      gcc.capture(captureCanvas);
   }
 
   const textPatterns = [
@@ -914,8 +840,6 @@ l l l
 `
   ];
 
-  let values;
-  let styles;
   const colors = [
       "transparent",
       "white",
@@ -932,10 +856,10 @@ l l l
       "light_blue",
       "light_purple",
       "light_cyan",
-      "light_black"
+      "light_black",
   ];
-  let currentColor;
   const colorChars = "twrgybpclRGYBPCL";
+  let values;
   const rgbNumbers = [
       0xeeeeee,
       0xe91e63,
@@ -944,9 +868,9 @@ l l l
       0x3f51b5,
       0x9c27b0,
       0x03a9f4,
-      0x616161
+      0x616161,
   ];
-  function init$1() {
+  function init() {
       const [wr, wb, wg] = getRgb(0);
       values = fromEntities(colors.map((c, i) => {
           if (i < 1) {
@@ -963,33 +887,32 @@ l l l
                   r: Math.floor(wr - (wr - r) * 0.5),
                   g: Math.floor(wg - (wg - g) * 0.5),
                   b: Math.floor(wb - (wb - b) * 0.5),
-                  a: 1
-              }
+                  a: 1,
+              },
           ];
-      }));
-      styles = fromEntities(entries(values).map(e => {
-          const k = e[0];
-          const v = e[1];
-          const s = v.a < 1
-              ? `rgba(${v.r},${v.g},${v.b},${v.a})`
-              : `rgb(${v.r},${v.g},${v.b})`;
-          return [k, s];
       }));
   }
   function getRgb(i) {
       const n = rgbNumbers[i];
       return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
   }
-  function setColor(colorName, isSettingCurrent = true, context$1) {
-      if (isSettingCurrent) {
-          currentColor = colorName;
-      }
-      (context$1 != null ? context$1 : context).fillStyle = styles[colorName];
+  function colorToNumber(colorName, ratio = 1) {
+      const v = values[colorName];
+      return ((Math.floor(v.r * ratio) << 16) |
+          (Math.floor(v.g * ratio) << 8) |
+          Math.floor(v.b * ratio));
+  }
+  function colorToStyle(colorName, ratio = 1) {
+      const v = values[colorName];
+      const r = Math.floor(v.r * ratio);
+      const g = Math.floor(v.g * ratio);
+      const b = Math.floor(v.b * ratio);
+      return v.a < 1 ? `rgba(${r},${g},${b},${v.a})` : `rgb(${r},${g},${b})`;
   }
 
   let hitBoxes;
   let tmpHitBoxes;
-  function clear$1() {
+  function clear() {
       hitBoxes = [];
       tmpHitBoxes = [];
   }
@@ -1077,33 +1000,24 @@ l l l
       mirror: { x: 1, y: 1 },
       scale: { x: 1, y: 1 },
       isCharacter: false,
-      isCheckingCollision: false
+      isCheckingCollision: false,
   };
-  function init$2() {
+  function init$1() {
       letterCanvas = document.createElement("canvas");
       letterCanvas.width = letterCanvas.height = letterSize;
       letterContext = letterCanvas.getContext("2d");
       textImages = textPatterns.map((lp, i) => {
-          return {
-              image: createLetterImages(lp),
-              hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
-          };
+          return Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + i), false) });
       });
       characterImages = textPatterns.map((lp, i) => {
-          return {
-              image: createLetterImages(lp),
-              hitBox: getHitBox(String.fromCharCode(0x21 + i), true)
-          };
+          return Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + i), true) });
       });
       cachedImages = {};
   }
   function defineCharacters(pattern, startLetter) {
       const index = startLetter.charCodeAt(0) - 0x21;
       pattern.forEach((lp, i) => {
-          characterImages[index + i] = {
-              image: createLetterImages(lp),
-              hitBox: getHitBox(String.fromCharCode(0x21 + index + i), true)
-          };
+          characterImages[index + i] = Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + index + i), true) });
       });
   }
   function enableCache() {
@@ -1129,8 +1043,8 @@ l l l
                   isColliding: {
                       rect: Object.assign(Object.assign({}, collision.isColliding.rect), charCollision.isColliding.rect),
                       text: Object.assign(Object.assign({}, collision.isColliding.text), charCollision.isColliding.text),
-                      char: Object.assign(Object.assign({}, collision.isColliding.char), charCollision.isColliding.char)
-                  }
+                      char: Object.assign(Object.assign({}, collision.isColliding.char), charCollision.isColliding.char),
+                  },
               };
           }
           px += letterSize * options.scale.x;
@@ -1144,8 +1058,10 @@ l l l
       }
       const options = mergeDefaultOptions(_options);
       if (options.backgroundColor !== "transparent") {
-          setColor(options.backgroundColor, false);
-          context.fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
+          saveCurrentColor();
+          setColor(options.backgroundColor);
+          fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
+          loadCurrentColor();
       }
       if (cca <= 0x20 || options.color === "transparent") {
           return { isColliding: { rect: {}, text: {}, char: {} } };
@@ -1180,27 +1096,34 @@ l l l
       }
       if (options.color !== "black") {
           letterContext.globalCompositeOperation = "source-in";
-          setColor(options.color, true, letterContext);
+          letterContext.fillStyle = colorToStyle(options.color);
           letterContext.fillRect(0, 0, letterSize, letterSize);
           letterContext.globalCompositeOperation = "source-over";
       }
       const hitBox = getHitBox(c, options.isCharacter);
-      if (isCacheEnabled) {
+      let texture;
+      if (isCacheEnabled || isUsingPixi) {
           const cachedImage = document.createElement("img");
           cachedImage.src = letterCanvas.toDataURL();
-          cachedImages[cacheIndex] = {
-              image: cachedImage,
-              hitBox
-          };
+          {
+              texture = PIXI.Texture.from(cachedImage);
+          }
+          if (isCacheEnabled) {
+              cachedImages[cacheIndex] = {
+                  image: cachedImage,
+                  texture,
+                  hitBox,
+              };
+          }
       }
-      return drawLetterImage({ image: letterCanvas, hitBox }, x, y, options.scale, options.isCheckingCollision);
+      return drawLetterImage({ image: letterCanvas, texture, hitBox }, x, y, options.scale, options.isCheckingCollision);
   }
   function drawLetterImage(li, x, y, scale, isCheckCollision) {
       if (scale.x === 1 && scale.y === 1) {
-          context.drawImage(li.image, x, y);
+          drawImage(li, x, y);
       }
       else {
-          context.drawImage(li.image, x, y, letterSize * scale.x, letterSize * scale.y);
+          drawImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
       }
       if (!isCheckCollision) {
           return;
@@ -1208,7 +1131,7 @@ l l l
       const hitBox = {
           pos: { x: x + li.hitBox.pos.x, y: y + li.hitBox.pos.y },
           size: { x: li.hitBox.size.x * scale.x, y: li.hitBox.size.y * scale.y },
-          collision: li.hitBox.collision
+          collision: li.hitBox.collision,
       };
       const collision = checkHitBoxes(hitBox);
       hitBoxes.push(hitBox);
@@ -1221,7 +1144,7 @@ l l l
           p = p.slice(1, p.length - 1);
       }
       let pw = 0;
-      p.forEach(l => {
+      p.forEach((l) => {
           pw = Math.max(l.length, pw);
       });
       const xPadding = Math.max(Math.ceil((dotCount - pw) / 2), 0);
@@ -1235,20 +1158,22 @@ l l l
               const c = l.charAt(x);
               let ci = colorChars.indexOf(c);
               if (c !== "" && ci >= 1) {
-                  letterContext.fillStyle = styles[colors[ci]];
+                  letterContext.fillStyle = colorToStyle(colors[ci]);
                   letterContext.fillRect((x + xPadding) * dotSize, (y + yPadding) * dotSize, dotSize, dotSize);
               }
           }
       });
-      const img = document.createElement("img");
-      img.src = letterCanvas.toDataURL();
-      return img;
+      const image = document.createElement("img");
+      image.src = letterCanvas.toDataURL();
+      {
+          return { image, texture: PIXI.Texture.from(image) };
+      }
   }
   function getHitBox(c, isCharacter) {
       const b = {
           pos: new Vector(letterSize, letterSize),
           size: new Vector(),
-          collision: { isColliding: { char: {}, text: {} } }
+          collision: { isColliding: { char: {}, text: {} } },
       };
       if (isCharacter) {
           b.collision.isColliding.char[c] = true;
@@ -1288,6 +1213,129 @@ l l l
           options.mirror = Object.assign(Object.assign({}, defaultOptions.mirror), _options.mirror);
       }
       return options;
+  }
+
+  class Terminal {
+      constructor(_size) {
+          this.size = new Vector();
+          this.size.set(_size);
+          this.letterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
+          this.colorGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
+          this.backgroundColorGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
+          this.rotationGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
+          this.characterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
+      }
+      print(str, _x, _y, _options = {}) {
+          const options = Object.assign(Object.assign({}, defaultOptions), _options);
+          let x = Math.floor(_x);
+          let y = Math.floor(_y);
+          const bx = x;
+          for (let i = 0; i < str.length; i++) {
+              const c = str[i];
+              if (c === "\n") {
+                  x = bx;
+                  y++;
+                  continue;
+              }
+              if (x < 0 || x >= this.size.x || y < 0 || y >= this.size.y) {
+                  x++;
+                  continue;
+              }
+              this.letterGrid[x][y] = c;
+              this.colorGrid[x][y] = options.color;
+              this.backgroundColorGrid[x][y] = options.backgroundColor;
+              this.rotationGrid[x][y] = options.rotation;
+              this.characterGrid[x][y] = options.isCharacter;
+              x++;
+          }
+      }
+      getCharAt(_x, _y) {
+          if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
+              return undefined;
+          }
+          const x = Math.floor(_x);
+          const y = Math.floor(_y);
+          const char = this.letterGrid[x][y];
+          const cg = this.colorGrid[x][y];
+          const bg = this.backgroundColorGrid[x][y];
+          const rg = this.rotationGrid[x][y];
+          const hg = this.characterGrid[x][y];
+          return {
+              char,
+              options: { color: cg, backgroundColor: bg, rotation: rg, isCharacter: hg }
+          };
+      }
+      setCharAt(_x, _y, char, _options) {
+          if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
+              return;
+          }
+          const options = Object.assign(Object.assign({}, defaultOptions), _options);
+          const x = Math.floor(_x);
+          const y = Math.floor(_y);
+          this.letterGrid[x][y] = char;
+          this.colorGrid[x][y] = options.color;
+          this.backgroundColorGrid[x][y] = options.backgroundColor;
+          this.rotationGrid[x][y] = options.rotation;
+          this.characterGrid[x][y] = options.isCharacter;
+      }
+      draw() {
+          for (let x = 0; x < this.size.x; x++) {
+              for (let y = 0; y < this.size.y; y++) {
+                  const c = this.letterGrid[x][y];
+                  if (c == null) {
+                      continue;
+                  }
+                  const cg = this.colorGrid[x][y];
+                  const bg = this.backgroundColorGrid[x][y];
+                  const rg = this.rotationGrid[x][y];
+                  const hg = this.characterGrid[x][y];
+                  printChar(c, x * letterSize, y * letterSize, {
+                      color: cg,
+                      backgroundColor: bg,
+                      rotation: rg,
+                      isCharacter: hg
+                  });
+              }
+          }
+      }
+      clear() {
+          for (let x = 0; x < this.size.x; x++) {
+              for (let y = 0; y < this.size.y; y++) {
+                  this.letterGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.characterGrid[x][y] = undefined;
+              }
+          }
+      }
+      scrollUp() {
+          for (let x = 0; x < this.size.x; x++) {
+              for (let y = 1; y < this.size.y; y++) {
+                  this.letterGrid[x][y - 1] = this.letterGrid[x][y];
+                  this.colorGrid[x][y - 1] = this.colorGrid[x][y];
+                  this.backgroundColorGrid[x][y - 1] = this.backgroundColorGrid[x][y];
+                  this.rotationGrid[x][y - 1] = this.rotationGrid[x][y];
+                  this.characterGrid[x][y - 1] = this.characterGrid[x][y];
+              }
+          }
+          const y = this.size.y - 1;
+          for (let x = 0; x < this.size.x; x++) {
+              this.letterGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.characterGrid[x][y] = undefined;
+          }
+      }
+      getState() {
+          return {
+              charGrid: this.letterGrid.map(l => [].concat(l)),
+              colorGrid: this.colorGrid.map(l => [].concat(l)),
+              backgroundColorGrid: this.backgroundColorGrid.map(l => [].concat(l)),
+              rotationGrid: this.rotationGrid.map(l => [].concat(l)),
+              symbolGrid: this.characterGrid.map(l => [].concat(l))
+          };
+      }
+      setState(state) {
+          this.letterGrid = state.charGrid.map(l => [].concat(l));
+          this.colorGrid = state.colorGrid.map(l => [].concat(l));
+          this.backgroundColorGrid = state.backgroundColorGrid.map(l => [].concat(l));
+          this.rotationGrid = state.rotationGrid.map(l => [].concat(l));
+          this.characterGrid = state.symbolGrid.map(l => [].concat(l));
+      }
   }
 
   let isPressed = false;
@@ -1446,7 +1494,7 @@ l l l
   let pressingCode = {};
   let pressedCode = {};
   let releasedCode = {};
-  function init$3(_options) {
+  function init$2(_options) {
       options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
       code = fromEntities(codes.map(c => [
           c,
@@ -1498,7 +1546,7 @@ l l l
     get isJustReleased () { return isJustReleased; },
     codes: codes,
     get code () { return code; },
-    init: init$3,
+    init: init$2,
     update: update$1,
     clearJustPressed: clearJustPressed
   });
@@ -1571,7 +1619,7 @@ l l l
   let isDown = false;
   let isClicked = false;
   let isReleased = false;
-  function init$4(_screen, _pixelSize, _options) {
+  function init$3(_screen, _pixelSize, _options) {
       options$2 = Object.assign(Object.assign({}, defaultOptions$2), _options);
       screen = _screen;
       pixelSize = new Vector(_pixelSize.x + options$2.padding.x * 2, _pixelSize.y + options$2.padding.y * 2);
@@ -1680,7 +1728,7 @@ l l l
     get isPressed () { return isPressed$1; },
     get isJustPressed () { return isJustPressed$1; },
     get isJustReleased () { return isJustReleased$1; },
-    init: init$4,
+    init: init$3,
     update: update$2,
     clearJustPressed: clearJustPressed$1
   });
@@ -1689,11 +1737,11 @@ l l l
   let isPressed$2 = false;
   let isJustPressed$2 = false;
   let isJustReleased$2 = false;
-  function init$5() {
-      init$3({
+  function init$4() {
+      init$2({
           onKeyDown: sss.playEmpty,
       });
-      init$4(canvas, size, {
+      init$3(canvas, size, {
           onPointerDownOrUp: sss.playEmpty,
           anchor: new Vector(0.5, 0.5),
       });
@@ -1723,177 +1771,11 @@ l l l
     get isPressed () { return isPressed$2; },
     get isJustPressed () { return isJustPressed$2; },
     get isJustReleased () { return isJustReleased$2; },
-    init: init$5,
+    init: init$4,
     update: update$3,
     clearJustPressed: clearJustPressed$2,
     set: set
   });
-
-  let lastFrameTime = 0;
-  let _init;
-  let _update;
-  const defaultOptions$3 = {
-      viewSize: { x: 126, y: 126 },
-      bodyBackground: "#111",
-      viewBackground: "black",
-      isUsingVirtualPad: true,
-      isFourWaysStick: false,
-      isCapturing: false
-  };
-  let options$3;
-  let textCacheEnableTicks = 10;
-  function init$6(__init, __update, _options) {
-      _init = __init;
-      _update = __update;
-      options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
-      init(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing);
-      init$5();
-      init$2();
-      _init();
-      update$4();
-  }
-  function update$4() {
-      requestAnimationFrame(update$4);
-      const now = window.performance.now();
-      const timeSinceLast = now - lastFrameTime;
-      if (timeSinceLast < 1000 / 60 - 5) {
-          return;
-      }
-      lastFrameTime = now;
-      sss.update();
-      update$3();
-      _update();
-      if (options$3.isCapturing) {
-          capture();
-      }
-      textCacheEnableTicks--;
-      if (textCacheEnableTicks === 0) {
-          enableCache();
-      }
-  }
-
-  class Terminal {
-      constructor(_size) {
-          this.size = new Vector();
-          this.size.set(_size);
-          this.letterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-          this.colorGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-          this.backgroundColorGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-          this.rotationGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-          this.characterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-      }
-      print(str, _x, _y, _options = {}) {
-          const options = Object.assign(Object.assign({}, defaultOptions), _options);
-          let x = Math.floor(_x);
-          let y = Math.floor(_y);
-          const bx = x;
-          for (let i = 0; i < str.length; i++) {
-              const c = str[i];
-              if (c === "\n") {
-                  x = bx;
-                  y++;
-                  continue;
-              }
-              if (x < 0 || x >= this.size.x || y < 0 || y >= this.size.y) {
-                  x++;
-                  continue;
-              }
-              this.letterGrid[x][y] = c;
-              this.colorGrid[x][y] = options.color;
-              this.backgroundColorGrid[x][y] = options.backgroundColor;
-              this.rotationGrid[x][y] = options.rotation;
-              this.characterGrid[x][y] = options.isCharacter;
-              x++;
-          }
-      }
-      getCharAt(_x, _y) {
-          if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
-              return undefined;
-          }
-          const x = Math.floor(_x);
-          const y = Math.floor(_y);
-          const char = this.letterGrid[x][y];
-          const cg = this.colorGrid[x][y];
-          const bg = this.backgroundColorGrid[x][y];
-          const rg = this.rotationGrid[x][y];
-          const hg = this.characterGrid[x][y];
-          return {
-              char,
-              options: { color: cg, backgroundColor: bg, rotation: rg, isCharacter: hg }
-          };
-      }
-      setCharAt(_x, _y, char, _options) {
-          if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
-              return;
-          }
-          const options = Object.assign(Object.assign({}, defaultOptions), _options);
-          const x = Math.floor(_x);
-          const y = Math.floor(_y);
-          this.letterGrid[x][y] = char;
-          this.colorGrid[x][y] = options.color;
-          this.backgroundColorGrid[x][y] = options.backgroundColor;
-          this.rotationGrid[x][y] = options.rotation;
-          this.characterGrid[x][y] = options.isCharacter;
-      }
-      draw() {
-          for (let x = 0; x < this.size.x; x++) {
-              for (let y = 0; y < this.size.y; y++) {
-                  const c = this.letterGrid[x][y];
-                  if (c == null) {
-                      continue;
-                  }
-                  const cg = this.colorGrid[x][y];
-                  const bg = this.backgroundColorGrid[x][y];
-                  const rg = this.rotationGrid[x][y];
-                  const hg = this.characterGrid[x][y];
-                  printChar(c, x * letterSize, y * letterSize, {
-                      color: cg,
-                      backgroundColor: bg,
-                      rotation: rg,
-                      isCharacter: hg
-                  });
-              }
-          }
-      }
-      clear() {
-          for (let x = 0; x < this.size.x; x++) {
-              for (let y = 0; y < this.size.y; y++) {
-                  this.letterGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.characterGrid[x][y] = undefined;
-              }
-          }
-      }
-      scrollUp() {
-          for (let x = 0; x < this.size.x; x++) {
-              for (let y = 1; y < this.size.y; y++) {
-                  this.letterGrid[x][y - 1] = this.letterGrid[x][y];
-                  this.colorGrid[x][y - 1] = this.colorGrid[x][y];
-                  this.backgroundColorGrid[x][y - 1] = this.backgroundColorGrid[x][y];
-                  this.rotationGrid[x][y - 1] = this.rotationGrid[x][y];
-                  this.characterGrid[x][y - 1] = this.characterGrid[x][y];
-              }
-          }
-          const y = this.size.y - 1;
-          for (let x = 0; x < this.size.x; x++) {
-              this.letterGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.characterGrid[x][y] = undefined;
-          }
-      }
-      getState() {
-          return {
-              charGrid: this.letterGrid.map(l => [].concat(l)),
-              colorGrid: this.colorGrid.map(l => [].concat(l)),
-              backgroundColorGrid: this.backgroundColorGrid.map(l => [].concat(l)),
-              rotationGrid: this.rotationGrid.map(l => [].concat(l)),
-              symbolGrid: this.characterGrid.map(l => [].concat(l))
-          };
-      }
-      setState(state) {
-          this.letterGrid = state.charGrid.map(l => [].concat(l));
-          this.colorGrid = state.colorGrid.map(l => [].concat(l));
-          this.backgroundColorGrid = state.backgroundColorGrid.map(l => [].concat(l));
-          this.rotationGrid = state.rotationGrid.map(l => [].concat(l));
-          this.characterGrid = state.symbolGrid.map(l => [].concat(l));
-      }
-  }
 
   let record;
   let inputIndex;
@@ -2056,9 +1938,175 @@ l l l
       const collision = checkHitBoxes(box);
       if (currentColor !== "transparent") {
           (isAddingToTmp ? tmpHitBoxes : hitBoxes).push(box);
-          context.fillRect(pos.x, pos.y, size.x, size.y);
+          fillRect(pos.x, pos.y, size.x, size.y);
       }
       return collision;
+  }
+
+  const seedRandom = new Random();
+  const random = new Random();
+  let isUsingPixi = true; //false;
+
+  const size = new Vector();
+  let canvas;
+  let canvasSize = new Vector();
+  let graphics;
+  const graphicsScale = 5;
+  let background = document.createElement("img");
+  let captureCanvas;
+  let captureContext;
+  let viewBackground = "black";
+  let currentColor;
+  let savedCurrentColor;
+  function init$5(_size, _bodyBackground, _viewBackground, isCapturing) {
+      size.set(_size);
+      viewBackground = _viewBackground;
+      const bodyCss = `
+-webkit-touch-callout: none;
+-webkit-tap-highlight-color: ${_bodyBackground};
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+background: ${_bodyBackground};
+color: #888;
+`;
+      const canvasCss = `
+position: absolute;
+left: 50%;
+top: 50%;
+transform: translate(-50%, -50%);
+`;
+      document.body.style.cssText = bodyCss;
+      canvasSize.set(size);
+      {
+          canvasSize.mul(graphicsScale);
+          const app = new PIXI.Application({
+              width: canvasSize.x,
+              height: canvasSize.y,
+          });
+          canvas = app.view;
+          graphics = new PIXI.Graphics();
+          graphics.scale.x = graphics.scale.y = graphicsScale;
+          PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+          app.stage.addChild(graphics);
+          canvas.style.cssText = canvasCss;
+      }
+      document.body.appendChild(canvas);
+      const cs = 95;
+      const cw = canvasSize.x >= canvasSize.y ? cs : (cs / canvasSize.y) * canvasSize.x;
+      const ch = canvasSize.y >= canvasSize.x ? cs : (cs / canvasSize.x) * canvasSize.y;
+      canvas.style.width = `${cw}vmin`;
+      canvas.style.height = `${ch}vmin`;
+      if (isCapturing) {
+          captureCanvas = document.createElement("canvas");
+          if (canvasSize.x <= canvasSize.y * 2) {
+              captureCanvas.width = canvasSize.y * 2;
+              captureCanvas.height = canvasSize.y;
+          }
+          else {
+              captureCanvas.width = canvasSize.x;
+              captureCanvas.height = canvasSize.x / 2;
+          }
+          captureContext = captureCanvas.getContext("2d");
+          captureContext.fillStyle = _bodyBackground;
+          gcc.setOptions({
+              scale: Math.round(400 / captureCanvas.width),
+              capturingFps: 60,
+          });
+      }
+  }
+  function clear$1() {
+      {
+          graphics.clear();
+          graphics.lineStyle(0);
+          graphics.beginFill(colorToNumber(viewBackground,  1));
+          graphics.drawRect(0, 0, size.x, size.y);
+          graphics.endFill();
+          return;
+      }
+  }
+  function setColor(colorName) {
+      currentColor = colorName;
+      {
+          return;
+      }
+  }
+  function saveCurrentColor() {
+      savedCurrentColor = currentColor;
+  }
+  function loadCurrentColor() {
+      setColor(savedCurrentColor);
+  }
+  function fillRect(x, y, width, height) {
+      {
+          graphics.lineStyle(0);
+          graphics.beginFill(colorToNumber(currentColor));
+          graphics.drawRect(x, y, width, height);
+          graphics.endFill();
+          return;
+      }
+  }
+  function drawImage(li, x, y, width, height) {
+      {
+          graphics.lineStyle(0);
+          graphics.beginTextureFill({
+              texture: li.texture,
+              matrix: new PIXI.Matrix().translate(x, y),
+          });
+          graphics.drawRect(x, y, width == null ? letterSize : width, height == null ? letterSize : height);
+          graphics.endFill();
+          return;
+      }
+  }
+  function capture() {
+      captureContext.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
+      captureContext.drawImage(canvas, (captureCanvas.width - canvas.width) / 2, (captureCanvas.height - canvas.height) / 2);
+      gcc.capture(captureCanvas);
+  }
+
+  let lastFrameTime = 0;
+  let _init;
+  let _update;
+  const defaultOptions$3 = {
+      viewSize: { x: 126, y: 126 },
+      bodyBackground: "#111",
+      viewBackground: "black",
+      isUsingVirtualPad: true,
+      isFourWaysStick: false,
+      isCapturing: false,
+  };
+  let options$3;
+  let textCacheEnableTicks = 10;
+  function init$6(__init, __update, _options) {
+      _init = __init;
+      _update = __update;
+      init();
+      options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
+      init$5(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing);
+      init$4();
+      init$1();
+      _init();
+      update$4();
+  }
+  function update$4() {
+      requestAnimationFrame(update$4);
+      const now = window.performance.now();
+      const timeSinceLast = now - lastFrameTime;
+      if (timeSinceLast < 1000 / 60 - 5) {
+          return;
+      }
+      lastFrameTime = now;
+      sss.update();
+      update$3();
+      _update();
+      if (options$3.isCapturing) {
+          capture();
+      }
+      textCacheEnableTicks--;
+      if (textCacheEnableTicks === 0) {
+          enableCache();
+      }
   }
 
   const PI = Math.PI;
@@ -2074,13 +2122,13 @@ l l l
   exports.ticks = 0;
   exports.score = 0;
   function rnd(lowOrHigh = 1, high) {
-      return random.get(lowOrHigh, high);
+      return random$1.get(lowOrHigh, high);
   }
   function rndi(lowOrHigh = 2, high) {
-      return random.getInt(lowOrHigh, high);
+      return random$1.getInt(lowOrHigh, high);
   }
   function rnds(lowOrHigh = 1, high) {
-      return random.get(lowOrHigh, high) * random.getPlusOrMinus();
+      return random$1.get(lowOrHigh, high) * random$1.getPlusOrMinus();
   }
   function end() {
       initGameOver();
@@ -2137,9 +2185,10 @@ l l l
       isMinifying: false,
       viewSize: { x: 100, y: 100 },
       seed: 0,
+      theme: "simple",
   };
-  const seedRandom = new Random();
-  const random = new Random();
+  const seedRandom$1 = new Random();
+  const random$1 = new Random();
   let state;
   let updateFunc = {
       title: updateTitle,
@@ -2158,13 +2207,13 @@ l l l
   let scoreBoards;
   let isReplaying = false;
   let gameScriptFile;
-  addGameScript();
-  window.addEventListener("load", onLoad);
+  let isUsingPixi$1 = true; //false;
+  let isDarkTheme = false;
   function onLoad() {
       loopOptions = {
           viewSize: { x: 100, y: 100 },
           bodyBackground: "#e0e0e0",
-          viewBackground: "#eeeeee",
+          viewBackground: "white",
       };
       let opts;
       if (typeof options !== "undefined" && options != null) {
@@ -2182,7 +2231,6 @@ l l l
       if (opts.isMinifying) {
           showMinifiedScript();
       }
-      init$1();
       init$6(init$7, _update$1, loopOptions);
   }
   function init$7() {
@@ -2227,7 +2275,7 @@ l l l
           ijp: isJustPressed$2,
           ijr: isJustReleased$2,
       };
-      clear$1();
+      clear();
       updateFunc[state]();
       exports.ticks++;
       if (isReplaying) {
@@ -2249,8 +2297,8 @@ l l l
       if (isPlayingBgm) {
           sss.playBgm();
       }
-      const randomSeed = seedRandom.getInt(999999999);
-      random.setSeed(randomSeed);
+      const randomSeed = seedRandom$1.getInt(999999999);
+      random$1.setSeed(randomSeed);
       if (isReplayEnabled) {
           initRecord(randomSeed);
           isReplaying = false;
@@ -2258,7 +2306,7 @@ l l l
   }
   function updateInGame() {
       terminal.clear();
-      clear();
+      clear$1();
       updateScoreBoards();
       if (isReplayEnabled) {
           recordInput({
@@ -2276,9 +2324,9 @@ l l l
       state = "title";
       exports.ticks = -1;
       terminal.clear();
-      clear();
+      clear$1();
       if (isRecorded()) {
-          initReplay(random);
+          initReplay(random$1);
           isReplaying = true;
       }
   }
@@ -2287,6 +2335,7 @@ l l l
           initInGame();
           return;
       }
+      clear$1();
       if (isRecorded()) {
           replayInput();
           exports.inp = {
@@ -2295,16 +2344,13 @@ l l l
               ijp: isJustPressed$2,
               ijr: isJustReleased$2,
           };
-          clear();
           update();
-          terminal.draw();
       }
       if (exports.ticks === 0) {
           drawScore();
           if (typeof title !== "undefined" && title != null) {
               terminal.print(title, Math.floor(terminalSize.x - title.length) / 2, Math.ceil(terminalSize.y * 0.2));
           }
-          terminal.draw();
       }
       if (exports.ticks === 30 || exports.ticks == 40) {
           if (typeof description !== "undefined" && description != null) {
@@ -2318,9 +2364,9 @@ l l l
               description.split("\n").forEach((l, i) => {
                   terminal.print(l, x, Math.floor(terminalSize.y / 2) + i);
               });
-              terminal.draw();
           }
       }
+      terminal.draw();
   }
   function initGameOver() {
       state = "gameOver";
@@ -2340,9 +2386,6 @@ l l l
       else if (exports.ticks === 120 && !isNoTitle) {
           initTitle();
       }
-      if (exports.ticks === 10) {
-          drawGameOver();
-      }
   }
   function drawGameOver() {
       if (isReplaying) {
@@ -2360,8 +2403,8 @@ l l l
       terminal.print(hs, terminalSize.x - hs.length, 0);
   }
   function updateScoreBoards() {
-      const currentFillStyle = context.fillStyle;
-      setColor("black", false);
+      saveCurrentColor();
+      setColor("black");
       scoreBoards = scoreBoards.filter((sb) => {
           print(sb.str, sb.pos.x, sb.pos.y);
           sb.pos.y += sb.vy;
@@ -2369,7 +2412,7 @@ l l l
           sb.ticks--;
           return sb.ticks > 0;
       });
-      context.fillStyle = currentFillStyle;
+      loadCurrentColor();
   }
   function getHash(v) {
       let hash = 0;
@@ -2497,6 +2540,7 @@ l l l
 
   exports.PI = PI;
   exports.abs = abs;
+  exports.addGameScript = addGameScript;
   exports.addScore = addScore;
   exports.addWithCharCode = addWithCharCode;
   exports.atan2 = atan2;
@@ -2517,12 +2561,15 @@ l l l
   exports.gr = gr;
   exports.ht = ht;
   exports.input = input;
+  exports.isDarkTheme = isDarkTheme;
+  exports.isUsingPixi = isUsingPixi$1;
   exports.jm = jm;
   exports.keyboard = keyboard;
   exports.lc = lc;
   exports.line = line;
   exports.ls = ls;
   exports.minifyReplaces = minifyReplaces;
+  exports.onLoad = onLoad;
   exports.play = play;
   exports.ply = ply;
   exports.pointer = pointer;
@@ -2549,4 +2596,4 @@ l l l
   exports.wrap = wrap;
   exports.yl = yl;
 
-}(this.window = this.window || {}));
+}(this.window = this.window || {}, PIXI));

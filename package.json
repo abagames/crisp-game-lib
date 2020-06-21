@@ -9,6 +9,7 @@
   "author": "abagames",
   "license": "MIT",
   "devDependencies": {
+    "@types/pixi.js": "^5.0.0",
     "light-server": "^2.7.0",
     "rollup": "^2.17.1",
     "rollup-plugin-commonjs": "^10.1.0",

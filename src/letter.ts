@@ -1,16 +1,18 @@
+import * as PIXI from "pixi.js";
 import { textPatterns } from "./textPattern";
-import { context } from "./view";
 import {
-  Color,
+  fillRect,
+  drawImage,
   setColor,
-  colorChars,
   currentColor,
-  colors,
-  styles as colorStyles
-} from "./color";
+  saveCurrentColor,
+  loadCurrentColor,
+} from "./view";
+import { Color, colorChars, colors, colorToStyle } from "./color";
 import { Vector, VectorLike } from "./vector";
 import { HitBox, hitBoxes, checkHitBoxes, Collision } from "./collision";
 import { wrap } from "./util";
+import { isUsingPixi } from "./main";
 
 export type LetterOptions = {
   color?: Color;
@@ -51,7 +53,7 @@ export function letters(
         isCharacter,
         isCheckingCollision: true,
         color: currentColor,
-        ...options
+        ...options,
       });
     } else {
       throw "invalid params";
@@ -61,7 +63,7 @@ export function letters(
       isCharacter,
       isCheckingCollision: true,
       color: currentColor,
-      ...(y as LetterOptions)
+      ...(y as LetterOptions),
     });
   }
 }
@@ -70,8 +72,9 @@ const dotCount = 6;
 const dotSize = 1;
 export const letterSize = dotCount * dotSize;
 
-type LetterImage = {
+export type LetterImage = {
   image: HTMLImageElement | HTMLCanvasElement;
+  texture?: PIXI.Texture;
   hitBox: HitBox;
 };
 
@@ -99,7 +102,7 @@ export const defaultOptions: Options = {
   mirror: { x: 1, y: 1 },
   scale: { x: 1, y: 1 },
   isCharacter: false,
-  isCheckingCollision: false
+  isCheckingCollision: false,
 };
 
 export function init() {
@@ -108,14 +111,14 @@ export function init() {
   letterContext = letterCanvas.getContext("2d");
   textImages = textPatterns.map((lp, i) => {
     return {
-      image: createLetterImages(lp),
-      hitBox: getHitBox(String.fromCharCode(0x21 + i), false)
+      ...createLetterImages(lp),
+      hitBox: getHitBox(String.fromCharCode(0x21 + i), false),
     };
   });
   characterImages = textPatterns.map((lp, i) => {
     return {
-      image: createLetterImages(lp),
-      hitBox: getHitBox(String.fromCharCode(0x21 + i), true)
+      ...createLetterImages(lp),
+      hitBox: getHitBox(String.fromCharCode(0x21 + i), true),
     };
   });
   cachedImages = {};
@@ -125,8 +128,8 @@ export function defineCharacters(pattern: string[], startLetter: string) {
   const index = startLetter.charCodeAt(0) - 0x21;
   pattern.forEach((lp, i) => {
     characterImages[index + i] = {
-      image: createLetterImages(lp),
-      hitBox: getHitBox(String.fromCharCode(0x21 + index + i), true)
+      ...createLetterImages(lp),
+      hitBox: getHitBox(String.fromCharCode(0x21 + index + i), true),
     };
   });
 }
@@ -160,17 +163,17 @@ export function print(
         isColliding: {
           rect: {
             ...collision.isColliding.rect,
-            ...charCollision.isColliding.rect
+            ...charCollision.isColliding.rect,
           },
           text: {
             ...collision.isColliding.text,
-            ...charCollision.isColliding.text
+            ...charCollision.isColliding.text,
           },
           char: {
             ...collision.isColliding.char,
-            ...charCollision.isColliding.char
-          }
-        }
+            ...charCollision.isColliding.char,
+          },
+        },
       };
     }
     px += letterSize * options.scale.x;
@@ -190,13 +193,10 @@ export function printChar(
   }
   const options = mergeDefaultOptions(_options);
   if (options.backgroundColor !== "transparent") {
-    setColor(options.backgroundColor, false);
-    context.fillRect(
-      x,
-      y,
-      letterSize * options.scale.x,
-      letterSize * options.scale.y
-    );
+    saveCurrentColor();
+    setColor(options.backgroundColor);
+    fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
+    loadCurrentColor();
   }
   if (cca <= 0x20 || options.color === "transparent") {
     return { isColliding: { rect: {}, text: {}, char: {} } };
@@ -244,21 +244,28 @@ export function printChar(
   }
   if (options.color !== "black") {
     letterContext.globalCompositeOperation = "source-in";
-    setColor(options.color, true, letterContext);
+    letterContext.fillStyle = colorToStyle(options.color);
     letterContext.fillRect(0, 0, letterSize, letterSize);
     letterContext.globalCompositeOperation = "source-over";
   }
   const hitBox = getHitBox(c, options.isCharacter);
-  if (isCacheEnabled) {
+  let texture: PIXI.Texture;
+  if (isCacheEnabled || isUsingPixi) {
     const cachedImage = document.createElement("img");
     cachedImage.src = letterCanvas.toDataURL();
-    cachedImages[cacheIndex] = {
-      image: cachedImage,
-      hitBox
-    };
+    if (isUsingPixi) {
+      texture = PIXI.Texture.from(cachedImage);
+    }
+    if (isCacheEnabled) {
+      cachedImages[cacheIndex] = {
+        image: cachedImage,
+        texture,
+        hitBox,
+      };
+    }
   }
   return drawLetterImage(
-    { image: letterCanvas, hitBox },
+    { image: letterCanvas, texture, hitBox },
     x,
     y,
     options.scale as VectorLike,
@@ -274,15 +281,9 @@ function drawLetterImage(
   isCheckCollision: boolean
 ) {
   if (scale.x === 1 && scale.y === 1) {
-    context.drawImage(li.image, x, y);
+    drawImage(li, x, y);
   } else {
-    context.drawImage(
-      li.image,
-      x,
-      y,
-      letterSize * scale.x,
-      letterSize * scale.y
-    );
+    drawImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
   }
   if (!isCheckCollision) {
     return;
@@ -290,7 +291,7 @@ function drawLetterImage(
   const hitBox = {
     pos: { x: x + li.hitBox.pos.x, y: y + li.hitBox.pos.y },
     size: { x: li.hitBox.size.x * scale.x, y: li.hitBox.size.y * scale.y },
-    collision: li.hitBox.collision
+    collision: li.hitBox.collision,
   };
   const collision = checkHitBoxes(hitBox);
   hitBoxes.push(hitBox);
@@ -307,7 +308,7 @@ function createLetterImages(
     p = p.slice(1, p.length - 1);
   }
   let pw = 0;
-  p.forEach(l => {
+  p.forEach((l) => {
     pw = Math.max(l.length, pw);
   });
   const xPadding = Math.max(Math.ceil((dotCount - pw) / 2), 0);
@@ -321,7 +322,7 @@ function createLetterImages(
       const c = l.charAt(x);
       let ci = colorChars.indexOf(c);
       if (c !== "" && ci >= 1) {
-        letterContext.fillStyle = colorStyles[colors[ci]];
+        letterContext.fillStyle = colorToStyle(colors[ci]);
         letterContext.fillRect(
           (x + xPadding) * dotSize,
           (y + yPadding) * dotSize,
@@ -331,16 +332,19 @@ function createLetterImages(
       }
     }
   });
-  const img = document.createElement("img");
-  img.src = letterCanvas.toDataURL();
-  return img;
+  const image = document.createElement("img");
+  image.src = letterCanvas.toDataURL();
+  if (isUsingPixi) {
+    return { image, texture: PIXI.Texture.from(image) };
+  }
+  return { image };
 }
 
 function getHitBox(c: string, isCharacter: boolean) {
   const b: HitBox = {
     pos: new Vector(letterSize, letterSize),
     size: new Vector(),
-    collision: { isColliding: { char: {}, text: {} } }
+    collision: { isColliding: { char: {}, text: {} } },
   };
   if (isCharacter) {
     b.collision.isColliding.char[c] = true;

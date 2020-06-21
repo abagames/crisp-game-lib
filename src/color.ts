@@ -1,12 +1,5 @@
-import { context as viewContext } from "./view";
-import { fromEntities, entries } from "./util";
+import { fromEntities } from "./util";
 
-type RgbValues = {
-  [key in Color]: { r: number; g: number; b: number; a: number };
-};
-export let values: RgbValues;
-type RgbStyles = { [key in Color]: string };
-export let styles: RgbStyles;
 export const colors = [
   "transparent",
   "white",
@@ -23,11 +16,14 @@ export const colors = [
   "light_blue",
   "light_purple",
   "light_cyan",
-  "light_black"
+  "light_black",
 ] as const;
 export type Color = typeof colors[number];
-export let currentColor: Color;
 export const colorChars = "twrgybpclRGYBPCL";
+type RgbValues = {
+  [key in Color]: { r: number; g: number; b: number; a: number };
+};
+let values: RgbValues;
 
 const rgbNumbers = [
   0xeeeeee,
@@ -37,7 +33,7 @@ const rgbNumbers = [
   0x3f51b5,
   0x9c27b0,
   0x03a9f4,
-  0x616161
+  0x616161,
 ];
 
 export function init() {
@@ -58,22 +54,11 @@ export function init() {
           r: Math.floor(wr - (wr - r) * 0.5),
           g: Math.floor(wg - (wg - g) * 0.5),
           b: Math.floor(wb - (wb - b) * 0.5),
-          a: 1
-        }
+          a: 1,
+        },
       ];
     })
   ) as RgbValues;
-  styles = fromEntities(
-    entries(values).map(e => {
-      const k = e[0];
-      const v = e[1];
-      const s =
-        v.a < 1
-          ? `rgba(${v.r},${v.g},${v.b},${v.a})`
-          : `rgb(${v.r},${v.g},${v.b})`;
-      return [k, s];
-    })
-  ) as RgbStyles;
 }
 
 function getRgb(i: number) {
@@ -81,9 +66,19 @@ function getRgb(i: number) {
   return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
 }
 
-export function setColor(colorName: Color, isSettingCurrent = true, context?) {
-  if (isSettingCurrent) {
-    currentColor = colorName;
-  }
-  (context != null ? context : viewContext).fillStyle = styles[colorName];
+export function colorToNumber(colorName: Color, ratio = 1) {
+  const v = values[colorName];
+  return (
+    (Math.floor(v.r * ratio) << 16) |
+    (Math.floor(v.g * ratio) << 8) |
+    Math.floor(v.b * ratio)
+  );
+}
+
+export function colorToStyle(colorName: Color, ratio = 1) {
+  const v = values[colorName];
+  const r = Math.floor(v.r * ratio);
+  const g = Math.floor(v.g * ratio);
+  const b = Math.floor(v.b * ratio);
+  return v.a < 1 ? `rgba(${r},${g},${b},${v.a})` : `rgb(${r},${g},${b})`;
 }

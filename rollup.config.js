@@ -7,7 +7,7 @@ export default {
     file: "docs/bundle.js",
     format: "iife",
     name: "window",
-    extend: true
+    extend: true,
   },
-  plugins: [typescript(), commonjs()]
+  plugins: [typescript({ tsconfig: "tsconfig-rollup.json" }), commonjs()],
 };
