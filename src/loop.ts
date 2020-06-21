@@ -3,6 +3,7 @@ import * as letter from "./letter";
 import * as input from "./input";
 import * as color from "./color";
 import { VectorLike } from "./vector";
+import { Theme } from "./main";
 declare const sss;
 
 export type Options = {
@@ -12,6 +13,7 @@ export type Options = {
   isUsingVirtualPad?: boolean;
   isFourWaysStick?: boolean;
   isCapturing?: boolean;
+  theme?: Theme;
 };
 
 let lastFrameTime = 0;
@@ -24,6 +26,7 @@ const defaultOptions: Options = {
   isUsingVirtualPad: true,
   isFourWaysStick: false,
   isCapturing: false,
+  theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
 };
 let options: Options;
 let textCacheEnableTicks = 10;
@@ -35,13 +38,14 @@ export function init(
 ) {
   _init = __init;
   _update = __update;
-  color.init();
   options = { ...defaultOptions, ..._options };
+  color.init(options.theme.isDarkColor);
   view.init(
     options.viewSize,
     options.bodyBackground,
     options.viewBackground,
-    options.isCapturing
+    options.isCapturing,
+    options.theme
   );
   input.init();
   letter.init();

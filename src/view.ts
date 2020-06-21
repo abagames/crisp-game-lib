@@ -1,8 +1,9 @@
 import * as PIXI from "pixi.js";
 import { Vector, VectorLike } from "./vector";
-import { isUsingPixi, ex, isDarkTheme } from "./main";
+import { Theme } from "./main";
 import { colorToNumber, colorToStyle } from "./color";
 import { LetterImage, letterSize } from "./letter";
+import { getGridFilter } from "./filters";
 declare const gcc;
 
 export const size = new Vector();
@@ -21,13 +22,17 @@ export let currentColor: Color;
 let savedCurrentColor: Color;
 let isFilling = false;
 
+export let theme: Theme;
+
 export function init(
   _size: VectorLike,
   _bodyBackground: string,
   _viewBackground: Color,
-  isCapturing: boolean
+  isCapturing: boolean,
+  _theme: Theme
 ) {
   size.set(_size);
+  theme = _theme;
   viewBackground = _viewBackground;
   const bodyCss = `
 -webkit-touch-callout: none;
@@ -53,7 +58,7 @@ image-rendering: pixelated;
 `;
   document.body.style.cssText = bodyCss;
   canvasSize.set(size);
-  if (isUsingPixi) {
+  if (theme.isUsingPixi) {
     canvasSize.mul(graphicsScale);
     const app = new PIXI.Application({
       width: canvasSize.x,
@@ -64,6 +69,17 @@ image-rendering: pixelated;
     graphics.scale.x = graphics.scale.y = graphicsScale;
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     app.stage.addChild(graphics);
+    graphics.filters = [];
+    if (theme.name === "pixel") {
+      graphics.filters.push(getGridFilter(canvasSize.x, canvasSize.y));
+      const bloomFilter = new (PIXI.filters as any).AdvancedBloomFilter({
+        threshold: 0.1,
+        bloomScale: 1.5,
+        brightness: 1.5,
+        blur: 8,
+      });
+      graphics.filters.push(bloomFilter);
+    }
     graphics.lineStyle(0);
     canvas.style.cssText = canvasCss;
   } else {
@@ -101,10 +117,10 @@ image-rendering: pixelated;
 }
 
 export function clear() {
-  if (isUsingPixi) {
+  if (theme.isUsingPixi) {
     graphics.clear();
     isFilling = false;
-    beginFillColor(colorToNumber(viewBackground, isDarkTheme ? 0.15 : 1));
+    beginFillColor(colorToNumber(viewBackground, theme.isDarkColor ? 0.15 : 1));
     graphics.drawRect(0, 0, size.x, size.y);
     endFill();
     isFilling = false;
@@ -118,7 +134,7 @@ export function clear() {
 
 export function setColor(colorName: Color) {
   currentColor = colorName;
-  if (isUsingPixi) {
+  if (theme.isUsingPixi) {
     if (isFilling) {
       graphics.endFill();
     }
@@ -150,7 +166,7 @@ export function loadCurrentColor() {
 }
 
 export function fillRect(x: number, y: number, width: number, height: number) {
-  if (isUsingPixi) {
+  if (theme.isUsingPixi) {
     graphics.drawRect(x, y, width, height);
     return;
   }
@@ -164,7 +180,7 @@ export function drawLetterImage(
   width?: number,
   height?: number
 ) {
-  if (isUsingPixi) {
+  if (theme.isUsingPixi) {
     endFill();
     graphics.beginTextureFill({
       texture: li.texture,

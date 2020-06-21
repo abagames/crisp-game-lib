@@ -7,12 +7,12 @@ import {
   currentColor,
   saveCurrentColor,
   loadCurrentColor,
+  theme,
 } from "./view";
 import { Color, colorChars, colors, colorToStyle } from "./color";
 import { Vector, VectorLike } from "./vector";
 import { HitBox, hitBoxes, checkHitBoxes, Collision } from "./collision";
 import { wrap } from "./util";
-import { isUsingPixi } from "./main";
 
 export type LetterOptions = {
   color?: Color;
@@ -250,10 +250,10 @@ export function printChar(
   }
   const hitBox = getHitBox(c, options.isCharacter);
   let texture: PIXI.Texture;
-  if (isCacheEnabled || isUsingPixi) {
+  if (isCacheEnabled || theme.isUsingPixi) {
     const cachedImage = document.createElement("img");
     cachedImage.src = letterCanvas.toDataURL();
-    if (isUsingPixi) {
+    if (theme.isUsingPixi) {
       texture = PIXI.Texture.from(cachedImage);
     }
     if (isCacheEnabled) {
@@ -334,7 +334,7 @@ function createLetterImages(
   });
   const image = document.createElement("img");
   image.src = letterCanvas.toDataURL();
-  if (isUsingPixi) {
+  if (theme.isUsingPixi) {
     return { image, texture: PIXI.Texture.from(image) };
   }
   return { image };

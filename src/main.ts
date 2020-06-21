@@ -120,6 +120,12 @@ const defaultOptions: Options = {
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
+export type ThemeName = "simple" | "pixel";
+export type Theme = {
+  name: ThemeName;
+  isUsingPixi: boolean;
+  isDarkColor: boolean;
+};
 declare type Options = {
   isPlayingBgm?: boolean;
   isCapturing?: boolean;
@@ -128,7 +134,7 @@ declare type Options = {
   isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
-  theme: "simple" | "pixel";
+  theme: ThemeName;
 };
 declare let options: Options;
 declare function update();
@@ -154,21 +160,28 @@ let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isReplaying = false;
 let gameScriptFile: string;
-export let isUsingPixi = true; //false;
-export let isDarkTheme = false;
 
 export function onLoad() {
-  loopOptions = {
-    viewSize: { x: 100, y: 100 },
-    bodyBackground: "#e0e0e0",
-    viewBackground: "white",
-  };
-  let opts;
+  let opts: Options;
   if (typeof options !== "undefined" && options != null) {
     opts = { ...defaultOptions, ...options };
   } else {
     opts = defaultOptions;
   }
+  const theme = {
+    name: opts.theme,
+    isUsingPixi: false,
+    isDarkColor: false,
+  };
+  if (opts.theme === "pixel") {
+    theme.isUsingPixi = theme.isDarkColor = true;
+  }
+  loopOptions = {
+    viewSize: { x: 100, y: 100 },
+    bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
+    viewBackground: theme.isDarkColor ? "blue" : "white",
+    theme,
+  };
   seed = opts.seed;
   loopOptions.isCapturing = opts.isCapturing;
   loopOptions.viewSize = opts.viewSize;
@@ -229,7 +242,7 @@ function _update() {
   };
   collision.clear();
   updateFunc[state]();
-  if (isUsingPixi) {
+  if (view.theme.isUsingPixi) {
     view.endFill();
   }
   ticks++;

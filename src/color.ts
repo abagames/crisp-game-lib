@@ -36,24 +36,24 @@ const rgbNumbers = [
   0x616161,
 ];
 
-export function init() {
-  const [wr, wb, wg] = getRgb(0);
+export function init(isDarkColor: boolean) {
+  const [wr, wb, wg] = getRgb(0, isDarkColor);
   values = fromEntities(
     colors.map((c, i) => {
       if (i < 1) {
         return [c, { r: 0, g: 0, b: 0, a: 0 }];
       }
       if (i < 9) {
-        const [r, g, b] = getRgb(i - 1);
+        const [r, g, b] = getRgb(i - 1, isDarkColor);
         return [c, { r, g, b, a: 1 }];
       }
-      const [r, g, b] = getRgb(i - 9 + 1);
+      const [r, g, b] = getRgb(i - 9 + 1, isDarkColor);
       return [
         c,
         {
-          r: Math.floor(wr - (wr - r) * 0.5),
-          g: Math.floor(wg - (wg - g) * 0.5),
-          b: Math.floor(wb - (wb - b) * 0.5),
+          r: Math.floor(isDarkColor ? wr * 0.5 : wr - (wr - r) * 0.5),
+          g: Math.floor(isDarkColor ? wg * 0.5 : wg - (wg - g) * 0.5),
+          b: Math.floor(isDarkColor ? wb * 0.5 : wb - (wb - b) * 0.5),
           a: 1,
         },
       ];
@@ -61,7 +61,14 @@ export function init() {
   ) as RgbValues;
 }
 
-function getRgb(i: number) {
+function getRgb(i: number, isDarkColor: boolean) {
+  if (isDarkColor) {
+    if (i === 0) {
+      i = 7;
+    } else if (i === 7) {
+      i = 0;
+    }
+  }
   const n = rgbNumbers[i];
   return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
 }
