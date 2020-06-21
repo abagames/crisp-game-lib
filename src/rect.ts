@@ -131,6 +131,10 @@ function drawRect(
 }
 
 function drawLine(p: Vector, l: Vector, thickness: number) {
+  let isDrawing = true;
+  if (view.theme.name === "shape" || view.theme.name === "shapeDark") {
+    view.drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+  }
   const t = Math.floor(clamp(thickness, 3, 10));
   const lx = Math.abs(l.x);
   const ly = Math.abs(l.y);
@@ -138,7 +142,7 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
   l.div(rn - 1);
   let collision: Collision = { isColliding: { rect: {}, text: {}, char: {} } };
   for (let i = 0; i < rn; i++) {
-    const c = addRect(true, p.x, p.y, thickness, thickness, true);
+    const c = addRect(true, p.x, p.y, thickness, thickness, true, isDrawing);
     collision = {
       ...collision,
       ...createShorthand(c.isColliding.rect),
@@ -169,7 +173,8 @@ function addRect(
   y: number,
   width: number,
   height: number,
-  isAddingToTmp = false
+  isAddingToTmp = false,
+  isDrawing = true
 ) {
   let pos = isAlignCenter
     ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
@@ -188,7 +193,9 @@ function addRect(
   const collision = checkHitBoxes(box);
   if (view.currentColor !== "transparent") {
     (isAddingToTmp ? tmpHitBoxes : hitBoxes).push(box);
-    view.fillRect(pos.x, pos.y, size.x, size.y);
+    if (isDrawing) {
+      view.fillRect(pos.x, pos.y, size.x, size.y);
+    }
   }
   return collision;
 }

@@ -140,7 +140,7 @@ const defaultOptions: Options = {
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
-export type ThemeName = "simple" | "pixel";
+export type ThemeName = "simple" | "pixel" | "shape" | "shapeDark";
 export type Theme = {
   name: ThemeName;
   isUsingPixi: boolean;
@@ -193,8 +193,11 @@ export function onLoad() {
     isUsingPixi: false,
     isDarkColor: false,
   };
-  if (opts.theme === "pixel") {
-    theme.isUsingPixi = theme.isDarkColor = true;
+  if (opts.theme !== "simple") {
+    theme.isUsingPixi = true;
+  }
+  if (opts.theme === "pixel" || opts.theme === "shapeDark") {
+    theme.isDarkColor = true;
   }
   loopOptions = {
     viewSize: { x: 100, y: 100 },

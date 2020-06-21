@@ -41,6 +41,7 @@ options = {
   isPlayingBgm: true,
   viewSize: { x: 200, y: 100 },
   isReplayEnabled: true,
+  theme: "shapeDark",
 };
 
 let hms, dss, bt;
@@ -120,6 +121,8 @@ function update() {
           addScore(10, 190, hm.p.y);
         } else {
           play("lucky");
+          color("red");
+          text("X", hm.p.x - 6, hm.p.y);
           end();
         }
         return false;
@@ -130,6 +133,8 @@ function update() {
       if (hm.p.y > 99) {
         if (hm.type === 0) {
           play("lucky");
+          color("red");
+          text("X", hm.p.x, hm.p.y - 6);
           end();
         } else {
           play("select");

@@ -8,8 +8,10 @@ characters = [];
 
 options = {
   isPlayingBgm: true,
-  seed: 2,
+  seed: 27,
   isReplayEnabled: true,
+  theme: "shape",
+  isCapturing: true,
 };
 
 let circles;

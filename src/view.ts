@@ -73,6 +73,8 @@ image-rendering: pixelated;
     graphics.filters = [];
     if (theme.name === "pixel") {
       graphics.filters.push(getGridFilter(canvasSize.x, canvasSize.y));
+    }
+    if (theme.name === "pixel" || theme.name === "shapeDark") {
       const bloomFilter = new (PIXI.filters as any).AdvancedBloomFilter({
         threshold: 0.1,
         bloomScale: 1.5,
@@ -179,10 +181,32 @@ export function loadCurrentColor() {
 
 export function fillRect(x: number, y: number, width: number, height: number) {
   if (theme.isUsingPixi) {
-    graphics.drawRect(x, y, width, height);
+    if (theme.name === "shape" || theme.name === "shapeDark") {
+      graphics.drawRoundedRect(x, y, width, height, 2);
+    } else {
+      graphics.drawRect(x, y, width, height);
+    }
     return;
   }
   context.fillRect(x, y, width, height);
+}
+
+export function drawLine(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  thickness: number
+) {
+  const cn = colorToNumber(currentColor);
+  beginFillColor(cn);
+  graphics.drawCircle(x1, y1, thickness * 0.5);
+  graphics.drawCircle(x2, y2, thickness * 0.5);
+  endFill();
+  graphics.lineStyle(thickness, cn);
+  graphics.moveTo(x1, y1);
+  graphics.lineTo(x2, y2);
+  graphics.lineStyle(0);
 }
 
 export function drawLetterImage(

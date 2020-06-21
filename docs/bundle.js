@@ -1306,6 +1306,8 @@ image-rendering: pixelated;
           graphics.filters = [];
           if (theme.name === "pixel") {
               graphics.filters.push(getGridFilter(canvasSize.x, canvasSize.y));
+          }
+          if (theme.name === "pixel" || theme.name === "shapeDark") {
               const bloomFilter = new PIXI.filters.AdvancedBloomFilter({
                   threshold: 0.1,
                   bloomScale: 1.5,
@@ -1405,10 +1407,26 @@ image-rendering: pixelated;
   }
   function fillRect(x, y, width, height) {
       if (theme.isUsingPixi) {
-          graphics.drawRect(x, y, width, height);
+          if (theme.name === "shape" || theme.name === "shapeDark") {
+              graphics.drawRoundedRect(x, y, width, height, 2);
+          }
+          else {
+              graphics.drawRect(x, y, width, height);
+          }
           return;
       }
       context.fillRect(x, y, width, height);
+  }
+  function drawLine(x1, y1, x2, y2, thickness) {
+      const cn = colorToNumber(currentColor);
+      beginFillColor(cn);
+      graphics.drawCircle(x1, y1, thickness * 0.5);
+      graphics.drawCircle(x2, y2, thickness * 0.5);
+      endFill();
+      graphics.lineStyle(thickness, cn);
+      graphics.moveTo(x1, y1);
+      graphics.lineTo(x2, y2);
+      graphics.lineStyle(0);
   }
   function drawLetterImage(li, x, y, width, height) {
       if (theme.isUsingPixi) {
@@ -2128,7 +2146,7 @@ image-rendering: pixelated;
       }
       const l = new Vector(length).rotate(rotate);
       const p = new Vector(x - l.x * centerPosRatio, y - l.y * centerPosRatio);
-      return drawLine(p, l, thickness);
+      return drawLine$1(p, l, thickness);
   }
   function line(x1, y1, x2 = 3, y2 = 3, thickness = 3) {
       const p = new Vector();
@@ -2171,7 +2189,7 @@ image-rendering: pixelated;
               }
           }
       }
-      return drawLine(p, p2.sub(p), thickness);
+      return drawLine$1(p, p2.sub(p), thickness);
   }
   function drawRect(isAlignCenter, x, y, width, height) {
       if (typeof x === "number") {
@@ -2209,7 +2227,11 @@ image-rendering: pixelated;
           }
       }
   }
-  function drawLine(p, l, thickness) {
+  function drawLine$1(p, l, thickness) {
+      let isDrawing = true;
+      if (theme.name === "shape" || theme.name === "shapeDark") {
+          drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+      }
       const t = Math.floor(clamp$1(thickness, 3, 10));
       const lx = Math.abs(l.x);
       const ly = Math.abs(l.y);
@@ -2217,7 +2239,7 @@ image-rendering: pixelated;
       l.div(rn - 1);
       let collision = { isColliding: { rect: {}, text: {}, char: {} } };
       for (let i = 0; i < rn; i++) {
-          const c = addRect(true, p.x, p.y, thickness, thickness, true);
+          const c = addRect(true, p.x, p.y, thickness, thickness, true, isDrawing);
           collision = Object.assign(Object.assign(Object.assign({}, collision), createShorthand(c.isColliding.rect)), { isColliding: {
                   rect: Object.assign(Object.assign({}, collision.isColliding.rect), c.isColliding.rect),
                   text: Object.assign(Object.assign({}, collision.isColliding.text), c.isColliding.text),
@@ -2228,7 +2250,7 @@ image-rendering: pixelated;
       concatTmpHitBoxes();
       return collision;
   }
-  function addRect(isAlignCenter, x, y, width, height, isAddingToTmp = false) {
+  function addRect(isAlignCenter, x, y, width, height, isAddingToTmp = false, isDrawing = true) {
       let pos = isAlignCenter
           ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
           : { x: Math.floor(x), y: Math.floor(y) };
@@ -2246,7 +2268,9 @@ image-rendering: pixelated;
       const collision = checkHitBoxes(box);
       if (currentColor !== "transparent") {
           (isAddingToTmp ? tmpHitBoxes : hitBoxes).push(box);
-          fillRect(pos.x, pos.y, size.x, size.y);
+          if (isDrawing) {
+              fillRect(pos.x, pos.y, size.x, size.y);
+          }
       }
       return collision;
   }
@@ -2373,8 +2397,11 @@ image-rendering: pixelated;
           isUsingPixi: false,
           isDarkColor: false,
       };
-      if (opts.theme === "pixel") {
-          theme.isUsingPixi = theme.isDarkColor = true;
+      if (opts.theme !== "simple") {
+          theme.isUsingPixi = true;
+      }
+      if (opts.theme === "pixel" || opts.theme === "shapeDark") {
+          theme.isDarkColor = true;
       }
       loopOptions = {
           viewSize: { x: 100, y: 100 },
