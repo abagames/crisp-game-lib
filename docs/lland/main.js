@@ -20,7 +20,6 @@ options = {
   isReplayEnabled: true,
   theme: "pixel",
   seed: 6,
-  isCapturing: true,
 };
 
 let mountains;
