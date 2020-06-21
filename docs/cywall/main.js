@@ -11,7 +11,6 @@ options = {
   seed: 27,
   isReplayEnabled: true,
   theme: "shape",
-  isCapturing: true,
 };
 
 let circles;
@@ -63,6 +62,13 @@ function update() {
       end();
     } else {
       play("coin");
+      const p = vec(playerCircle.p);
+      const o = vec(playerCircle.next.p).sub(playerCircle.p).div(9);
+      const a = o.angle;
+      times(9, (i) => {
+        particle(p, "cyan", 4, 2, a + PI, 0.5);
+        p.add(o);
+      });
     }
     playerCircle = playerCircle.next;
   } else {
