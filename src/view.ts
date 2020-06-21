@@ -148,7 +148,7 @@ export function fillRect(x: number, y: number, width: number, height: number) {
   context.fillRect(x, y, width, height);
 }
 
-export function drawImage(
+export function drawLetterImage(
   li: LetterImage,
   x: number,
   y: number,

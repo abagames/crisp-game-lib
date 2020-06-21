@@ -1073,12 +1073,12 @@ l l l
           rotation === 0 &&
           options.mirror.x === 1 &&
           options.mirror.y === 1) {
-          return drawLetterImage(li, x, y, options.scale, options.isCheckingCollision);
+          return drawAndTestLetterImage(li, x, y, options.scale, options.isCheckingCollision);
       }
       const cacheIndex = JSON.stringify({ c, options });
       const ci = cachedImages[cacheIndex];
       if (ci != null) {
-          return drawLetterImage(ci, x, y, options.scale, options.isCheckingCollision);
+          return drawAndTestLetterImage(ci, x, y, options.scale, options.isCheckingCollision);
       }
       letterContext.clearRect(0, 0, letterSize, letterSize);
       if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
@@ -1116,14 +1116,14 @@ l l l
               };
           }
       }
-      return drawLetterImage({ image: letterCanvas, texture, hitBox }, x, y, options.scale, options.isCheckingCollision);
+      return drawAndTestLetterImage({ image: letterCanvas, texture, hitBox }, x, y, options.scale, options.isCheckingCollision);
   }
-  function drawLetterImage(li, x, y, scale, isCheckCollision) {
+  function drawAndTestLetterImage(li, x, y, scale, isCheckCollision) {
       if (scale.x === 1 && scale.y === 1) {
-          drawImage(li, x, y);
+          drawLetterImage(li, x, y);
       }
       else {
-          drawImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
+          drawLetterImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
       }
       if (!isCheckCollision) {
           return;
@@ -2047,7 +2047,7 @@ transform: translate(-50%, -50%);
           return;
       }
   }
-  function drawImage(li, x, y, width, height) {
+  function drawLetterImage(li, x, y, width, height) {
       {
           graphics.lineStyle(0);
           graphics.beginTextureFill({

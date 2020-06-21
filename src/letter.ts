@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { textPatterns } from "./textPattern";
 import {
   fillRect,
-  drawImage,
+  drawLetterImage,
   setColor,
   currentColor,
   saveCurrentColor,
@@ -210,7 +210,7 @@ export function printChar(
     options.mirror.x === 1 &&
     options.mirror.y === 1
   ) {
-    return drawLetterImage(
+    return drawAndTestLetterImage(
       li,
       x,
       y,
@@ -221,7 +221,7 @@ export function printChar(
   const cacheIndex = JSON.stringify({ c, options });
   const ci = cachedImages[cacheIndex];
   if (ci != null) {
-    return drawLetterImage(
+    return drawAndTestLetterImage(
       ci,
       x,
       y,
@@ -264,7 +264,7 @@ export function printChar(
       };
     }
   }
-  return drawLetterImage(
+  return drawAndTestLetterImage(
     { image: letterCanvas, texture, hitBox },
     x,
     y,
@@ -273,7 +273,7 @@ export function printChar(
   );
 }
 
-function drawLetterImage(
+function drawAndTestLetterImage(
   li: LetterImage,
   x: number,
   y: number,
@@ -281,9 +281,9 @@ function drawLetterImage(
   isCheckCollision: boolean
 ) {
   if (scale.x === 1 && scale.y === 1) {
-    drawImage(li, x, y);
+    drawLetterImage(li, x, y);
   } else {
-    drawImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
+    drawLetterImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
   }
   if (!isCheckCollision) {
     return;
