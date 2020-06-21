@@ -1371,7 +1371,7 @@ image-rendering: pixelated;
   }
   function setColor(colorName) {
       if (colorName === currentColor) {
-          if (!isFilling) {
+          if (theme.isUsingPixi && !isFilling) {
               beginFillColor(colorToNumber(currentColor));
           }
           return;

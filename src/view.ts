@@ -140,7 +140,7 @@ export function clear() {
 
 export function setColor(colorName: Color) {
   if (colorName === currentColor) {
-    if (!isFilling) {
+    if (theme.isUsingPixi && !isFilling) {
       beginFillColor(colorToNumber(currentColor));
     }
     return;
