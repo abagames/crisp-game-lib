@@ -139,6 +139,12 @@ export function clear() {
 }
 
 export function setColor(colorName: Color) {
+  if (colorName === currentColor) {
+    if (!isFilling) {
+      beginFillColor(colorToNumber(currentColor));
+    }
+    return;
+  }
   currentColor = colorName;
   if (theme.isUsingPixi) {
     if (isFilling) {

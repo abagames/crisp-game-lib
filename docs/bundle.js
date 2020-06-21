@@ -1,7 +1,7 @@
 (function (exports, PIXI) {
   'use strict';
 
-  function clamp(v, low = 0, high = 1) {
+  function clamp$1(v, low = 0, high = 1) {
       return Math.max(low, Math.min(v, high));
   }
   function wrap(v, low, high) {
@@ -90,8 +90,8 @@
           return this;
       }
       clamp(xLow, xHigh, yLow, yHigh) {
-          this.x = clamp(this.x, xLow, xHigh);
-          this.y = clamp(this.y, yLow, yHigh);
+          this.x = clamp$1(this.x, xLow, xHigh);
+          this.y = clamp$1(this.y, yLow, yHigh);
           return this;
       }
       wrap(xLow, xHigh, yLow, yHigh) {
@@ -1370,6 +1370,12 @@ image-rendering: pixelated;
       loadCurrentColor();
   }
   function setColor(colorName) {
+      if (colorName === currentColor) {
+          if (!isFilling) {
+              beginFillColor(colorToNumber(currentColor));
+          }
+          return;
+      }
       currentColor = colorName;
       if (theme.isUsingPixi) {
           if (isFilling) {
@@ -2042,6 +2048,43 @@ image-rendering: pixelated;
       }
   }
 
+  let particles;
+  const random = new Random();
+  function init$7() {
+      particles = [];
+  }
+  function add(pos, color, count = 16, speed = 1, angle = 0, angleWidth = Math.PI * 2) {
+      if (count < 1) {
+          if (random.get() > count) {
+              return;
+          }
+          count = 1;
+      }
+      for (let i = 0; i < count; i++) {
+          const a = angle + random.get(angleWidth) - angleWidth / 2;
+          const p = {
+              pos: new Vector(pos),
+              vel: new Vector(speed * random.get(0.5, 1), 0).rotate(a),
+              color,
+              ticks: clamp(random.getInt(10, 20) * speed, 10, 60),
+          };
+          particles.push(p);
+      }
+  }
+  function update$5() {
+      particles = particles.filter((p) => {
+          p.ticks--;
+          if (p.ticks === 0) {
+              return false;
+          }
+          p.pos.add(p.vel);
+          p.vel.mul(0.98);
+          setColor(p.color);
+          fillRect(Math.floor(p.pos.x), Math.floor(p.pos.y), 1, 1);
+          return true;
+      });
+  }
+
   let record;
   let inputIndex;
   function initRecord(randomSeed) {
@@ -2167,10 +2210,10 @@ image-rendering: pixelated;
       }
   }
   function drawLine(p, l, thickness) {
-      const t = Math.floor(clamp(thickness, 3, 10));
+      const t = Math.floor(clamp$1(thickness, 3, 10));
       const lx = Math.abs(l.x);
       const ly = Math.abs(l.y);
-      const rn = clamp(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
+      const rn = clamp$1(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
       l.div(rn - 1);
       let collision = { isColliding: { rect: {}, text: {}, char: {} } };
       for (let i = 0; i < rn; i++) {
@@ -2221,13 +2264,13 @@ image-rendering: pixelated;
   exports.ticks = 0;
   exports.score = 0;
   function rnd(lowOrHigh = 1, high) {
-      return random.get(lowOrHigh, high);
+      return random$1.get(lowOrHigh, high);
   }
   function rndi(lowOrHigh = 2, high) {
-      return random.getInt(lowOrHigh, high);
+      return random$1.getInt(lowOrHigh, high);
   }
   function rnds(lowOrHigh = 1, high) {
-      return random.get(lowOrHigh, high) * random.getPlusOrMinus();
+      return random$1.get(lowOrHigh, high) * random$1.getPlusOrMinus();
   }
   function end() {
       initGameOver();
@@ -2260,6 +2303,17 @@ image-rendering: pixelated;
   function color(colorName) {
       setColor(colorName);
   }
+  function particle(x, y, color, count, speed, angle, angleWidth) {
+      let pos = new Vector();
+      if (typeof x === "number") {
+          pos.set(x, y);
+          add(pos, color, count, speed, angle, angleWidth);
+      }
+      else {
+          pos.set(x);
+          add(pos, y, color, count, speed, angle);
+      }
+  }
   function vec(x, y) {
       return new Vector(x, y);
   }
@@ -2287,7 +2341,7 @@ image-rendering: pixelated;
       theme: "simple",
   };
   const seedRandom = new Random();
-  const random = new Random();
+  const random$1 = new Random();
   let state;
   let updateFunc = {
       title: updateTitle,
@@ -2337,9 +2391,9 @@ image-rendering: pixelated;
       if (opts.isMinifying) {
           showMinifiedScript();
       }
-      init$6(init$7, _update$1, loopOptions);
+      init$6(init$8, _update$1, loopOptions);
   }
-  function init$7() {
+  function init$8() {
       if (typeof description !== "undefined" &&
           description != null &&
           description.trim().length > 0) {
@@ -2397,6 +2451,7 @@ image-rendering: pixelated;
   function initInGame() {
       state = "inGame";
       exports.ticks = -1;
+      init$7();
       const s = Math.floor(exports.score);
       if (s > hiScore) {
           hiScore = s;
@@ -2407,7 +2462,7 @@ image-rendering: pixelated;
           sss.playBgm();
       }
       const randomSeed = seedRandom.getInt(999999999);
-      random.setSeed(randomSeed);
+      random$1.setSeed(randomSeed);
       if (isReplayEnabled) {
           initRecord(randomSeed);
           isReplaying = false;
@@ -2416,6 +2471,7 @@ image-rendering: pixelated;
   function updateInGame() {
       terminal.clear();
       clear$1();
+      update$5();
       updateScoreBoards();
       if (isReplayEnabled) {
           recordInput({
@@ -2432,10 +2488,11 @@ image-rendering: pixelated;
   function initTitle() {
       state = "title";
       exports.ticks = -1;
+      init$7();
       terminal.clear();
       clear$1();
       if (isRecorded()) {
-          initReplay(random);
+          initReplay(random$1);
           isReplaying = true;
       }
   }
@@ -2453,6 +2510,7 @@ image-rendering: pixelated;
               ijp: isJustPressed$2,
               ijr: isJustReleased$2,
           };
+          update$5();
           update();
       }
       if (exports.ticks === 0) {
@@ -2658,7 +2716,7 @@ image-rendering: pixelated;
   exports.box = box;
   exports.ceil = ceil;
   exports.char = char;
-  exports.clamp = clamp;
+  exports.clamp = clamp$1;
   exports.clr = clr;
   exports.cn = cn;
   exports.color = color;
@@ -2677,6 +2735,7 @@ image-rendering: pixelated;
   exports.ls = ls;
   exports.minifyReplaces = minifyReplaces;
   exports.onLoad = onLoad;
+  exports.particle = particle;
   exports.play = play;
   exports.ply = ply;
   exports.pointer = pointer;

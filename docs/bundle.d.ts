@@ -183,6 +183,24 @@ declare function char(
   options?: LetterOptions
 ): Collision;
 
+declare function particle(
+  x: number,
+  y: number,
+  color: Color,
+  count?: number,
+  speed?: number,
+  angle?: number,
+  angleWidth?: number
+);
+declare function particle(
+  pos: VectorLike,
+  color: Color,
+  count?: number,
+  speed?: number,
+  angle?: number,
+  angleWidth?: number
+);
+
 // Return Vector
 declare function vec(x?: number | VectorLike, y?: number): Vector;
 

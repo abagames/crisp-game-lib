@@ -29,22 +29,22 @@ let mountainAppDist;
 let mountainIndex;
 let landingIndex;
 let landing;
-let landZ;
+let landY;
 let shipCollision;
 let m;
-let isLanded;
+let isFirstLanded;
 
 function update() {
   if (!ticks) {
     mountains = times(9, (i) => {
       if (i === 4) {
-        return { y: (landZ = 49), c: "cyan" };
+        return { y: (landY = 49), c: "cyan" };
       } else {
         return { y: 90 - i, c: "red" };
       }
     });
     shipY = 30;
-    shipV = offset = mountainAppDist = mountainIndex = landing = isLanded = 0;
+    shipV = offset = mountainAppDist = mountainIndex = landing = isFirstLanded = 0;
     landingIndex = 7;
   }
   mountains.map((m, i) => {
@@ -67,7 +67,7 @@ function update() {
       landingIndex > 7 || landingIndex === 1
         ? rnd(70, 90)
         : landingIndex === 0
-        ? (landZ = rnd(40, 70))
+        ? (landY = rnd(40, 70))
         : rnd(40, 90);
     landingIndex--;
     if (landingIndex < 0) {
@@ -79,13 +79,14 @@ function update() {
     mountainIndex++;
     mountainAppDist += 13;
   }
-  if (isLanded) {
+  if (isFirstLanded) {
     if (input.isJustPressed) {
       play("laser");
       shipV -= 0.4;
     }
     if (input.isPressed) {
       shipV -= 0.2;
+      particle(24.5, shipY + 2, "green", 1, 1, PI / 2, 1);
     }
   }
   shipV += 0.1;
@@ -96,16 +97,22 @@ function update() {
   shipY += shipV * difficulty;
   if (shipCollision.isColliding.rect.cyan) {
     play("select");
+    particle(24.5, shipY, "green");
     landing = ++score;
     shipV = 0;
-    shipY = landZ - 3;
+    shipY = landY - 3;
     mountains.map((n) => (n.c = "red"));
-    isLanded = 1;
+    isFirstLanded = 1;
   }
-  if (
-    shipCollision.isColliding.rect.red ||
-    rect(-1, 0, 1, 99).isColliding.rect.cyan
-  ) {
+  if (shipCollision.isColliding.rect.red) {
+    play("explosion");
+    end();
+  }
+  if (rect(-1, 0, 1, 99).isColliding.rect.cyan) {
+    color("red");
+    for (let y = landY - 4; y < 99; y += 7) {
+      text("X", 2, y);
+    }
     play("explosion");
     end();
   }

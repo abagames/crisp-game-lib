@@ -9,6 +9,7 @@ import { Random } from "./random";
 import * as collision from "./collision";
 import { Color } from "./color";
 import { defineCharacters, print, letterSize } from "./letter";
+import * as _particle from "./particle";
 import { times } from "./util";
 
 import * as replay from "./replay";
@@ -86,6 +87,25 @@ export function addScore(value: number, x?: number | VectorLike, y?: number) {
 
 export function color(colorName: Color) {
   view.setColor(colorName);
+}
+
+export function particle(
+  x: number | VectorLike,
+  y: number | Color,
+  color: Color | number,
+  count?: number,
+  speed?: number,
+  angle?: number,
+  angleWidth?: number
+) {
+  let pos = new Vector();
+  if (typeof x === "number") {
+    pos.set(x, y as number);
+    _particle.add(pos, color as Color, count, speed, angle, angleWidth);
+  } else {
+    pos.set(x);
+    _particle.add(pos, y as Color, color as number, count, speed, angle);
+  }
 }
 
 export function vec(x?: number | VectorLike, y?: number) {
@@ -256,6 +276,7 @@ function _update() {
 function initInGame() {
   state = "inGame";
   ticks = -1;
+  _particle.init();
   const s = Math.floor(score);
   if (s > hiScore) {
     hiScore = s;
@@ -276,6 +297,7 @@ function initInGame() {
 function updateInGame() {
   terminal.clear();
   view.clear();
+  _particle.update();
   updateScoreBoards();
   if (isReplayEnabled) {
     replay.recordInput({
@@ -293,6 +315,7 @@ function updateInGame() {
 function initTitle() {
   state = "title";
   ticks = -1;
+  _particle.init();
   terminal.clear();
   view.clear();
   if (replay.isRecorded()) {
@@ -315,6 +338,7 @@ function updateTitle() {
       ijp: input.isJustPressed,
       ijr: input.isJustReleased,
     };
+    _particle.update();
     update();
   }
   if (ticks === 0) {
