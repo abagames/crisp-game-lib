@@ -1258,6 +1258,7 @@ void main(void) {
   let background = document.createElement("img");
   let captureCanvas;
   let captureContext;
+  let capturedCanvasScale = 1;
   let viewBackground = "black";
   let currentColor;
   let savedCurrentColor;
@@ -1340,6 +1341,11 @@ image-rendering: pixelated;
               captureCanvas.width = canvasSize.x;
               captureCanvas.height = canvasSize.x / 2;
           }
+          if (captureCanvas.width > 400) {
+              capturedCanvasScale = 400 / captureCanvas.width;
+              captureCanvas.width = 400;
+              captureCanvas.height *= capturedCanvasScale;
+          }
           captureContext = captureCanvas.getContext("2d");
           captureContext.fillStyle = _bodyBackground;
           gcc.setOptions({
@@ -1418,7 +1424,14 @@ image-rendering: pixelated;
   }
   function capture() {
       captureContext.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
-      captureContext.drawImage(canvas, (captureCanvas.width - canvas.width) / 2, (captureCanvas.height - canvas.height) / 2);
+      if (capturedCanvasScale === 1) {
+          captureContext.drawImage(canvas, (captureCanvas.width - canvas.width) / 2, (captureCanvas.height - canvas.height) / 2);
+      }
+      else {
+          const w = canvas.width * capturedCanvasScale;
+          const h = canvas.height * capturedCanvasScale;
+          captureContext.drawImage(canvas, (captureCanvas.width - w) / 2, (captureCanvas.height - h) / 2, w, h);
+      }
       gcc.capture(captureCanvas);
   }
 

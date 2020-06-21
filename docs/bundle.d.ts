@@ -1,6 +1,7 @@
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
+declare type ThemeName = "simple" | "pixel";
 declare type Options = {
   isPlayingBgm?: boolean;
   isCapturing?: boolean;
@@ -9,6 +10,7 @@ declare type Options = {
   isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
+  theme: ThemeName;
 };
 declare let options: Options;
 declare function update();

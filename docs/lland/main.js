@@ -4,12 +4,23 @@ description = `
 [Hold] Thrust up
 `;
 
-characters = [];
+characters = [
+  `
+ llll
+l    l
+ llll
+ l  l
+l ll l
+ll  ll
+`,
+];
 
 options = {
   isPlayingBgm: true,
   isReplayEnabled: true,
-  isMinifying: true,
+  theme: "pixel",
+  seed: 6,
+  isCapturing: true,
 };
 
 let mountains;
@@ -22,22 +33,29 @@ let landing;
 let landZ;
 let shipCollision;
 let m;
+let isLanded;
 
 function update() {
   if (!ticks) {
     mountains = times(9, (i) => {
-      return { y: 90 - i, c: "red" };
+      if (i === 4) {
+        return { y: (landZ = 49), c: "cyan" };
+      } else {
+        return { y: 90 - i, c: "red" };
+      }
     });
-    shipY = shipV = offset = mountainAppDist = mountainIndex = landingIndex = landing = 0;
+    shipY = 30;
+    shipV = offset = mountainAppDist = mountainIndex = landing = isLanded = 0;
+    landingIndex = 7;
   }
   mountains.map((m, i) => {
     color(m.c);
     rect(wrap(i * 13 + offset - 13, -13, 104), m.y, 13, 99);
   });
   color("green");
-  shipCollision = box(25, shipY, 5, 5);
+  shipCollision = char("a", 25, shipY);
   if (landing) {
-    if (input.isPressed) {
+    if (input.isJustPressed) {
       landing = 0;
     } else {
       return;
@@ -62,12 +80,14 @@ function update() {
     mountainIndex++;
     mountainAppDist += 13;
   }
-  if (input.isJustPressed) {
-    play("hit");
-    shipV -= 0.4;
-  }
-  if (input.isPressed) {
-    shipV -= 0.2;
+  if (isLanded) {
+    if (input.isJustPressed) {
+      play("laser");
+      shipV -= 0.4;
+    }
+    if (input.isPressed) {
+      shipV -= 0.2;
+    }
   }
   shipV += 0.1;
   shipV *= 0.99;
@@ -81,6 +101,7 @@ function update() {
     shipV = 0;
     shipY = landZ - 3;
     mountains.map((n) => (n.c = "red"));
+    isLanded = 1;
   }
   if (
     shipCollision.isColliding.rect.red ||
