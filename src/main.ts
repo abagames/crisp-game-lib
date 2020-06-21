@@ -154,7 +154,7 @@ declare type Options = {
   isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
-  theme: ThemeName;
+  theme?: ThemeName;
 };
 declare let options: Options;
 declare function update();
