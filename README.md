@@ -248,6 +248,8 @@ l    l
 //   isMinifying: boolean; // Show a minified code to the console.
 //   viewSize?: { x: number; y: number }; // Set the screen size.
 //   seed?: number; // Set the random seed for sounds.
+//   theme?: "simple" | "pixel" | "shape" | "shapeDark" | "crt";
+//    // Select the appearance theme.
 // }
 options = {
   viewSize: { x: 120, y: 60 },
