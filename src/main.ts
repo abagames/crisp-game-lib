@@ -140,7 +140,7 @@ const defaultOptions: Options = {
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
-export type ThemeName = "simple" | "pixel" | "shape" | "shapeDark";
+export type ThemeName = "simple" | "pixel" | "shape" | "shapeDark" | "crt";
 export type Theme = {
   name: ThemeName;
   isUsingPixi: boolean;
@@ -196,7 +196,11 @@ export function onLoad() {
   if (opts.theme !== "simple") {
     theme.isUsingPixi = true;
   }
-  if (opts.theme === "pixel" || opts.theme === "shapeDark") {
+  if (
+    opts.theme === "pixel" ||
+    opts.theme === "shapeDark" ||
+    opts.theme === "crt"
+  ) {
     theme.isDarkColor = true;
   }
   loopOptions = {
@@ -267,6 +271,9 @@ function _update() {
   updateFunc[state]();
   if (view.theme.isUsingPixi) {
     view.endFill();
+    if (view.theme.name === "crt") {
+      view.updateCrtFilter();
+    }
   }
   ticks++;
   if (isReplaying) {

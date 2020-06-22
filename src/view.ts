@@ -24,6 +24,7 @@ let savedCurrentColor: Color;
 let isFilling = false;
 
 export let theme: Theme;
+let crtFilter;
 
 export function init(
   _size: VectorLike,
@@ -71,6 +72,13 @@ image-rendering: pixelated;
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     app.stage.addChild(graphics);
     graphics.filters = [];
+    if (theme.name === "crt") {
+      graphics.filters.push(
+        (crtFilter = new (PIXI.filters as any).CRTFilter({
+          vignettingAlpha: 0.7,
+        }))
+      );
+    }
     if (theme.name === "pixel") {
       graphics.filters.push(getGridFilter(canvasSize.x, canvasSize.y));
     }
@@ -236,6 +244,10 @@ export function drawLetterImage(
   } else {
     context.drawImage(li.image, x, y, width, height);
   }
+}
+
+export function updateCrtFilter() {
+  crtFilter.time += 0.2;
 }
 
 export function saveAsBackground() {

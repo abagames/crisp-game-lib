@@ -10,6 +10,7 @@ options = {
   isPlayingBgm: true,
   seed: 3,
   isReplayEnabled: true,
+  theme: "crt",
 };
 
 let board;

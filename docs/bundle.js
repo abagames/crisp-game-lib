@@ -1264,6 +1264,7 @@ void main(void) {
   let savedCurrentColor;
   let isFilling = false;
   let theme;
+  let crtFilter;
   function init$2(_size, _bodyBackground, _viewBackground, isCapturing, _theme) {
       size.set(_size);
       theme = _theme;
@@ -1304,6 +1305,11 @@ image-rendering: pixelated;
           PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
           app.stage.addChild(graphics);
           graphics.filters = [];
+          if (theme.name === "crt") {
+              graphics.filters.push((crtFilter = new PIXI.filters.CRTFilter({
+                  vignettingAlpha: 0.7,
+              })));
+          }
           if (theme.name === "pixel") {
               graphics.filters.push(getGridFilter(canvasSize.x, canvasSize.y));
           }
@@ -1445,6 +1451,9 @@ image-rendering: pixelated;
       else {
           context.drawImage(li.image, x, y, width, height);
       }
+  }
+  function updateCrtFilter() {
+      crtFilter.time += 0.2;
   }
   function capture() {
       captureContext.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
@@ -2400,7 +2409,9 @@ image-rendering: pixelated;
       if (opts.theme !== "simple") {
           theme.isUsingPixi = true;
       }
-      if (opts.theme === "pixel" || opts.theme === "shapeDark") {
+      if (opts.theme === "pixel" ||
+          opts.theme === "shapeDark" ||
+          opts.theme === "crt") {
           theme.isDarkColor = true;
       }
       loopOptions = {
@@ -2466,6 +2477,9 @@ image-rendering: pixelated;
       updateFunc[state]();
       if (theme.isUsingPixi) {
           endFill();
+          if (theme.name === "crt") {
+              updateCrtFilter();
+          }
       }
       exports.ticks++;
       if (isReplaying) {
