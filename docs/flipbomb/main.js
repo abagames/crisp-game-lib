@@ -8,6 +8,7 @@ characters = [];
 
 options = {
   isPlayingBgm: true,
+  isReplayEnabled: true,
   seed: 2,
   theme: "crt",
 };
