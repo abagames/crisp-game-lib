@@ -94,8 +94,8 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 
 [![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
 [![pileup screenshot](docs/pileup/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pileup)
-[![digi10 screenshot](docs/digi10/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?digi10)
 [![lland screenshot](docs/lland/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?lland)
+[![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 [![twhols screenshot](docs/twhols/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?twhols)
 [![floater screenshot](docs/floater/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?floater)
@@ -104,8 +104,9 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![zartan screenshot](docs/zartan/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?zartan)
 [![jujump screenshot](docs/jujump/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?jujump)
 [![monjum screenshot](docs/monjum/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?monjum)
-[![rolfrg screenshot](docs/rolfrg/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?rolfrg)
+[![digi10 screenshot](docs/digi10/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?digi10)
 [![tarutobi screenshot](docs/tarutobi/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?tarutobi)
+[![rolfrg screenshot](docs/rolfrg/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?rolfrg)
 [![gloop screenshot](docs/gloop/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?gloop)
 [![count screenshot](docs/count/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?count)
 
