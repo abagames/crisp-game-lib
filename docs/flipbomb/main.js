@@ -55,6 +55,7 @@ function update() {
   }
   balls = balls.filter((b) => {
     b.p.add(b.v);
+    color(b.s === 0 ? "blue" : "cyan");
     if (b.s === 0) {
       if (b.p.x < 70) {
         if (input.isJustPressed) {
@@ -65,9 +66,8 @@ function update() {
         b.s = 1;
       }
     } else {
-      particle(b.p, "cyan", 1, b.v.length, b.v.angle + PI, 0.1);
+      particle(b.p, 1, b.v.length, b.v.angle + PI, 0.1);
     }
-    color(b.s === 0 ? "blue" : "cyan");
     if (box(b.p, 3, 3).isColliding.rect.purple) {
       return false;
     }
@@ -82,14 +82,15 @@ function update() {
     bombs.push({ p, v });
     bombAppTicks += rnd(30, 50);
   }
-  color("red");
   bombs = bombs.filter((b) => {
     b.p.add(b.v);
+    color("red");
     const bc = box(b.p, 5, 5).isColliding.rect;
     if (bc.cyan || bc.purple) {
       play("hit");
       explosions.push({ p: b.p, t: 0, a: rnds(PI) });
-      particle(b.p, "purple", 16, 3);
+      color("purple");
+      particle(b.p, 16, 3);
       addScore(multiplier, b.p);
       multiplier++;
       return false;

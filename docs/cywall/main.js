@@ -66,7 +66,7 @@ function update() {
       const o = vec(playerCircle.next.p).sub(playerCircle.p).div(9);
       const a = o.angle;
       times(9, (i) => {
-        particle(p, "cyan", 4, 2, a + PI, 0.5);
+        particle(p, 4, 2, a + PI, 0.5);
         p.add(o);
       });
     }

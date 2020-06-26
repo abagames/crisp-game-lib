@@ -274,6 +274,23 @@ function addScore(value: number);
 function addScore(value: number, x: number, y: number);
 function addScore(value: number, pos: VectorLike);
 
+// Add particles
+function particle(
+  x: number,
+  y: number,
+  count?: number,
+  speed?: number,
+  angle?: number,
+  angleWidth?: number
+);
+function particle(
+  pos: VectorLike,
+  count?: number,
+  speed?: number,
+  angle?: number,
+  angleWidth?: number
+);
+
 // End game (Game Over)
 function end(): void;
 

@@ -86,7 +86,7 @@ function update() {
     }
     if (input.isPressed) {
       shipV -= 0.2;
-      particle(24.5, shipY + 2, "green", 1, 1, PI / 2, 1);
+      particle(24.5, shipY + 2, 1, 1, PI / 2, 1);
     }
   }
   shipV += 0.1;
@@ -97,7 +97,7 @@ function update() {
   shipY += shipV * difficulty;
   if (shipCollision.isColliding.rect.cyan) {
     play("select");
-    particle(24.5, shipY, "green");
+    particle(24.5, shipY);
     landing = ++score;
     shipV = 0;
     shipY = landY - 3;

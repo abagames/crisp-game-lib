@@ -1,6 +1,6 @@
 import { Random } from "./random";
 import { Vector } from "./vector";
-import { fillRect, setColor } from "./view";
+import { fillRect, setColor, currentColor } from "./view";
 
 type Particle = {
   pos: Vector;
@@ -18,7 +18,6 @@ export function init() {
 
 export function add(
   pos: Vector,
-  color: Color,
   count = 16,
   speed = 1,
   angle = 0,
@@ -35,8 +34,8 @@ export function add(
     const p: Particle = {
       pos: new Vector(pos),
       vel: new Vector(speed * random.get(0.5, 1), 0).rotate(a),
-      color,
-      ticks: clamp(random.getInt(10, 20) * speed, 10, 60),
+      color: currentColor,
+      ticks: clamp(random.get(10, 20) * Math.sqrt(speed), 10, 60),
     };
     particles.push(p);
   }
@@ -45,7 +44,7 @@ export function add(
 export function update() {
   particles = particles.filter((p) => {
     p.ticks--;
-    if (p.ticks === 0) {
+    if (p.ticks < 0) {
       return false;
     }
     p.pos.add(p.vel);

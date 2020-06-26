@@ -91,8 +91,7 @@ export function color(colorName: Color) {
 
 export function particle(
   x: number | VectorLike,
-  y: number | Color,
-  color: Color | number,
+  y: number,
   count?: number,
   speed?: number,
   angle?: number,
@@ -100,11 +99,11 @@ export function particle(
 ) {
   let pos = new Vector();
   if (typeof x === "number") {
-    pos.set(x, y as number);
-    _particle.add(pos, color as Color, count, speed, angle, angleWidth);
+    pos.set(x, y);
+    _particle.add(pos, count, speed, angle, angleWidth);
   } else {
     pos.set(x);
-    _particle.add(pos, y as Color, color as number, count, speed, angle);
+    _particle.add(pos, y, count, speed, angle);
   }
 }
 

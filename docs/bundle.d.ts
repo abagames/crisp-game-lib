@@ -186,7 +186,6 @@ declare function char(
 declare function particle(
   x: number,
   y: number,
-  color: Color,
   count?: number,
   speed?: number,
   angle?: number,
@@ -194,7 +193,6 @@ declare function particle(
 );
 declare function particle(
   pos: VectorLike,
-  color: Color,
   count?: number,
   speed?: number,
   angle?: number,

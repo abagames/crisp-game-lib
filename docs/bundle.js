@@ -2080,7 +2080,7 @@ image-rendering: pixelated;
   function init$7() {
       particles = [];
   }
-  function add(pos, color, count = 16, speed = 1, angle = 0, angleWidth = Math.PI * 2) {
+  function add(pos, count = 16, speed = 1, angle = 0, angleWidth = Math.PI * 2) {
       if (count < 1) {
           if (random.get() > count) {
               return;
@@ -2092,8 +2092,8 @@ image-rendering: pixelated;
           const p = {
               pos: new Vector(pos),
               vel: new Vector(speed * random.get(0.5, 1), 0).rotate(a),
-              color,
-              ticks: clamp(random.getInt(10, 20) * speed, 10, 60),
+              color: currentColor,
+              ticks: clamp(random.get(10, 20) * Math.sqrt(speed), 10, 60),
           };
           particles.push(p);
       }
@@ -2101,7 +2101,7 @@ image-rendering: pixelated;
   function update$5() {
       particles = particles.filter((p) => {
           p.ticks--;
-          if (p.ticks === 0) {
+          if (p.ticks < 0) {
               return false;
           }
           p.pos.add(p.vel);
@@ -2336,15 +2336,15 @@ image-rendering: pixelated;
   function color(colorName) {
       setColor(colorName);
   }
-  function particle(x, y, color, count, speed, angle, angleWidth) {
+  function particle(x, y, count, speed, angle, angleWidth) {
       let pos = new Vector();
       if (typeof x === "number") {
           pos.set(x, y);
-          add(pos, color, count, speed, angle, angleWidth);
+          add(pos, count, speed, angle, angleWidth);
       }
       else {
           pos.set(x);
-          add(pos, y, color, count, speed, angle);
+          add(pos, y, count, speed, angle);
       }
   }
   function vec(x, y) {
