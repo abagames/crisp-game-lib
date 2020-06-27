@@ -79,7 +79,10 @@ function update() {
     addScore(scoreTotal, scorePos.x, scorePos.y + 9);
   }
   color("cyan");
-  wind.add(vec(input.pos).sub(prevInputPos).mul(0.5)).mul(0.5);
+  const o = vec(input.pos).sub(prevInputPos);
+  if (o.length < 9) {
+    wind.add(o.mul(0.5)).mul(0.5);
+  }
   prevInputPos.set(input.pos);
   particle(input.pos, 3, wind.length, wind.angle, 0.1);
   addBalloonTicks--;
