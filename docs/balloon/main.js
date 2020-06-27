@@ -15,7 +15,7 @@ options = {
 
 let balloons;
 let addBalloonTicks;
-let prevPos;
+let prevInputPos;
 let wind;
 let bonuses;
 let addBonusTicks;
@@ -27,7 +27,7 @@ function update() {
   if (!ticks) {
     balloons = [];
     addBalloonTicks = 0;
-    prevPos = vec(input.pos);
+    prevInputPos = vec(input.pos);
     wind = vec();
     bonuses = [];
     addBonusTicks = 0;
@@ -38,7 +38,7 @@ function update() {
   if (addBonusTicks < 0) {
     bonuses.push({
       p: vec(rnd(10, 80), -5),
-      v: vec(rnds(0.2), rnd(0.1, 0.3)),
+      v: vec(rnds(0.2), rnd(0.1, 0.25 + difficulty * 0.05)),
       bl: undefined,
     });
     addBonusTicks += 50 / difficulty;
@@ -79,8 +79,8 @@ function update() {
     addScore(scoreTotal, scorePos.x, scorePos.y + 9);
   }
   color("cyan");
-  wind.add(vec(input.pos).sub(prevPos).mul(0.5)).mul(0.5);
-  prevPos = vec(input.pos);
+  wind.add(vec(input.pos).sub(prevInputPos).mul(0.5)).mul(0.5);
+  prevInputPos.set(input.pos);
   particle(input.pos, 3, wind.length, wind.angle, 0.1);
   addBalloonTicks--;
   if (addBalloonTicks < 0) {
