@@ -85,8 +85,8 @@ image-rendering: pixelated;
     if (theme.name === "pixel" || theme.name === "shapeDark") {
       const bloomFilter = new (PIXI.filters as any).AdvancedBloomFilter({
         threshold: 0.1,
-        bloomScale: 1.5,
-        brightness: 1.5,
+        bloomScale: theme.name === "pixel" ? 1.5 : 1,
+        brightness: theme.name === "pixel" ? 1.5 : 1,
         blur: 8,
       });
       graphics.filters.push(bloomFilter);
