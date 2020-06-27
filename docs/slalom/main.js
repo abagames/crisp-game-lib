@@ -11,7 +11,6 @@ options = {
   isReplayEnabled: true,
   seed: 14,
   theme: "pixel",
-  isCapturing: true,
 };
 
 let walls;
