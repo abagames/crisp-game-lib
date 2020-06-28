@@ -11,12 +11,12 @@ ll l l
 llllll
  l  l
  l  l
-`
+`,
 ];
 
 options = {
   isShowingScore: false,
-  viewSize: { x: 200, y: 100 }
+  viewSize: { x: 200, y: 100 },
 };
 
 let drawingButtons;
@@ -28,8 +28,9 @@ const drawingFunctions = {
   rect: rect,
   bar: bar,
   line: line,
+  arc: arc,
   text: text,
-  char: char
+  char: char,
 };
 
 function update() {
@@ -44,10 +45,10 @@ function update() {
         isToggle: true,
         onClick: () => {
           currentDrawing = d;
-        }
+        },
       })
     );
-    drawingButtons.forEach(db => (db.toggleGroup = drawingButtons));
+    drawingButtons.forEach((db) => (db.toggleGroup = drawingButtons));
     drawingButtons[0].isSelected = true;
     colorButtons = [
       "red",
@@ -56,7 +57,7 @@ function update() {
       "blue",
       "purple",
       "cyan",
-      "black"
+      "black",
     ].map((c, i) =>
       getButton({
         pos: vec(160, 10 + i * 9),
@@ -65,10 +66,10 @@ function update() {
         isToggle: true,
         onClick: () => {
           currentColor = c;
-        }
+        },
       })
     );
-    colorButtons.forEach(cb => (cb.toggleGroup = colorButtons));
+    colorButtons.forEach((cb) => (cb.toggleGroup = colorButtons));
     colorButtons[0].isSelected = true;
   }
   let params;
@@ -77,7 +78,7 @@ function update() {
       50,
       50,
       floor((input.pos.x - 50) * 2),
-      floor((input.pos.y - 50) * 2)
+      floor((input.pos.y - 50) * 2),
     ];
   } else if (currentDrawing === "rect") {
     params = [50, 50, floor(input.pos.x - 50), floor(input.pos.y - 50)];
@@ -88,10 +89,13 @@ function update() {
       floor(input.pos.distanceTo(50, 50) * 2),
       5,
       floor(input.pos.angleTo(50, 50) * 100) / 100,
-      0.5
+      0.5,
     ];
   } else if (currentDrawing === "line") {
     params = [50, 50, floor(input.pos.x), floor(input.pos.y), 5];
+  } else if (currentDrawing === "arc") {
+    const ip = vec(input.pos).sub(50, 50);
+    params = [50, 50, floor(ip.length), 5, 0, floor(ip.angle * 10) / 10];
   } else {
     params = ["a", floor(input.pos.x), floor(input.pos.y)];
   }
@@ -100,8 +104,8 @@ function update() {
   color("blue");
   text("drawing", 115, 5);
   text("color", 160, 5);
-  drawingButtons.forEach(db => updateButton(db));
-  colorButtons.forEach(cb => updateButton(cb));
+  drawingButtons.forEach((db) => updateButton(db));
+  colorButtons.forEach((cb) => updateButton(cb));
   color("black");
   text(`color("${currentColor}");`, 5, 5);
   text(`${currentDrawing}(`, 5, 12);
@@ -142,7 +146,7 @@ function getButton({ pos, size, text, isToggle, onClick }) {
     onClick,
     isPressed: false,
     isSelected: false,
-    toggleGroup: []
+    toggleGroup: [],
   };
 }
 
@@ -162,7 +166,7 @@ function updateButton(button) {
       if (button.toggleGroup.length === 0) {
         button.isSelected = !button.isSelected;
       } else {
-        button.toggleGroup.forEach(b => {
+        button.toggleGroup.forEach((b) => {
           b.isSelected = false;
         });
         button.isSelected = true;
