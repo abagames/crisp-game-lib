@@ -51,9 +51,9 @@ export function init(isDarkColor: boolean) {
       return [
         c,
         {
-          r: Math.floor(isDarkColor ? wr * 0.5 : wr - (wr - r) * 0.5),
-          g: Math.floor(isDarkColor ? wg * 0.5 : wg - (wg - g) * 0.5),
-          b: Math.floor(isDarkColor ? wb * 0.5 : wb - (wb - b) * 0.5),
+          r: Math.floor(isDarkColor ? r * 0.5 : wr - (wr - r) * 0.5),
+          g: Math.floor(isDarkColor ? g * 0.5 : wg - (wg - g) * 0.5),
+          b: Math.floor(isDarkColor ? b * 0.5 : wb - (wb - b) * 0.5),
           a: 1,
         },
       ];
