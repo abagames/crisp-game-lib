@@ -94,6 +94,75 @@ export function line(
   return drawLine(p, p2.sub(p), thickness);
 }
 
+export function arc(
+  centerX: number | VectorLike,
+  centerY: number,
+  radius?: number,
+  thickness = 3,
+  angleFrom = 0,
+  angleTo = Math.PI * 2
+) {
+  let centerPos = new Vector();
+  if (typeof centerX === "number") {
+    centerPos.set(centerX, centerY);
+  } else {
+    centerPos.set(centerX);
+    angleTo = angleFrom;
+    angleFrom = thickness;
+    thickness = radius;
+    radius = centerY;
+  }
+  //let af = wrap(angleFrom, 0, Math.PI * 2);
+  //let at = wrap(angleTo, 0, Math.PI * 2);
+  let af: number;
+  let ao: number;
+  if (angleFrom > angleTo) {
+    af = angleTo;
+    ao = angleFrom - angleTo;
+  } else {
+    af = angleFrom;
+    ao = angleTo - angleFrom;
+  }
+  ao = clamp(ao, 0, Math.PI * 2);
+  if (ao < 0.01) {
+    return;
+  }
+  const lc = clamp(ceil(ao * Math.sqrt(radius * 0.25)), 1, 36);
+  const ai = ao / lc;
+  let a = af;
+  let p1 = new Vector(radius).rotate(a).add(centerPos);
+  let p2 = new Vector();
+  let o = new Vector();
+  let collision: Collision = { isColliding: { rect: {}, text: {}, char: {} } };
+  for (let i = 0; i < lc; i++) {
+    a += ai;
+    p2.set(radius).rotate(a).add(centerPos);
+    o.set(p2).sub(p1);
+    const c = drawLine(p1, o, thickness, true);
+    collision = {
+      ...collision,
+      ...createShorthand(c.isColliding.rect),
+      isColliding: {
+        rect: {
+          ...collision.isColliding.rect,
+          ...c.isColliding.rect,
+        },
+        text: {
+          ...collision.isColliding.text,
+          ...c.isColliding.text,
+        },
+        char: {
+          ...collision.isColliding.char,
+          ...c.isColliding.char,
+        },
+      },
+    };
+    p1.set(p2);
+  }
+  concatTmpHitBoxes();
+  return collision;
+}
+
 function drawRect(
   isAlignCenter: boolean,
   x: number | VectorLike,
@@ -130,7 +199,12 @@ function drawRect(
   }
 }
 
-function drawLine(p: Vector, l: Vector, thickness: number) {
+function drawLine(
+  p: Vector,
+  l: Vector,
+  thickness: number,
+  isAddingToTmp = false
+) {
   let isDrawing = true;
   if (view.theme.name === "shape" || view.theme.name === "shapeDark") {
     view.drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
@@ -163,7 +237,9 @@ function drawLine(p: Vector, l: Vector, thickness: number) {
     };
     p.add(l);
   }
-  concatTmpHitBoxes();
+  if (!isAddingToTmp) {
+    concatTmpHitBoxes();
+  }
   return collision;
 }
 

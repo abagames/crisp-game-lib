@@ -2200,6 +2200,56 @@ image-rendering: pixelated;
       }
       return drawLine$1(p, p2.sub(p), thickness);
   }
+  function arc(centerX, centerY, radius, thickness = 3, angleFrom = 0, angleTo = Math.PI * 2) {
+      let centerPos = new Vector();
+      if (typeof centerX === "number") {
+          centerPos.set(centerX, centerY);
+      }
+      else {
+          centerPos.set(centerX);
+          angleTo = angleFrom;
+          angleFrom = thickness;
+          thickness = radius;
+          radius = centerY;
+      }
+      //let af = wrap(angleFrom, 0, Math.PI * 2);
+      //let at = wrap(angleTo, 0, Math.PI * 2);
+      let af;
+      let ao;
+      if (angleFrom > angleTo) {
+          af = angleTo;
+          ao = angleFrom - angleTo;
+      }
+      else {
+          af = angleFrom;
+          ao = angleTo - angleFrom;
+      }
+      ao = clamp$1(ao, 0, Math.PI * 2);
+      if (ao < 0.01) {
+          return;
+      }
+      const lc = clamp$1(ceil(ao * Math.sqrt(radius * 0.25)), 1, 36);
+      const ai = ao / lc;
+      let a = af;
+      let p1 = new Vector(radius).rotate(a).add(centerPos);
+      let p2 = new Vector();
+      let o = new Vector();
+      let collision = { isColliding: { rect: {}, text: {}, char: {} } };
+      for (let i = 0; i < lc; i++) {
+          a += ai;
+          p2.set(radius).rotate(a).add(centerPos);
+          o.set(p2).sub(p1);
+          const c = drawLine$1(p1, o, thickness, true);
+          collision = Object.assign(Object.assign(Object.assign({}, collision), createShorthand(c.isColliding.rect)), { isColliding: {
+                  rect: Object.assign(Object.assign({}, collision.isColliding.rect), c.isColliding.rect),
+                  text: Object.assign(Object.assign({}, collision.isColliding.text), c.isColliding.text),
+                  char: Object.assign(Object.assign({}, collision.isColliding.char), c.isColliding.char),
+              } });
+          p1.set(p2);
+      }
+      concatTmpHitBoxes();
+      return collision;
+  }
   function drawRect(isAlignCenter, x, y, width, height) {
       if (typeof x === "number") {
           if (typeof y === "number") {
@@ -2236,7 +2286,7 @@ image-rendering: pixelated;
           }
       }
   }
-  function drawLine$1(p, l, thickness) {
+  function drawLine$1(p, l, thickness, isAddingToTmp = false) {
       let isDrawing = true;
       if (theme.name === "shape" || theme.name === "shapeDark") {
           drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
@@ -2256,7 +2306,9 @@ image-rendering: pixelated;
               } });
           p.add(l);
       }
-      concatTmpHitBoxes();
+      if (!isAddingToTmp) {
+          concatTmpHitBoxes();
+      }
       return collision;
   }
   function addRect(isAlignCenter, x, y, width, height, isAddingToTmp = false, isDrawing = true) {
@@ -2293,7 +2345,7 @@ image-rendering: pixelated;
   const pow = Math.pow;
   const floor = Math.floor;
   const round = Math.round;
-  const ceil = Math.ceil;
+  const ceil$1 = Math.ceil;
   exports.ticks = 0;
   exports.score = 0;
   function rnd(lowOrHigh = 1, high) {
@@ -2751,11 +2803,12 @@ image-rendering: pixelated;
   exports.addGameScript = addGameScript;
   exports.addScore = addScore;
   exports.addWithCharCode = addWithCharCode;
+  exports.arc = arc;
   exports.atan2 = atan2;
   exports.bar = bar;
   exports.bl = bl;
   exports.box = box;
-  exports.ceil = ceil;
+  exports.ceil = ceil$1;
   exports.char = char;
   exports.clamp = clamp$1;
   exports.clr = clr;

@@ -148,6 +148,23 @@ declare function line(
   thickness?: number
 ): Collision;
 
+// Draw arc
+declare function arc(
+  centerX: number,
+  centerY: number,
+  radius: number,
+  thickness?: number,
+  angleFrom?: number,
+  angleTo?: number
+): Collision;
+declare function arc(
+  centerPos: VectorLike,
+  radius: number,
+  thickness?: number,
+  angleFrom?: number,
+  angleTo?: number
+): Collision;
+
 // Draw letters.
 declare type LetterOptions = {
   color?: Color;
