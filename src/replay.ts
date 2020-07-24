@@ -68,7 +68,7 @@ export function saveRewindState(state: any, baseState, random: Random) {
 export function rewind(random: Random) {
   const rw = rewindStates.pop();
   const rs = rw.randomState;
-  random.setSeed(rs.x, rs.y, rs.z, rs.w, 0);
+  random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
   input.set(record.inputs.pop());
   return rw;
 }
