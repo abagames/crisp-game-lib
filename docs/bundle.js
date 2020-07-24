@@ -2128,7 +2128,7 @@ image-rendering: pixelated;
           toggleGroup: [],
       };
   }
-  function update$6(button) {
+  function update$6(button, isDrawing = true) {
       const o = vec(input.pos).sub(button.pos);
       button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
       if (input.isJustPressed && button.isHovered) {
@@ -2152,7 +2152,9 @@ image-rendering: pixelated;
               }
           }
       }
-      draw(button);
+      if (isDrawing) {
+          draw(button);
+      }
   }
   function draw(button) {
       color(button.isPressed ? "blue" : "light_blue");
@@ -2204,7 +2206,7 @@ image-rendering: pixelated;
   function rewind(random) {
       const rw = rewindStates.pop();
       const rs = rw.randomState;
-      random.setSeed(rs.x, rs.y, rs.z, rs.w, 0);
+      random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
       set(record.inputs.pop());
       return rw;
   }
@@ -2799,16 +2801,24 @@ image-rendering: pixelated;
           size: { x: 36, y: 7 },
           text: "GiveUp",
           onClick: () => {
+              if (theme.isUsingPixi) {
+                  clear$1();
+              }
               end();
           },
       });
       if (isPlayingBgm) {
           sss.stopBgm();
       }
+      if (theme.isUsingPixi) {
+          draw(rewindButton);
+          draw(giveUpButton);
+      }
   }
   function updateRewind() {
-      update$6(rewindButton);
-      update$6(giveUpButton);
+      const isDrawing = !theme.isUsingPixi;
+      update$6(rewindButton, isDrawing);
+      update$6(giveUpButton, isDrawing);
       if (rewindButton.isPressed) {
           terminal.clear();
           clear$1();

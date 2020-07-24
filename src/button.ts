@@ -36,7 +36,7 @@ export function get({
   };
 }
 
-export function update(button: Button) {
+export function update(button: Button, isDrawing = true) {
   const o = vec(input.pos).sub(button.pos);
   button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
   if (input.isJustPressed && button.isHovered) {
@@ -59,7 +59,9 @@ export function update(button: Button) {
       }
     }
   }
-  draw(button);
+  if (isDrawing) {
+    draw(button);
+  }
 }
 
 export function draw(button: Button) {

@@ -473,17 +473,25 @@ function initRewind() {
     size: { x: 36, y: 7 },
     text: "GiveUp",
     onClick: () => {
+      if (view.theme.isUsingPixi) {
+        view.clear();
+      }
       end();
     },
   });
   if (isPlayingBgm) {
     sss.stopBgm();
   }
+  if (view.theme.isUsingPixi) {
+    drawButton(rewindButton);
+    drawButton(giveUpButton);
+  }
 }
 
 function updateRewind() {
-  updateButton(rewindButton);
-  updateButton(giveUpButton);
+  const isDrawing = !view.theme.isUsingPixi;
+  updateButton(rewindButton, isDrawing);
+  updateButton(giveUpButton, isDrawing);
   if (rewindButton.isPressed) {
     terminal.clear();
     view.clear();
