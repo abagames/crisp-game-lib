@@ -98,9 +98,9 @@ export function arc(
   centerX: number | VectorLike,
   centerY: number,
   radius?: number,
-  thickness = 3,
-  angleFrom = 0,
-  angleTo = Math.PI * 2
+  thickness?: number,
+  angleFrom?: number,
+  angleTo?: number
 ) {
   let centerPos = new Vector();
   if (typeof centerX === "number") {
@@ -112,8 +112,15 @@ export function arc(
     thickness = radius;
     radius = centerY;
   }
-  //let af = wrap(angleFrom, 0, Math.PI * 2);
-  //let at = wrap(angleTo, 0, Math.PI * 2);
+  if (thickness == null) {
+    thickness = 3;
+  }
+  if (angleFrom == null) {
+    angleFrom = 0;
+  }
+  if (angleTo == null) {
+    angleTo = Math.PI * 2;
+  }
   let af: number;
   let ao: number;
   if (angleFrom > angleTo) {

@@ -2200,7 +2200,7 @@ image-rendering: pixelated;
       }
       return drawLine$1(p, p2.sub(p), thickness);
   }
-  function arc(centerX, centerY, radius, thickness = 3, angleFrom = 0, angleTo = Math.PI * 2) {
+  function arc(centerX, centerY, radius, thickness, angleFrom, angleTo) {
       let centerPos = new Vector();
       if (typeof centerX === "number") {
           centerPos.set(centerX, centerY);
@@ -2212,8 +2212,15 @@ image-rendering: pixelated;
           thickness = radius;
           radius = centerY;
       }
-      //let af = wrap(angleFrom, 0, Math.PI * 2);
-      //let at = wrap(angleTo, 0, Math.PI * 2);
+      if (thickness == null) {
+          thickness = 3;
+      }
+      if (angleFrom == null) {
+          angleFrom = 0;
+      }
+      if (angleTo == null) {
+          angleTo = Math.PI * 2;
+      }
       let af;
       let ao;
       if (angleFrom > angleTo) {
