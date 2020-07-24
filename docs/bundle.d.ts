@@ -219,7 +219,7 @@ declare function particle(
 );
 
 // Rewind a game
-declare function saveRewindState(state: any): any;
+declare function rewindState(state: any): any;
 
 declare function rewind();
 

@@ -2498,7 +2498,7 @@ image-rendering: pixelated;
           sss.play(soundEffectTypeToString[type]);
       }
   }
-  function saveRewindState$1(rewindState) {
+  function rewindState(rewindState) {
       if (isRewindEnabled) {
           if (isRewinding) {
               const rs = rewind(random$1);
@@ -3032,11 +3032,11 @@ image-rendering: pixelated;
   exports.rd = rd;
   exports.rect = rect$1;
   exports.rewind = rewind$1;
+  exports.rewindState = rewindState;
   exports.rnd = rnd;
   exports.rndi = rndi;
   exports.rnds = rnds;
   exports.round = round;
-  exports.saveRewindState = saveRewindState$1;
   exports.sin = sin;
   exports.sl = sl;
   exports.sqrt = sqrt;

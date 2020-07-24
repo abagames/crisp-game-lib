@@ -125,7 +125,7 @@ export function play(type: SoundEffectType) {
   }
 }
 
-export function saveRewindState(rewindState: any) {
+export function rewindState(rewindState: any) {
   if (isRewindEnabled) {
     if (isRewinding) {
       const rs = replay.rewind(random);
