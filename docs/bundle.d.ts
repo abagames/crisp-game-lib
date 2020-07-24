@@ -28,7 +28,7 @@ declare function addScore(value: number, x: number, y: number);
 declare function addScore(value: number, pos: VectorLike);
 
 // End game
-declare function end(): void;
+declare function end(gameOverText?: string);
 
 // color
 declare type Color =

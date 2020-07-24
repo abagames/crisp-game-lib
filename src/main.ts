@@ -63,7 +63,8 @@ export function rnds(lowOrHigh: number = 1, high?: number) {
   return random.get(lowOrHigh, high) * random.getPlusOrMinus();
 }
 
-export function end() {
+export function end(_gameOverText = "GAME OVER") {
+  gameOverText = _gameOverText;
   initGameOver();
 }
 
@@ -224,6 +225,7 @@ let isReplaying = false;
 let isRewinding = false;
 let rewindButton: Button;
 let giveUpButton: Button;
+let gameOverText: string;
 let gameScriptFile: string;
 
 export function onLoad() {
@@ -452,8 +454,8 @@ function drawGameOver() {
     return;
   }
   terminal.print(
-    "GAME OVER",
-    Math.floor((terminalSize.x - 9) / 2),
+    gameOverText,
+    Math.floor((terminalSize.x - gameOverText.length) / 2),
     Math.floor(terminalSize.y / 2)
   );
   terminal.draw();

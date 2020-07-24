@@ -2445,7 +2445,8 @@ image-rendering: pixelated;
   function rnds(lowOrHigh = 1, high) {
       return random$1.get(lowOrHigh, high) * random$1.getPlusOrMinus();
   }
-  function end() {
+  function end(_gameOverText = "GAME OVER") {
+      gameOverText = _gameOverText;
       initGameOver();
   }
   function addScore(value, x, y) {
@@ -2571,6 +2572,7 @@ image-rendering: pixelated;
   let isRewinding = false;
   let rewindButton;
   let giveUpButton;
+  let gameOverText;
   let gameScriptFile;
   function onLoad() {
       let opts;
@@ -2782,7 +2784,7 @@ image-rendering: pixelated;
       if (isReplaying) {
           return;
       }
-      terminal.print("GAME OVER", Math.floor((terminalSize.x - 9) / 2), Math.floor(terminalSize.y / 2));
+      terminal.print(gameOverText, Math.floor((terminalSize.x - gameOverText.length) / 2), Math.floor(terminalSize.y / 2));
       terminal.draw();
   }
   function initRewind$1() {
