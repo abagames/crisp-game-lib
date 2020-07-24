@@ -7,6 +7,7 @@ declare type Options = {
   isCapturing?: boolean;
   isShowingScore?: boolean;
   isReplayEnabled?: boolean;
+  isRewindEnabled?: boolean;
   isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
@@ -165,7 +166,7 @@ declare function arc(
   angleTo?: number
 ): Collision;
 
-// Draw letters.
+// Draw letters
 declare type LetterOptions = {
   color?: Color;
   backgroundColor?: Color;
@@ -200,6 +201,7 @@ declare function char(
   options?: LetterOptions
 ): Collision;
 
+// Add particles
 declare function particle(
   x: number,
   y: number,
@@ -215,6 +217,11 @@ declare function particle(
   angle?: number,
   angleWidth?: number
 );
+
+// Rewind a game
+declare function saveRewindState(state: any): any;
+
+declare function rewind();
 
 // Return Vector
 declare function vec(x?: number | VectorLike, y?: number): Vector;
@@ -461,3 +468,32 @@ declare interface VectorLike {
   x: number;
   y: number;
 }
+
+// Button
+declare type Button = {
+  pos: VectorLike;
+  size: VectorLike;
+  text: string;
+  isToggle: boolean;
+  onClick: () => void;
+  isPressed: boolean;
+  isSelected: boolean;
+  isHovered: boolean;
+  toggleGroup: Button[];
+};
+
+declare function getButton({
+  pos,
+  size,
+  text,
+  isToggle,
+  onClick,
+}: {
+  pos: VectorLike;
+  size: VectorLike;
+  text: string;
+  isToggle?: boolean;
+  onClick?: () => void;
+}): Button;
+
+declare function updateButton(button: Button);

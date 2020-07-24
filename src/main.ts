@@ -11,6 +11,12 @@ import { Color } from "./color";
 import { defineCharacters, print, letterSize } from "./letter";
 import * as _particle from "./particle";
 import { times } from "./util";
+import {
+  get as getButton,
+  update as updateButton,
+  draw as drawButton,
+  Button,
+} from "./button";
 
 import * as replay from "./replay";
 declare const sss;
@@ -21,6 +27,7 @@ export { rect, box, bar, line, arc } from "./rect";
 export { text, char } from "./letter";
 export { Color };
 export { input, keyboard, pointer };
+export { getButton, updateButton };
 export const PI = Math.PI;
 export const abs = Math.abs;
 export const sin = Math.sin;
@@ -112,7 +119,39 @@ export function vec(x?: number | VectorLike, y?: number) {
 }
 
 export function play(type: SoundEffectType) {
-  sss.play(soundEffectTypeToString[type]);
+  if (!isRewinding) {
+    sss.play(soundEffectTypeToString[type]);
+  }
+}
+
+export function saveRewindState(rewindState: any) {
+  if (isRewindEnabled) {
+    if (isRewinding) {
+      const rs = replay.rewind(random);
+      const bs = rs.baseState;
+      score = bs.score;
+      ticks = bs.ticks;
+      return rs.gameState;
+    } else if (isReplaying) {
+      const rs = replay.getRewindStateForReplay();
+      return rs.gameState;
+    } else if (state === "inGame") {
+      const baseState = { score, ticks };
+      replay.saveRewindState(rewindState, baseState, random);
+    }
+  }
+  return rewindState;
+}
+
+export function rewind() {
+  if (isRewinding) {
+    return;
+  }
+  if (!isReplaying && isRewindEnabled) {
+    initRewind();
+  } else {
+    end();
+  }
 }
 
 const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
@@ -130,6 +169,7 @@ const defaultOptions: Options = {
   isCapturing: false,
   isShowingScore: true,
   isReplayEnabled: false,
+  isRewindEnabled: false,
   isMinifying: false,
   viewSize: { x: 100, y: 100 },
   seed: 0,
@@ -150,6 +190,7 @@ declare type Options = {
   isCapturing?: boolean;
   isShowingScore?: boolean;
   isReplayEnabled?: boolean;
+  isRewindEnabled?: boolean;
   isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
@@ -160,12 +201,13 @@ declare function update();
 
 const seedRandom = new Random();
 const random = new Random();
-type State = "title" | "inGame" | "gameOver";
+type State = "title" | "inGame" | "gameOver" | "rewind";
 let state: State;
 let updateFunc = {
   title: updateTitle,
   inGame: updateInGame,
   gameOver: updateGameOver,
+  rewind: updateRewind,
 };
 let terminal: Terminal;
 let hiScore = 0;
@@ -175,9 +217,13 @@ let loopOptions;
 let isPlayingBgm: boolean;
 let isShowingScore: boolean;
 let isReplayEnabled: boolean;
+let isRewindEnabled = false;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isReplaying = false;
+let isRewinding = false;
+let rewindButton: Button;
+let giveUpButton: Button;
 let gameScriptFile: string;
 
 export function onLoad() {
@@ -213,7 +259,8 @@ export function onLoad() {
   loopOptions.viewSize = opts.viewSize;
   isPlayingBgm = opts.isPlayingBgm;
   isShowingScore = opts.isShowingScore;
-  isReplayEnabled = opts.isReplayEnabled;
+  isReplayEnabled = opts.isReplayEnabled || opts.isRewindEnabled;
+  isRewindEnabled = opts.isRewindEnabled;
   if (opts.isMinifying) {
     showMinifiedScript();
   }
@@ -300,6 +347,9 @@ function initInGame() {
   if (isReplayEnabled) {
     replay.initRecord(randomSeed);
     isReplaying = false;
+  }
+  if (isRewindEnabled) {
+    replay.initRewind();
   }
 }
 
@@ -407,6 +457,56 @@ function drawGameOver() {
     Math.floor(terminalSize.y / 2)
   );
   terminal.draw();
+}
+
+function initRewind() {
+  state = "rewind";
+  rewindButton = getButton({
+    pos: { x: 61, y: 91 },
+    size: { x: 36, y: 7 },
+    text: "Rewind",
+  });
+  giveUpButton = getButton({
+    pos: { x: 61, y: 81 },
+    size: { x: 36, y: 7 },
+    text: "GiveUp",
+    onClick: () => {
+      end();
+    },
+  });
+  if (isPlayingBgm) {
+    sss.stopBgm();
+  }
+}
+
+function updateRewind() {
+  updateButton(rewindButton);
+  updateButton(giveUpButton);
+  if (rewindButton.isPressed) {
+    terminal.clear();
+    view.clear();
+    isRewinding = true;
+    update();
+    drawScore();
+    drawButton(rewindButton);
+    terminal.draw();
+    if (replay.isRewindEmpty()) {
+      stopRewind();
+    }
+  } else {
+    if (isRewinding) {
+      stopRewind();
+    }
+  }
+}
+
+function stopRewind() {
+  isRewinding = false;
+  state = "inGame";
+  _particle.init();
+  if (isPlayingBgm) {
+    sss.playBgm();
+  }
 }
 
 function drawScore() {

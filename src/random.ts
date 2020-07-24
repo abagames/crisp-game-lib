@@ -52,6 +52,10 @@ export class Random {
     return this;
   }
 
+  getState() {
+    return { x: this.x, y: this.y, z: this.z, w: this.w };
+  }
+
   next() {
     const t = this.x ^ (this.x << 11);
     this.x = this.y;

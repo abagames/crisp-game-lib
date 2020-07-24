@@ -973,7 +973,7 @@ l l l
       return shorthandRects;
   }
 
-  function text(str, x, y, options) {
+  function text$1(str, x, y, options) {
       return letters(false, str, x, y, options);
   }
   function char(str, x, y, options) {
@@ -1718,6 +1718,9 @@ image-rendering: pixelated;
           }
           return this;
       }
+      getState() {
+          return { x: this.x, y: this.y, z: this.z, w: this.w };
+      }
       next() {
           const t = this.x ^ (this.x << 11);
           this.x = this.y;
@@ -1895,7 +1898,7 @@ image-rendering: pixelated;
       isJustReleased$2 = state.isJustReleased;
   }
 
-  var input = /*#__PURE__*/Object.freeze({
+  var input$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     get pos () { return pos$1; },
     get isPressed () { return isPressed$2; },
@@ -2112,8 +2115,59 @@ image-rendering: pixelated;
       });
   }
 
+  function get({ pos, size, text, isToggle = false, onClick = () => { }, }) {
+      return {
+          pos,
+          size,
+          text,
+          isToggle,
+          onClick,
+          isPressed: false,
+          isSelected: false,
+          isHovered: false,
+          toggleGroup: [],
+      };
+  }
+  function update$6(button) {
+      const o = vec(input.pos).sub(button.pos);
+      button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
+      if (input.isJustPressed && button.isHovered) {
+          button.isPressed = true;
+      }
+      if (button.isPressed && !button.isHovered) {
+          button.isPressed = false;
+      }
+      if (button.isPressed && input.isJustReleased) {
+          button.onClick();
+          button.isPressed = false;
+          if (button.isToggle) {
+              if (button.toggleGroup.length === 0) {
+                  button.isSelected = !button.isSelected;
+              }
+              else {
+                  button.toggleGroup.forEach((b) => {
+                      b.isSelected = false;
+                  });
+                  button.isSelected = true;
+              }
+          }
+      }
+      draw(button);
+  }
+  function draw(button) {
+      color(button.isPressed ? "blue" : "light_blue");
+      rect(button.pos.x, button.pos.y, button.size.x, button.size.y);
+      if (button.isToggle && !button.isSelected) {
+          color("white");
+          rect(button.pos.x + 1, button.pos.y + 1, button.size.x - 2, button.size.y - 2);
+      }
+      color(button.isHovered ? "black" : "blue");
+      text(button.text, button.pos.x + 3, button.pos.y + 3);
+  }
+
   let record;
   let inputIndex;
+  let rewindStates;
   function initRecord(randomSeed) {
       record = {
           randomSeed,
@@ -2137,8 +2191,35 @@ image-rendering: pixelated;
       set(record.inputs[inputIndex]);
       inputIndex++;
   }
+  function initRewind() {
+      rewindStates = [];
+  }
+  function saveRewindState(state, baseState, random) {
+      rewindStates.push({
+          randomState: random.getState(),
+          gameState: cloneDeep(state),
+          baseState: cloneDeep(baseState),
+      });
+  }
+  function rewind(random) {
+      const rw = rewindStates.pop();
+      const rs = rw.randomState;
+      random.setSeed(rs.x, rs.y, rs.z, rs.w, 0);
+      set(record.inputs.pop());
+      return rw;
+  }
+  function isRewindEmpty() {
+      return rewindStates.length === 0;
+  }
+  function getRewindStateForReplay() {
+      const i = inputIndex - 1;
+      if (i >= record.inputs.length) {
+          return;
+      }
+      return rewindStates[i];
+  }
 
-  function rect(x, y, width, height) {
+  function rect$1(x, y, width, height) {
       return drawRect(false, x, y, width, height);
   }
   function box(x, y, width, height) {
@@ -2392,7 +2473,7 @@ image-rendering: pixelated;
           ticks: 30,
       });
   }
-  function color(colorName) {
+  function color$1(colorName) {
       setColor(colorName);
   }
   function particle(x, y, count, speed, angle, angleWidth) {
@@ -2406,11 +2487,44 @@ image-rendering: pixelated;
           add(pos, y, count, speed, angle);
       }
   }
-  function vec(x, y) {
+  function vec$1(x, y) {
       return new Vector(x, y);
   }
   function play(type) {
-      sss.play(soundEffectTypeToString[type]);
+      if (!isRewinding) {
+          sss.play(soundEffectTypeToString[type]);
+      }
+  }
+  function saveRewindState$1(rewindState) {
+      if (isRewindEnabled) {
+          if (isRewinding) {
+              const rs = rewind(random$1);
+              const bs = rs.baseState;
+              exports.score = bs.score;
+              exports.ticks = bs.ticks;
+              return rs.gameState;
+          }
+          else if (isReplaying) {
+              const rs = getRewindStateForReplay();
+              return rs.gameState;
+          }
+          else if (state === "inGame") {
+              const baseState = { score: exports.score, ticks: exports.ticks };
+              saveRewindState(rewindState, baseState, random$1);
+          }
+      }
+      return rewindState;
+  }
+  function rewind$1() {
+      if (isRewinding) {
+          return;
+      }
+      if (!isReplaying && isRewindEnabled) {
+          initRewind$1();
+      }
+      else {
+          end();
+      }
   }
   const soundEffectTypeToString = {
       coin: "c",
@@ -2427,6 +2541,7 @@ image-rendering: pixelated;
       isCapturing: false,
       isShowingScore: true,
       isReplayEnabled: false,
+      isRewindEnabled: false,
       isMinifying: false,
       viewSize: { x: 100, y: 100 },
       seed: 0,
@@ -2439,6 +2554,7 @@ image-rendering: pixelated;
       title: updateTitle,
       inGame: updateInGame,
       gameOver: updateGameOver,
+      rewind: updateRewind,
   };
   let terminal;
   let hiScore = 0;
@@ -2448,9 +2564,13 @@ image-rendering: pixelated;
   let isPlayingBgm;
   let isShowingScore;
   let isReplayEnabled;
+  let isRewindEnabled = false;
   let terminalSize;
   let scoreBoards;
   let isReplaying = false;
+  let isRewinding = false;
+  let rewindButton;
+  let giveUpButton;
   let gameScriptFile;
   function onLoad() {
       let opts;
@@ -2484,7 +2604,8 @@ image-rendering: pixelated;
       loopOptions.viewSize = opts.viewSize;
       isPlayingBgm = opts.isPlayingBgm;
       isShowingScore = opts.isShowingScore;
-      isReplayEnabled = opts.isReplayEnabled;
+      isReplayEnabled = opts.isReplayEnabled || opts.isRewindEnabled;
+      isRewindEnabled = opts.isRewindEnabled;
       if (opts.isMinifying) {
           showMinifiedScript();
       }
@@ -2567,6 +2688,9 @@ image-rendering: pixelated;
           initRecord(randomSeed);
           isReplaying = false;
       }
+      if (isRewindEnabled) {
+          initRewind();
+      }
   }
   function updateInGame() {
       terminal.clear();
@@ -2575,7 +2699,7 @@ image-rendering: pixelated;
       updateScoreBoards();
       if (isReplayEnabled) {
           recordInput({
-              pos: vec(pos$1),
+              pos: vec$1(pos$1),
               isPressed: isPressed$2,
               isJustPressed: isJustPressed$2,
               isJustReleased: isJustReleased$2,
@@ -2661,6 +2785,54 @@ image-rendering: pixelated;
       terminal.print("GAME OVER", Math.floor((terminalSize.x - 9) / 2), Math.floor(terminalSize.y / 2));
       terminal.draw();
   }
+  function initRewind$1() {
+      state = "rewind";
+      rewindButton = get({
+          pos: { x: 61, y: 91 },
+          size: { x: 36, y: 7 },
+          text: "Rewind",
+      });
+      giveUpButton = get({
+          pos: { x: 61, y: 81 },
+          size: { x: 36, y: 7 },
+          text: "GiveUp",
+          onClick: () => {
+              end();
+          },
+      });
+      if (isPlayingBgm) {
+          sss.stopBgm();
+      }
+  }
+  function updateRewind() {
+      update$6(rewindButton);
+      update$6(giveUpButton);
+      if (rewindButton.isPressed) {
+          terminal.clear();
+          clear$1();
+          isRewinding = true;
+          update();
+          drawScore();
+          draw(rewindButton);
+          terminal.draw();
+          if (isRewindEmpty()) {
+              stopRewind();
+          }
+      }
+      else {
+          if (isRewinding) {
+              stopRewind();
+          }
+      }
+  }
+  function stopRewind() {
+      isRewinding = false;
+      state = "inGame";
+      init$7();
+      if (isPlayingBgm) {
+          sss.playBgm();
+      }
+  }
   function drawScore() {
       if (!isShowingScore) {
           return;
@@ -2744,7 +2916,7 @@ image-rendering: pixelated;
           console.log(`${minifiedUpdateScript.length} letters`);
       });
   }
-  let clr = color;
+  let clr = color$1;
   let ply = play;
   let tms = times;
   const tr = "transparent";
@@ -2820,15 +2992,16 @@ image-rendering: pixelated;
   exports.clamp = clamp$1;
   exports.clr = clr;
   exports.cn = cn;
-  exports.color = color;
+  exports.color = color$1;
   exports.cos = cos;
   exports.cy = cy;
   exports.end = end;
   exports.ex = ex;
   exports.floor = floor;
+  exports.getButton = get;
   exports.gr = gr;
   exports.ht = ht;
-  exports.input = input;
+  exports.input = input$1;
   exports.jm = jm;
   exports.keyboard = keyboard;
   exports.lc = lc;
@@ -2845,20 +3018,23 @@ image-rendering: pixelated;
   exports.pw = pw;
   exports.range = range;
   exports.rd = rd;
-  exports.rect = rect;
+  exports.rect = rect$1;
+  exports.rewind = rewind$1;
   exports.rnd = rnd;
   exports.rndi = rndi;
   exports.rnds = rnds;
   exports.round = round;
+  exports.saveRewindState = saveRewindState$1;
   exports.sin = sin;
   exports.sl = sl;
   exports.sqrt = sqrt;
-  exports.text = text;
+  exports.text = text$1;
   exports.times = times;
   exports.tms = tms;
   exports.tr = tr;
   exports.uc = uc;
-  exports.vec = vec;
+  exports.updateButton = update$6;
+  exports.vec = vec$1;
   exports.wh = wh;
   exports.wrap = wrap;
   exports.yl = yl;

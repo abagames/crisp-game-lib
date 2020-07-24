@@ -1,6 +1,8 @@
 import * as input from "./input";
 import { Vector } from "./vector";
 import { Random } from "./random";
+//import cloneDeep from "lodash/cloneDeep";
+declare const cloneDeep;
 
 type RecordedInput = {
   pos: Vector;
@@ -14,8 +16,15 @@ export type Record = {
   inputs: RecordedInput[];
 };
 
+export type RewindState = {
+  randomState: { x: number; y: number; z: number; w: number };
+  gameState: any;
+  baseState: { ticks: number; score: number };
+};
+
 let record: Record;
 let inputIndex: number;
+let rewindStates: RewindState[];
 
 export function initRecord(randomSeed: number) {
   record = {
@@ -43,4 +52,36 @@ export function replayInput() {
   }
   input.set(record.inputs[inputIndex]);
   inputIndex++;
+}
+
+export function initRewind() {
+  rewindStates = [];
+}
+
+export function saveRewindState(state: any, baseState, random: Random) {
+  rewindStates.push({
+    randomState: random.getState(),
+    gameState: cloneDeep(state),
+    baseState: cloneDeep(baseState),
+  });
+}
+
+export function rewind(random: Random) {
+  const rw = rewindStates.pop();
+  const rs = rw.randomState;
+  random.setSeed(rs.x, rs.y, rs.z, rs.w, 0);
+  input.set(record.inputs.pop());
+  return rw;
+}
+
+export function isRewindEmpty() {
+  return rewindStates.length === 0;
+}
+
+export function getRewindStateForReplay() {
+  const i = inputIndex - 1;
+  if (i >= record.inputs.length) {
+    return;
+  }
+  return rewindStates[i];
 }
