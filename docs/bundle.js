@@ -2128,7 +2128,7 @@ image-rendering: pixelated;
           toggleGroup: [],
       };
   }
-  function update$6(button, isDrawing = true) {
+  function update$6(button) {
       const o = vec(input.pos).sub(button.pos);
       button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
       if (input.isJustPressed && button.isHovered) {
@@ -2152,9 +2152,7 @@ image-rendering: pixelated;
               }
           }
       }
-      if (isDrawing) {
-          draw(button);
-      }
+      draw(button);
   }
   function draw(button) {
       color(button.isPressed ? "blue" : "light_blue");
@@ -2170,6 +2168,7 @@ image-rendering: pixelated;
   let record;
   let inputIndex;
   let rewindStates;
+  let storedInput;
   function initRecord(randomSeed) {
       record = {
           randomSeed,
@@ -2207,8 +2206,30 @@ image-rendering: pixelated;
       const rw = rewindStates.pop();
       const rs = rw.randomState;
       random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
+      storedInput = {
+          pos: vec(pos$1),
+          isPressed: isPressed$2,
+          isJustPressed: isJustPressed$2,
+          isJustReleased: isJustReleased$2,
+      };
       set(record.inputs.pop());
       return rw;
+  }
+  function getLastRewindState(random) {
+      const rw = rewindStates[rewindStates.length - 1];
+      const rs = rw.randomState;
+      random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
+      storedInput = {
+          pos: vec(pos$1),
+          isPressed: isPressed$2,
+          isJustPressed: isJustPressed$2,
+          isJustReleased: isJustReleased$2,
+      };
+      set(record.inputs[record.inputs.length - 1]);
+      return rw;
+  }
+  function restoreInput() {
+      set(storedInput);
   }
   function isRewindEmpty() {
       return rewindStates.length === 0;
@@ -2449,6 +2470,13 @@ image-rendering: pixelated;
   }
   function end(_gameOverText = "GAME OVER") {
       gameOverText = _gameOverText;
+      if (isShowingTime) {
+          exports.time = undefined;
+      }
+      initGameOver();
+  }
+  function complete(completeText = "COMPLETE") {
+      gameOverText = completeText;
       initGameOver();
   }
   function addScore(value, x, y) {
@@ -2494,13 +2522,20 @@ image-rendering: pixelated;
       return new Vector(x, y);
   }
   function play(type) {
-      if (!isRewinding) {
+      if (!isWaitingRewind && !isRewinding) {
           sss.play(soundEffectTypeToString[type]);
       }
   }
   function rewindState(rewindState) {
       if (isRewindEnabled) {
-          if (isRewinding) {
+          if (isWaitingRewind) {
+              const rs = getLastRewindState(random$1);
+              const bs = rs.baseState;
+              exports.score = bs.score;
+              exports.ticks = bs.ticks;
+              return cloneDeep(rs.gameState);
+          }
+          else if (isRewinding) {
               const rs = rewind(random$1);
               const bs = rs.baseState;
               exports.score = bs.score;
@@ -2543,6 +2578,7 @@ image-rendering: pixelated;
       isPlayingBgm: false,
       isCapturing: false,
       isShowingScore: true,
+      isShowingTime: false,
       isReplayEnabled: false,
       isRewindEnabled: false,
       isMinifying: false,
@@ -2561,16 +2597,19 @@ image-rendering: pixelated;
   };
   let terminal;
   let hiScore = 0;
+  let fastestTime;
   let isNoTitle = true;
   let seed = 0;
   let loopOptions;
   let isPlayingBgm;
   let isShowingScore;
+  let isShowingTime;
   let isReplayEnabled;
   let isRewindEnabled = false;
   let terminalSize;
   let scoreBoards;
   let isReplaying = false;
+  let isWaitingRewind = false;
   let isRewinding = false;
   let rewindButton;
   let giveUpButton;
@@ -2607,7 +2646,8 @@ image-rendering: pixelated;
       loopOptions.isCapturing = opts.isCapturing;
       loopOptions.viewSize = opts.viewSize;
       isPlayingBgm = opts.isPlayingBgm;
-      isShowingScore = opts.isShowingScore;
+      isShowingScore = opts.isShowingScore && !opts.isShowingTime;
+      isShowingTime = opts.isShowingTime;
       isReplayEnabled = opts.isReplayEnabled || opts.isRewindEnabled;
       isRewindEnabled = opts.isRewindEnabled;
       if (opts.isMinifying) {
@@ -2649,6 +2689,7 @@ image-rendering: pixelated;
       exports.df = exports.difficulty = exports.ticks / 3600 + 1;
       exports.tc = exports.ticks;
       const prevScore = exports.score;
+      const prevTime = exports.time;
       exports.sc = exports.score;
       const prevSc = exports.sc;
       exports.inp = {
@@ -2668,6 +2709,7 @@ image-rendering: pixelated;
       exports.ticks++;
       if (isReplaying) {
           exports.score = prevScore;
+          exports.time = prevTime;
       }
       else if (exports.sc !== prevSc) {
           exports.score = exports.sc;
@@ -2681,7 +2723,13 @@ image-rendering: pixelated;
       if (s > hiScore) {
           hiScore = s;
       }
+      if (isShowingTime && exports.time != null) {
+          if (fastestTime == null || fastestTime > exports.time) {
+              fastestTime = exports.time;
+          }
+      }
       exports.score = 0;
+      exports.time = 0;
       scoreBoards = [];
       if (isPlayingBgm) {
           sss.playBgm();
@@ -2710,8 +2758,11 @@ image-rendering: pixelated;
           });
       }
       update();
-      drawScore();
+      drawScoreOrTime();
       terminal.draw();
+      if (isShowingTime && exports.time != null) {
+          exports.time++;
+      }
   }
   function initTitle() {
       state = "title";
@@ -2742,7 +2793,7 @@ image-rendering: pixelated;
           update();
       }
       if (exports.ticks === 0) {
-          drawScore();
+          drawScoreOrTime();
           if (typeof title !== "undefined" && title != null) {
               terminal.print(title, Math.floor(terminalSize.x - title.length) / 2, Math.ceil(terminalSize.y * 0.2));
           }
@@ -2791,8 +2842,9 @@ image-rendering: pixelated;
   }
   function initRewind$1() {
       state = "rewind";
+      isWaitingRewind = true;
       rewindButton = get({
-          pos: { x: 61, y: 91 },
+          pos: { x: 61, y: 11 },
           size: { x: 36, y: 7 },
           text: "Rewind",
       });
@@ -2800,12 +2852,6 @@ image-rendering: pixelated;
           pos: { x: 61, y: 81 },
           size: { x: 36, y: 7 },
           text: "GiveUp",
-          onClick: () => {
-              if (theme.isUsingPixi) {
-                  clear$1();
-              }
-              end();
-          },
       });
       if (isPlayingBgm) {
           sss.stopBgm();
@@ -2816,25 +2862,34 @@ image-rendering: pixelated;
       }
   }
   function updateRewind() {
-      const isDrawing = !theme.isUsingPixi;
-      update$6(rewindButton, isDrawing);
-      update$6(giveUpButton, isDrawing);
-      if (rewindButton.isPressed) {
-          terminal.clear();
-          clear$1();
-          isRewinding = true;
-          update();
-          drawScore();
+      terminal.clear();
+      clear$1();
+      update();
+      drawScoreOrTime();
+      restoreInput();
+      if (isRewinding) {
           draw(rewindButton);
-          terminal.draw();
-          if (isRewindEmpty()) {
+          if (isRewindEmpty() || !isPressed$2) {
               stopRewind();
           }
       }
       else {
-          if (isRewinding) {
-              stopRewind();
+          update$6(rewindButton);
+          update$6(giveUpButton);
+          if (rewindButton.isPressed) {
+              isRewinding = true;
+              isWaitingRewind = false;
           }
+      }
+      if (giveUpButton.isPressed) {
+          isWaitingRewind = isRewinding = false;
+          end();
+      }
+      else {
+          terminal.draw();
+      }
+      if (isShowingTime && exports.time != null) {
+          exports.time++;
       }
   }
   function stopRewind() {
@@ -2845,13 +2900,34 @@ image-rendering: pixelated;
           sss.playBgm();
       }
   }
-  function drawScore() {
-      if (!isShowingScore) {
+  function drawScoreOrTime() {
+      if (isShowingScore) {
+          terminal.print(`${Math.floor(exports.score)}`, 0, 0);
+          const hs = `HI ${hiScore}`;
+          terminal.print(hs, terminalSize.x - hs.length, 0);
+      }
+      if (isShowingTime) {
+          drawTime(exports.time, 0, 0);
+          drawTime(fastestTime, 9, 0);
+      }
+  }
+  function drawTime(time, x, y) {
+      if (time == null) {
           return;
       }
-      terminal.print(`${Math.floor(exports.score)}`, 0, 0);
-      const hs = `HI ${hiScore}`;
-      terminal.print(hs, terminalSize.x - hs.length, 0);
+      let t = Math.floor((time * 100) / 50);
+      if (t >= 10 * 60 * 100) {
+          t = 10 * 60 * 100 - 1;
+      }
+      const ts = getPaddedNumber(Math.floor(t / 6000), 1) +
+          "'" +
+          getPaddedNumber(Math.floor((t % 6000) / 100), 2) +
+          '"' +
+          getPaddedNumber(Math.floor(t % 100), 2);
+      terminal.print(ts, x, y);
+  }
+  function getPaddedNumber(v, digit) {
+      return ("0000" + v).slice(-digit);
   }
   function updateScoreBoards() {
       saveCurrentColor();
@@ -3005,6 +3081,7 @@ image-rendering: pixelated;
   exports.clr = clr;
   exports.cn = cn;
   exports.color = color$1;
+  exports.complete = complete;
   exports.cos = cos;
   exports.cy = cy;
   exports.end = end;

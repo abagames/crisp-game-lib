@@ -24,6 +24,7 @@ export type RewindState = {
 let record: Record;
 let inputIndex: number;
 let rewindStates: RewindState[];
+let storedInput: RecordedInput;
 
 export function initRecord(randomSeed: number) {
   record = {
@@ -69,8 +70,32 @@ export function rewind(random: Random) {
   const rw = rewindStates.pop();
   const rs = rw.randomState;
   random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
+  storedInput = {
+    pos: vec(input.pos),
+    isPressed: input.isPressed,
+    isJustPressed: input.isJustPressed,
+    isJustReleased: input.isJustReleased,
+  };
   input.set(record.inputs.pop());
   return rw;
+}
+
+export function getLastRewindState(random: Random) {
+  const rw = rewindStates[rewindStates.length - 1];
+  const rs = rw.randomState;
+  random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
+  storedInput = {
+    pos: vec(input.pos),
+    isPressed: input.isPressed,
+    isJustPressed: input.isJustPressed,
+    isJustReleased: input.isJustReleased,
+  };
+  input.set(record.inputs[record.inputs.length - 1]);
+  return rw;
+}
+
+export function restoreInput() {
+  input.set(storedInput);
 }
 
 export function isRewindEmpty() {

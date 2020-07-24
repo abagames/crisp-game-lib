@@ -21,6 +21,7 @@ import {
 import * as replay from "./replay";
 declare const sss;
 declare const Terser;
+declare const cloneDeep;
 
 export { clamp, wrap, range, times, addWithCharCode } from "./util";
 export { rect, box, bar, line, arc } from "./rect";
@@ -41,6 +42,7 @@ export const ceil = Math.ceil;
 export let ticks = 0;
 export let difficulty: number;
 export let score = 0;
+export let time: number;
 export type SoundEffectType =
   | "coin"
   | "laser"
@@ -65,6 +67,14 @@ export function rnds(lowOrHigh: number = 1, high?: number) {
 
 export function end(_gameOverText = "GAME OVER") {
   gameOverText = _gameOverText;
+  if (isShowingTime) {
+    time = undefined;
+  }
+  initGameOver();
+}
+
+export function complete(completeText = "COMPLETE") {
+  gameOverText = completeText;
   initGameOver();
 }
 
@@ -120,14 +130,20 @@ export function vec(x?: number | VectorLike, y?: number) {
 }
 
 export function play(type: SoundEffectType) {
-  if (!isRewinding) {
+  if (!isWaitingRewind && !isRewinding) {
     sss.play(soundEffectTypeToString[type]);
   }
 }
 
 export function rewindState(rewindState: any) {
   if (isRewindEnabled) {
-    if (isRewinding) {
+    if (isWaitingRewind) {
+      const rs = replay.getLastRewindState(random);
+      const bs = rs.baseState;
+      score = bs.score;
+      ticks = bs.ticks;
+      return cloneDeep(rs.gameState);
+    } else if (isRewinding) {
       const rs = replay.rewind(random);
       const bs = rs.baseState;
       score = bs.score;
@@ -169,6 +185,7 @@ const defaultOptions: Options = {
   isPlayingBgm: false,
   isCapturing: false,
   isShowingScore: true,
+  isShowingTime: false,
   isReplayEnabled: false,
   isRewindEnabled: false,
   isMinifying: false,
@@ -190,6 +207,7 @@ declare type Options = {
   isPlayingBgm?: boolean;
   isCapturing?: boolean;
   isShowingScore?: boolean;
+  isShowingTime?: boolean;
   isReplayEnabled?: boolean;
   isRewindEnabled?: boolean;
   isMinifying?: boolean;
@@ -212,16 +230,19 @@ let updateFunc = {
 };
 let terminal: Terminal;
 let hiScore = 0;
+let fastestTime: number;
 let isNoTitle = true;
 let seed = 0;
 let loopOptions;
 let isPlayingBgm: boolean;
 let isShowingScore: boolean;
+let isShowingTime: boolean;
 let isReplayEnabled: boolean;
 let isRewindEnabled = false;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isReplaying = false;
+let isWaitingRewind = false;
 let isRewinding = false;
 let rewindButton: Button;
 let giveUpButton: Button;
@@ -260,7 +281,8 @@ export function onLoad() {
   loopOptions.isCapturing = opts.isCapturing;
   loopOptions.viewSize = opts.viewSize;
   isPlayingBgm = opts.isPlayingBgm;
-  isShowingScore = opts.isShowingScore;
+  isShowingScore = opts.isShowingScore && !opts.isShowingTime;
+  isShowingTime = opts.isShowingTime;
   isReplayEnabled = opts.isReplayEnabled || opts.isRewindEnabled;
   isRewindEnabled = opts.isRewindEnabled;
   if (opts.isMinifying) {
@@ -307,6 +329,7 @@ function _update() {
   df = difficulty = ticks / 3600 + 1;
   tc = ticks;
   const prevScore = score;
+  const prevTime = time;
   sc = score;
   const prevSc = sc;
   inp = {
@@ -326,6 +349,7 @@ function _update() {
   ticks++;
   if (isReplaying) {
     score = prevScore;
+    time = prevTime;
   } else if (sc !== prevSc) {
     score = sc;
   }
@@ -339,7 +363,13 @@ function initInGame() {
   if (s > hiScore) {
     hiScore = s;
   }
+  if (isShowingTime && time != null) {
+    if (fastestTime == null || fastestTime > time) {
+      fastestTime = time;
+    }
+  }
   score = 0;
+  time = 0;
   scoreBoards = [];
   if (isPlayingBgm) {
     sss.playBgm();
@@ -369,8 +399,11 @@ function updateInGame() {
     });
   }
   update();
-  drawScore();
+  drawScoreOrTime();
   terminal.draw();
+  if (isShowingTime && time != null) {
+    time++;
+  }
 }
 
 function initTitle() {
@@ -403,7 +436,7 @@ function updateTitle() {
     update();
   }
   if (ticks === 0) {
-    drawScore();
+    drawScoreOrTime();
     if (typeof title !== "undefined" && title != null) {
       terminal.print(
         title,
@@ -463,8 +496,9 @@ function drawGameOver() {
 
 function initRewind() {
   state = "rewind";
+  isWaitingRewind = true;
   rewindButton = getButton({
-    pos: { x: 61, y: 91 },
+    pos: { x: 61, y: 11 },
     size: { x: 36, y: 7 },
     text: "Rewind",
   });
@@ -472,12 +506,6 @@ function initRewind() {
     pos: { x: 61, y: 81 },
     size: { x: 36, y: 7 },
     text: "GiveUp",
-    onClick: () => {
-      if (view.theme.isUsingPixi) {
-        view.clear();
-      }
-      end();
-    },
   });
   if (isPlayingBgm) {
     sss.stopBgm();
@@ -489,24 +517,32 @@ function initRewind() {
 }
 
 function updateRewind() {
-  const isDrawing = !view.theme.isUsingPixi;
-  updateButton(rewindButton, isDrawing);
-  updateButton(giveUpButton, isDrawing);
-  if (rewindButton.isPressed) {
-    terminal.clear();
-    view.clear();
-    isRewinding = true;
-    update();
-    drawScore();
+  terminal.clear();
+  view.clear();
+  update();
+  drawScoreOrTime();
+  replay.restoreInput();
+  if (isRewinding) {
     drawButton(rewindButton);
-    terminal.draw();
-    if (replay.isRewindEmpty()) {
+    if (replay.isRewindEmpty() || !input.isPressed) {
       stopRewind();
     }
   } else {
-    if (isRewinding) {
-      stopRewind();
+    updateButton(rewindButton);
+    updateButton(giveUpButton);
+    if (rewindButton.isPressed) {
+      isRewinding = true;
+      isWaitingRewind = false;
     }
+  }
+  if (giveUpButton.isPressed) {
+    isWaitingRewind = isRewinding = false;
+    end();
+  } else {
+    terminal.draw();
+  }
+  if (isShowingTime && time != null) {
+    time++;
   }
 }
 
@@ -519,13 +555,37 @@ function stopRewind() {
   }
 }
 
-function drawScore() {
-  if (!isShowingScore) {
+function drawScoreOrTime() {
+  if (isShowingScore) {
+    terminal.print(`${Math.floor(score)}`, 0, 0);
+    const hs = `HI ${hiScore}`;
+    terminal.print(hs, terminalSize.x - hs.length, 0);
+  }
+  if (isShowingTime) {
+    drawTime(time, 0, 0);
+    drawTime(fastestTime, 9, 0);
+  }
+}
+
+function drawTime(time: number, x: number, y: number) {
+  if (time == null) {
     return;
   }
-  terminal.print(`${Math.floor(score)}`, 0, 0);
-  const hs = `HI ${hiScore}`;
-  terminal.print(hs, terminalSize.x - hs.length, 0);
+  let t = Math.floor((time * 100) / 50);
+  if (t >= 10 * 60 * 100) {
+    t = 10 * 60 * 100 - 1;
+  }
+  const ts =
+    getPaddedNumber(Math.floor(t / 6000), 1) +
+    "'" +
+    getPaddedNumber(Math.floor((t % 6000) / 100), 2) +
+    '"' +
+    getPaddedNumber(Math.floor(t % 100), 2);
+  terminal.print(ts, x, y);
+}
+
+function getPaddedNumber(v: number, digit: number) {
+  return ("0000" + v).slice(-digit);
 }
 
 function updateScoreBoards() {

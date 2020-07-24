@@ -6,6 +6,7 @@ declare type Options = {
   isPlayingBgm?: boolean;
   isCapturing?: boolean;
   isShowingScore?: boolean;
+  isShowingTime?: boolean;
   isReplayEnabled?: boolean;
   isRewindEnabled?: boolean;
   isMinifying?: boolean;
@@ -29,6 +30,7 @@ declare function addScore(value: number, pos: VectorLike);
 
 // End game
 declare function end(gameOverText?: string);
+declare function complete(completeText?: string);
 
 // color
 declare type Color =
