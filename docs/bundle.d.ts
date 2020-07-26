@@ -220,9 +220,10 @@ declare function particle(
   angleWidth?: number
 );
 
-// Rewind a game
-declare function rewindState(state: any): any;
+// Record/Restore a frame state for replaying and rewinding
+declare function frameState(state: any): any;
 
+// Rewind a game
 declare function rewind();
 
 // Return Vector

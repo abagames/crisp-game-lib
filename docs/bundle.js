@@ -2167,7 +2167,7 @@ image-rendering: pixelated;
 
   let record;
   let inputIndex;
-  let rewindStates;
+  let frameStates;
   let storedInput;
   function initRecord(randomSeed) {
       record = {
@@ -2192,19 +2192,19 @@ image-rendering: pixelated;
       set(record.inputs[inputIndex]);
       inputIndex++;
   }
-  function initRewind() {
-      rewindStates = [];
+  function initFrameStates() {
+      frameStates = [];
   }
-  function saveRewindState(state, baseState, random) {
-      rewindStates.push({
+  function recordFrameState(state, baseState, random) {
+      frameStates.push({
           randomState: random.getState(),
           gameState: cloneDeep(state),
           baseState: cloneDeep(baseState),
       });
   }
   function rewind(random) {
-      const rw = rewindStates.pop();
-      const rs = rw.randomState;
+      const fs = frameStates.pop();
+      const rs = fs.randomState;
       random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
       storedInput = {
           pos: vec(pos$1),
@@ -2213,11 +2213,11 @@ image-rendering: pixelated;
           isJustReleased: isJustReleased$2,
       };
       set(record.inputs.pop());
-      return rw;
+      return fs;
   }
-  function getLastRewindState(random) {
-      const rw = rewindStates[rewindStates.length - 1];
-      const rs = rw.randomState;
+  function getLastFrameState(random) {
+      const fs = frameStates[frameStates.length - 1];
+      const rs = fs.randomState;
       random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
       storedInput = {
           pos: vec(pos$1),
@@ -2226,20 +2226,20 @@ image-rendering: pixelated;
           isJustReleased: isJustReleased$2,
       };
       set(record.inputs[record.inputs.length - 1]);
-      return rw;
+      return fs;
   }
   function restoreInput() {
       set(storedInput);
   }
-  function isRewindEmpty() {
-      return rewindStates.length === 0;
+  function isFrameStateEmpty() {
+      return frameStates.length === 0;
   }
-  function getRewindStateForReplay() {
+  function getFrameStateForReplay() {
       const i = inputIndex - 1;
       if (i >= record.inputs.length) {
           return;
       }
-      return rewindStates[i];
+      return frameStates[i];
   }
 
   function rect$1(x, y, width, height) {
@@ -2526,39 +2526,37 @@ image-rendering: pixelated;
           sss.play(soundEffectTypeToString[type]);
       }
   }
-  function rewindState(rewindState) {
-      if (isRewindEnabled) {
-          if (isWaitingRewind) {
-              const rs = getLastRewindState(random$1);
-              const bs = rs.baseState;
-              exports.score = bs.score;
-              exports.ticks = bs.ticks;
-              return cloneDeep(rs.gameState);
-          }
-          else if (isRewinding) {
-              const rs = rewind(random$1);
-              const bs = rs.baseState;
-              exports.score = bs.score;
-              exports.ticks = bs.ticks;
-              return rs.gameState;
-          }
-          else if (isReplaying) {
-              const rs = getRewindStateForReplay();
-              return rs.gameState;
-          }
-          else if (state === "inGame") {
-              const baseState = { score: exports.score, ticks: exports.ticks };
-              saveRewindState(rewindState, baseState, random$1);
-          }
+  function frameState(frameState) {
+      if (isWaitingRewind) {
+          const rs = getLastFrameState(random$1);
+          const bs = rs.baseState;
+          exports.score = bs.score;
+          exports.ticks = bs.ticks;
+          return cloneDeep(rs.gameState);
       }
-      return rewindState;
+      else if (isRewinding) {
+          const rs = rewind(random$1);
+          const bs = rs.baseState;
+          exports.score = bs.score;
+          exports.ticks = bs.ticks;
+          return rs.gameState;
+      }
+      else if (isReplaying) {
+          const rs = getFrameStateForReplay();
+          return rs.gameState;
+      }
+      else if (state === "inGame") {
+          const baseState = { score: exports.score, ticks: exports.ticks };
+          recordFrameState(frameState, baseState, random$1);
+      }
+      return frameState;
   }
   function rewind$1() {
       if (isRewinding) {
           return;
       }
       if (!isReplaying && isRewindEnabled) {
-          initRewind$1();
+          initRewind();
       }
       else {
           end();
@@ -2605,7 +2603,7 @@ image-rendering: pixelated;
   let isShowingScore;
   let isShowingTime;
   let isReplayEnabled;
-  let isRewindEnabled = false;
+  let isRewindEnabled;
   let terminalSize;
   let scoreBoards;
   let isReplaying = false;
@@ -2648,7 +2646,7 @@ image-rendering: pixelated;
       isPlayingBgm = opts.isPlayingBgm;
       isShowingScore = opts.isShowingScore && !opts.isShowingTime;
       isShowingTime = opts.isShowingTime;
-      isReplayEnabled = opts.isReplayEnabled || opts.isRewindEnabled;
+      isReplayEnabled = opts.isReplayEnabled;
       isRewindEnabled = opts.isRewindEnabled;
       if (opts.isMinifying) {
           showMinifiedScript();
@@ -2736,12 +2734,10 @@ image-rendering: pixelated;
       }
       const randomSeed = seedRandom.getInt(999999999);
       random$1.setSeed(randomSeed);
-      if (isReplayEnabled) {
+      if (isReplayEnabled || isRewindEnabled) {
           initRecord(randomSeed);
+          initFrameStates();
           isReplaying = false;
-      }
-      if (isRewindEnabled) {
-          initRewind();
       }
   }
   function updateInGame() {
@@ -2749,7 +2745,7 @@ image-rendering: pixelated;
       clear$1();
       update$5();
       updateScoreBoards();
-      if (isReplayEnabled) {
+      if (isReplayEnabled || isRewindEnabled) {
           recordInput({
               pos: vec$1(pos$1),
               isPressed: isPressed$2,
@@ -2781,7 +2777,7 @@ image-rendering: pixelated;
           return;
       }
       clear$1();
-      if (isRecorded()) {
+      if (isReplayEnabled && isRecorded()) {
           replayInput();
           exports.inp = {
               p: pos$1,
@@ -2840,7 +2836,7 @@ image-rendering: pixelated;
       terminal.print(gameOverText, Math.floor((terminalSize.x - gameOverText.length) / 2), Math.floor(terminalSize.y / 2));
       terminal.draw();
   }
-  function initRewind$1() {
+  function initRewind() {
       state = "rewind";
       isWaitingRewind = true;
       rewindButton = get({
@@ -2869,7 +2865,7 @@ image-rendering: pixelated;
       restoreInput();
       if (isRewinding) {
           draw(rewindButton);
-          if (isRewindEmpty() || !isPressed$2) {
+          if (isFrameStateEmpty() || !isPressed$2) {
               stopRewind();
           }
       }
@@ -3087,6 +3083,7 @@ image-rendering: pixelated;
   exports.end = end;
   exports.ex = ex;
   exports.floor = floor;
+  exports.frameState = frameState;
   exports.getButton = get;
   exports.gr = gr;
   exports.ht = ht;
@@ -3109,7 +3106,6 @@ image-rendering: pixelated;
   exports.rd = rd;
   exports.rect = rect$1;
   exports.rewind = rewind$1;
-  exports.rewindState = rewindState;
   exports.rnd = rnd;
   exports.rndi = rndi;
   exports.rnds = rnds;

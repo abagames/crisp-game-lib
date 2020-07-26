@@ -15,7 +15,7 @@ export type Record = {
   inputs: RecordedInput[];
 };
 
-export type RewindState = {
+export type FrameState = {
   randomState: { x: number; y: number; z: number; w: number };
   gameState: any;
   baseState: { ticks: number; score: number };
@@ -23,7 +23,7 @@ export type RewindState = {
 
 let record: Record;
 let inputIndex: number;
-let rewindStates: RewindState[];
+let frameStates: FrameState[];
 let storedInput: RecordedInput;
 
 export function initRecord(randomSeed: number) {
@@ -54,12 +54,12 @@ export function replayInput() {
   inputIndex++;
 }
 
-export function initRewind() {
-  rewindStates = [];
+export function initFrameStates() {
+  frameStates = [];
 }
 
-export function saveRewindState(state: any, baseState, random: Random) {
-  rewindStates.push({
+export function recordFrameState(state: any, baseState, random: Random) {
+  frameStates.push({
     randomState: random.getState(),
     gameState: cloneDeep(state),
     baseState: cloneDeep(baseState),
@@ -67,8 +67,8 @@ export function saveRewindState(state: any, baseState, random: Random) {
 }
 
 export function rewind(random: Random) {
-  const rw = rewindStates.pop();
-  const rs = rw.randomState;
+  const fs = frameStates.pop();
+  const rs = fs.randomState;
   random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
   storedInput = {
     pos: vec(input.pos),
@@ -77,12 +77,12 @@ export function rewind(random: Random) {
     isJustReleased: input.isJustReleased,
   };
   input.set(record.inputs.pop());
-  return rw;
+  return fs;
 }
 
-export function getLastRewindState(random: Random) {
-  const rw = rewindStates[rewindStates.length - 1];
-  const rs = rw.randomState;
+export function getLastFrameState(random: Random) {
+  const fs = frameStates[frameStates.length - 1];
+  const rs = fs.randomState;
   random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
   storedInput = {
     pos: vec(input.pos),
@@ -91,21 +91,21 @@ export function getLastRewindState(random: Random) {
     isJustReleased: input.isJustReleased,
   };
   input.set(record.inputs[record.inputs.length - 1]);
-  return rw;
+  return fs;
 }
 
 export function restoreInput() {
   input.set(storedInput);
 }
 
-export function isRewindEmpty() {
-  return rewindStates.length === 0;
+export function isFrameStateEmpty() {
+  return frameStates.length === 0;
 }
 
-export function getRewindStateForReplay() {
+export function getFrameStateForReplay() {
   const i = inputIndex - 1;
   if (i >= record.inputs.length) {
     return;
   }
-  return rewindStates[i];
+  return frameStates[i];
 }

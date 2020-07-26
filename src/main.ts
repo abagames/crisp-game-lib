@@ -135,29 +135,27 @@ export function play(type: SoundEffectType) {
   }
 }
 
-export function rewindState(rewindState: any) {
-  if (isRewindEnabled) {
-    if (isWaitingRewind) {
-      const rs = replay.getLastRewindState(random);
-      const bs = rs.baseState;
-      score = bs.score;
-      ticks = bs.ticks;
-      return cloneDeep(rs.gameState);
-    } else if (isRewinding) {
-      const rs = replay.rewind(random);
-      const bs = rs.baseState;
-      score = bs.score;
-      ticks = bs.ticks;
-      return rs.gameState;
-    } else if (isReplaying) {
-      const rs = replay.getRewindStateForReplay();
-      return rs.gameState;
-    } else if (state === "inGame") {
-      const baseState = { score, ticks };
-      replay.saveRewindState(rewindState, baseState, random);
-    }
+export function frameState(frameState: any) {
+  if (isWaitingRewind) {
+    const rs = replay.getLastFrameState(random);
+    const bs = rs.baseState;
+    score = bs.score;
+    ticks = bs.ticks;
+    return cloneDeep(rs.gameState);
+  } else if (isRewinding) {
+    const rs = replay.rewind(random);
+    const bs = rs.baseState;
+    score = bs.score;
+    ticks = bs.ticks;
+    return rs.gameState;
+  } else if (isReplaying) {
+    const rs = replay.getFrameStateForReplay();
+    return rs.gameState;
+  } else if (state === "inGame") {
+    const baseState = { score, ticks };
+    replay.recordFrameState(frameState, baseState, random);
   }
-  return rewindState;
+  return frameState;
 }
 
 export function rewind() {
@@ -238,7 +236,7 @@ let isPlayingBgm: boolean;
 let isShowingScore: boolean;
 let isShowingTime: boolean;
 let isReplayEnabled: boolean;
-let isRewindEnabled = false;
+let isRewindEnabled: boolean;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isReplaying = false;
@@ -283,7 +281,7 @@ export function onLoad() {
   isPlayingBgm = opts.isPlayingBgm;
   isShowingScore = opts.isShowingScore && !opts.isShowingTime;
   isShowingTime = opts.isShowingTime;
-  isReplayEnabled = opts.isReplayEnabled || opts.isRewindEnabled;
+  isReplayEnabled = opts.isReplayEnabled;
   isRewindEnabled = opts.isRewindEnabled;
   if (opts.isMinifying) {
     showMinifiedScript();
@@ -376,12 +374,10 @@ function initInGame() {
   }
   const randomSeed = seedRandom.getInt(999999999);
   random.setSeed(randomSeed);
-  if (isReplayEnabled) {
+  if (isReplayEnabled || isRewindEnabled) {
     replay.initRecord(randomSeed);
+    replay.initFrameStates();
     isReplaying = false;
-  }
-  if (isRewindEnabled) {
-    replay.initRewind();
   }
 }
 
@@ -390,7 +386,7 @@ function updateInGame() {
   view.clear();
   _particle.update();
   updateScoreBoards();
-  if (isReplayEnabled) {
+  if (isReplayEnabled || isRewindEnabled) {
     replay.recordInput({
       pos: vec(input.pos),
       isPressed: input.isPressed,
@@ -424,7 +420,7 @@ function updateTitle() {
     return;
   }
   view.clear();
-  if (replay.isRecorded()) {
+  if (isReplayEnabled && replay.isRecorded()) {
     replay.replayInput();
     inp = {
       p: input.pos,
@@ -524,7 +520,7 @@ function updateRewind() {
   replay.restoreInput();
   if (isRewinding) {
     drawButton(rewindButton);
-    if (replay.isRewindEmpty() || !input.isPressed) {
+    if (replay.isFrameStateEmpty() || !input.isPressed) {
       stopRewind();
     }
   } else {

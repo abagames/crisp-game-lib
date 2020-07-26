@@ -26,6 +26,7 @@ l   l
 
 options = {
   theme: "crt",
+  isReplayEnabled: true,
   isRewindEnabled: true,
   isPlayingBgm: true,
   isShowingTime: true,
@@ -51,7 +52,7 @@ function update() {
     bgLines,
     bgLineAddDist,
     leftDist,
-  } = rewindState({
+  } = frameState({
     balloons,
     balloonAddDist,
     player,
