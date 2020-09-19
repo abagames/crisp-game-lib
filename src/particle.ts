@@ -35,7 +35,7 @@ export function add(
       pos: new Vector(pos),
       vel: new Vector(speed * random.get(0.5, 1), 0).rotate(a),
       color: currentColor,
-      ticks: clamp(random.get(10, 20) * Math.sqrt(speed), 10, 60),
+      ticks: clamp(random.get(10, 20) * Math.sqrt(Math.abs(speed)), 10, 60),
     };
     particles.push(p);
   }
