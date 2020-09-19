@@ -97,6 +97,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![lland screenshot](docs/lland/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?lland)
 [![foosan screenshot](docs/foosan/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?foosan)
 [![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
+[![survivor screenshot](docs/survivor/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?survivor)
 [![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
 [![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
