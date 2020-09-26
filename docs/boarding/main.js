@@ -77,6 +77,7 @@ let boards;
 let passengers;
 let px, pt, pi, pvx;
 let gy;
+let tgy;
 let bi;
 let scr;
 let isFirstPressing;
@@ -97,6 +98,7 @@ function update() {
       addBoard();
       gy += 2;
     }
+    gy = tgy = 91;
   }
   color("black");
   boards = boards.filter((b) => {
@@ -104,10 +106,11 @@ function update() {
     char(addWithCharCode("e", b.angle), b.pos);
     return b.pos.y > 15 && b.pos.y < gy;
   });
-  gy -= scr * difficulty;
-  if (gy < 12) {
-    gy = 12;
+  tgy -= scr * difficulty;
+  if (tgy < 11) {
+    tgy = 11;
   }
+  gy += (tgy - gy) * 0.1;
   color("red");
   rect(0, gy, 50, 8);
   color("blue");
@@ -194,10 +197,10 @@ function update() {
           play("powerUp");
           addScore(p.bc, p.pos);
           const oy = p.bc * 2 * difficulty;
-          gy += oy;
+          tgy += oy;
           bi -= oy;
-          if (gy > 91) {
-            gy = 91;
+          if (tgy > 91) {
+            tgy = 91;
           }
         } else {
           addScore(0, p.pos);
@@ -206,7 +209,11 @@ function update() {
       } else {
         play("hit");
         addScore(-1 - p.bc, p.pos);
-        gy -= (1 + p.bc) * difficulty;
+        let oy = sqrt(1 + p.bc) * difficulty;
+        if (oy > 20) {
+          oy = 20;
+        }
+        tgy -= oy;
         return false;
       }
     }
