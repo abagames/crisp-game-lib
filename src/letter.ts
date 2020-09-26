@@ -362,6 +362,14 @@ function getHitBox(c: string, isCharacter: boolean) {
         if (y < b.pos.y) {
           b.pos.y = y;
         }
+      }
+      i += 4;
+    }
+  }
+  i = 0;
+  for (let y = 0; y < letterSize; y++) {
+    for (let x = 0; x < letterSize; x++) {
+      if (d[i + 3] > 0) {
         if (x > b.pos.x + b.size.x - 1) {
           b.size.x = x - b.pos.x + 1;
         }
