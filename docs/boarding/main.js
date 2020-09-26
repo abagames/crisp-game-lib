@@ -105,6 +105,9 @@ function update() {
     return b.pos.y > 15 && b.pos.y < gy;
   });
   gy -= scr * difficulty;
+  if (gy < 12) {
+    gy = 12;
+  }
   color("red");
   rect(0, gy, 50, 8);
   color("blue");
@@ -122,6 +125,10 @@ function update() {
   }
   color(pt < 0 ? "red" : "blue");
   char(addWithCharCode("a", pt + 1 + (floor(ticks / 30) % 2)), px, 9);
+  if (gy <= 12) {
+    play("explosion");
+    end();
+  }
   pi--;
   let speed = 1;
   if (input.isPressed && !isFirstPressing) {
@@ -198,17 +205,13 @@ function update() {
         return false;
       } else {
         play("hit");
-        addScore(-1, p.pos);
-        gy -= difficulty;
+        addScore(-1 - p.bc, p.pos);
+        gy -= (1 + p.bc) * difficulty;
         return false;
       }
     }
     return true;
   });
-  if (gy < 13) {
-    play("explosion");
-    end();
-  }
 }
 
 function addBoard() {
