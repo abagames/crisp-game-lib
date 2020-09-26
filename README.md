@@ -98,14 +98,15 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![foosan screenshot](docs/foosan/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?foosan)
 [![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
 [![survivor screenshot](docs/survivor/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?survivor)
+[![boarding screenshot](docs/boarding/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?boarding)
 [![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
 [![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
-[![balloon screenshot](docs/balloon/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?balloon)
-[![floater screenshot](docs/floater/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?floater)
-[![golfme screenshot](docs/golfme/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?golfme)
-[![zartan screenshot](docs/zartan/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?zartan)
 
+[balloon](https://abagames.github.io/crisp-game-lib/?balloon) /
+[floater](https://abagames.github.io/crisp-game-lib/?floater) /
+[golfme](https://abagames.github.io/crisp-game-lib/?golfme) /
+[zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
 [bottop](https://abagames.github.io/crisp-game-lib/?bottop) /
 [twhols](https://abagames.github.io/crisp-game-lib/?twhols) /
 [interspace](https://abagames.github.io/crisp-game-lib/?interspace) /
