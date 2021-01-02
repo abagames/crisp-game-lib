@@ -104,11 +104,12 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 [![forfour screenshot](docs/forfour/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?forfour)
 
-[balloon](https://abagames.github.io/crisp-game-lib/?balloon) /
+[spearain](https://abagames.github.io/crisp-game-lib/?spearain) /
 [floater](https://abagames.github.io/crisp-game-lib/?floater) /
 [baroll](https://abagames.github.io/crisp-game-lib/?baroll) /
 [golfme](https://abagames.github.io/crisp-game-lib/?golfme) /
 [zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
+[balloon](https://abagames.github.io/crisp-game-lib/?balloon) /
 [bottop](https://abagames.github.io/crisp-game-lib/?bottop) /
 [twhols](https://abagames.github.io/crisp-game-lib/?twhols) /
 [interspace](https://abagames.github.io/crisp-game-lib/?interspace) /
