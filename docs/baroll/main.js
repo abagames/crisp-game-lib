@@ -75,9 +75,8 @@ function update() {
     });
     barrelAddingTicks += rndi(30, 90);
   }
-  let s = df * (input.isPressed ? 1 : 2);
-  vel.x = s;
-  addScore(s - df);
+  vel.x = df * (input.isPressed ? 1 : 2);
+  addScore(vel.x - df);
   barrels = barrels.filter((b) => {
     if (b.mode === "fall") {
       b.vy += b.speed * 0.2;
