@@ -130,7 +130,7 @@ function update() {
     });
     objs = [];
     appRatio = 1;
-    appTicks = 30;
+    appTicks = 60;
   } else if (cl.char.a) {
     play("explosion");
     end();
