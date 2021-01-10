@@ -101,6 +101,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![boarding screenshot](docs/boarding/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?boarding)
 [![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
 [![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
+[![earock screenshot](docs/earock/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?earock)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 [![forfour screenshot](docs/forfour/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?forfour)
 
