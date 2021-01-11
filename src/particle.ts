@@ -1,6 +1,12 @@
 import { Random } from "./random";
 import { Vector } from "./vector";
-import { fillRect, setColor, currentColor } from "./view";
+import {
+  fillRect,
+  setColor,
+  currentColor,
+  saveCurrentColor,
+  loadCurrentColor,
+} from "./view";
 
 type Particle = {
   pos: Vector;
@@ -42,6 +48,7 @@ export function add(
 }
 
 export function update() {
+  saveCurrentColor();
   particles = particles.filter((p) => {
     p.ticks--;
     if (p.ticks < 0) {
@@ -53,4 +60,5 @@ export function update() {
     fillRect(Math.floor(p.pos.x), Math.floor(p.pos.y), 1, 1);
     return true;
   });
+  loadCurrentColor();
 }
