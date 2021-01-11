@@ -98,13 +98,14 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![foosan screenshot](docs/foosan/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?foosan)
 [![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
 [![survivor screenshot](docs/survivor/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?survivor)
-[![boarding screenshot](docs/boarding/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?boarding)
 [![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
+[![divarr screenshot](docs/divarr/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?divarr)
 [![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
 [![earock screenshot](docs/earock/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?earock)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 [![forfour screenshot](docs/forfour/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?forfour)
 
+[boarding](https://abagames.github.io/crisp-game-lib/?boarding) /
 [spearain](https://abagames.github.io/crisp-game-lib/?spearain) /
 [floater](https://abagames.github.io/crisp-game-lib/?floater) /
 [baroll](https://abagames.github.io/crisp-game-lib/?baroll) /
