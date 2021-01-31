@@ -44,14 +44,24 @@ let boxLines;
 let boxLineAddDist;
 /** @type { {pos: Vector, vy: number, angle: number, score: number}[] } */
 let stars;
+let pvy;
 
 function update() {
   if (!ticks) {
     boxLines = [];
     boxLineAddDist = 0;
     stars = [];
+    pvy = 0;
   }
-  const scr = difficulty * 0.1;
+  const ibx = floor((input.pos.x - boxLeftX + 3) / 6);
+  if (input.isJustPressed && ibx >= 0 && ibx < boxCount) {
+    play("laser");
+    color("blue");
+    rect(boxLeftX + ibx * 6, 0, 1, 99);
+    pvy += 2;
+  }
+  const scr = difficulty * 0.06 + pvy;
+  pvy *= 0.07;
   boxLineAddDist -= scr;
   if (boxLineAddDist < 0) {
     play("select");
@@ -61,12 +71,6 @@ function update() {
       isOpened: times(boxCount, () => false),
     });
     boxLineAddDist += 5 + 5 / difficulty;
-  }
-  const ibx = floor((input.pos.x - boxLeftX + 3) / 6);
-  if (input.isJustPressed) {
-    play("laser");
-    color("blue");
-    rect(boxLeftX + ibx * 6, 0, 1, 99);
   }
   let lc = 0;
   let ml = 1;
