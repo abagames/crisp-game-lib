@@ -206,6 +206,7 @@ function update() {
     } else {
       const c = char("b", p).isColliding.char;
       if (c.e || c.f) {
+        play("lucky");
         end();
       }
       line(p, vec(p).add(vec(10, 0).rotate(pAngle)), 2);
