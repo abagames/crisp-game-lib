@@ -127,6 +127,10 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [gloop](https://abagames.github.io/crisp-game-lib/?gloop) /
 [count](https://abagames.github.io/crisp-game-lib/?count) /
 
+## Sample codes
+
+Sample code for each game is main.js in each directory in the [docs directory](https://github.com/abagames/crisp-game-lib/tree/master/docs).
+
 ## Reference
 
 ### Drawing ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_drawing))
