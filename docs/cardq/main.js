@@ -19,7 +19,7 @@ l  l
 options = {
   isPlayingBgm: true,
   isReplayEnabled: true,
-  seed: 9,
+  seed: 3,
 };
 
 const numChars = [
@@ -172,7 +172,7 @@ function update() {
         play("select");
         placeCard(enemyNextMoveIndex, enemyPrevMoveIndex, enemyCards);
         enemyPrevMoveIndex = pi;
-        targetCenterY += 4;
+        targetCenterY += 5;
         multiplier = 1;
       }
     }
