@@ -59,7 +59,7 @@ let penaltyIndex;
 let penaltyTicks;
 let multiplier;
 const cardIntervalX = 15;
-const cardRowCount = 7;
+const cardRowCount = 5;
 const cardColumnCount = 5;
 
 function update() {
@@ -191,18 +191,16 @@ function update() {
     }
   }
   centerY += (targetCenterY - centerY) * 0.1;
-  playerCards = playerCards.filter((c) => {
+  playerCards.forEach((c) => {
     movePos(c.pos, c.tPos, 0.2);
     const ec = c.gPos.y === 0 && c.gPos.x === pci ? "green" : undefined;
     drawCard(c.pos.x, c.pos.y + centerY, c.num, c.gPos.y, ec);
-    return true;
   });
-  enemyCards = enemyCards.filter((c) => {
+  enemyCards.forEach((c) => {
     movePos(c.pos, c.tPos, 0.2);
     const ec =
       c.gPos.y === 0 && c.gPos.x === enemyNextMoveIndex ? "red" : undefined;
     drawCard(c.pos.x, c.pos.y + centerY, c.num, c.gPos.y, ec);
-    return true;
   });
   placedCards.forEach((c) => {
     movePos(c.pos, c.tPos, 0.2);
@@ -237,7 +235,7 @@ function update() {
       pos: c.pos,
       tPos: vec(calcPlacedCardX(pi), 0),
     });
-    cards.forEach((c, i) => {
+    cards.forEach((c) => {
       if (c.gPos.x === idx) {
         c.gPos.y--;
         c.tPos =
