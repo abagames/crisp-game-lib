@@ -129,7 +129,21 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 
 ## Sample codes
 
-Sample code for each game is main.js in each directory in the [docs directory](https://github.com/abagames/crisp-game-lib/tree/master/docs).
+Sample code for each game is `main.js` in each directory in the [docs directory](https://github.com/abagames/crisp-game-lib/tree/master/docs).
+
+## Write your own game
+
+1. Clone this repository.
+
+1. `npm install`
+
+1. Copy the `docs/_template` directory and rename it to `[your own game name]`.
+
+1. Open `docs/[your own game name]/main.js` with the editor ([VSCode](https://code.visualstudio.com/) is recommended) and write your own game code.
+
+1. `npm run watch_games`
+
+1. Open the URL `http://localhost:4000?[your own game name]` with a browser. The page is live-reloaded when the code is rewritten.
 
 ## Reference
 
