@@ -114,6 +114,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [baroll](https://abagames.github.io/crisp-game-lib/?baroll) /
 [golfme](https://abagames.github.io/crisp-game-lib/?golfme) /
 [zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
+[cardq](https://abagames.github.io/crisp-game-lib/?cardq) /
 [balloon](https://abagames.github.io/crisp-game-lib/?balloon) /
 [bottop](https://abagames.github.io/crisp-game-lib/?bottop) /
 [twhols](https://abagames.github.io/crisp-game-lib/?twhols) /
