@@ -94,12 +94,12 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 
 [![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
 [![pileup screenshot](docs/pileup/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pileup)
+[![cardq screenshot](docs/cardq/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cardq)
 [![lland screenshot](docs/lland/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?lland)
-[![foosan screenshot](docs/foosan/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?foosan)
-[![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
 [![survivor screenshot](docs/survivor/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?survivor)
-[![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
+[![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
 [![divarr screenshot](docs/divarr/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?divarr)
+[![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
 [![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
 [![earock screenshot](docs/earock/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?earock)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
@@ -107,18 +107,18 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 
 [findastar](https://abagames.github.io/crisp-game-lib/?findastar) /
 [grenadier](https://abagames.github.io/crisp-game-lib/?grenadier) /
+[foosan](https://abagames.github.io/crisp-game-lib/?foosan) /
+[floater](https://abagames.github.io/crisp-game-lib/?floater) /
+[golfme](https://abagames.github.io/crisp-game-lib/?golfme) /
+[zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
+[interspace](https://abagames.github.io/crisp-game-lib/?interspace) /
 [rollnrope](https://abagames.github.io/crisp-game-lib/?rollnrope) /
 [boarding](https://abagames.github.io/crisp-game-lib/?boarding) /
 [spearain](https://abagames.github.io/crisp-game-lib/?spearain) /
-[floater](https://abagames.github.io/crisp-game-lib/?floater) /
 [baroll](https://abagames.github.io/crisp-game-lib/?baroll) /
-[golfme](https://abagames.github.io/crisp-game-lib/?golfme) /
-[zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
-[cardq](https://abagames.github.io/crisp-game-lib/?cardq) /
 [balloon](https://abagames.github.io/crisp-game-lib/?balloon) /
 [bottop](https://abagames.github.io/crisp-game-lib/?bottop) /
 [twhols](https://abagames.github.io/crisp-game-lib/?twhols) /
-[interspace](https://abagames.github.io/crisp-game-lib/?interspace) /
 [jujump](https://abagames.github.io/crisp-game-lib/?jujump) /
 [monjum](https://abagames.github.io/crisp-game-lib/?monjum) /
 [digi10](https://abagames.github.io/crisp-game-lib/?digi10) /
