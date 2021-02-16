@@ -100,18 +100,18 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
 [![divarr screenshot](docs/divarr/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?divarr)
 [![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
+[![grenadier screenshot](docs/grenadier/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?grenadier)
 [![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
-[![earock screenshot](docs/earock/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?earock)
-[![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 [![forfour screenshot](docs/forfour/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?forfour)
+[![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 
 [findastar](https://abagames.github.io/crisp-game-lib/?findastar) /
-[grenadier](https://abagames.github.io/crisp-game-lib/?grenadier) /
 [foosan](https://abagames.github.io/crisp-game-lib/?foosan) /
 [floater](https://abagames.github.io/crisp-game-lib/?floater) /
 [golfme](https://abagames.github.io/crisp-game-lib/?golfme) /
 [zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
 [interspace](https://abagames.github.io/crisp-game-lib/?interspace) /
+[earock](https://abagames.github.io/crisp-game-lib/?earock) /
 [rollnrope](https://abagames.github.io/crisp-game-lib/?rollnrope) /
 [boarding](https://abagames.github.io/crisp-game-lib/?boarding) /
 [spearain](https://abagames.github.io/crisp-game-lib/?spearain) /
