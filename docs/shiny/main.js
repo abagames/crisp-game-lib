@@ -108,7 +108,9 @@ function update() {
     windY = 0;
   }
   if (humans.length === 0) {
-    humansCount++;
+    if (humansCount < 9) {
+      humansCount++;
+    }
     humans = times(humansCount, () => {
       return {
         pos: vec(-4, humanY),
