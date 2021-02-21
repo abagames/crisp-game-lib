@@ -152,7 +152,7 @@ function update() {
       c.rainyPos.y * rr + c.shinyPos.y * (1 - rr)
     );
     if (c.pos.y > -9 && c.pos.y < 209) {
-      arc(c.pos, c.radius, c.radius);
+      box(c.pos, c.radius * 2, c.radius * 2);
     }
     c.weakDropTicks--;
     if (c.weakDropTicks < 0) {
