@@ -105,6 +105,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![forfour screenshot](docs/forfour/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?forfour)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 
+[shiny](https://abagames.github.io/crisp-game-lib/?shiny) /
 [findastar](https://abagames.github.io/crisp-game-lib/?findastar) /
 [foosan](https://abagames.github.io/crisp-game-lib/?foosan) /
 [floater](https://abagames.github.io/crisp-game-lib/?floater) /
