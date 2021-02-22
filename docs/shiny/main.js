@@ -80,6 +80,7 @@ let rainyRatio;
 let windY;
 let humansCount;
 const humanY = 89;
+const rightEdgeGroundIndex = 20;
 
 function update() {
   if (!ticks) {
@@ -120,13 +121,13 @@ function update() {
         isFalling: false,
       };
     });
-    grounds[20].size = 8;
+    grounds[rightEdgeGroundIndex].size = 8;
   }
   const isRainy = input.isPressed;
   if (input.isJustPressed) {
     play("hit");
     windY = rnds(0.5) * sqrt(difficulty);
-    grounds[20].size -= 0.1;
+    grounds[rightEdgeGroundIndex].size -= 0.1;
   }
   if (input.isJustReleased) {
     play("hit");
@@ -172,9 +173,9 @@ function update() {
     }
   });
   grounds.forEach((g, i) => {
-    if (i === 20) {
+    if (i === rightEdgeGroundIndex) {
       color("black");
-      if (g.size > 0) {
+      if (g.size >= 1) {
         box(g.pos.x, g.pos.y - (4 - g.size / 2), 8, g.size);
         g.size -= 0.005 * difficulty;
       }
