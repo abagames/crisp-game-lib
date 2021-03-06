@@ -86,7 +86,7 @@ function update() {
   color("black");
   char(shot == null ? "a" : "b", player.pos, { rotation: player.angle / 2 });
   if (shot != null) {
-    if (!shot.pos.isInRect(9, 9, 81, 81)) {
+    if (!shot.pos.isInRect(9, 9, 82, 82)) {
       shot = undefined;
     } else {
       shot.pos.add(vec(angleVec[shot.angle]).mul(difficulty * 1.5));
