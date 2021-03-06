@@ -159,12 +159,7 @@ function update() {
     }
     c.ticks += c.speed;
     let t = wrap(c.ticks, 0, 8);
-    let lo;
-    if (t < 4) {
-      lo = (5 * t) / 5 - 2;
-    } else {
-      lo = (5 * (8 - t)) / 5 - 2;
-    }
+    const lo = t < 4 ? (5 * t) / 5 - 2 : (5 * (8 - t)) / 5 - 2;
     const o = vec(3, 0).rotate((c.angle * PI) / 4 + PI / 2);
     const o2 = vec(lo, 0).rotate((c.angle * PI) / 4);
     color("red");
