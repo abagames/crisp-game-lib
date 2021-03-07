@@ -2,6 +2,12 @@
 
 Develop one game within one hour.
 
+## Related pages
+
+- [Terry Cavanagh](https://twitter.com/terrycavanagh) has written [a great article](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/) about this library.
+
+- The browser games I have made are listed on [this page](https://abagames.github.io/games-web-pages/browser.html). (including games made without using this library)
+
 ## Sample game (Click the image to play)
 
 [![refbals screenshot](docs/refbals/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?refbals)
