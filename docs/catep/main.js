@@ -172,6 +172,9 @@ function update() {
       addScore(shot.multiplier, c.pos);
       particle(c.pos, 9, sqrt(shot.multiplier));
       shot.multiplier++;
+      if (c === appearingCate) {
+        appearingCate = undefined;
+      }
       return false;
     }
     if (cc.a || cc.b) {
