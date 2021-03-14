@@ -2436,7 +2436,12 @@ image-rendering: pixelated;
       let pos = isAlignCenter
           ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
           : { x: Math.floor(x), y: Math.floor(y) };
-      const size = { x: Math.floor(width), y: Math.floor(height) };
+      const size = { x: Math.trunc(width), y: Math.trunc(height) };
+      if (size.x === 0 || size.y === 0) {
+          return {
+              isColliding: { rect: {}, text: {}, char: {} },
+          };
+      }
       if (size.x < 0) {
           pos.x += size.x;
           size.x *= -1;
