@@ -473,7 +473,7 @@ function initGameOver() {
 function updateGameOver() {
   if ((isReplaying || ticks > 20) && input.isJustPressed) {
     initInGame();
-  } else if (ticks === 120 && !isNoTitle) {
+  } else if (ticks === (isReplayEnabled ? 120 : 300) && !isNoTitle) {
     initTitle();
   }
 }

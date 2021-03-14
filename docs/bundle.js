@@ -2835,7 +2835,7 @@ image-rendering: pixelated;
       if ((isReplaying || exports.ticks > 20) && isJustPressed$2) {
           initInGame();
       }
-      else if (exports.ticks === 120 && !isNoTitle) {
+      else if (exports.ticks === (isReplayEnabled ? 120 : 300) && !isNoTitle) {
           initTitle();
       }
   }
