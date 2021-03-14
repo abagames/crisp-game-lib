@@ -198,7 +198,7 @@ export function printChar(
     fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
     loadCurrentColor();
   }
-  if (cca <= 0x20 || options.color === "transparent") {
+  if (cca <= 0x20) {
     return { isColliding: { rect: {}, text: {}, char: {} } };
   }
   const cc = cca - 0x21;
@@ -215,7 +215,8 @@ export function printChar(
       x,
       y,
       options.scale as VectorLike,
-      options.isCheckingCollision
+      options.isCheckingCollision,
+      true
     );
   }
   const cacheIndex = JSON.stringify({ c, options });
@@ -226,7 +227,8 @@ export function printChar(
       x,
       y,
       options.scale as VectorLike,
-      options.isCheckingCollision
+      options.isCheckingCollision,
+      options.color !== "transparent"
     );
   }
   letterContext.clearRect(0, 0, letterSize, letterSize);
@@ -244,7 +246,9 @@ export function printChar(
   }
   if (options.color !== "black") {
     letterContext.globalCompositeOperation = "source-in";
-    letterContext.fillStyle = colorToStyle(options.color);
+    letterContext.fillStyle = colorToStyle(
+      options.color === "transparent" ? "black" : options.color
+    );
     letterContext.fillRect(0, 0, letterSize, letterSize);
     letterContext.globalCompositeOperation = "source-over";
   }
@@ -269,7 +273,8 @@ export function printChar(
     x,
     y,
     options.scale as VectorLike,
-    options.isCheckingCollision
+    options.isCheckingCollision,
+    options.color !== "transparent"
   );
 }
 
@@ -278,12 +283,15 @@ function drawAndTestLetterImage(
   x: number,
   y: number,
   scale: VectorLike,
-  isCheckCollision: boolean
+  isCheckCollision: boolean,
+  isDrawing: boolean
 ) {
-  if (scale.x === 1 && scale.y === 1) {
-    drawLetterImage(li, x, y);
-  } else {
-    drawLetterImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
+  if (isDrawing) {
+    if (scale.x === 1 && scale.y === 1) {
+      drawLetterImage(li, x, y);
+    } else {
+      drawLetterImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
+    }
   }
   if (!isCheckCollision) {
     return;
@@ -294,7 +302,9 @@ function drawAndTestLetterImage(
     collision: li.hitBox.collision,
   };
   const collision = checkHitBoxes(hitBox);
-  hitBoxes.push(hitBox);
+  if (isDrawing) {
+    hitBoxes.push(hitBox);
+  }
   return collision;
 }
 

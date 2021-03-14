@@ -1071,7 +1071,7 @@ l l l
           fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
           loadCurrentColor();
       }
-      if (cca <= 0x20 || options.color === "transparent") {
+      if (cca <= 0x20) {
           return { isColliding: { rect: {}, text: {}, char: {} } };
       }
       const cc = cca - 0x21;
@@ -1081,12 +1081,12 @@ l l l
           rotation === 0 &&
           options.mirror.x === 1 &&
           options.mirror.y === 1) {
-          return drawAndTestLetterImage(li, x, y, options.scale, options.isCheckingCollision);
+          return drawAndTestLetterImage(li, x, y, options.scale, options.isCheckingCollision, true);
       }
       const cacheIndex = JSON.stringify({ c, options });
       const ci = cachedImages[cacheIndex];
       if (ci != null) {
-          return drawAndTestLetterImage(ci, x, y, options.scale, options.isCheckingCollision);
+          return drawAndTestLetterImage(ci, x, y, options.scale, options.isCheckingCollision, options.color !== "transparent");
       }
       letterContext.clearRect(0, 0, letterSize, letterSize);
       if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
@@ -1104,7 +1104,7 @@ l l l
       }
       if (options.color !== "black") {
           letterContext.globalCompositeOperation = "source-in";
-          letterContext.fillStyle = colorToStyle(options.color);
+          letterContext.fillStyle = colorToStyle(options.color === "transparent" ? "black" : options.color);
           letterContext.fillRect(0, 0, letterSize, letterSize);
           letterContext.globalCompositeOperation = "source-over";
       }
@@ -1124,14 +1124,16 @@ l l l
               };
           }
       }
-      return drawAndTestLetterImage({ image: letterCanvas, texture, hitBox }, x, y, options.scale, options.isCheckingCollision);
+      return drawAndTestLetterImage({ image: letterCanvas, texture, hitBox }, x, y, options.scale, options.isCheckingCollision, options.color !== "transparent");
   }
-  function drawAndTestLetterImage(li, x, y, scale, isCheckCollision) {
-      if (scale.x === 1 && scale.y === 1) {
-          drawLetterImage(li, x, y);
-      }
-      else {
-          drawLetterImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
+  function drawAndTestLetterImage(li, x, y, scale, isCheckCollision, isDrawing) {
+      if (isDrawing) {
+          if (scale.x === 1 && scale.y === 1) {
+              drawLetterImage(li, x, y);
+          }
+          else {
+              drawLetterImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
+          }
       }
       if (!isCheckCollision) {
           return;
@@ -1142,7 +1144,9 @@ l l l
           collision: li.hitBox.collision,
       };
       const collision = checkHitBoxes(hitBox);
-      hitBoxes.push(hitBox);
+      if (isDrawing) {
+          hitBoxes.push(hitBox);
+      }
       return collision;
   }
   function createLetterImages(pattern, isSkippingFirstAndLastLine = true) {
