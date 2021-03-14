@@ -119,6 +119,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [floater](https://abagames.github.io/crisp-game-lib/?floater) /
 [golfme](https://abagames.github.io/crisp-game-lib/?golfme) /
 [zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
+[hitblowup](https://abagames.github.io/crisp-game-lib/?hitblowup) /
 [slashes](https://abagames.github.io/crisp-game-lib/?slashes) /
 [interspace](https://abagames.github.io/crisp-game-lib/?interspace) /
 [earock](https://abagames.github.io/crisp-game-lib/?earock) /
