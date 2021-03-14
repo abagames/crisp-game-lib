@@ -87,7 +87,7 @@ function update() {
   }
   if (nextStageTicks < 0) {
     selectorY -=
-      ((loopCount + 1) / (target.length * target.length + selector.length)) *
+      (pow(2, loopCount) / (target.length * target.length + selector.length)) *
       0.05;
   }
   color("light_black");
