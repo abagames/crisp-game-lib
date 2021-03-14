@@ -99,9 +99,9 @@ function update() {
     sx += 10;
   });
   if (nextStageTicks < 0 && input.isJustPressed) {
-    play("select");
     const i = floor((input.pos.x - 50) / 10 + selector.length / 2);
     if (i >= 0 && i < selector.length) {
+      play("select");
       current[currentIndex] = selector[i];
       currentIndex++;
       if (currentIndex === target.length) {
