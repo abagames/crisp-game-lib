@@ -22,7 +22,6 @@ l  l
 
 options = {
   isPlayingBgm: true,
-  isReplayEnabled: true,
   seed: 4,
 };
 
@@ -101,37 +100,35 @@ function update() {
   });
   if (nextStageTicks < 0 && input.isJustPressed) {
     play("select");
-    const i = clamp(
-      floor((input.pos.x - 50) / 10 + selector.length / 2),
-      0,
-      selector.length - 1
-    );
-    current[currentIndex] = selector[i];
-    currentIndex++;
-    if (currentIndex === target.length) {
-      let hit = 0;
-      let blow = 0;
-      target.forEach((t, i) => {
-        if (t === current[i]) {
-          hit++;
-        } else if (current.indexOf(t) > -1) {
-          blow++;
+    const i = floor((input.pos.x - 50) / 10 + selector.length / 2);
+    if (i >= 0 && i < selector.length) {
+      current[currentIndex] = selector[i];
+      currentIndex++;
+      if (currentIndex === target.length) {
+        let hit = 0;
+        let blow = 0;
+        target.forEach((t, i) => {
+          if (t === current[i]) {
+            hit++;
+          } else if (current.indexOf(t) > -1) {
+            blow++;
+          }
+        });
+        hist.push({ colors: current, hit, blow });
+        hitBlowTicks = 60;
+        current = times(target.length, () => -1);
+        currentIndex = 0;
+        if (hit === target.length) {
+          addScore(
+            selectorY - hist.length * 6,
+            60,
+            (selectorY - hist.length * 6) / 2 + 9
+          );
+          nextStageTicks = 60;
         }
-      });
-      hist.push({ colors: current, hit, blow });
-      hitBlowTicks = 60;
-      current = times(target.length, () => -1);
-      currentIndex = 0;
-      if (hit === target.length) {
-        addScore(
-          selectorY - hist.length * 6,
-          60,
-          (selectorY - hist.length * 6) / 2 + 9
-        );
-        nextStageTicks = 60;
+        hitCount = hit;
+        blowCount = blow;
       }
-      hitCount = hit;
-      blowCount = blow;
     }
   }
   let hy = selectorY - 3;
@@ -167,6 +164,7 @@ function update() {
     rect(50, 0, 1, hy + 3);
     rect(48, 0, 5, 1);
     rect(48, hy + 2, 5, 1);
+    drawAnswer();
     if (nextStageTicks === 0) {
       stageCount++;
       isGoingNextStage = true;
@@ -186,12 +184,16 @@ function update() {
   });
   if (nextStageTicks < 0 && hy < 3) {
     play("lucky");
+    drawAnswer();
+    end();
+  }
+
+  function drawAnswer() {
     let tx = 50 - ((target.length - 1) / 2) * 7;
     target.forEach((t) => {
       color(colors[t]);
       char("a", tx, selectorY + 8);
       tx += 7;
     });
-    end();
   }
 }
