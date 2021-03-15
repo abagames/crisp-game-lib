@@ -120,8 +120,8 @@ function update() {
         currentIndex = 0;
         if (hit === target.length) {
           addScore(
-            selectorY - hist.length * 6,
-            60,
+            (selectorY - hist.length * 6) * (loopCount + 1),
+            70,
             (selectorY - hist.length * 6) / 2 + 9
           );
           nextStageTicks = 60;
