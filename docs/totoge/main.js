@@ -128,7 +128,7 @@ function update() {
   }
   if (vel.y > 0 && nextWallY < 150 && input.isJustPressed) {
     play("jump");
-    const s = vel.y * vel.y;
+    const s = vel.y * vel.y * difficulty * difficulty;
     if (s > 10) {
       addScore(s, pos);
     }
