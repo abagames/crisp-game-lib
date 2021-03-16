@@ -56,7 +56,9 @@ function update() {
     targetLen = 9;
   } else if (input.isPressed) {
     play("laser");
-    targetLen += difficulty * 0.2;
+    if (targetLen < 99) {
+      targetLen += difficulty * 0.2;
+    }
   }
   angle += difficulty * 0.05;
   len += (targetLen - len) * 0.2;
