@@ -114,6 +114,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [shiny](https://abagames.github.io/crisp-game-lib/?shiny) /
 [findastar](https://abagames.github.io/crisp-game-lib/?findastar) /
 [catep](https://abagames.github.io/crisp-game-lib/?catep) /
+[twinp](https://abagames.github.io/crisp-game-lib/?twinp) /
 [floors5](https://abagames.github.io/crisp-game-lib/?floors5) /
 [foosan](https://abagames.github.io/crisp-game-lib/?foosan) /
 [floater](https://abagames.github.io/crisp-game-lib/?floater) /
