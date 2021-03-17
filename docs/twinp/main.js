@@ -46,6 +46,9 @@ function update() {
   text("P", np.x + 3, np.y - 3);
   if (!pos.isInRect(0, 0, 99, 99) && !np.isInRect(0, 0, 99, 99)) {
     play("lucky");
+    color("red");
+    text("X", pos);
+    text("X", np);
     end();
   }
   if (input.isJustReleased) {
