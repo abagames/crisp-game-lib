@@ -30,7 +30,7 @@ function update() {
   if (!ticks) {
     pos = vec(40, 50);
     angle = 0;
-    len = targetLen = 9;
+    len = targetLen = 15;
     colorFlag = true;
     objs = [];
     objAddTicks = 0;
@@ -56,7 +56,7 @@ function update() {
     colorFlag = !colorFlag;
     pos.set(np);
     angle += PI;
-    targetLen = 9;
+    targetLen = 15;
   } else if (input.isPressed) {
     play("laser");
     if (targetLen < 99) {
@@ -68,13 +68,11 @@ function update() {
   objAddTicks--;
   if (objAddTicks < 0) {
     const type = crossAddCount === 0 ? "x" : "o";
-    const min = type === "x" ? 20 : 40;
-    const max = type === "x" ? 80 : 60;
     const pos = vec(50, 50).addWithAngle(rnd(PI * 2), 80);
     objs.push({
       pos,
       vel: vec().addWithAngle(
-        pos.angleTo(rnd(min, max), rnd(min, max)),
+        pos.angleTo(rnd(20, 80), rnd(20, 80)),
         rnd(1, difficulty) * 0.2
       ),
       type,
