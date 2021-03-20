@@ -2593,6 +2593,7 @@ image-rendering: pixelated;
   };
   const defaultOptions$4 = {
       isPlayingBgm: false,
+      isSpeedingUpSound: false,
       isCapturing: false,
       isShowingScore: true,
       isShowingTime: false,
@@ -2605,6 +2606,7 @@ image-rendering: pixelated;
   };
   const seedRandom = new Random();
   const random$1 = new Random();
+  const soundSpeedingUpInterval = 300;
   let state;
   let updateFunc = {
       title: updateTitle,
@@ -2619,6 +2621,7 @@ image-rendering: pixelated;
   let seed = 0;
   let loopOptions;
   let isPlayingBgm;
+  let isSpeedingUpSound;
   let isShowingScore;
   let isShowingTime;
   let isReplayEnabled;
@@ -2663,6 +2666,7 @@ image-rendering: pixelated;
       loopOptions.isCapturing = opts.isCapturing;
       loopOptions.viewSize = opts.viewSize;
       isPlayingBgm = opts.isPlayingBgm;
+      isSpeedingUpSound = opts.isSpeedingUpSound;
       isShowingScore = opts.isShowingScore && !opts.isShowingTime;
       isShowingTime = opts.isShowingTime;
       isReplayEnabled = opts.isReplayEnabled;
@@ -2778,6 +2782,9 @@ image-rendering: pixelated;
       if (isShowingTime && exports.time != null) {
           exports.time++;
       }
+      if (isSpeedingUpSound && exports.ticks % soundSpeedingUpInterval === 0) {
+          sss.playInterval = 0.5 / sqrt(exports.difficulty);
+      }
   }
   function initTitle() {
       state = "title";
@@ -2806,6 +2813,9 @@ image-rendering: pixelated;
           };
           update$5();
           update();
+          if (isSpeedingUpSound && exports.ticks % soundSpeedingUpInterval === 0) {
+              sss.playInterval = 0.5 / sqrt(exports.difficulty);
+          }
       }
       if (exports.ticks === 0) {
           drawScoreOrTime();

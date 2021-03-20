@@ -4,6 +4,7 @@ declare let characters: string[];
 declare type ThemeName = "simple" | "pixel" | "shape" | "shapeDark" | "crt";
 declare type Options = {
   isPlayingBgm?: boolean;
+  isSpeedingUpSound?: boolean;
   isCapturing?: boolean;
   isShowingScore?: boolean;
   isShowingTime?: boolean;

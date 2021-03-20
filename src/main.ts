@@ -181,6 +181,7 @@ const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
 };
 const defaultOptions: Options = {
   isPlayingBgm: false,
+  isSpeedingUpSound: false,
   isCapturing: false,
   isShowingScore: true,
   isShowingTime: false,
@@ -203,6 +204,7 @@ export type Theme = {
 };
 declare type Options = {
   isPlayingBgm?: boolean;
+  isSpeedingUpSound?: boolean;
   isCapturing?: boolean;
   isShowingScore?: boolean;
   isShowingTime?: boolean;
@@ -218,6 +220,7 @@ declare function update();
 
 const seedRandom = new Random();
 const random = new Random();
+const soundSpeedingUpInterval = 300;
 type State = "title" | "inGame" | "gameOver" | "rewind";
 let state: State;
 let updateFunc = {
@@ -233,6 +236,7 @@ let isNoTitle = true;
 let seed = 0;
 let loopOptions;
 let isPlayingBgm: boolean;
+let isSpeedingUpSound: boolean;
 let isShowingScore: boolean;
 let isShowingTime: boolean;
 let isReplayEnabled: boolean;
@@ -279,6 +283,7 @@ export function onLoad() {
   loopOptions.isCapturing = opts.isCapturing;
   loopOptions.viewSize = opts.viewSize;
   isPlayingBgm = opts.isPlayingBgm;
+  isSpeedingUpSound = opts.isSpeedingUpSound;
   isShowingScore = opts.isShowingScore && !opts.isShowingTime;
   isShowingTime = opts.isShowingTime;
   isReplayEnabled = opts.isReplayEnabled;
@@ -400,6 +405,9 @@ function updateInGame() {
   if (isShowingTime && time != null) {
     time++;
   }
+  if (isSpeedingUpSound && ticks % soundSpeedingUpInterval === 0) {
+    sss.playInterval = 0.5 / sqrt(difficulty);
+  }
 }
 
 function initTitle() {
@@ -430,6 +438,9 @@ function updateTitle() {
     };
     _particle.update();
     update();
+    if (isSpeedingUpSound && ticks % soundSpeedingUpInterval === 0) {
+      sss.playInterval = 0.5 / sqrt(difficulty);
+    }
   }
   if (ticks === 0) {
     drawScoreOrTime();
