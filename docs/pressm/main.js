@@ -63,7 +63,7 @@ function update() {
     inhalingCoins = [];
     multiplier = 1;
   }
-  color(wallMode === "press" ? "red" : "purple");
+  color(wallMode === "press" && wallTicks < 5 ? "red" : "purple");
   if (wallTicks === 0) {
     if (wallMode == "press") {
       if (multiplier > 1) {
@@ -137,7 +137,7 @@ function update() {
         }
       });
       wallMode = "return";
-      wallModeInterval = wallTicks = ceil(90 / sqrt(difficulty));
+      wallModeInterval = wallTicks = ceil(60 / sqrt(difficulty));
     } else {
       walls.forEach((w) => {
         w.ey = w.ney;
@@ -147,12 +147,15 @@ function update() {
     }
   }
   wallTicks--;
-  const wr = 1 - (wallTicks + 1) / wallModeInterval;
   walls.forEach((w, i) => {
     w.pos.y =
       wallMode === "press"
-        ? w.sy + (w.ey - w.sy) * wr
-        : w.ey + (w.sy - w.ey) * wr;
+        ? w.sy +
+          (w.ey - w.sy) *
+            (wallTicks < 5
+              ? 1 - wallTicks / 5
+              : (1 - wallTicks / wallModeInterval) * 0.2)
+        : w.ey + (w.sy - w.ey) * (1 - (wallTicks + 1) / wallModeInterval);
     if (i < 10) {
       rect(w.pos.x, 0, 9, w.pos.y);
     } else {
