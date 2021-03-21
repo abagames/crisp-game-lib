@@ -123,6 +123,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
 [slashes](https://abagames.github.io/crisp-game-lib/?slashes) /
 [totoge](https://abagames.github.io/crisp-game-lib/?totoge) /
+[pressm](https://abagames.github.io/crisp-game-lib/?pressm) /
 [interspace](https://abagames.github.io/crisp-game-lib/?interspace) /
 [earock](https://abagames.github.io/crisp-game-lib/?earock) /
 [rollnrope](https://abagames.github.io/crisp-game-lib/?rollnrope) /
