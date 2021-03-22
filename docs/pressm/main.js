@@ -89,7 +89,7 @@ function update() {
         }
       }
       let mw = 99;
-      for (let xi = 0; xi < 10; xi++, i++) {
+      for (let xi = 0; xi < 10; xi++) {
         const w = walls[xi + 10].sy - walls[xi].sy;
         if (w < mw) {
           mw = w;
@@ -101,7 +101,7 @@ function update() {
         w.ney = w.sy + (i < 10 ? mw : -mw);
       });
       let hasSpace = false;
-      for (let xi = 0; xi < 10; xi++, i++) {
+      for (let xi = 0; xi < 10; xi++) {
         const w1 = walls[xi];
         const w2 = walls[xi + 10];
         if (w1.ney < 40 && w2.ney > 60) {
@@ -109,7 +109,7 @@ function update() {
         }
       }
       if (!hasSpace) {
-        for (let xi = 0; xi < 10; xi++, i++) {
+        for (let xi = 0; xi < 10; xi++) {
           if (xi !== hitWallIndex) {
             const w1 = walls[xi];
             const w2 = walls[xi + 10];
@@ -119,7 +119,7 @@ function update() {
               w1.sy -= w;
             }
             if (w2.ney < 60) {
-              const w = w2.ney - 60;
+              const w = 60 - w2.ney;
               w2.ney += w;
               w2.sy += w;
             }
