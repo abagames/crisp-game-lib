@@ -49,7 +49,7 @@ function update() {
     text(edgeWallChars, 3, 9 + y * 6);
   }
   text(wallChars, 3, 9 + 14 * 6);
-  if (input.isJustPressed) {
+  if (!isHeadTurning && input.isJustPressed) {
     play("select");
     isHeadTurning = true;
   }
