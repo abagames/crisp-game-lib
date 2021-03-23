@@ -59,6 +59,15 @@ export function init(isDarkColor: boolean) {
       ];
     })
   ) as RgbValues;
+  if (isDarkColor) {
+    const b = values["blue"];
+    values["white"] = {
+      r: Math.floor(b.r * 0.15),
+      g: Math.floor(b.g * 0.15),
+      b: Math.floor(b.b * 0.15),
+      a: 1,
+    };
+  }
 }
 
 function getRgb(i: number, isDarkColor: boolean) {
