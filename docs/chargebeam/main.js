@@ -69,11 +69,11 @@ function update() {
     for (let i = 0; i < 3; i++) {
       objs.push({ x: 160 + i * 10, size: 1, type: "coin" });
     }
+    nextObjDist = 30;
     inhalingCoins = [];
     coinMultiplier = enemyMultiplier = coinPenaltyMultiplier = 1;
     shotX = shotSize = undefined;
     charge = 0;
-    nextObjDist = 30;
     penaltyVx = 0;
     prevType = "coin";
   }
