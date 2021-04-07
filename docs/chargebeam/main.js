@@ -134,7 +134,10 @@ function update() {
       shotX = undefined;
     }
   }
-  penaltyVx *= 0.99;
+  penaltyVx -= 0.02;
+  if (penaltyVx < 0) {
+    penaltyVx = 0;
+  }
   const vx = (-difficulty - penaltyVx) * 0.5;
   color("red");
   for (let i = 0; i < ceil(penaltyVx * 2 + 0.1); i++) {
