@@ -111,40 +111,7 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
 [![forfour screenshot](docs/forfour/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?forfour)
 [![doshin screenshot](docs/doshin/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?doshin)
 
-[shiny](https://abagames.github.io/crisp-game-lib/?shiny) /
-[findastar](https://abagames.github.io/crisp-game-lib/?findastar) /
-[catep](https://abagames.github.io/crisp-game-lib/?catep) /
-[twinp](https://abagames.github.io/crisp-game-lib/?twinp) /
-[graveler](https://abagames.github.io/crisp-game-lib/?graveler) /
-[snake1](https://abagames.github.io/crisp-game-lib/?snake1) /
-[hoppingp](https://abagames.github.io/crisp-game-lib/?hoppingp) /
-[floors5](https://abagames.github.io/crisp-game-lib/?floors5) /
-[lightdark](https://abagames.github.io/crisp-game-lib/?lightdark) /
-[infrange](https://abagames.github.io/crisp-game-lib/?infrange) /
-[foosan](https://abagames.github.io/crisp-game-lib/?foosan) /
-[floater](https://abagames.github.io/crisp-game-lib/?floater) /
-[golfme](https://abagames.github.io/crisp-game-lib/?golfme) /
-[zartan](https://abagames.github.io/crisp-game-lib/?zartan) /
-[slashes](https://abagames.github.io/crisp-game-lib/?slashes) /
-[totoge](https://abagames.github.io/crisp-game-lib/?totoge) /
-[pressm](https://abagames.github.io/crisp-game-lib/?pressm) /
-[interspace](https://abagames.github.io/crisp-game-lib/?interspace) /
-[earock](https://abagames.github.io/crisp-game-lib/?earock) /
-[rollnrope](https://abagames.github.io/crisp-game-lib/?rollnrope) /
-[boarding](https://abagames.github.io/crisp-game-lib/?boarding) /
-[spearain](https://abagames.github.io/crisp-game-lib/?spearain) /
-[baroll](https://abagames.github.io/crisp-game-lib/?baroll) /
-[hitblowup](https://abagames.github.io/crisp-game-lib/?hitblowup) /
-[balloon](https://abagames.github.io/crisp-game-lib/?balloon) /
-[bottop](https://abagames.github.io/crisp-game-lib/?bottop) /
-[twhols](https://abagames.github.io/crisp-game-lib/?twhols) /
-[jujump](https://abagames.github.io/crisp-game-lib/?jujump) /
-[monjum](https://abagames.github.io/crisp-game-lib/?monjum) /
-[digi10](https://abagames.github.io/crisp-game-lib/?digi10) /
-[tarutobi](https://abagames.github.io/crisp-game-lib/?tarutobi) /
-[rolfrg](https://abagames.github.io/crisp-game-lib/?rolfrg) /
-[gloop](https://abagames.github.io/crisp-game-lib/?gloop) /
-[count](https://abagames.github.io/crisp-game-lib/?count) /
+Other games are listed on [my browser games page](https://abagames.github.io/games-web-pages/browser.html).
 
 ## Sample codes
 
