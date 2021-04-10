@@ -373,7 +373,8 @@ function ceil(v: number): number;
 function clamp(v: number, low?: number, high?: number): number;
 function wrap(v: number, low: number, high: number): number;
 function range(v: number): number[];
-function times(v: number, func: Function): any[];
+function times<T>(count: number, func: (i: number) => T): T[];
+function times<T>(count: number, value: T): T[];
 function addWithCharCode(char: string, offset: number): string;
 ```
 

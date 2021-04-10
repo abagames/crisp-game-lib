@@ -24,8 +24,11 @@
   function range(v) {
       return [...Array(v).keys()];
   }
-  function times(v, func) {
-      return range(v).map((i) => func(i));
+  function times(count, funcOrValue) {
+      if (funcOrValue instanceof Function) {
+          return range(count).map((i) => funcOrValue(i));
+      }
+      return range(count).map(() => funcOrValue);
   }
   function fromEntities(v) {
       return [...v].reduce((obj, [key, value]) => {

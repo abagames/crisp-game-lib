@@ -24,8 +24,14 @@ export function range(v: number) {
   return [...Array(v).keys()];
 }
 
-export function times(v: number, func: Function) {
-  return range(v).map((i) => func(i));
+export function times<T>(
+  count: number,
+  funcOrValue: (i: number) => T | T
+): T[] {
+  if (funcOrValue instanceof Function) {
+    return range(count).map((i) => funcOrValue(i));
+  }
+  return range(count).map(() => funcOrValue);
 }
 
 export function fromEntities(v: any[][]) {
