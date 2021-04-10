@@ -375,6 +375,7 @@ function wrap(v: number, low: number, high: number): number;
 function range(v: number): number[];
 function times<T>(count: number, func: (i: number) => T): T[];
 function times<T>(count: number, value: T): T[];
+function remove<T>(array: T[], func: (v: T) => any): T[];
 function addWithCharCode(char: string, offset: number): string;
 ```
 

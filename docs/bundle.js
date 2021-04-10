@@ -30,6 +30,19 @@
       }
       return range(count).map(() => funcOrValue);
   }
+  function remove(array, func) {
+      let removed = [];
+      for (let i = 0; i < array.length;) {
+          if (func(array[i])) {
+              removed.push(array[i]);
+              array.splice(i, 1);
+          }
+          else {
+              i++;
+          }
+      }
+      return removed;
+  }
   function fromEntities(v) {
       return [...v].reduce((obj, [key, value]) => {
           obj[key] = value;
@@ -3044,6 +3057,7 @@ image-rendering: pixelated;
   let clr = color$1;
   let ply = play;
   let tms = times;
+  let rmv = remove;
   const tr = "transparent";
   const wh = "white";
   const rd = "red";
@@ -3071,6 +3085,7 @@ image-rendering: pixelated;
       ["color(", "clr("],
       ["play(", "ply("],
       ["times(", "tms("],
+      ["remove(", "rmv("],
       ["ticks", "tc"],
       ["difficulty", "df"],
       ["score", "sc"],
@@ -3146,7 +3161,9 @@ image-rendering: pixelated;
   exports.range = range;
   exports.rd = rd;
   exports.rect = rect$1;
+  exports.remove = remove;
   exports.rewind = rewind$1;
+  exports.rmv = rmv;
   exports.rnd = rnd;
   exports.rndi = rndi;
   exports.rnds = rnds;

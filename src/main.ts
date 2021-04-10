@@ -10,7 +10,7 @@ import * as collision from "./collision";
 import { Color } from "./color";
 import { defineCharacters, print, letterSize } from "./letter";
 import * as _particle from "./particle";
-import { times } from "./util";
+import { times, remove } from "./util";
 import {
   get as getButton,
   update as updateButton,
@@ -23,7 +23,7 @@ declare const sss;
 declare const Terser;
 declare const cloneDeep;
 
-export { clamp, wrap, range, times, addWithCharCode } from "./util";
+export { clamp, wrap, range, times, remove, addWithCharCode } from "./util";
 export { rect, box, bar, line, arc } from "./rect";
 export { text, char } from "./letter";
 export { Color };
@@ -683,6 +683,7 @@ export let inp: { p: Vector; ip: boolean; ijp: boolean; ijr: boolean };
 export let clr = color;
 export let ply = play;
 export let tms = times;
+export let rmv = remove;
 export let tc: number;
 export let df: number;
 export let sc: number;
@@ -714,6 +715,7 @@ export let minifyReplaces = [
   ["color(", "clr("],
   ["play(", "ply("],
   ["times(", "tms("],
+  ["remove(", "rmv("],
   ["ticks", "tc"],
   ["difficulty", "df"],
   ["score", "sc"],

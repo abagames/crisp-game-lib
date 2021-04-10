@@ -34,6 +34,19 @@ export function times<T>(
   return range(count).map(() => funcOrValue);
 }
 
+export function remove<T>(array: T[], func: (v: T) => any) {
+  let removed = [];
+  for (let i = 0; i < array.length; ) {
+    if (func(array[i])) {
+      removed.push(array[i]);
+      array.splice(i, 1);
+    } else {
+      i++;
+    }
+  }
+  return removed;
+}
+
 export function fromEntities(v: any[][]) {
   return [...v].reduce((obj, [key, value]) => {
     obj[key] = value;
