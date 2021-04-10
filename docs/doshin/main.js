@@ -95,7 +95,7 @@ function update() {
     if (ds.t > 60) {
       ds.t = -1;
     }
-    color("light_black");
+    color("light_red");
     rect(ds.x - 20, 0, 40, 20);
   });
   let sc = 1;
