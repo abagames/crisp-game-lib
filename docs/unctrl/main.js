@@ -51,7 +51,7 @@ let animTicks;
 let multiplier;
 let grounds;
 const pos = vec(10, 50);
-const shotPos = vec(13, 50);
+const shotPos = vec(8, 50);
 
 function update() {
   if (!ticks) {
@@ -103,7 +103,7 @@ function update() {
     nextTankTicks = 200 / sqrt(difficulty);
   }
   remove(tanks, (t) => {
-    t.animTicks += sqrt(difficulty);
+    t.animTicks += sqrt(difficulty) * (t.pos.x < 70 ? 4 : 1);
     t.pos.x -= sqrt(difficulty) * (t.pos.x < 70 ? 0.4 : 0.1);
     color("red");
     if (
@@ -160,7 +160,7 @@ function update() {
 
   function setNextShot() {
     shot.pos.set(shotPos);
-    shot.vel.set(0.5, 0);
+    shot.vel.set(0.5, 0.2);
     shot.state = "ready";
     multiplier = 1;
   }
