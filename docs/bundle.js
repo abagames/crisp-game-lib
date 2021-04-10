@@ -24,11 +24,8 @@
   function range(v) {
       return [...Array(v).keys()];
   }
-  function times(count, funcOrValue) {
-      if (funcOrValue instanceof Function) {
-          return range(count).map((i) => funcOrValue(i));
-      }
-      return range(count).map(() => funcOrValue);
+  function times(count, func) {
+      return range(count).map((i) => func(i));
   }
   function remove(array, func) {
       let removed = [];

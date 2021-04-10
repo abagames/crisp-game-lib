@@ -24,14 +24,8 @@ export function range(v: number) {
   return [...Array(v).keys()];
 }
 
-export function times<T>(
-  count: number,
-  funcOrValue: (i: number) => T | T
-): T[] {
-  if (funcOrValue instanceof Function) {
-    return range(count).map((i) => funcOrValue(i));
-  }
-  return range(count).map(() => funcOrValue);
+export function times<T>(count: number, func: (i: number) => T): T[] {
+  return range(count).map((i) => func(i));
 }
 
 export function remove<T>(array: T[], func: (v: T) => any) {
