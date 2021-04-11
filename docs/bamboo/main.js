@@ -37,7 +37,7 @@ let nextBambooTicks;
 let x;
 let vx;
 let avx;
-let anim;
+let animTicks;
 let speedBambooTicks;
 
 function update() {
@@ -47,7 +47,7 @@ function update() {
     x = 190;
     vx = 1;
     avx = 0;
-    anim = 0;
+    animTicks = 0;
     speedBambooTicks = 5;
   }
   color("black");
@@ -57,9 +57,9 @@ function update() {
   }
   x = wrap(x + vx * difficulty * (1 + avx), -3, 203);
   avx *= 0.9;
-  anim += difficulty;
+  animTicks += difficulty;
   char(
-    input.isPressed ? "b" : addWithCharCode("a", floor(anim / 20) % 2),
+    input.isPressed ? "b" : addWithCharCode("a", floor(animTicks / 20) % 2),
     x,
     87,
     {
@@ -135,17 +135,17 @@ function update() {
           0.4
         );
         if (b.height <= 25) {
-          color("red");
-          text("X", b.x, 3);
           play("explosion");
           return true;
         }
       }
     }
     if (b.height > 50) {
-      b.speed *= 0.995;
+      b.speed *= 0.997;
     }
-    if (b.height > 90) {
+    if (b.height >= 89) {
+      color("red");
+      text("X", b.x, 3);
       play("lucky");
       end();
     }
