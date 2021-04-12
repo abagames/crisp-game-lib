@@ -8,6 +8,23 @@ It also has [type definitions in TypeScript](https://github.com/abagames/crisp-g
 
 See also [the article about crisp-game-lib](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/) written by [Terry Cavanagh](https://twitter.com/terrycavanagh), known as the developer of [Super Hexagon](https://store.steampowered.com/app/221640/Super_Hexagon/) and [VVVVVV](https://store.steampowered.com/app/70300/VVVVVV/). A list of the browser games I've made can be found on [my web page](https://abagames.github.io/games-web-pages/browser.html). By looking at the gif animations of each game, you can easily understand its rules.
 
+## Demo (Click the image to play)
+
+[![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
+[![lland screenshot](docs/lland/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?lland)
+[![bamboo screenshot](docs/bamboo/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?bamboo)
+[![chargebeam screenshot](docs/chargebeam/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?chargebeam)
+[![cardq screenshot](docs/cardq/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cardq)
+[![catep screenshot](docs/catep/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?catep)
+[![survivor screenshot](docs/survivor/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?survivor)
+[![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
+[![pressm screenshot](docs/pressm/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pressm)
+[![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
+[![pillars3d screenshot](docs/pillars3d/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pillars3d)
+[![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
+
+Other games are listed on [my browser games page](https://abagames.github.io/games-web-pages/browser.html).
+
 ## Sample game (Click the image to play)
 
 [![refbals screenshot](docs/refbals/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?refbals)
@@ -95,23 +112,6 @@ tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
       box(e.p, 5).bl && (ply(sl), sc++, (e.p.y += 2 * (e.v *= -1)));
   });
 ```
-
-## Demo (Click the image to play)
-
-[![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
-[![lland screenshot](docs/lland/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?lland)
-[![bamboo screenshot](docs/bamboo/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?bamboo)
-[![chargebeam screenshot](docs/chargebeam/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?chargebeam)
-[![cardq screenshot](docs/cardq/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cardq)
-[![catep screenshot](docs/catep/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?catep)
-[![survivor screenshot](docs/survivor/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?survivor)
-[![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
-[![pressm screenshot](docs/pressm/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pressm)
-[![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
-[![pillars3d screenshot](docs/pillars3d/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pillars3d)
-[![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
-
-Other games are listed on [my browser games page](https://abagames.github.io/games-web-pages/browser.html).
 
 ## Sample codes
 
