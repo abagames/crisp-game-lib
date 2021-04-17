@@ -119,7 +119,7 @@ Sample code for each game is `main.js` in each directory in the [docs directory]
 
 ## Write your own game
 
-1. Clone this repository.
+1. Clone or [download](https://github.com/abagames/crisp-game-lib/archive/refs/heads/master.zip) this repository.
 
 1. `npm install`
 
@@ -389,7 +389,7 @@ l llll
 //
 //   isCapturing?: boolean; // Capture a screen by pressing 'c'.
 //   isShowingScore?: boolean; // Show a score and a hi-score.
-//   isMinifying: boolean; // Show a minified code to the console.
+//   isMinifying?: boolean; // Show a minified code to the console.
 // };
 options = {
   viewSize: { x: 200, y: 60 },
