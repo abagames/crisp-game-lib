@@ -118,7 +118,7 @@ function update() {
       ship.vel.set(difficulty * 0.2, 0);
     }
   }
-  if (c.yellow) {
+  if (c.yellow || ship.pos.y < 0) {
     play("explosion");
     end();
   }
