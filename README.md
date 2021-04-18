@@ -315,8 +315,8 @@ function ceil(v: number): number;
 function clamp(v: number, low?: number, high?: number): number;
 function wrap(v: number, low: number, high: number): number;
 function range(v: number): number[];
-function times<T>(count: number, func: (i: number) => T): T[];
-function remove<T>(array: T[], func: (v: T) => any): T[];
+function times<T>(count: number, func: (index: number) => T): T[];
+function remove<T>(array: T[], func: (v: T, index?: number) => any): T[];
 function addWithCharCode(char: string, offset: number): string;
 ```
 

@@ -24,14 +24,14 @@ export function range(v: number) {
   return [...Array(v).keys()];
 }
 
-export function times<T>(count: number, func: (i: number) => T): T[] {
+export function times<T>(count: number, func: (index: number) => T): T[] {
   return range(count).map((i) => func(i));
 }
 
-export function remove<T>(array: T[], func: (v: T) => any) {
+export function remove<T>(array: T[], func: (v: T, index?: number) => any) {
   let removed = [];
-  for (let i = 0; i < array.length; ) {
-    if (func(array[i])) {
+  for (let i = 0, index = 0; i < array.length; index++) {
+    if (func(array[i], index)) {
       removed.push(array[i]);
       array.splice(i, 1);
     } else {

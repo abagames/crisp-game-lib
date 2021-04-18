@@ -29,8 +29,8 @@
   }
   function remove(array, func) {
       let removed = [];
-      for (let i = 0; i < array.length;) {
-          if (func(array[i])) {
+      for (let i = 0, index = 0; i < array.length; index++) {
+          if (func(array[i], index)) {
               removed.push(array[i]);
               array.splice(i, 1);
           }

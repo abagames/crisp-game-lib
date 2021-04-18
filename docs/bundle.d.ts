@@ -439,8 +439,11 @@ declare function ceil(v: number): number;
 declare function clamp(v: number, low?: number, high?: number): number;
 declare function wrap(v: number, low: number, high: number): number;
 declare function range(v: number): number[];
-declare function times<T>(count: number, func: (i: number) => T): T[];
-declare function remove<T>(array: T[], func: (v: T) => any): T[];
+declare function times<T>(count: number, func: (index: number) => T): T[];
+declare function remove<T>(
+  array: T[],
+  func: (v: T, index?: number) => any
+): T[];
 declare function addWithCharCode(char: string, offset: number): string;
 
 declare interface Vector {
