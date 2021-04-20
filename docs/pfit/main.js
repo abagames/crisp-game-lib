@@ -61,12 +61,20 @@ function update() {
         type: i < wallCount ? "fix" : "move",
       });
     });
-    wallX = -rnd(99);
+    wallX = -rnd(10, 90);
     for (let i = 0; i < 9; i++) {
-      if (abs(wallX + input.pos.x) > 20) {
+      if (
+        abs(
+          wrap(
+            wallX + input.pos.x,
+            (-wallWidth * wallCount) / 2,
+            (wallWidth * wallCount) / 2
+          )
+        ) > 20
+      ) {
         break;
       }
-      wallX = -rnd(99);
+      wallX = -rnd(10, 90);
     }
     nextScore = 300;
     isAddingWall = false;
