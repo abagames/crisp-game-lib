@@ -1,4 +1,8 @@
-# crisp-game-lib
+<a href="https://abagames.github.io/crisp-game-lib/?survivor"><img src="docs/survivor/screenshot.gif" style="width:25%"></a><a href="https://abagames.github.io/crisp-game-lib/?chargebeam"><img src="docs/chargebeam/screenshot.gif" style="width:25%"></a><a href="https://abagames.github.io/crisp-game-lib/?pillars3d"><img src="docs/pillars3d/screenshot.gif" style="width:25%"></a><a href="https://abagames.github.io/crisp-game-lib/?slalom"><img src="docs/slalom/screenshot.gif" style="width:25%"></a>
+
+<p style="text-align:center; font-size:32px; font-weight: bold">crisp-game-lib</p>
+
+<a href="https://abagames.github.io/crisp-game-lib/?doshin"><img src="docs/doshin/screenshot.gif" style="width:25%"></a><a href="https://abagames.github.io/crisp-game-lib/?cardq"><img src="docs/cardq/screenshot.gif" style="width:25%"></a><a href="https://abagames.github.io/crisp-game-lib/?earock"><img src="docs/earock/screenshot.gif" style="width:25%"></a><a href="https://abagames.github.io/crisp-game-lib/?shiny"><img src="docs/shiny/screenshot.gif" style="width:25%"></a>
 
 `crisp-game-lib` is a JavaScript library for creating browser games quickly and easily. I developed [50 minigames in 2014](http://www.asahi-net.or.jp/~cs8k-cyu/blog/2014/12/12/games-in-2014/), as well as the Haxe library [mgl](https://github.com/abagames/mgl) and the CoffeeScript library [mgl.coffee](https://github.com/abagames/mgl.coffee) to make them. After that I continued to work on minigames and libraries. Using this experience, `crisp-game-lib` was created as a library with the minimum functionality necessary to create classic arcade-like minigames.
 
@@ -13,14 +17,14 @@ See also [the article about crisp-game-lib](https://terrysfreegameoftheweek.com/
 [![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
 [![lland screenshot](docs/lland/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?lland)
 [![bamboo screenshot](docs/bamboo/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?bamboo)
-[![chargebeam screenshot](docs/chargebeam/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?chargebeam)
-[![cardq screenshot](docs/cardq/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cardq)
+[![pileup screenshot](docs/pileup/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?chargebeam)
+[![grenadier screenshot](docs/grenadier/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?grenadier)
 [![catep screenshot](docs/catep/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?catep)
-[![survivor screenshot](docs/survivor/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?survivor)
+[![zoneb screenshot](docs/zoneb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?zoneb)
 [![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
 [![pressm screenshot](docs/pressm/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pressm)
-[![slalom screenshot](docs/slalom/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?slalom)
-[![pillars3d screenshot](docs/pillars3d/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pillars3d)
+[![twinp screenshot](docs/twinp/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?twinp)
+[![descents screenshot](docs/descents/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?descents)
 [![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
 
 Other games are listed on [my browser games page](https://abagames.github.io/games-web-pages/browser.html).
