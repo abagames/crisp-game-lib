@@ -14,18 +14,11 @@ See also [the article about crisp-game-lib](https://terrysfreegameoftheweek.com/
 
 ## Demo (Click the image to play)
 
-[![cywall screenshot](docs/cywall/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?cywall)
-[![lland screenshot](docs/lland/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?lland)
-[![bamboo screenshot](docs/bamboo/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?bamboo)
-[![pileup screenshot](docs/pileup/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?chargebeam)
-[![grenadier screenshot](docs/grenadier/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?grenadier)
-[![catep screenshot](docs/catep/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?catep)
-[![zoneb screenshot](docs/zoneb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?zoneb)
-[![flipbomb screenshot](docs/flipbomb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?flipbomb)
-[![pressm screenshot](docs/pressm/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pressm)
-[![twinp screenshot](docs/twinp/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?twinp)
-[![descents screenshot](docs/descents/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?descents)
-[![arcfire screenshot](docs/arcfire/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?arcfire)
+<a href="https://abagames.github.io/crisp-game-lib/?cywall"><img src="docs/cywall/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?lland"><img src="docs/lland/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?bamboo"><img src="docs/bamboo/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?pileup"><img src="docs/pileup/screenshot.gif" width="25%"></a>
+
+<a href="https://abagames.github.io/crisp-game-lib/?grenadier"><img src="docs/grenadier/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?catep"><img src="docs/catep/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?zoneb"><img src="docs/zoneb/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?flipbomb"><img src="docs/flipbomb/screenshot.gif" width="25%"></a>
+
+<a href="https://abagames.github.io/crisp-game-lib/?pressm"><img src="docs/pressm/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?twinp"><img src="docs/twinp/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?descents"><img src="docs/descents/screenshot.gif" width="25%"></a><a href="https://abagames.github.io/crisp-game-lib/?arcfire"><img src="docs/arcfire/screenshot.gif" width="25%"></a>
 
 Other games are listed on [my browser games page](https://abagames.github.io/games-web-pages/browser.html).
 
