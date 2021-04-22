@@ -120,7 +120,7 @@ function update() {
     let isValid = false;
     for (let i = 0; i < 99; i++) {
       const vx = rnds(5, 10) * sqrt(difficulty);
-      if (abs((vx * wallStopInterval * 0.5) % (w + i)) > 9) {
+      if (abs((vx * wallStopInterval * 0.5) % (w + i)) > 19) {
         wall.vx = vx;
         isValid = true;
         break;
