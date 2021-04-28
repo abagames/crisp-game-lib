@@ -98,6 +98,10 @@ function update() {
   while (removedWalls.length > removeWallCount) {
     walls.push({ pos: removedWalls.shift(), isBall: false });
   }
+  if (removedWalls.length >= removeWallCount) {
+    color("light_purple");
+    box(removedWalls[0], 8);
+  }
   color("light_blue");
   rect(100, 10, 10, 80);
   remove(balls, (b) => {
@@ -146,10 +150,6 @@ function update() {
     b.pos.y += b.vel.y * spd;
     box(b.pos, 6);
   });
-  if (removedWalls.length >= removeWallCount) {
-    color("light_purple");
-    box(removedWalls[0], 8);
-  }
   if (balls.length === 0) {
     play("lucky");
     end();
