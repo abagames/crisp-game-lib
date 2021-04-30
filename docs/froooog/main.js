@@ -67,7 +67,7 @@ function update() {
   updateLanes();
   if (frog.state === "stop") {
     drawFrog();
-    if (input.isJustPressed) {
+    if (input.isPressed) {
       play("select");
       frog.state = "bend";
       frog.targetY = frog.y - 3;
