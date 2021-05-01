@@ -78,6 +78,9 @@ function update() {
     shots = [];
     multiplier = 1;
   }
+  color("light_black");
+  rect(85, 0, 15, 10);
+  rect(85, 92, 15, 8);
   color("black");
   remove(shots, (s) => {
     s.pos.add(s.vel);
@@ -89,7 +92,7 @@ function update() {
   if (nextEnemyTicks < 0) {
     const fireInterval = rnd(200, 300) / sqrt(difficulty);
     enemies.push({
-      pos: vec(rnd(3, 55), -5),
+      pos: vec(rnd(3, 50), -5),
       vy: rnd(0.1, 0.4) * difficulty,
       fireInterval,
       fireTicks: rnd(fireInterval),
@@ -136,14 +139,15 @@ function update() {
   color("black");
   remove(bullets, (b) => {
     b.x += bs;
-    if (char("d", b).isColliding.char.e) {
+    const c = char("d", b).isColliding;
+    if (c.char.e) {
       play("hit");
       particle(b);
       addScore(multiplier, b);
       multiplier++;
       return true;
     }
-    return b.x > 103;
+    return b.x > 103 || c.rect.light_black;
   });
   player.pos.y += player.vy * difficulty * 0.5;
   if (
