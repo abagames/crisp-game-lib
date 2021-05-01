@@ -9,9 +9,11 @@ characters = [
 rrrrrr
 rRRRRr
  rRRr
- rRRr
-  rr
-  rr
+ `,
+  `
+rRRr
+ rr
+ rr
 `,
   `
  G
@@ -77,14 +79,21 @@ function update() {
   remove(arrows, (a) => {
     a.vy += (a.wy * s - a.vy) * 0.05;
     a.pos.y += a.vy;
-    char("a", a.pos, { mirror: { y: a.wy } });
+    if (a.wy > 0) {
+      char("a", a.pos.x, a.pos.y - 1);
+      char("b", a.pos.x, a.pos.y + 2);
+    } else {
+      char("a", a.pos.x, a.pos.y + 1, { mirror: { y: -1 } });
+      char("b", a.pos.x, a.pos.y - 2, { mirror: { y: -1 } });
+    }
     color("red");
     particle(a.pos, 0.4, -abs(a.vy), (PI / 2) * a.wy, 0.3);
     color("black");
     return a.pos.y < -3 || a.pos.y > 103;
   });
   const x = clamp(input.pos.x, 1, 98);
-  if (char("b", x, 50).isColliding.char.a) {
+  const c = char("c", x, 50).isColliding.char;
+  if (c.a || c.b) {
     play("powerUp");
     end();
   }
