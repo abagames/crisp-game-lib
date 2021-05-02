@@ -2675,7 +2675,8 @@ image-rendering: pixelated;
       }
       if (opts.theme === "pixel" ||
           opts.theme === "shapeDark" ||
-          opts.theme === "crt") {
+          opts.theme === "crt" ||
+          opts.theme === "dark") {
           theme.isDarkColor = true;
       }
       loopOptions = {

@@ -378,7 +378,7 @@ l llll
 // Set the options.
 // options = {
 //   viewSize?: { x: number; y: number }; // Set the screen size.
-//   theme?: "simple" | "pixel" | "shape" | "shapeDark" | "crt";
+//   theme?: "simple" | "pixel" | "shape" | "shapeDark" | "crt" | "dark";
 //    // Select the appearance theme.
 //   isPlayingBgm?: boolean; // Play a BGM.
 //   isReplayEnabled?: boolean; // Enable a replay.

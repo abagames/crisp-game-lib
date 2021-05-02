@@ -1,7 +1,13 @@
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
-declare type ThemeName = "simple" | "pixel" | "shape" | "shapeDark" | "crt";
+declare type ThemeName =
+  | "simple"
+  | "pixel"
+  | "shape"
+  | "shapeDark"
+  | "crt"
+  | "dark";
 declare type Options = {
   isPlayingBgm?: boolean;
   isSpeedingUpSound?: boolean;

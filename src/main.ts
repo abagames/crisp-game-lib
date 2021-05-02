@@ -196,7 +196,13 @@ const defaultOptions: Options = {
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
-export type ThemeName = "simple" | "pixel" | "shape" | "shapeDark" | "crt";
+export type ThemeName =
+  | "simple"
+  | "pixel"
+  | "shape"
+  | "shapeDark"
+  | "crt"
+  | "dark";
 export type Theme = {
   name: ThemeName;
   isUsingPixi: boolean;
@@ -269,7 +275,8 @@ export function onLoad() {
   if (
     opts.theme === "pixel" ||
     opts.theme === "shapeDark" ||
-    opts.theme === "crt"
+    opts.theme === "crt" ||
+    opts.theme === "dark"
   ) {
     theme.isDarkColor = true;
   }
