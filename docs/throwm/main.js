@@ -33,9 +33,9 @@ lllll
   ll
 `,
   `
-   r
+r  r
 llllrr
-   r
+r  r
 `,
   `
  yyyy
@@ -51,6 +51,7 @@ options = {
   isPlayingBgm: true,
   isReplayEnabled: true,
   seed: 6,
+  isCapturing: true,
 };
 
 /**
