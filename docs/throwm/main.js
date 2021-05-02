@@ -51,7 +51,6 @@ options = {
   isPlayingBgm: true,
   isReplayEnabled: true,
   seed: 6,
-  isCapturing: true,
 };
 
 /**
