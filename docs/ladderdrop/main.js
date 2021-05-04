@@ -204,6 +204,7 @@ function update() {
         player.pos.x = clamp(player.pos.x, 10, 90);
         player.pos.y -= 6;
         lockCount = 0;
+        player.state = "drop";
       }
     } else {
       lockCount = 0;
@@ -245,13 +246,13 @@ function update() {
     player.pos.y += sqrt(difficulty) * 0.4;
     color("transparent");
     let c = char("c", player.pos.x, player.pos.y + 6).isColliding.char;
-    if (c.f) {
+    if (!c.e && c.f) {
       let py = player.pos.y + 6;
-      while (!c.f) {
+      while (c.f) {
         py--;
         c = char("c", player.pos.x, py).isColliding.char;
       }
-      player.pos.y = floor(py - 1) + (totalScr % 1);
+      player.pos.y = floor(py) + (totalScr % 1);
       player.state = "downWalk";
     }
     color("black");
