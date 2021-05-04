@@ -122,6 +122,12 @@ function update() {
       target = [[rndi(colorCount)], [rndi(colorCount)]];
       player.hands = [[target[0][0]], [target[1][0]]];
     }
+    const prevTarget = [[], []];
+    times(2, (i) =>
+      target[i].forEach((c) => {
+        prevTarget[i].push(c);
+      })
+    );
     target[0].splice(4);
     target[1].splice(4);
     const cr = 3 / colorCount;
@@ -142,6 +148,25 @@ function update() {
     });
     target[0].splice(5);
     target[1].splice(5);
+    let isSame =
+      target[0].length === prevTarget[0].length &&
+      target[1].length === prevTarget[1].length;
+    if (isSame) {
+      times(2, (i) =>
+        target[i].forEach((c, j) => {
+          if (prevTarget[i][j] !== c) {
+            isSame = false;
+          }
+        })
+      );
+    }
+    if (isSame) {
+      target[0][target[0].length - 1] = wrap(
+        target[0][target[0].length - 1] + 1,
+        0,
+        colorCount
+      );
+    }
     step++;
     nextPhotonTicks = 60;
     appWidth = 30;
