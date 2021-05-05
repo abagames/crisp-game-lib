@@ -2,7 +2,7 @@ title = "S LANES";
 
 description = `
 [Hold]
- Stop & Shot
+ Shot & Forward
 `;
 
 characters = [
@@ -58,6 +58,7 @@ let laneSpeeds;
 let multiplier;
 const laneWidth = 20;
 const laneCount = 4;
+const shipX = 3;
 
 function update() {
   if (!ticks) {
@@ -66,7 +67,7 @@ function update() {
     coins = [];
     shots = [];
     ship = {
-      pos: vec(3, calcY(0)),
+      pos: vec(shipX, calcY(0)),
       laneIndex: 0,
       targetY: calcY(0),
       laneTicks: 0,
@@ -88,6 +89,11 @@ function update() {
   }
   color("black");
   if (input.isPressed) {
+    if (input.isJustPressed) {
+      ship.pos.x = shipX;
+    } else {
+      ship.pos.x = clamp(ship.pos.x + sqrt(difficulty) * 0.3, 0, 50);
+    }
     ship.pos.y = ship.targetY = calcY(ship.laneIndex);
     ship.shotTicks--;
     if (ship.shotTicks < 0) {
@@ -107,8 +113,9 @@ function update() {
       ship.pos.y = wrap(ship.pos.y, 0, 100);
       ship.laneTicks = 20 / sqrt(difficulty);
     }
+    ship.pos.x += (shipX - ship.pos.x) * 0.3;
+    ship.pos.y += (ship.targetY - ship.pos.y) * 0.3;
   }
-  ship.pos.y += (ship.targetY - ship.pos.y) * 0.3;
   char("a", ship.pos.x, wrap(ship.pos.y, 0, 100));
   color("light_purple");
   times(laneCount, (i) => {
