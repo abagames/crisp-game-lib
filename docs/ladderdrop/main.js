@@ -195,7 +195,7 @@ function update() {
       play("explosion");
       end();
     }
-    if (c.f || player.pos.x < 3 || player.pos.x > 97) {
+    if (c.f || player.pos.x < 5 || player.pos.x > 95) {
       play("laser");
       player.vx *= -1;
       player.pos.x += player.vx * 2;
@@ -218,7 +218,6 @@ function update() {
       color("transparent");
       c = char("a", player.pos.x, player.pos.y + 6).isColliding.char;
       if (!(c.e || c.f)) {
-        play("powerUp");
         player.state = "drop";
       }
     }
