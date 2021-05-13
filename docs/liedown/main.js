@@ -1,7 +1,7 @@
 title = "LIE DOWN";
 
 description = `
-[Press] Lie down
+[Hold] Lie down
 `;
 
 characters = [
@@ -52,7 +52,7 @@ options = {
   viewSize: { x: 200, y: 50 },
   isPlayingBgm: true,
   isReplayEnabled: true,
-  seed: 9,
+  seed: 2,
 };
 
 /** @type {{x: number, height: number, speed: number}[]} */
