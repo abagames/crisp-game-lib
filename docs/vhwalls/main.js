@@ -93,8 +93,13 @@ function update() {
     }
     if (c.red) {
       play("explosion");
-      color("red");
+      color("purple");
       text("X", w.pos);
+      if (w.angle === 0) {
+        text("X", w.pos.x, target.pos.y);
+      } else {
+        text("X", target.pos.x, w.pos.y);
+      }
       end();
     }
     if (c.green) {
