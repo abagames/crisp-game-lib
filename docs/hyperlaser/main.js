@@ -258,7 +258,6 @@ function update() {
       addScore(multiplier * 10, e.pos);
       color("red");
       particle(e.pos, 19, 2);
-      addScore(1);
       return true;
     }
     if (e.pos.y > 99) {
