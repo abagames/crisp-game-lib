@@ -20,6 +20,7 @@ let coins;
 let nextCoinTicks;
 let coinX;
 let lx;
+let wind;
 const minLength = 20;
 
 function update() {
@@ -29,6 +30,7 @@ function update() {
     nextCoinTicks = 0;
     coinX = rnd() < 0.5 ? 20 : 80;
     lx = 50;
+    wind = 0;
   }
   color("light_black");
   rect(-50, 90, 200, 10);
@@ -38,7 +40,9 @@ function update() {
   if (abs(o) < 99) {
     pillar.vx += o * 0.005;
   }
-  pillar.vx += rnds(0.2 * sqrt(difficulty));
+  wind += rnds(0.01);
+  wind *= 0.98;
+  pillar.vx -= wind;
   pillar.vx *= 0.95;
   pillar.x += pillar.vx * difficulty;
   pillar.angleVel -= pillar.vx * 0.002;
@@ -71,7 +75,7 @@ function update() {
   if (box(tp, 5).isColliding.rect.light_black) {
     play("explosion");
     pillar.length /= 2;
-    pillar.angleVel *= -1;
+    pillar.angleVel *= -0.5;
     if (pillar.length >= minLength) {
       pillar.angle /= 2;
     }
@@ -79,11 +83,12 @@ function update() {
   nextCoinTicks--;
   if (nextCoinTicks < 0) {
     coins.push({ pos: vec(coinX, -3), vel: vec(rnds(1), 0) });
-    coinX = wrap(coinX + rnds(10) + scr, -50, 150);
+    coinX = wrap(coinX + rnds(1) + scr, -20, 120);
     nextCoinTicks = 5;
   }
   color("yellow");
   remove(coins, (c) => {
+    c.vel.x += wind / 2;
     c.pos.add(c.vel);
     c.pos.x += scr;
     c.vel.y += 0.03;
