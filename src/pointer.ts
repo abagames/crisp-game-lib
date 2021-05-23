@@ -28,7 +28,7 @@ const debugRandom = new Random();
 const debugPos = new Vector();
 const debugMoveVel = new Vector();
 let debugIsDown = false;
-let cursorPos = new Vector(-9999, -9999);
+let cursorPos = new Vector();
 let isDown = false;
 let isClicked = false;
 let isReleased = false;
@@ -44,8 +44,15 @@ export function init(
     _pixelSize.x + options.padding.x * 2,
     _pixelSize.y + options.padding.y * 2
   );
+  cursorPos.set(
+    screen.offsetLeft + screen.clientWidth * (0.5 - options.anchor.x),
+    screen.offsetTop + screen.clientWidth * (0.5 - options.anchor.y)
+  );
   if (options.isDebugMode) {
-    debugPos.set(pixelSize.x / 2, pixelSize.y / 2);
+    debugPos.set(
+      screen.offsetLeft + screen.clientWidth * (0.5 - options.anchor.x),
+      screen.offsetTop + screen.clientWidth * (0.5 - options.anchor.y)
+    );
   }
   document.addEventListener("mousedown", (e) => {
     onDown(e.pageX, e.pageY);

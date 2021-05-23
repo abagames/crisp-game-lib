@@ -1782,7 +1782,7 @@ image-rendering: pixelated;
   const debugPos = new Vector();
   const debugMoveVel = new Vector();
   let debugIsDown = false;
-  let cursorPos = new Vector(-9999, -9999);
+  let cursorPos = new Vector();
   let isDown = false;
   let isClicked = false;
   let isReleased = false;
@@ -1790,8 +1790,9 @@ image-rendering: pixelated;
       options$2 = Object.assign(Object.assign({}, defaultOptions$2), _options);
       screen = _screen;
       pixelSize = new Vector(_pixelSize.x + options$2.padding.x * 2, _pixelSize.y + options$2.padding.y * 2);
+      cursorPos.set(screen.offsetLeft + screen.clientWidth * (0.5 - options$2.anchor.x), screen.offsetTop + screen.clientWidth * (0.5 - options$2.anchor.y));
       if (options$2.isDebugMode) {
-          debugPos.set(pixelSize.x / 2, pixelSize.y / 2);
+          debugPos.set(screen.offsetLeft + screen.clientWidth * (0.5 - options$2.anchor.x), screen.offsetTop + screen.clientWidth * (0.5 - options$2.anchor.y));
       }
       document.addEventListener("mousedown", (e) => {
           onDown(e.pageX, e.pageY);
