@@ -10,6 +10,8 @@ options = {
   theme: "pixel",
   isPlayingBgm: true,
   isReplayEnabled: true,
+  isDrawingParticleFront: true,
+  isDrawingScoreFront: true,
   seed: 100,
 };
 
@@ -123,7 +125,7 @@ function update() {
     if (f.pos.y < -9 && (c.light_blue || c.black)) {
       return true;
     }
-    particle(f.pos, f.speed * 0.1, f.speed * f.speed * 0.5, f.angle, PI / 4);
+    particle(f.pos, f.speed * 0.2, f.speed * f.speed, f.angle, PI / 4);
     return f.pos.y > 105;
   });
   const o = input.pos.x - ball.pos.x;
@@ -158,7 +160,8 @@ function update() {
     c.add(scr);
     if (box(c, 8).isColliding.rect.red) {
       play("coin");
-      addScore(multiplier);
+      addScore(multiplier, c);
+      particle(c);
       multiplier++;
       return true;
     }
@@ -169,6 +172,4 @@ function update() {
       return true;
     }
   });
-  color("black");
-  text(`+${multiplier}`, 3, 9);
 }
