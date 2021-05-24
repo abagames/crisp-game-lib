@@ -16,6 +16,8 @@ declare type Options = {
   isShowingTime?: boolean;
   isReplayEnabled?: boolean;
   isRewindEnabled?: boolean;
+  isDrawingParticleFront?: boolean;
+  isDrawingScoreFront?: boolean;
   isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;

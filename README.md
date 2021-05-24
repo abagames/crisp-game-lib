@@ -401,6 +401,8 @@ l llll
 //   isCapturing?: boolean; // Capture a screen by pressing 'c'.
 //   isShowingScore?: boolean; // Show a score and a hi-score.
 //   isMinifying?: boolean; // Show a minified code to the console.
+//   isDrawingParticleFront?: boolean; // Draw particles in front of the screen.
+//   isDrawingScoreFront?: boolean; // Draw score boards in front of the screen.
 // };
 options = {
   viewSize: { x: 200, y: 60 },

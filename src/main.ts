@@ -187,6 +187,8 @@ const defaultOptions: Options = {
   isShowingTime: false,
   isReplayEnabled: false,
   isRewindEnabled: false,
+  isDrawingParticleFront: false,
+  isDrawingScoreFront: false,
   isMinifying: false,
   viewSize: { x: 100, y: 100 },
   seed: 0,
@@ -216,6 +218,8 @@ declare type Options = {
   isShowingTime?: boolean;
   isReplayEnabled?: boolean;
   isRewindEnabled?: boolean;
+  isDrawingParticleFront?: boolean;
+  isDrawingScoreFront?: boolean;
   isMinifying?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
@@ -247,6 +251,8 @@ let isShowingScore: boolean;
 let isShowingTime: boolean;
 let isReplayEnabled: boolean;
 let isRewindEnabled: boolean;
+let isDrawingParticleFront: boolean;
+let isDrawingScoreFront: boolean;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isReplaying = false;
@@ -295,6 +301,8 @@ export function onLoad() {
   isShowingTime = opts.isShowingTime;
   isReplayEnabled = opts.isReplayEnabled;
   isRewindEnabled = opts.isRewindEnabled;
+  isDrawingParticleFront = opts.isDrawingParticleFront;
+  isDrawingScoreFront = opts.isDrawingScoreFront;
   if (opts.isMinifying) {
     showMinifiedScript();
   }
@@ -396,8 +404,12 @@ function initInGame() {
 function updateInGame() {
   terminal.clear();
   view.clear();
-  _particle.update();
-  updateScoreBoards();
+  if (!isDrawingParticleFront) {
+    _particle.update();
+  }
+  if (!isDrawingScoreFront) {
+    updateScoreBoards();
+  }
   if (isReplayEnabled || isRewindEnabled) {
     replay.recordInput({
       pos: vec(input.pos),
@@ -407,6 +419,12 @@ function updateInGame() {
     });
   }
   update();
+  if (isDrawingParticleFront) {
+    _particle.update();
+  }
+  if (isDrawingScoreFront) {
+    updateScoreBoards();
+  }
   drawScoreOrTime();
   terminal.draw();
   if (isShowingTime && time != null) {
@@ -443,8 +461,13 @@ function updateTitle() {
       ijp: input.isJustPressed,
       ijr: input.isJustReleased,
     };
-    _particle.update();
+    if (!isDrawingParticleFront) {
+      _particle.update();
+    }
     update();
+    if (isDrawingParticleFront) {
+      _particle.update();
+    }
     if (isSpeedingUpSound && ticks % soundSpeedingUpInterval === 0) {
       sss.playInterval = 0.5 / sqrt(difficulty);
     }

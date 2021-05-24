@@ -2622,6 +2622,8 @@ image-rendering: pixelated;
       isShowingTime: false,
       isReplayEnabled: false,
       isRewindEnabled: false,
+      isDrawingParticleFront: false,
+      isDrawingScoreFront: false,
       isMinifying: false,
       viewSize: { x: 100, y: 100 },
       seed: 0,
@@ -2649,6 +2651,8 @@ image-rendering: pixelated;
   let isShowingTime;
   let isReplayEnabled;
   let isRewindEnabled;
+  let isDrawingParticleFront;
+  let isDrawingScoreFront;
   let terminalSize;
   let scoreBoards;
   let isReplaying = false;
@@ -2695,6 +2699,8 @@ image-rendering: pixelated;
       isShowingTime = opts.isShowingTime;
       isReplayEnabled = opts.isReplayEnabled;
       isRewindEnabled = opts.isRewindEnabled;
+      isDrawingParticleFront = opts.isDrawingParticleFront;
+      isDrawingScoreFront = opts.isDrawingScoreFront;
       if (opts.isMinifying) {
           showMinifiedScript();
       }
@@ -2790,8 +2796,12 @@ image-rendering: pixelated;
   function updateInGame() {
       terminal.clear();
       clear$1();
-      update$5();
-      updateScoreBoards();
+      if (!isDrawingParticleFront) {
+          update$5();
+      }
+      if (!isDrawingScoreFront) {
+          updateScoreBoards();
+      }
       if (isReplayEnabled || isRewindEnabled) {
           recordInput({
               pos: vec$1(pos$1),
@@ -2801,6 +2811,12 @@ image-rendering: pixelated;
           });
       }
       update();
+      if (isDrawingParticleFront) {
+          update$5();
+      }
+      if (isDrawingScoreFront) {
+          updateScoreBoards();
+      }
       drawScoreOrTime();
       terminal.draw();
       if (isShowingTime && exports.time != null) {
@@ -2835,8 +2851,13 @@ image-rendering: pixelated;
               ijp: isJustPressed$2,
               ijr: isJustReleased$2,
           };
-          update$5();
+          if (!isDrawingParticleFront) {
+              update$5();
+          }
           update();
+          if (isDrawingParticleFront) {
+              update$5();
+          }
           if (isSpeedingUpSound && exports.ticks % soundSpeedingUpInterval === 0) {
               sss.playInterval = 0.5 / sqrt(exports.difficulty);
           }
