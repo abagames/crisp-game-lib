@@ -128,6 +128,20 @@ Sample code for each game is `main.js` in each directory in the [docs directory]
 
 1. Open the URL `http://localhost:4000?[your own game name]` with a browser. The page is live-reloaded when the code is rewritten.
 
+## Publish your own game
+
+1. Place `main.js`, [bundle.js](https://github.com/abagames/crisp-game-lib/blob/master/docs/bundle.js) and [index.html](https://github.com/abagames/crisp-game-lib/blob/master/docs/index.html) on the web server in the following directory structure.
+
+```
+┝ [any directory name]
+   ┝ [your own game name]
+   │  └ main.js
+   ┝ bundle.js
+   └ index.html
+```
+
+1. Open the URL `[Address of any directory name]/index.html?[your own game name]` with a browser.
+
 ## Reference
 
 ### Drawing ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_drawing))
