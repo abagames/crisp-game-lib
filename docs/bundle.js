@@ -2310,7 +2310,7 @@ image-rendering: pixelated;
               else {
                   p.set(x1, y1);
                   p2.set(x2);
-                  thickness = y1;
+                  thickness = y2;
               }
           }
           else {
