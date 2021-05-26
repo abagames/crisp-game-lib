@@ -239,7 +239,7 @@ export function drawLetterImage(
       width == null ? letterSize : width,
       height == null ? letterSize : height
     );
-    graphics.endFill();
+    endFill();
     return;
   }
   if (width == null) {
