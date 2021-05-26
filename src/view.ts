@@ -143,7 +143,10 @@ export function clear() {
     return;
   }
   saveCurrentColor();
-  setColor(viewBackground);
+  context.fillStyle = colorToStyle(
+    viewBackground,
+    theme.isDarkColor ? 0.15 : 1
+  );
   context.fillRect(0, 0, size.x, size.y);
   loadCurrentColor();
 }

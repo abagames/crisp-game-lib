@@ -1407,7 +1407,7 @@ image-rendering: pixelated;
           return;
       }
       saveCurrentColor();
-      setColor(viewBackground);
+      context.fillStyle = colorToStyle(viewBackground, theme.isDarkColor ? 0.15 : 1);
       context.fillRect(0, 0, size.x, size.y);
       loadCurrentColor();
   }
@@ -2675,7 +2675,7 @@ image-rendering: pixelated;
           isUsingPixi: false,
           isDarkColor: false,
       };
-      if (opts.theme !== "simple") {
+      if (opts.theme !== "simple" && opts.theme !== "dark") {
           theme.isUsingPixi = true;
       }
       if (opts.theme === "pixel" ||

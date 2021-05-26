@@ -275,7 +275,7 @@ export function onLoad() {
     isUsingPixi: false,
     isDarkColor: false,
   };
-  if (opts.theme !== "simple") {
+  if (opts.theme !== "simple" && opts.theme !== "dark") {
     theme.isUsingPixi = true;
   }
   if (
