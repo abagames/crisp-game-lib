@@ -142,13 +142,12 @@ export function clear() {
     isFilling = false;
     return;
   }
-  saveCurrentColor();
   context.fillStyle = colorToStyle(
     viewBackground,
     theme.isDarkColor ? 0.15 : 1
   );
   context.fillRect(0, 0, size.x, size.y);
-  loadCurrentColor();
+  context.fillStyle = colorToStyle(currentColor);
 }
 
 export function setColor(colorName: Color) {
