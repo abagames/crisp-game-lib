@@ -156,7 +156,7 @@ function update() {
   nextHoleDist -= scr;
   if (nextHoleDist < 0) {
     holes.push({ x: 104, animTicks: 99 });
-    nextHoleDist += rnd(30, 50);
+    nextHoleDist += rnd(30, 45);
   }
   remove(holes, (h) => {
     h.x -= scr;
