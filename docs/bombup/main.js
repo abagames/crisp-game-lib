@@ -47,9 +47,9 @@ let bomb;
 let explosion;
 /** @type {{pos: Vector, vel: Vector}[]} */
 let rocks;
-let nextEnemyTicks;
-let nextEnemyX;
-let nextEnemyVelX;
+let nextRockTicks;
+let nextRockX;
+let nextRockVelX;
 let wallY;
 let multiplier;
 
@@ -58,9 +58,9 @@ function update() {
     player = { pos: vec(50, 50), vel: vec() };
     bomb = explosion = undefined;
     rocks = [];
-    nextEnemyTicks = 0;
-    nextEnemyX = 80;
-    nextEnemyVelX = 0;
+    nextRockTicks = 0;
+    nextRockX = 80;
+    nextRockVelX = 0;
     wallY = 0;
     multiplier = 1;
   }
@@ -133,24 +133,24 @@ function update() {
       arc(explosion.pos, r);
     }
   }
-  nextEnemyTicks--;
-  nextEnemyVelX += rnds(0.1) * sqrt(difficulty);
-  nextEnemyVelX *= 0.99;
-  nextEnemyX += nextEnemyVelX;
+  nextRockTicks--;
+  nextRockVelX += rnds(0.1) * sqrt(difficulty);
+  nextRockVelX *= 0.99;
+  nextRockX += nextRockVelX;
   if (
-    (nextEnemyX < 7 && nextEnemyVelX < 0) ||
-    (nextEnemyX > 93 && nextEnemyVelX > 0)
+    (nextRockX < 7 && nextRockVelX < 0) ||
+    (nextRockX > 93 && nextRockVelX > 0)
   ) {
-    nextEnemyVelX *= -0.7;
-    nextEnemyX = clamp(nextEnemyX, 7, 93);
+    nextRockVelX *= -0.7;
+    nextRockX = clamp(nextRockX, 7, 93);
   }
-  if (nextEnemyTicks < 0) {
+  if (nextRockTicks < 0) {
     const isBottom = rnd() > (player.pos.y > 30 ? 0.05 : 0.9);
     rocks.push({
-      pos: vec(nextEnemyX, isBottom ? 103 : -3),
+      pos: vec(nextRockX, isBottom ? 103 : -3),
       vel: vec(0, isBottom ? -rnd(0.5, sqrt(difficulty)) : player.vel.y / 2),
     });
-    nextEnemyTicks = rnd(8, 10) / difficulty;
+    nextRockTicks = rnd(8, 10) / difficulty;
   }
   color("red");
   remove(rocks, (r) => {
