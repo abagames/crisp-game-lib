@@ -72,7 +72,6 @@ function update() {
   if (cord.pin.y < 80) {
     scr += (80 - cord.pin.y) * 0.1;
   }
-  nextPinDist -= scr;
   // 'input.isJustPressed' is set to true the moment the button is pressed.
   if (input.isJustPressed) {
     // 'play()' plays the SE.
@@ -114,6 +113,7 @@ function update() {
     cord.pin = nextPin;
     cord.length = cordLength;
   }
+  nextPinDist -= scr;
   while (nextPinDist < 0) {
     // 'rnd()' returns a random value.
     pins.push(vec(rnd(10, 90), -2 - nextPinDist));
