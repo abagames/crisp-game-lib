@@ -24,90 +24,102 @@ Other games are listed on [my browser games page](https://abagames.github.io/gam
 
 ## Sample code
 
-[![refbals screenshot](docs/refbals/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?refbals)
+[![pinclimb screenshot](docs/pinclimb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pinclimb)
 
 ```javascript
-// Title of the game
-title = "REFBALS";
+// Write the game name to 'title'.
+title = "PIN CLIMB";
 
-// Description is displayed on the title screen
+// 'description' is displayed on the title screen.
 description = `
-[Hold] Accel
+[Hold] Stretch
 `;
 
-// User defined text characters
+// User-defined characters can be written here.
 characters = [];
 
-// Game options
+// Configure game options.
 options = {
   isPlayingBgm: true,
   isReplayEnabled: true,
+  // If you want to play a different BGM or SE,
+  // you can try changing the 'seed' value.
+  seed: 400,
 };
 
-let balls;
-let walls;
+// (Optional) Defining the types of variables is useful for
+// code completion and error detection.
+/** @type {{angle: number, length: number, pin: Vector}} */
+let cord;
+/** @type {Vector[]} */
+let pins;
+let nextPinDist;
+const cordLength = 7;
 
-// 'update()' is called per frame (1 frame = 1/60 second)
+// 'update()' is called every frame (60 times per second).
 function update() {
-  // 'ticks' counts the number of frames from the start of the game
+  // 'ticks' counts the number of frames from the start of the game.
   if (!ticks) {
-    // Initialize variables at the first frame (ticks === 0)
-    balls = [];
-    // 'vec()' creates a 2d vector instance
-    walls = times(5, (i) => vec(i * -29, -9));
+    // Initialize the game state here. (ticks === 0)
+    pins = [vec(50, 0)]; // 'vec()' creates a 2d vector instance.
+    nextPinDist = 10;
+    cord = { angle: 0, length: cordLength, pin: pins[0] };
   }
-  if (!(ticks % 99)) {
-    // 'rnd()' returns a random number
-    balls.push({ p: vec(rnd(50), 0), v: 0 });
+  // 'difficulty' represents the difficulty of the game.
+  // The value of this variable is 1 at the beginning of the game and
+  // increases by 1 every minute.
+  let scr = difficulty * 0.02;
+  if (cord.pin.y < 80) {
+    scr += (80 - cord.pin.y) * 0.1;
   }
-  // 'color()' sets a drawing color
-  color("blue");
-  walls.map((w) => {
-    // 'input.isPressed' returns true if
-    // a mouse button, a key or a touch screen is pressed
-    w.x -= input.isPressed ? 2 : 1;
-    // 'box()' draws a rectangle
-    box(w, 36, 3);
-    if (w.x < -19) {
-      w.x += rnd(130, 150);
-      w.y = rnd(50, 90);
+  nextPinDist -= scr;
+  // 'input.isJustPressed' is set to true the moment the button is pressed.
+  if (input.isJustPressed) {
+    // 'play()' plays the SE.
+    play("select");
+  }
+  // 'input.isPressed' is set to true while the button is pressed.
+  if (input.isPressed) {
+    cord.length += difficulty;
+  } else {
+    cord.length += (cordLength - cord.length) * 0.1;
+  }
+  cord.angle += difficulty * 0.05;
+  // Draw a line connecting the coordinates of
+  // the first argument and the second argument.
+  line(cord.pin, vec(cord.pin).addWithAngle(cord.angle, cord.length));
+  if (cord.pin.y > 98) {
+    play("explosion");
+    // Call 'end()' to end the game. (Game Over)
+    end();
+  }
+  let nextPin;
+  // 'remove()' passes the elements of the array of the first argument to
+  // the function of the second argument in order and executes it.
+  // If the function returns true, the element will be removed from the array.
+  remove(pins, (p) => {
+    p.y += scr;
+    // Draw a box and check if it collides with other black rectangles or lines.
+    if (box(p, 3).isColliding.rect.black && p !== cord.pin) {
+      nextPin = p;
     }
+    return p.y > 102;
   });
-  color("purple");
-  balls.map((b) => {
-    if ((b.p.y += b.v += 0.03) > 99) {
-      // 'play()' plays a sound effect
-      play("explosion");
-      // A game is over when 'end()' is called
-      end();
-    }
-    // 'box()' returns a collision status
-    if (box(b.p, 5).isColliding.rect.blue) {
-      play("select");
-      // 'score' represents the score of the game
-      score++;
-      b.p.y += (b.v *= -1) * 2;
-    }
-  });
+  if (nextPin != null) {
+    play("powerUp");
+    // Add up the score.
+    // By specifying the coordinates as the second argument,
+    // the added score is displayed on the screen.
+    addScore(ceil(cord.pin.distanceTo(nextPin)), nextPin);
+    cord.pin = nextPin;
+    cord.length = cordLength;
+  }
+  while (nextPinDist < 0) {
+    // 'rnd()' returns a random value.
+    pins.push(vec(rnd(10, 90), -2 - nextPinDist));
+    nextPinDist += rnd(5, 15);
+  }
 }
-```
-
-The minified code is 274 letters long.
-
-```javascript
-tc || ((e = []), (i = tms(5, (e) => vec(-29 * e, -9)))),
-  tc % 99 || e.push({ p: vec(rnd(50), 0), v: 0 }),
-  clr(bl),
-  i.map((e) => {
-    (e.x -= inp.ip ? 2 : 1),
-      box(e, 36, 3),
-      e.x < -19 && ((e.x += rnd(130, 150)), (e.y = rnd(50, 90)));
-  }),
-  clr(pr),
-  e.map((e) => {
-    (e.p.y += e.v += 0.03) > 99 && (ply(ex), end()),
-      box(e.p, 5).bl && (ply(sl), sc++, (e.p.y += 2 * (e.v *= -1)));
-  });
 ```
 
 ## More sample codes
@@ -399,10 +411,10 @@ l llll
 //   seed?: number; // Set the random seed for sounds.
 //
 //   isCapturing?: boolean; // Capture a screen by pressing 'c'.
-//   isShowingScore?: boolean; // Show a score and a hi-score.
-//   isMinifying?: boolean; // Show a minified code to the console.
 //   isDrawingParticleFront?: boolean; // Draw particles in front of the screen.
 //   isDrawingScoreFront?: boolean; // Draw score boards in front of the screen.
+//   isShowingScore?: boolean; // Show a score and a hi-score.
+//   isMinifying?: boolean; // Show a minified code to the console.
 // };
 options = {
   viewSize: { x: 200, y: 60 },
@@ -411,26 +423,4 @@ options = {
   isReplayEnabled: true,
   seed: 1,
 };
-```
-
-### Shorthands
-
-A minified source code uses shorthands for functions and variables.
-
-```javascript
-// color -> clr
-//  "red" -> rd, "blue" -> bl, "green" -> gr, ...
-clr(bl);
-// play -> ply
-//  "coin" -> ci, "laser" -> ls, "explosion" -> ex, ...
-ply(ex);
-// input -> inp
-//  pos -> p, isPressed -> ip, isJustPressed -> ijp, isJustReleased -> ijr
-e.x -= inp.ip ? 2 : 1;
-// .isColliding.rect.blue -> .bl
-box(e.p, 5, 5).bl;
-// times -> tms, remove -> rmv
-i = tms(5, (e) => vec(-29 * e, -9));
-// ticks -> tc, difficulty -> df, score -> sc
-tc % 99 || sc += df;
 ```
