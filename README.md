@@ -254,17 +254,17 @@ function update() {
 ```typescript
 // Game ticks (60 ticks = 1 second)
 let ticks: number;
-// difficulty (Starts from 1, increments by a minute)
+// Game difficulty (starts at 1, incremented by 1 per minute)
 let difficulty: number;
-// score
+// Game score
 let score: number;
 
-// Add score
+// Add up score.
 function addScore(value: number);
 function addScore(value: number, x: number, y: number);
 function addScore(value: number, pos: VectorLike);
 
-// Add particles
+// Add particles.
 function particle(
   x: number,
   y: number,
@@ -281,17 +281,17 @@ function particle(
   angleWidth?: number
 );
 
-// End game (Game Over)
+// End game. (Game Over)
 function end(): void;
 
-// Return random number
+// Return random number.
 function rnd(lowOrHigh?: number, high?: number);
-// Return random integer
+// Return random integer.
 function rndi(lowOrHigh?: number, high?: number);
-// Return plus of minus random number
+// Return positive or negative random number.
 function rnds(lowOrHigh?: number, high?: number);
 
-// Return Vector instance
+// Return Vector instance.
 function vec(x?: number | VectorLike, y?: number): Vector;
 
 class Vector {
@@ -346,10 +346,10 @@ function addWithCharCode(char: string, offset: number): string;
 ### Options
 
 ```javascript
-// Title of the game.
+// Write the game name to 'title'.
 title = "CHARGE BEAM";
 
-// Description is shown on a title screen.
+// 'description' is displayed on the title screen.
 description = `
 [Tap]     Shot
 [Hold]    Charge
@@ -363,7 +363,7 @@ description = `
 //  L: light_black, R: light_red, G: light_green, B: light_blue
 //  Y: light_yellow, P: light_purple, C: light_cyan)
 // Characters are assigned from 'a'.
-// 'char("a", 0, 0);' shows the character
+// 'char("a", 0, 0);' draws the character
 // defined by the first element of the array.
 characters = [
   `
@@ -401,16 +401,16 @@ l llll
 `,
 ];
 
-// Set the options.
+// Configure game options.
 // options = {
 //   viewSize?: { x: number; y: number }; // Set the screen size.
 //   theme?: "simple" | "pixel" | "shape" | "shapeDark" | "crt" | "dark";
 //    // Select the appearance theme.
-//   isPlayingBgm?: boolean; // Play a BGM.
-//   isReplayEnabled?: boolean; // Enable a replay.
-//   seed?: number; // Set the random seed for sounds.
+//   isPlayingBgm?: boolean; // Play BGM.
+//   isReplayEnabled?: boolean; // Enable replay.
+//   seed?: number; // Set the random number seed used to generate sounds.
 //
-//   isCapturing?: boolean; // Capture a screen by pressing 'c'.
+//   isCapturing?: boolean; // Capture a screen by pressing 'c' key.
 //   isDrawingParticleFront?: boolean; // Draw particles in front of the screen.
 //   isDrawingScoreFront?: boolean; // Draw score boards in front of the screen.
 //   isShowingScore?: boolean; // Show a score and a hi-score.
