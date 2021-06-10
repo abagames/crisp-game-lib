@@ -73,9 +73,9 @@ function update() {
         .set()
         .addWithAngle(
           b.angle + PI / 2,
-          (b.angleVel * b.length + player.angleVel * 3) * difficulty
+          (b.angleVel * b.length + player.angleVel * 3) * sqrt(difficulty)
         )
-        .add(0, -difficulty * 0.5);
+        .add(0, -sqrt(difficulty) * 0.5);
       player.bar = undefined;
       flyingTicks = 1;
     }
