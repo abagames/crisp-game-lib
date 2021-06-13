@@ -39,6 +39,15 @@ llllll
 llllll
  llll
 `,
+  ,
+  `
+ llll
+l llll
+llllll
+llllll
+llllll
+ llll
+`,
 ];
 
 options = {
@@ -51,7 +60,7 @@ options = {
 let bars;
 let nextBarDist;
 let barCount;
-/** @type {{pos: Vector, vel: Vector, ticks: 0}[]} */
+/** @type {{pos: Vector, vel: Vector, ticks: number}[]} */
 let balls;
 let nextBallTicks;
 /** @type {{pos: Vector, vel: Vector, bar: any, jumpCount: number}} */
@@ -127,7 +136,7 @@ function update() {
       vel: vec(rnds(0.5, 1), 0),
       ticks: 0,
     });
-    nextBallTicks += rnd(80, 100) / difficulty;
+    nextBallTicks += rnd(60, 80) / difficulty;
   }
   remove(balls, (b) => {
     b.pos.y += scr;
@@ -151,12 +160,22 @@ function update() {
       particle(b.pos, 20, 3, PI / 2, PI / 3);
       return true;
     }
+    if (c.d) {
+      b.ticks = 999;
+      char("e", b.pos);
+    }
     b.ticks++;
     if (b.ticks > 500) {
       particle(b.pos);
       return true;
     }
     return b.pos.y > 103;
+  });
+  color("transparent");
+  balls.forEach((b) => {
+    if (char("d", b.pos).isColliding.char.e) {
+      b.ticks = 999;
+    }
   });
   color("light_black");
   rect(0, 0, 5, 100);
@@ -184,9 +203,14 @@ function update() {
         }
       });
       if (hb != null) {
-        const a = hb.vel.angle - (hb.vel.angle - b.angle) * 2;
-        const s = hb.vel.length;
-        hb.vel.set().addWithAngle(a, s);
+        const d = hb.pos.distanceTo(b.pos);
+        if (d > b.length / 2) {
+          hb.vel.mul(-1);
+        } else {
+          const a = hb.vel.angle - (hb.vel.angle - b.angle) * 2;
+          const s = hb.vel.length;
+          hb.vel.set().addWithAngle(a, s);
+        }
         hb.pos.add(vec(hb.vel).mul(sqrt(difficulty)));
         hb.ticks += 30;
       }
