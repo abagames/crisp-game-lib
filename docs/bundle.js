@@ -1475,7 +1475,7 @@ image-rendering: pixelated;
               matrix: new PIXI.Matrix().translate(x, y),
           });
           graphics.drawRect(x, y, width == null ? letterSize : width, height == null ? letterSize : height);
-          endFill();
+          beginFillColor(colorToNumber(currentColor));
           return;
       }
       if (width == null) {

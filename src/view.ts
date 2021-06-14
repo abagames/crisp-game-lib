@@ -238,7 +238,7 @@ export function drawLetterImage(
       width == null ? letterSize : width,
       height == null ? letterSize : height
     );
-    endFill();
+    beginFillColor(colorToNumber(currentColor));
     return;
   }
   if (width == null) {
