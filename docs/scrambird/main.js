@@ -85,7 +85,10 @@ function update() {
     multiplier = 1;
   }
   const scr = difficulty * 0.3;
-  color("red");
+  /** @type {Color} */
+  // @ts-ignore
+  const wallColor = ["purple", "blue", "green", "red"][floor(ticks / 420) % 4];
+  color(wallColor);
   walls.forEach((w) => {
     w.x -= scr;
     if (w.x < -10) {
@@ -129,8 +132,9 @@ function update() {
   ship.vy *= 0.98;
   ship.pos.y += ship.vy;
   if (
-    char(addWithCharCode("c", ship.vy < 0 ? 0 : 1), ship.pos).isColliding.rect
-      .red
+    char(addWithCharCode("c", ship.vy < 0 ? 0 : 1), ship.pos).isColliding.rect[
+      wallColor
+    ]
   ) {
     play("explosion");
     end();
@@ -139,7 +143,7 @@ function update() {
   particle(ship.pos.x - 2, ship.pos.y, 0.5, 0.5, PI, PI / 5);
   remove(shots, (s) => {
     s.x += 2 * sqrt(difficulty);
-    if (char("e", s).isColliding.rect.red) {
+    if (char("e", s).isColliding.rect[wallColor]) {
       return true;
     }
     return s.x > 103;
@@ -149,7 +153,7 @@ function update() {
     b.vel.y += 0.1 * difficulty;
     b.vel.mul(0.9);
     b.pos.add(b.vel);
-    if (bar(b.pos, 2, 2, b.vel.angle).isColliding.rect.red) {
+    if (bar(b.pos, 2, 2, b.vel.angle).isColliding.rect[wallColor]) {
       return true;
     }
   });
@@ -173,7 +177,7 @@ function update() {
       play("explosion");
       end();
     }
-    if (m.pos.x < -3) {
+    if (m.pos.x < -3 || m.pos.y < -3) {
       if (multiplier > 1) {
         multiplier--;
       }
