@@ -184,7 +184,7 @@ function update() {
       vx: (rnd(1, sqrt(difficulty)) * (diaWorld > 0 ? -1 : 1)) / 3,
       world: diaWorld,
     });
-    nextDiaTicks = rnd(120, 150) / difficulty;
+    nextDiaTicks = rnd(120, 150) / sqrt(difficulty);
   }
   remove(dias, (d) => {
     d.pos.x += d.vx;
