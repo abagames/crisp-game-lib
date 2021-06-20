@@ -126,7 +126,17 @@ function update() {
 
 Sample code for each game is `main.js` in each directory in the [docs directory](https://github.com/abagames/crisp-game-lib/tree/master/docs).
 
-## Write your own game
+## Getting started
+
+1. Download [docs/getting_started/index.html](https://github.com/abagames/crisp-game-lib/blob/master/docs/getting_started/index.html).
+
+1. Open `index.html` in a text editor and write the code of your game in the `<script>` element.
+
+1. Open `index.html` in a browser and play the game.
+
+1. You can publish the game by putting `index.html` on your web server.
+
+## Write your own game (with the help of IntelliSense and Live Reload)
 
 1. Clone or [download](https://github.com/abagames/crisp-game-lib/archive/refs/heads/master.zip) this repository.
 
@@ -142,7 +152,7 @@ Sample code for each game is `main.js` in each directory in the [docs directory]
 
 ## Publish your own game
 
-1. Place `main.js`, [bundle.js](https://github.com/abagames/crisp-game-lib/blob/master/docs/bundle.js) and [index.html](https://github.com/abagames/crisp-game-lib/blob/master/docs/index.html) on the web server in the following directory structure.
+1. Place `main.js`, [docs/bundle.js](https://github.com/abagames/crisp-game-lib/blob/master/docs/bundle.js) and [docs/index.html](https://github.com/abagames/crisp-game-lib/blob/master/docs/index.html) on the web server in the following directory structure.
 
    ```
    ┝ [games root directory (any name)]
