@@ -87,7 +87,7 @@ function update() {
     ship.speed += 0.01;
   } else {
     ship.speed += (1 - ship.speed) * 0.2;
-    if (bomb == null && input.isJustReleased) {
+    if (bomb == null && ticks > 30 && input.isJustReleased) {
       play("powerUp");
       bomb = { pos: vec(ship.pos), vel: vec(ship.vel).mul(ship.speed) };
       ship.bombVy = 0.33;
