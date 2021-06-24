@@ -100,7 +100,7 @@ function update() {
     laserX += difficulty * 2;
     particle(laserX, 50, 1, 2, -PI / 2, PI / 6);
     color("purple");
-    box(laserX, 50, 5, 1);
+    box(laserX - 2, 50, 5, 1);
   }
   nextObjTicks--;
   if (nextObjTicks < 0) {
