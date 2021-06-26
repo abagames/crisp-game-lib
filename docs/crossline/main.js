@@ -105,8 +105,8 @@ function update() {
     color("black");
     if (line(l.from, l.to).isColliding.rect.red) {
       if (l.addedCount <= 0) {
-        addScore(multiplier, l.from.add(l.to).div(2));
         addLineParticle(l.from, l.to);
+        addScore(multiplier, l.from.add(l.to).div(2));
         if (multiplier === 1) {
           play("powerUp");
           const ll = lines[lines.length - 1];
@@ -141,9 +141,9 @@ function update() {
   function addLineParticle(from, to) {
     const d = from.distanceTo(to);
     let p = vec(from);
-    let o = vec(9).rotate(from.angleTo(to));
-    times(floor(d / 9), () => {
-      particle(p);
+    let o = vec(7).rotate(from.angleTo(to));
+    times(floor(d / 7), () => {
+      particle(p, 5, 0.5);
       p.add(o);
     });
   }
