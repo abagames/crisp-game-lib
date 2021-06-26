@@ -422,7 +422,7 @@ l llll
 //
 //   isCapturing?: boolean; // Capture a screen by pressing 'c' key.
 //   isDrawingParticleFront?: boolean; // Draw particles in front of the screen.
-//   isDrawingScoreFront?: boolean; // Draw score boards in front of the screen.
+//   isDrawingScoreFront?: boolean; // Draw the added score in front of the screen.
 //   isShowingScore?: boolean; // Show a score and a hi-score.
 //   isMinifying?: boolean; // Show a minified code to the console.
 // };
