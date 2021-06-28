@@ -181,10 +181,8 @@ function update() {
           return;
         }
         if (ob.pos.distanceTo(b.pos) < 6) {
-          const bs = b.vel.length;
-          const obs = ob.vel.length;
-          b.vel.addWithAngle(ob.pos.angleTo(b.pos), obs * 0.7);
-          ob.vel.addWithAngle(b.pos.angleTo(ob.pos), bs * 0.7);
+          b.vel.addWithAngle(ob.pos.angleTo(b.pos), ob.vel.length * 0.7);
+          ob.vel.addWithAngle(b.pos.angleTo(ob.pos), b.vel.length * 0.7);
         }
       });
     }
