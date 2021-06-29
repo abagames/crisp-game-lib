@@ -21,10 +21,12 @@ export class Random {
       high = lowOrHigh;
       lowOrHigh = 0;
     }
-    if (high === lowOrHigh) {
-      return lowOrHigh;
+    const lowOrHighInt = Math.floor(lowOrHigh);
+    const highInt = Math.floor(high);
+    if (highInt === lowOrHighInt) {
+      return lowOrHighInt;
     }
-    return (this.next() % (high - lowOrHigh)) + lowOrHigh;
+    return (this.next() % (highInt - lowOrHighInt)) + lowOrHighInt;
   }
 
   getPlusOrMinus() {
