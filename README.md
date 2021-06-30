@@ -124,7 +124,7 @@ function update() {
 
 ## More sample codes
 
-Sample code for each game is `main.js` in each directory in the [docs directory](https://github.com/abagames/crisp-game-lib-games/tree/master/docs).
+Sample code for each game is `main.js` in each directory in the [docs directory](https://github.com/abagames/crisp-game-lib-games/tree/main/docs).
 
 ## Getting started
 
