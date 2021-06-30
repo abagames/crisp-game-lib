@@ -1,8 +1,8 @@
-<a href="https://abagames.github.io/crisp-game-lib/?survivor"><img src="docs/survivor/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?chargebeam"><img src="docs/chargebeam/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?pillars3d"><img src="docs/pillars3d/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?slalom"><img src="docs/slalom/screenshot.gif" width="25%" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-games/?survivor"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/survivor/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?chargebeam"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/chargebeam/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?pillars3d"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/pillars3d/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?slalom"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/slalom/screenshot.gif" width="25%" loading="lazy"></a>
 
 <h1 align="center">crisp-game-lib</h1>
 
-<a href="https://abagames.github.io/crisp-game-lib/?doshin"><img src="docs/doshin/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?cardq"><img src="docs/cardq/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?earock"><img src="docs/earock/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?shiny"><img src="docs/shiny/screenshot.gif" width="25%" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-games/?doshin"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/doshin/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/cardq/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?earock"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/earock/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?shiny"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/shiny/screenshot.gif" width="25%" loading="lazy"></a>
 
 `crisp-game-lib` is a JavaScript library for creating browser games quickly and easily. I developed [50 minigames in 2014](http://www.asahi-net.or.jp/~cs8k-cyu/blog/2014/12/12/games-in-2014/), as well as the Haxe library [mgl](https://github.com/abagames/mgl) and the CoffeeScript library [mgl.coffee](https://github.com/abagames/mgl.coffee) to make them. After that I continued to work on minigames and libraries. Using this experience, `crisp-game-lib` was created as a library with the minimum functionality necessary to create classic arcade-like minigames.
 
@@ -10,21 +10,21 @@ The `crisp-game-lib` itself is well dogfooded, and I have already created [more 
 
 It also has [type definitions in TypeScript](https://github.com/abagames/crisp-game-lib/blob/master/docs/bundle.d.ts), so you can fully benefit from IntelliSense on [VSCode](https://code.visualstudio.com/). Please refer to [the sample code](https://github.com/abagames/crisp-game-lib#sample-code) and [reference](https://github.com/abagames/crisp-game-lib#reference) below for more details on what kind of code you should write.
 
-See also [the article about crisp-game-lib](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/) written by [Terry Cavanagh](https://twitter.com/terrycavanagh), known as the developer of [Super Hexagon](https://store.steampowered.com/app/221640/Super_Hexagon/) and [VVVVVV](https://store.steampowered.com/app/70300/VVVVVV/). A list of the browser games I've made can be found on [my web page](https://abagames.github.io/games-web-pages/browser.html). By looking at the gif animations of each game, you can easily understand its rules.
+See also [the article about crisp-game-lib](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/) written by [Terry Cavanagh](https://twitter.com/terrycavanagh), known as the developer of [Super Hexagon](https://store.steampowered.com/app/221640/Super_Hexagon/) and [VVVVVV](https://store.steampowered.com/app/70300/VVVVVV/). A list of the browser games I've made can be found on [my web page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html). By looking at the gif animations of each game, you can easily understand its rules.
 
 ## Demo (Click the image to play)
 
-<a href="https://abagames.github.io/crisp-game-lib/?cywall"><img src="docs/cywall/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?lland"><img src="docs/lland/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?bamboo"><img src="docs/bamboo/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?pileup"><img src="docs/pileup/screenshot.gif" width="25%" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-games/?cywall"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/cywall/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?lland"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/lland/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?bamboo"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/bamboo/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?subjump"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/subjump/screenshot.gif" width="25%" loading="lazy"></a>
 
-<a href="https://abagames.github.io/crisp-game-lib/?grenadier"><img src="docs/grenadier/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?catep"><img src="docs/catep/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?zoneb"><img src="docs/zoneb/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?flipbomb"><img src="docs/flipbomb/screenshot.gif" width="25%" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-games/?grenadier"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/grenadier/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?catep"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/catep/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?zoneb"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/zoneb/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?laserfortress"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/laserfortress/screenshot.gif" width="25%" loading="lazy"></a>
 
-<a href="https://abagames.github.io/crisp-game-lib/?pressm"><img src="docs/pressm/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?twinp"><img src="docs/twinp/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?descents"><img src="docs/descents/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib/?arcfire"><img src="docs/arcfire/screenshot.gif" width="25%" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-games/?pressm"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/pressm/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?rebirth"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/rebirth/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?numberball"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/numberball/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?arcfire"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/arcfire/screenshot.gif" width="25%" loading="lazy"></a>
 
-Other games are listed on [my browser games page](https://abagames.github.io/games-web-pages/browser.html).
+Other games are listed on [my browser games page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html).
 
 ## Sample code
 
-[![pinclimb screenshot](docs/pinclimb/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?pinclimb)
+[![pinclimb screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/pinclimb/screenshot.gif)](https://abagames.github.io/crisp-game-lib-games/?pinclimb)
 
 ```javascript
 // Write the game name to 'title'.
@@ -124,7 +124,7 @@ function update() {
 
 ## More sample codes
 
-Sample code for each game is `main.js` in each directory in the [docs directory](https://github.com/abagames/crisp-game-lib/tree/master/docs).
+Sample code for each game is `main.js` in each directory in the [docs directory](https://github.com/abagames/crisp-game-lib-games/tree/master/docs).
 
 ## Getting started
 
@@ -166,9 +166,9 @@ Sample code for each game is `main.js` in each directory in the [docs directory]
 
 ## Reference
 
-### Drawing ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_drawing))
+### Drawing ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_drawing))
 
-[![ref_drawing screenshot](docs/ref_drawing/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?ref_drawing)
+[![ref_drawing screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_drawing/screenshot.gif)](https://abagames.github.io/crisp-game-lib-games/?ref_drawing)
 
 ```javascript
 function update() {
@@ -210,9 +210,9 @@ function update() {
 }
 ```
 
-### Collision ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_collision))
+### Collision ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_collision))
 
-[![ref_collision screenshot](docs/ref_collision/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?ref_collision)
+[![ref_collision screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_collision/screenshot.gif)](https://abagames.github.io/crisp-game-lib-games/?ref_collision)
 
 ```javascript
 function update() {
@@ -232,7 +232,7 @@ function update() {
 }
 ```
 
-### Input ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_input))
+### Input ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_input))
 
 ```javascript
 function update() {
@@ -248,7 +248,7 @@ function update() {
 }
 ```
 
-### Sound ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_sound))
+### Sound ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_sound))
 
 ```javascript
 function update() {
