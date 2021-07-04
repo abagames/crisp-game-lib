@@ -211,7 +211,7 @@ function update() {
 ```
 
 Setting the color prior to `char()` will recolor the sprite. Use `color("black")` to restore and use the original colors.
-```
+```javascript
   // Recolor the sprite entirely to blue
   color("blue");
   char("a", 10, 10);
