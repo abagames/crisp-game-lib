@@ -43,7 +43,7 @@ options = {
   isPlayingBgm: true,
   isReplayEnabled: true,
   // If you want to play a different BGM or SE,
-  // you can try changing the 'seed' value.
+  // you can try changing the 'seed' value used to generate sounds.
   seed: 400,
 };
 
