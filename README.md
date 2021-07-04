@@ -434,3 +434,11 @@ options = {
   seed: 1,
 };
 ```
+
+## Tips
+
+- By drawing with `color("transparent")`, you can get the result of collision detection without drawing any shape on the screen.
+- The collision detection is based on the drawing history of the shape. Therefore, even if a drawn shape is overwritten with a background-colored shape, the collision detection in that area will not disappear.
+- To improve the performance of the game, do the following (mainly for mobile devices):
+  - Do not specify a theme that uses pixi.js (`pixel`, `shape`, `shapeDark`, `crt`) in options. WebGL post-effects may worsen performance.
+  - Don't use bar, line, and arc functions too much. These functions draw a lot of rectangles, making the collision detection process heavy.
