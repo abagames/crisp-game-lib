@@ -216,7 +216,7 @@ Setting the color prior to `char()` will recolor the sprite. Use `color("black")
   color("blue");
   char("a", 10, 10);
 
-  // Draw the character with original specified colors from characters array
+  // Draw the character with original specified colors from the characters array
   color("black");
   char("a", 10, 10);
 ```
@@ -242,6 +242,36 @@ function update() {
   }
 }
 ```
+The graphics must be drawn prior to handling the collision. As such, to establish a two-way interaction between two types of objects (e.g. both the bullet and the target are destroyed upon colliding), at least one must have its graphic representation drawn independently first. As an example, the following block is an excerpt from the [`S LANES`](https://abagames.github.io/crisp-game-lib-games/?slanes) with comments added:
+
+```javascript
+  shots.forEach((s) => {
+    // Updates for bullets
+
+    // Drawing of graphic representation/hitbox for bullets
+    char("d", s.pos);
+  });
+
+  remove(enemies, (e) => {
+    // Updates for enemies
+
+    // Handling collision with bullets from enemies
+    // This conditional statement also draws onscreen graphics
+    if (char("b", e.pos).isColliding.char.d) {
+      play("powerUp");
+      particle(e.pos);
+      coins.push({ pos: e.pos, laneIndex: e.laneIndex });
+      return true;
+    }
+  });
+  
+  remove(shots, (s) => {
+    // Handling collision with enemies from bullets
+    return s.pos.x > 103 || char("d", s.pos).isColliding.char.b;
+  });
+```
+
+(See: `remove()` in the ["Other variables functions section"](#Other variables and functions))
 
 ### Input ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_input))
 
