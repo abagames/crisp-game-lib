@@ -211,14 +211,15 @@ function update() {
 ```
 
 Setting the color prior to `char()` will recolor the sprite. Use `color("black")` to restore and use the original colors.
-```javascript
-  // Recolor the sprite entirely to blue
-  color("blue");
-  char("a", 10, 10);
 
-  // Draw the character with original specified colors from the characters array
-  color("black");
-  char("a", 10, 10);
+```javascript
+// Recolor the sprite entirely to blue
+color("blue");
+char("a", 10, 10);
+
+// Draw the character with original specified colors from the characters array
+color("black");
+char("a", 10, 10);
 ```
 
 ### Collision ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_collision))
@@ -242,33 +243,34 @@ function update() {
   }
 }
 ```
+
 The graphics must be drawn prior to handling the collision. As such, to establish a two-way interaction between two types of objects (e.g. both the bullet and the target are destroyed upon colliding), at least one must have its graphic representation drawn independently first. As an example, the following block is an excerpt from [the game `S LANES`](https://abagames.github.io/crisp-game-lib-games/?slanes) with comments added:
 
 ```javascript
-  shots.forEach((s) => {
-    // Updates for bullets
+shots.forEach((s) => {
+  // Updates for bullets
 
-    // Drawing of graphic representation/hitbox for bullets
-    char("d", s.pos);
-  });
+  // Drawing of graphic representation/hitbox for bullets
+  char("d", s.pos);
+});
 
-  remove(enemies, (e) => {
-    // Updates for enemies
+remove(enemies, (e) => {
+  // Updates for enemies
 
-    // Handling collision with bullets from enemies
-    // This conditional statement also draws onscreen graphics
-    if (char("b", e.pos).isColliding.char.d) {
-      play("powerUp");
-      particle(e.pos);
-      coins.push({ pos: e.pos, laneIndex: e.laneIndex });
-      return true;
-    }
-  });
-  
-  remove(shots, (s) => {
-    // Handling collision with enemies from bullets
-    return s.pos.x > 103 || char("d", s.pos).isColliding.char.b;
-  });
+  // Handling collision with bullets from enemies
+  // This conditional statement also draws onscreen graphics
+  if (char("b", e.pos).isColliding.char.d) {
+    play("powerUp");
+    particle(e.pos);
+    coins.push({ pos: e.pos, laneIndex: e.laneIndex });
+    return true;
+  }
+});
+
+remove(shots, (s) => {
+  // Handling collision with enemies from bullets
+  return s.pos.x > 103 || char("d", s.pos).isColliding.char.b;
+});
 ```
 
 Also see: notes about the `remove()` function from the sample code of `PIN CLIMB` above.
@@ -481,5 +483,5 @@ options = {
 - By drawing with `color("transparent")`, you can get the result of collision detection without drawing any shape on the screen.
 - The collision detection is based on the drawing history of the shape. Therefore, even if a drawn shape is overwritten with a background-colored shape, the collision detection in that area will not disappear.
 - To improve the performance of the game, do the following (mainly for mobile devices):
-  - Do not specify a theme that uses pixi.js (`pixel`, `shape`, `shapeDark`, `crt`) in options. WebGL post-effects may worsen performance.
-  - Don't use bar, line, and arc functions too much. These functions draw a lot of rectangles, making the collision detection process heavy.
+  - Use `simple` or `dark` theme. Do not specify a theme that uses pixi.js (`pixel`, `shape`, `shapeDark`, `crt`) in options. WebGL post-effects may worsen performance.
+  - Minimize drawing bars, lines, or arcs. They are drawn as a combination of many rectangles and highly detrimental to the collision detection process.
