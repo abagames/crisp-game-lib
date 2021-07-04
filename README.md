@@ -477,5 +477,5 @@ options = {
 ```
 ### Performance tips
 
-* Use `simple` or `dark` theme.
+* Use `simple` or `dark` theme (`pixel`, `shape`, `shapeDark`, and `crt` use PixiJS).
 * Minimise drawing bars, lines, or arcs. They are highly detrimental to the collision detection process.
