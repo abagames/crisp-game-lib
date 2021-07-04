@@ -271,7 +271,7 @@ The graphics must be drawn prior to handling the collision. As such, to establis
   });
 ```
 
-Also see: `remove()` in the *"Other variables and functions"* section.
+Also see: notes about the `remove()` function from the sample code of `PIN CLIMB` above.
 
 ### Input ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_input))
 
