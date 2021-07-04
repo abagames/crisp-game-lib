@@ -242,7 +242,7 @@ function update() {
   }
 }
 ```
-The graphics must be drawn prior to handling the collision. As such, to establish a two-way interaction between two types of objects (e.g. both the bullet and the target are destroyed upon colliding), at least one must have its graphic representation drawn independently first. As an example, the following block is an excerpt from the [`S LANES`](https://abagames.github.io/crisp-game-lib-games/?slanes) with comments added:
+The graphics must be drawn prior to handling the collision. As such, to establish a two-way interaction between two types of objects (e.g. both the bullet and the target are destroyed upon colliding), at least one must have its graphic representation drawn independently first. As an example, the following block is an excerpt from [the game `S LANES`](https://abagames.github.io/crisp-game-lib-games/?slanes) with comments added:
 
 ```javascript
   shots.forEach((s) => {
@@ -271,7 +271,7 @@ The graphics must be drawn prior to handling the collision. As such, to establis
   });
 ```
 
-(See: `remove()` in the ["Other variables functions section"](#Other variables and functions))
+Also see: `remove()` in the *"Other variables and functions"* section.
 
 ### Input ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_input))
 
