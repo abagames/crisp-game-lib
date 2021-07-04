@@ -475,3 +475,7 @@ options = {
   seed: 1,
 };
 ```
+### Performance tips
+
+* Use `simple` or `dark` theme.
+* Minimise drawing bars, lines, or arcs. They are highly detrimental to the collision detection process.
