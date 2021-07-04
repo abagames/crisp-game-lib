@@ -210,6 +210,17 @@ function update() {
 }
 ```
 
+Setting the color prior to `char()` will recolor the sprite. Use `color("black")` to restore and use the original colors.
+```
+  // Recolor the sprite entirely to blue
+  color("blue");
+  char("a", 10, 10);
+
+  // Draw the character with original specified colors from characters array
+  color("black");
+  char("a", 10, 10);
+```
+
 ### Collision ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_collision))
 
 [![ref_collision screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_collision/screenshot.gif)](https://abagames.github.io/crisp-game-lib-games/?ref_collision)
