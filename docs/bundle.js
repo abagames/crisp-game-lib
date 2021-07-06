@@ -1369,10 +1369,13 @@ image-rendering: pixelated;
       }
       document.body.appendChild(canvas);
       const cs = 95;
-      const cw = canvasSize.x >= canvasSize.y ? cs : (cs / canvasSize.y) * canvasSize.x;
-      const ch = canvasSize.y >= canvasSize.x ? cs : (cs / canvasSize.x) * canvasSize.y;
-      canvas.style.width = `${cw}vmin`;
-      canvas.style.height = `${ch}vmin`;
+      const wr = innerWidth / innerHeight; // Window ratio
+      const cr = canvasSize.x / canvasSize.y; // Canvas ratio
+      const unit = wr >= cr ? "vh" : "vw"; // Change the canvas unit according to the larger dimension of the window
+      const cw = cr >= wr ? cs : (cs * canvasSize.x) / canvasSize.y;
+      const ch = wr >= cr ? cs : (cs * canvasSize.y) / canvasSize.x;
+      canvas.style.width = `${cw}${unit}`;
+      canvas.style.height = `${ch}${unit}`;
       if (isCapturing) {
           captureCanvas = document.createElement("canvas");
           if (canvasSize.x <= canvasSize.y * 2) {
