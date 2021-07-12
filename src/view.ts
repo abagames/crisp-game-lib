@@ -111,38 +111,40 @@ image-rendering: pixelated;
   const ch = wr >= cr ? cs : (cs * canvasSize.y) / canvasSize.x;
   canvas.style.width = `${cw}${unit}`;
   canvas.style.height = `${ch}${unit}`;
-  console.log(isCapturing);
-  console.log(isCapturingGameCanvasOnly);
   if (isCapturing) {
     captureCanvas = document.createElement("canvas");
     let optionCaptureScale;
     if (isCapturingGameCanvasOnly) {
       captureCanvas.width = canvasSize.x;
       captureCanvas.height = canvasSize.y;
-      capturedCanvasScale = (canvasSize.x > canvasSize.y)
-        ? 400 / captureCanvas.width
-        : 400 / captureCanvas.height;
-      captureCanvas.width = (canvasSize.x > canvasSize.y)
-        ? 400
-        : captureCanvas.width * capturedCanvasScale;
-      captureCanvas.height = (canvasSize.x > canvasSize.y)
-        ? captureCanvas.height * capturedCanvasScale
-        : 400;
-      optionCaptureScale = (canvasSize.x > canvasSize.y)
-        ? Math.round(400 / captureCanvas.width)
-        : Math.round(400 / captureCanvas.height);
+      capturedCanvasScale =
+        canvasSize.x > canvasSize.y
+          ? 400 / captureCanvas.width
+          : 400 / captureCanvas.height;
+      captureCanvas.width =
+        canvasSize.x > canvasSize.y
+          ? 400
+          : captureCanvas.width * capturedCanvasScale;
+      captureCanvas.height =
+        canvasSize.x > canvasSize.y
+          ? captureCanvas.height * capturedCanvasScale
+          : 400;
+      optionCaptureScale =
+        canvasSize.x > canvasSize.y
+          ? Math.round(400 / captureCanvas.width)
+          : Math.round(400 / captureCanvas.height);
     } else {
       if (canvasSize.x <= canvasSize.y * 2) {
-          captureCanvas.width = canvasSize.y * 2;
-          captureCanvas.height = canvasSize.y;
+        captureCanvas.width = canvasSize.y * 2;
+        captureCanvas.height = canvasSize.y;
       } else {
-          captureCanvas.width = canvasSize.x;
-          captureCanvas.height = canvasSize.x / 2;
+        captureCanvas.width = canvasSize.x;
+        captureCanvas.height = canvasSize.x / 2;
       }
       if (captureCanvas.width > 400) {
-          capturedCanvasScale = 400 / captureCanvas.width;
-          captureCanvas.width = 400;
-          captureCanvas.height *= capturedCanvasScale;
+        capturedCanvasScale = 400 / captureCanvas.width;
+        captureCanvas.width = 400;
+        captureCanvas.height *= capturedCanvasScale;
       }
       optionCaptureScale = Math.round(400 / captureCanvas.width);
     }
