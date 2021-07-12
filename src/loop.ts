@@ -13,6 +13,7 @@ export type Options = {
   isUsingVirtualPad?: boolean;
   isFourWaysStick?: boolean;
   isCapturing?: boolean;
+  isCapturingGameCanvasOnly?: boolean;
   theme?: Theme;
 };
 
@@ -26,6 +27,7 @@ const defaultOptions: Options = {
   isUsingVirtualPad: true,
   isFourWaysStick: false,
   isCapturing: false,
+  isCapturingGameCanvasOnly: false,
   theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
 };
 let options: Options;
@@ -45,6 +47,7 @@ export function init(
     options.bodyBackground,
     options.viewBackground,
     options.isCapturing,
+    options.isCapturingGameCanvasOnly,
     options.theme
   );
   input.init();

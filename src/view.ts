@@ -31,6 +31,7 @@ export function init(
   _bodyBackground: string,
   _viewBackground: Color,
   isCapturing: boolean,
+  isCapturingGameCanvasOnly: boolean,
   _theme: Theme
 ) {
   size.set(_size);
@@ -112,22 +113,45 @@ image-rendering: pixelated;
   canvas.style.height = `${ch}${unit}`;
   if (isCapturing) {
     captureCanvas = document.createElement("canvas");
-    if (canvasSize.x <= canvasSize.y * 2) {
-      captureCanvas.width = canvasSize.y * 2;
-      captureCanvas.height = canvasSize.y;
-    } else {
+    let optionCaptureScale;
+    if (isCapturingGameCanvasOnly) {
       captureCanvas.width = canvasSize.x;
-      captureCanvas.height = canvasSize.x / 2;
-    }
-    if (captureCanvas.width > 400) {
-      capturedCanvasScale = 400 / captureCanvas.width;
-      captureCanvas.width = 400;
-      captureCanvas.height *= capturedCanvasScale;
+      captureCanvas.height = canvasSize.y;
+      capturedCanvasScale =
+        canvasSize.x > canvasSize.y
+          ? 400 / captureCanvas.width
+          : 400 / captureCanvas.height;
+      captureCanvas.width =
+        canvasSize.x > canvasSize.y
+          ? 400
+          : captureCanvas.width * capturedCanvasScale;
+      captureCanvas.height =
+        canvasSize.x > canvasSize.y
+          ? captureCanvas.height * capturedCanvasScale
+          : 400;
+      optionCaptureScale =
+        canvasSize.x > canvasSize.y
+          ? Math.round(400 / captureCanvas.width)
+          : Math.round(400 / captureCanvas.height);
+    } else {
+      if (canvasSize.x <= canvasSize.y * 2) {
+        captureCanvas.width = canvasSize.y * 2;
+        captureCanvas.height = canvasSize.y;
+      } else {
+        captureCanvas.width = canvasSize.x;
+        captureCanvas.height = canvasSize.x / 2;
+      }
+      if (captureCanvas.width > 400) {
+        capturedCanvasScale = 400 / captureCanvas.width;
+        captureCanvas.width = 400;
+        captureCanvas.height *= capturedCanvasScale;
+      }
+      optionCaptureScale = Math.round(400 / captureCanvas.width);
     }
     captureContext = captureCanvas.getContext("2d");
     captureContext.fillStyle = _bodyBackground;
     gcc.setOptions({
-      scale: Math.round(400 / captureCanvas.width),
+      scale: optionCaptureScale,
       capturingFps: 60,
     });
   }

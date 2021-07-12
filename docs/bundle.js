@@ -1299,7 +1299,7 @@ void main(void) {
   let isFilling = false;
   let theme;
   let crtFilter;
-  function init$2(_size, _bodyBackground, _viewBackground, isCapturing, _theme) {
+  function init$2(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, _theme) {
       size.set(_size);
       theme = _theme;
       viewBackground = _viewBackground;
@@ -1378,23 +1378,47 @@ image-rendering: pixelated;
       canvas.style.height = `${ch}${unit}`;
       if (isCapturing) {
           captureCanvas = document.createElement("canvas");
-          if (canvasSize.x <= canvasSize.y * 2) {
-              captureCanvas.width = canvasSize.y * 2;
+          let optionCaptureScale;
+          if (isCapturingGameCanvasOnly) {
+              captureCanvas.width = canvasSize.x;
               captureCanvas.height = canvasSize.y;
+              capturedCanvasScale =
+                  canvasSize.x > canvasSize.y
+                      ? 400 / captureCanvas.width
+                      : 400 / captureCanvas.height;
+              captureCanvas.width =
+                  canvasSize.x > canvasSize.y
+                      ? 400
+                      : captureCanvas.width * capturedCanvasScale;
+              captureCanvas.height =
+                  canvasSize.x > canvasSize.y
+                      ? captureCanvas.height * capturedCanvasScale
+                      : 400;
+              optionCaptureScale =
+                  canvasSize.x > canvasSize.y
+                      ? Math.round(400 / captureCanvas.width)
+                      : Math.round(400 / captureCanvas.height);
           }
           else {
-              captureCanvas.width = canvasSize.x;
-              captureCanvas.height = canvasSize.x / 2;
-          }
-          if (captureCanvas.width > 400) {
-              capturedCanvasScale = 400 / captureCanvas.width;
-              captureCanvas.width = 400;
-              captureCanvas.height *= capturedCanvasScale;
+              if (canvasSize.x <= canvasSize.y * 2) {
+                  captureCanvas.width = canvasSize.y * 2;
+                  captureCanvas.height = canvasSize.y;
+              }
+              else {
+                  captureCanvas.width = canvasSize.x;
+                  captureCanvas.height = canvasSize.x / 2;
+              }
+              if (captureCanvas.width > 400) {
+                  capturedCanvasScale = 400 / captureCanvas.width;
+                  captureCanvas.width = 400;
+                  captureCanvas.height *= capturedCanvasScale;
+              }
+              optionCaptureScale = Math.round(400 / captureCanvas.width);
           }
           captureContext = captureCanvas.getContext("2d");
           captureContext.fillStyle = _bodyBackground;
           gcc.setOptions({
-              scale: Math.round(400 / captureCanvas.width),
+              scale: optionCaptureScale,
               capturingFps: 60,
           });
       }
@@ -1959,6 +1983,7 @@ image-rendering: pixelated;
       isUsingVirtualPad: true,
       isFourWaysStick: false,
       isCapturing: false,
+      isCapturingGameCanvasOnly: false,
       theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
   };
   let options$3;
@@ -1968,7 +1993,7 @@ image-rendering: pixelated;
       _update = __update;
       options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
       init(options$3.theme.isDarkColor);
-      init$2(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing, options$3.theme);
+      init$2(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing, options$3.isCapturingGameCanvasOnly, options$3.theme);
       init$5();
       init$1();
       _init();
@@ -2622,6 +2647,7 @@ image-rendering: pixelated;
       isPlayingBgm: false,
       isSpeedingUpSound: false,
       isCapturing: false,
+      isCapturingGameCanvasOnly: false,
       isShowingScore: true,
       isShowingTime: false,
       isReplayEnabled: false,
@@ -2696,6 +2722,7 @@ image-rendering: pixelated;
       };
       seed = opts.seed;
       loopOptions.isCapturing = opts.isCapturing;
+      loopOptions.isCapturingGameCanvasOnly = opts.isCapturingGameCanvasOnly;
       loopOptions.viewSize = opts.viewSize;
       isPlayingBgm = opts.isPlayingBgm;
       isSpeedingUpSound = opts.isSpeedingUpSound;
