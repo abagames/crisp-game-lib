@@ -464,7 +464,7 @@ l llll
 //   seed?: number; // Set the random number seed used to generate sounds.
 //
 //   isCapturing?: boolean; // Capture a screen by pressing 'c' key.
-//   isCapturingGameCanvasOnly?: boolean; // Additional setting for isCapturing, will omit the margins on two sides when enabled
+//   isCapturingGameCanvasOnly?: boolean; // Additional setting for isCapturing, will omit the margins on two sides when enabled.
 //   isDrawingParticleFront?: boolean; // Draw particles in front of the screen.
 //   isDrawingScoreFront?: boolean; // Draw the added score in front of the screen.
 //   isShowingScore?: boolean; // Show a score and a hi-score.
