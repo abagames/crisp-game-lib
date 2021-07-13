@@ -104,12 +104,12 @@ image-rendering: pixelated;
   }
   document.body.appendChild(canvas);
   const setSize = () => {
-    const cs = .95;
+    const cs = 0.95;
     const wr = innerWidth / innerHeight;
     const cr = canvasSize.x / canvasSize.y;
-    const flgwh = wr < cr;
-    const cw = flgwh ? cs * innerWidth : cs * innerHeight * cr;
-    const ch = !flgwh ? cs * innerHeight : cs * innerWidth / cr;
+    const flgWh = wr < cr;
+    const cw = flgWh ? cs * innerWidth : cs * innerHeight * cr;
+    const ch = !flgWh ? cs * innerHeight : (cs * innerWidth) / cr;
     canvas.style.width = `${cw}px`;
     canvas.style.height = `${ch}px`;
   };
