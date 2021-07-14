@@ -485,6 +485,7 @@ options = {
 
 - By drawing with `color("transparent")`, you can get the result of collision detection without drawing any shape on the screen.
 - The collision detection is based on the drawing history of the shape. Therefore, even if a drawn shape is overwritten with a background-colored shape, the collision detection in that area will not disappear.
+- The base value for the random seed for sound generation is generated from the `title` and `description` strings. If you want to use `seed` in `options` to adjust the generated sound, it is better to do so after the `title` and `description` are fixed.
 - To improve the performance of the game, do the following (mainly for mobile devices):
   - Use `simple` or `dark` theme. Do not specify a theme that uses pixi.js (`pixel`, `shape`, `shapeDark`, `crt`) in options. WebGL post-effects may worsen performance.
   - Minimize drawing bars, lines, or arcs. They are drawn as a combination of many rectangles and highly detrimental to the collision detection process.
