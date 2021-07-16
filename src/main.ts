@@ -184,6 +184,7 @@ const defaultOptions: Options = {
   isSpeedingUpSound: false,
   isCapturing: false,
   isCapturingGameCanvasOnly: false,
+  captureCanvasScale: 1,
   isShowingScore: true,
   isShowingTime: false,
   isReplayEnabled: false,
@@ -216,6 +217,7 @@ declare type Options = {
   isSpeedingUpSound?: boolean;
   isCapturing?: boolean;
   isCapturingGameCanvasOnly?: boolean;
+  captureCanvasScale?: number;
   isShowingScore?: boolean;
   isShowingTime?: boolean;
   isReplayEnabled?: boolean;
@@ -297,6 +299,7 @@ export function onLoad() {
   seed = opts.seed;
   loopOptions.isCapturing = opts.isCapturing;
   loopOptions.isCapturingGameCanvasOnly = opts.isCapturingGameCanvasOnly;
+  loopOptions.captureCanvasScale = opts.captureCanvasScale;
   loopOptions.viewSize = opts.viewSize;
   isPlayingBgm = opts.isPlayingBgm;
   isSpeedingUpSound = opts.isSpeedingUpSound;
