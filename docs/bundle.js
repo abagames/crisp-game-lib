@@ -1292,14 +1292,14 @@ void main(void) {
   let background = document.createElement("img");
   let captureCanvas;
   let captureContext;
-  let capturedCanvasScale = 1;
+  let calculatedCanvasScale = 1;
   let viewBackground = "black";
   let currentColor;
   let savedCurrentColor;
   let isFilling = false;
   let theme;
   let crtFilter;
-  function init$2(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, _theme) {
+  function init$2(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, _theme) {
       size.set(_size);
       theme = _theme;
       viewBackground = _viewBackground;
@@ -1386,22 +1386,7 @@ image-rendering: pixelated;
           if (isCapturingGameCanvasOnly) {
               captureCanvas.width = canvasSize.x;
               captureCanvas.height = canvasSize.y;
-              capturedCanvasScale =
-                  canvasSize.x > canvasSize.y
-                      ? 400 / captureCanvas.width
-                      : 400 / captureCanvas.height;
-              captureCanvas.width =
-                  canvasSize.x > canvasSize.y
-                      ? 400
-                      : captureCanvas.width * capturedCanvasScale;
-              captureCanvas.height =
-                  canvasSize.x > canvasSize.y
-                      ? captureCanvas.height * capturedCanvasScale
-                      : 400;
-              optionCaptureScale =
-                  canvasSize.x > canvasSize.y
-                      ? Math.round(400 / captureCanvas.width)
-                      : Math.round(400 / captureCanvas.height);
+              optionCaptureScale = captureCanvasScale;
           }
           else {
               if (canvasSize.x <= canvasSize.y * 2) {
@@ -1413,9 +1398,9 @@ image-rendering: pixelated;
                   captureCanvas.height = canvasSize.x / 2;
               }
               if (captureCanvas.width > 400) {
-                  capturedCanvasScale = 400 / captureCanvas.width;
+                  calculatedCanvasScale = 400 / captureCanvas.width;
                   captureCanvas.width = 400;
-                  captureCanvas.height *= capturedCanvasScale;
+                  captureCanvas.height *= calculatedCanvasScale;
               }
               optionCaptureScale = Math.round(400 / captureCanvas.width);
           }
@@ -1424,6 +1409,7 @@ image-rendering: pixelated;
           gcc.setOptions({
               scale: optionCaptureScale,
               capturingFps: 60,
+              isSmoothingEnabled: false,
           });
       }
   }
@@ -1521,12 +1507,12 @@ image-rendering: pixelated;
   }
   function capture() {
       captureContext.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
-      if (capturedCanvasScale === 1) {
+      if (calculatedCanvasScale === 1) {
           captureContext.drawImage(canvas, (captureCanvas.width - canvas.width) / 2, (captureCanvas.height - canvas.height) / 2);
       }
       else {
-          const w = canvas.width * capturedCanvasScale;
-          const h = canvas.height * capturedCanvasScale;
+          const w = canvas.width * calculatedCanvasScale;
+          const h = canvas.height * calculatedCanvasScale;
           captureContext.drawImage(canvas, (captureCanvas.width - w) / 2, (captureCanvas.height - h) / 2, w, h);
       }
       gcc.capture(captureCanvas);
@@ -1988,6 +1974,7 @@ image-rendering: pixelated;
       isFourWaysStick: false,
       isCapturing: false,
       isCapturingGameCanvasOnly: false,
+      captureCanvasScale: 1,
       theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
   };
   let options$3;
@@ -1997,7 +1984,7 @@ image-rendering: pixelated;
       _update = __update;
       options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
       init(options$3.theme.isDarkColor);
-      init$2(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing, options$3.isCapturingGameCanvasOnly, options$3.theme);
+      init$2(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing, options$3.isCapturingGameCanvasOnly, options$3.captureCanvasScale, options$3.theme);
       init$5();
       init$1();
       _init();
@@ -2652,6 +2639,7 @@ image-rendering: pixelated;
       isSpeedingUpSound: false,
       isCapturing: false,
       isCapturingGameCanvasOnly: false,
+      captureCanvasScale: 1,
       isShowingScore: true,
       isShowingTime: false,
       isReplayEnabled: false,
@@ -2727,6 +2715,7 @@ image-rendering: pixelated;
       seed = opts.seed;
       loopOptions.isCapturing = opts.isCapturing;
       loopOptions.isCapturingGameCanvasOnly = opts.isCapturingGameCanvasOnly;
+      loopOptions.captureCanvasScale = opts.captureCanvasScale;
       loopOptions.viewSize = opts.viewSize;
       isPlayingBgm = opts.isPlayingBgm;
       isSpeedingUpSound = opts.isSpeedingUpSound;

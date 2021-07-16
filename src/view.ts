@@ -16,7 +16,7 @@ const graphicsScale = 5;
 let background = document.createElement("img");
 let captureCanvas: HTMLCanvasElement;
 let captureContext: CanvasRenderingContext2D;
-let capturedCanvasScale = 1;
+let calculatedCanvasScale = 1;
 let viewBackground: Color = "black";
 
 export let currentColor: Color;
@@ -32,6 +32,7 @@ export function init(
   _viewBackground: Color,
   isCapturing: boolean,
   isCapturingGameCanvasOnly: boolean,
+  captureCanvasScale: number,
   _theme: Theme
 ) {
   size.set(_size);
@@ -121,22 +122,7 @@ image-rendering: pixelated;
     if (isCapturingGameCanvasOnly) {
       captureCanvas.width = canvasSize.x;
       captureCanvas.height = canvasSize.y;
-      capturedCanvasScale =
-        canvasSize.x > canvasSize.y
-          ? 400 / captureCanvas.width
-          : 400 / captureCanvas.height;
-      captureCanvas.width =
-        canvasSize.x > canvasSize.y
-          ? 400
-          : captureCanvas.width * capturedCanvasScale;
-      captureCanvas.height =
-        canvasSize.x > canvasSize.y
-          ? captureCanvas.height * capturedCanvasScale
-          : 400;
-      optionCaptureScale =
-        canvasSize.x > canvasSize.y
-          ? Math.round(400 / captureCanvas.width)
-          : Math.round(400 / captureCanvas.height);
+      optionCaptureScale = captureCanvasScale;
     } else {
       if (canvasSize.x <= canvasSize.y * 2) {
         captureCanvas.width = canvasSize.y * 2;
@@ -146,9 +132,9 @@ image-rendering: pixelated;
         captureCanvas.height = canvasSize.x / 2;
       }
       if (captureCanvas.width > 400) {
-        capturedCanvasScale = 400 / captureCanvas.width;
+        calculatedCanvasScale = 400 / captureCanvas.width;
         captureCanvas.width = 400;
-        captureCanvas.height *= capturedCanvasScale;
+        captureCanvas.height *= calculatedCanvasScale;
       }
       optionCaptureScale = Math.round(400 / captureCanvas.width);
     }
@@ -157,6 +143,7 @@ image-rendering: pixelated;
     gcc.setOptions({
       scale: optionCaptureScale,
       capturingFps: 60,
+      isSmoothingEnabled: false,
     });
   }
 }
@@ -291,15 +278,15 @@ export function drawBackground() {
 
 export function capture() {
   captureContext.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
-  if (capturedCanvasScale === 1) {
+  if (calculatedCanvasScale === 1) {
     captureContext.drawImage(
       canvas,
       (captureCanvas.width - canvas.width) / 2,
       (captureCanvas.height - canvas.height) / 2
     );
   } else {
-    const w = canvas.width * capturedCanvasScale;
-    const h = canvas.height * capturedCanvasScale;
+    const w = canvas.width * calculatedCanvasScale;
+    const h = canvas.height * calculatedCanvasScale;
     captureContext.drawImage(
       canvas,
       (captureCanvas.width - w) / 2,

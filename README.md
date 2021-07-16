@@ -467,6 +467,10 @@ l llll
 //   isCapturingGameCanvasOnly?: boolean;
 //    // Additional setting for isCapturing,
 //    // will omit the margins on two sides when enabled.
+//   captureCanvasScale?: number;
+//    // Additional setting for isCapturingGameCanvasOnly,
+//    // set the scale of the output file, default: 1.
+//    // High scale (higher than 4) might lead to poor performance or crashing.
 //   isDrawingParticleFront?: boolean; // Draw particles in front of the screen.
 //   isDrawingScoreFront?: boolean; // Draw the added score in front of the screen.
 //   isShowingScore?: boolean; // Show a score and a hi-score.

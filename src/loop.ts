@@ -14,6 +14,7 @@ export type Options = {
   isFourWaysStick?: boolean;
   isCapturing?: boolean;
   isCapturingGameCanvasOnly?: boolean;
+  captureCanvasScale?: number;
   theme?: Theme;
 };
 
@@ -28,6 +29,7 @@ const defaultOptions: Options = {
   isFourWaysStick: false,
   isCapturing: false,
   isCapturingGameCanvasOnly: false,
+  captureCanvasScale: 1,
   theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
 };
 let options: Options;
@@ -48,6 +50,7 @@ export function init(
     options.viewBackground,
     options.isCapturing,
     options.isCapturingGameCanvasOnly,
+    options.captureCanvasScale,
     options.theme
   );
   input.init();
