@@ -1,28 +1,6 @@
 (function (exports, PIXI) {
   'use strict';
 
-  function _interopNamespace(e) {
-    if (e && e.__esModule) return e;
-    var n = Object.create(null);
-    if (e) {
-      Object.keys(e).forEach(function (k) {
-        if (k !== 'default') {
-          var d = Object.getOwnPropertyDescriptor(e, k);
-          Object.defineProperty(n, k, d.get ? d : {
-            enumerable: true,
-            get: function () {
-              return e[k];
-            }
-          });
-        }
-      });
-    }
-    n['default'] = e;
-    return Object.freeze(n);
-  }
-
-  var PIXI__namespace = /*#__PURE__*/_interopNamespace(PIXI);
-
   function clamp$1(v, low = 0, high = 1) {
       return Math.max(low, Math.min(v, high));
   }
@@ -238,7 +216,7 @@
       0x03a9f4,
       0x616161,
   ];
-  function init$8(isDarkColor) {
+  function init(isDarkColor) {
       const [wr, wb, wg] = getRgb(0, isDarkColor);
       values = fromEntities(colors.map((c, i) => {
           if (i < 1) {
@@ -964,7 +942,7 @@ l l l
 
   let hitBoxes;
   let tmpHitBoxes;
-  function clear$1() {
+  function clear() {
       hitBoxes = [];
       tmpHitBoxes = [];
   }
@@ -1045,7 +1023,7 @@ l l l
   let isCacheEnabled = false;
   let letterCanvas;
   let letterContext;
-  const defaultOptions$4 = {
+  const defaultOptions = {
       color: "black",
       backgroundColor: "transparent",
       rotation: 0,
@@ -1054,7 +1032,7 @@ l l l
       isCharacter: false,
       isCheckingCollision: false,
   };
-  function init$7() {
+  function init$1() {
       letterCanvas = document.createElement("canvas");
       letterCanvas.width = letterCanvas.height = letterSize;
       letterContext = letterCanvas.getContext("2d");
@@ -1158,7 +1136,7 @@ l l l
           const cachedImage = document.createElement("img");
           cachedImage.src = letterCanvas.toDataURL();
           if (theme.isUsingPixi) {
-              texture = PIXI__namespace.Texture.from(cachedImage);
+              texture = PIXI.Texture.from(cachedImage);
           }
           if (isCacheEnabled) {
               cachedImages[cacheIndex] = {
@@ -1222,7 +1200,7 @@ l l l
       const image = document.createElement("img");
       image.src = letterCanvas.toDataURL();
       if (theme.isUsingPixi) {
-          return { image, texture: PIXI__namespace.Texture.from(image) };
+          return { image, texture: PIXI.Texture.from(image) };
       }
       return { image };
   }
@@ -1270,12 +1248,12 @@ l l l
       return b;
   }
   function mergeDefaultOptions(_options) {
-      let options = Object.assign(Object.assign({}, defaultOptions$4), _options);
+      let options = Object.assign(Object.assign({}, defaultOptions), _options);
       if (_options.scale != null) {
-          options.scale = Object.assign(Object.assign({}, defaultOptions$4.scale), _options.scale);
+          options.scale = Object.assign(Object.assign({}, defaultOptions.scale), _options.scale);
       }
       if (_options.mirror != null) {
-          options.mirror = Object.assign(Object.assign({}, defaultOptions$4.mirror), _options.mirror);
+          options.mirror = Object.assign(Object.assign({}, defaultOptions.mirror), _options.mirror);
       }
       return options;
   }
@@ -1299,7 +1277,7 @@ void main(void) {
 }
 `;
   function getGridFilter(width, height) {
-      return new PIXI__namespace.Filter(undefined, gridFilterFragment, {
+      return new PIXI.Filter(undefined, gridFilterFragment, {
           width,
           height,
       });
@@ -1311,7 +1289,7 @@ void main(void) {
   let context;
   let graphics;
   const graphicsScale = 5;
-  document.createElement("img");
+  let background = document.createElement("img");
   let captureCanvas;
   let captureContext;
   let calculatedCanvasScale = 1;
@@ -1321,7 +1299,7 @@ void main(void) {
   let isFilling = false;
   let theme;
   let crtFilter;
-  function init$6(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, _theme) {
+  function init$2(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, _theme) {
       size.set(_size);
       theme = _theme;
       viewBackground = _viewBackground;
@@ -1351,18 +1329,18 @@ image-rendering: pixelated;
       canvasSize.set(size);
       if (theme.isUsingPixi) {
           canvasSize.mul(graphicsScale);
-          const app = new PIXI__namespace.Application({
+          const app = new PIXI.Application({
               width: canvasSize.x,
               height: canvasSize.y,
           });
           canvas = app.view;
-          graphics = new PIXI__namespace.Graphics();
+          graphics = new PIXI.Graphics();
           graphics.scale.x = graphics.scale.y = graphicsScale;
-          PIXI__namespace.settings.SCALE_MODE = PIXI__namespace.SCALE_MODES.NEAREST;
+          PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
           app.stage.addChild(graphics);
           graphics.filters = [];
           if (theme.name === "crt") {
-              graphics.filters.push((crtFilter = new PIXI__namespace.filters.CRTFilter({
+              graphics.filters.push((crtFilter = new PIXI.filters.CRTFilter({
                   vignettingAlpha: 0.7,
               })));
           }
@@ -1370,7 +1348,7 @@ image-rendering: pixelated;
               graphics.filters.push(getGridFilter(canvasSize.x, canvasSize.y));
           }
           if (theme.name === "pixel" || theme.name === "shapeDark") {
-              const bloomFilter = new PIXI__namespace.filters.AdvancedBloomFilter({
+              const bloomFilter = new PIXI.filters.AdvancedBloomFilter({
                   threshold: 0.1,
                   bloomScale: theme.name === "pixel" ? 1.5 : 1,
                   brightness: theme.name === "pixel" ? 1.5 : 1,
@@ -1431,11 +1409,11 @@ image-rendering: pixelated;
           gcc.setOptions({
               scale: optionCaptureScale,
               capturingFps: 60,
-              isSmoothingEnabled: false
+              isSmoothingEnabled: false,
           });
       }
   }
-  function clear() {
+  function clear$1() {
       if (theme.isUsingPixi) {
           graphics.clear();
           isFilling = false;
@@ -1495,7 +1473,7 @@ image-rendering: pixelated;
       }
       context.fillRect(x, y, width, height);
   }
-  function drawLine$1(x1, y1, x2, y2, thickness) {
+  function drawLine(x1, y1, x2, y2, thickness) {
       const cn = colorToNumber(currentColor);
       beginFillColor(cn);
       graphics.drawCircle(x1, y1, thickness * 0.5);
@@ -1511,7 +1489,7 @@ image-rendering: pixelated;
           endFill();
           graphics.beginTextureFill({
               texture: li.texture,
-              matrix: new PIXI__namespace.Matrix().translate(x, y),
+              matrix: new PIXI.Matrix().translate(x, y),
           });
           graphics.drawRect(x, y, width == null ? letterSize : width, height == null ? letterSize : height);
           beginFillColor(colorToNumber(currentColor));
@@ -1540,9 +1518,9 @@ image-rendering: pixelated;
       gcc.capture(captureCanvas);
   }
 
-  let isPressed$2 = false;
-  let isJustPressed$2 = false;
-  let isJustReleased$2 = false;
+  let isPressed = false;
+  let isJustPressed = false;
+  let isJustReleased = false;
   const codes = [
       "Escape",
       "Digit0",
@@ -1686,18 +1664,18 @@ image-rendering: pixelated;
       "BrowserBack"
   ];
   let code;
-  const defaultOptions$3 = {
+  const defaultOptions$1 = {
       onKeyDown: undefined
   };
-  let options$3;
+  let options$1;
   let isKeyPressing = false;
   let isKeyPressed = false;
   let isKeyReleased = false;
   let pressingCode = {};
   let pressedCode = {};
   let releasedCode = {};
-  function init$5(_options) {
-      options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
+  function init$3(_options) {
+      options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
       code = fromEntities(codes.map(c => [
           c,
           {
@@ -1709,8 +1687,8 @@ image-rendering: pixelated;
       document.addEventListener("keydown", e => {
           isKeyPressing = isKeyPressed = true;
           pressingCode[e.code] = pressedCode[e.code] = true;
-          if (options$3.onKeyDown != null) {
-              options$3.onKeyDown();
+          if (options$1.onKeyDown != null) {
+              options$1.onKeyDown();
           }
           if (e.code === "AltLeft" || e.code === "AltRight") {
               e.preventDefault();
@@ -1723,11 +1701,11 @@ image-rendering: pixelated;
           releasedCode[e.code] = true;
       });
   }
-  function update$6() {
-      isJustPressed$2 = !isPressed$2 && isKeyPressed;
-      isJustReleased$2 = isPressed$2 && isKeyReleased;
+  function update$1() {
+      isJustPressed = !isPressed && isKeyPressed;
+      isJustReleased = isPressed && isKeyReleased;
       isKeyPressed = isKeyReleased = false;
-      isPressed$2 = isKeyPressing;
+      isPressed = isKeyPressing;
       entries(code).forEach(([c, s]) => {
           s.isJustPressed = !s.isPressed && pressedCode[c];
           s.isJustReleased = s.isPressed && releasedCode[c];
@@ -1736,21 +1714,21 @@ image-rendering: pixelated;
       pressedCode = {};
       releasedCode = {};
   }
-  function clearJustPressed$2() {
-      isJustPressed$2 = false;
-      isPressed$2 = true;
+  function clearJustPressed() {
+      isJustPressed = false;
+      isPressed = true;
   }
 
   var keyboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    get isPressed () { return isPressed$2; },
-    get isJustPressed () { return isJustPressed$2; },
-    get isJustReleased () { return isJustReleased$2; },
+    get isPressed () { return isPressed; },
+    get isJustPressed () { return isJustPressed; },
+    get isJustReleased () { return isJustReleased; },
     codes: codes,
     get code () { return code; },
-    init: init$5,
-    update: update$6,
-    clearJustPressed: clearJustPressed$2
+    init: init$3,
+    update: update$1,
+    clearJustPressed: clearJustPressed
   });
 
   class Random {
@@ -1805,7 +1783,7 @@ image-rendering: pixelated;
       }
   }
 
-  const pos$1 = new Vector();
+  const pos = new Vector();
   let isPressed$1 = false;
   let isJustPressed$1 = false;
   let isJustReleased$1 = false;
@@ -1856,11 +1834,11 @@ image-rendering: pixelated;
           onUp();
       }, { passive: false });
   }
-  function update$5() {
-      calcPointerPos(cursorPos.x, cursorPos.y, pos$1);
-      if (options$2.isDebugMode && !pos$1.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
+  function update$2() {
+      calcPointerPos(cursorPos.x, cursorPos.y, pos);
+      if (options$2.isDebugMode && !pos.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
           updateDebug();
-          pos$1.set(debugPos);
+          pos.set(debugPos);
           isJustPressed$1 = !isPressed$1 && debugIsDown;
           isJustReleased$1 = isPressed$1 && !debugIsDown;
           isPressed$1 = debugIsDown;
@@ -1932,21 +1910,21 @@ image-rendering: pixelated;
 
   var pointer = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    pos: pos$1,
+    pos: pos,
     get isPressed () { return isPressed$1; },
     get isJustPressed () { return isJustPressed$1; },
     get isJustReleased () { return isJustReleased$1; },
     init: init$4,
-    update: update$5,
+    update: update$2,
     clearJustPressed: clearJustPressed$1
   });
 
-  let pos = new Vector();
-  let isPressed = false;
-  let isJustPressed = false;
-  let isJustReleased = false;
-  function init$3() {
-      init$5({
+  let pos$1 = new Vector();
+  let isPressed$2 = false;
+  let isJustPressed$2 = false;
+  let isJustReleased$2 = false;
+  function init$5() {
+      init$3({
           onKeyDown: sss.playEmpty,
       });
       init$4(canvas, size, {
@@ -1954,41 +1932,41 @@ image-rendering: pixelated;
           anchor: new Vector(0.5, 0.5),
       });
   }
-  function update$4() {
-      update$6();
-      update$5();
-      pos = pos$1;
-      isPressed = isPressed$2 || isPressed$1;
-      isJustPressed = isJustPressed$2 || isJustPressed$1;
-      isJustReleased = isJustReleased$2 || isJustReleased$1;
+  function update$3() {
+      update$1();
+      update$2();
+      pos$1 = pos;
+      isPressed$2 = isPressed || isPressed$1;
+      isJustPressed$2 = isJustPressed || isJustPressed$1;
+      isJustReleased$2 = isJustReleased || isJustReleased$1;
   }
-  function clearJustPressed() {
-      clearJustPressed$2();
+  function clearJustPressed$2() {
+      clearJustPressed();
       clearJustPressed$1();
   }
   function set(state) {
-      pos.set(state.pos);
-      isPressed = state.isPressed;
-      isJustPressed = state.isJustPressed;
-      isJustReleased = state.isJustReleased;
+      pos$1.set(state.pos);
+      isPressed$2 = state.isPressed;
+      isJustPressed$2 = state.isJustPressed;
+      isJustReleased$2 = state.isJustReleased;
   }
 
   var input$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    get pos () { return pos; },
-    get isPressed () { return isPressed; },
-    get isJustPressed () { return isJustPressed; },
-    get isJustReleased () { return isJustReleased; },
-    init: init$3,
-    update: update$4,
-    clearJustPressed: clearJustPressed,
+    get pos () { return pos$1; },
+    get isPressed () { return isPressed$2; },
+    get isJustPressed () { return isJustPressed$2; },
+    get isJustReleased () { return isJustReleased$2; },
+    init: init$5,
+    update: update$3,
+    clearJustPressed: clearJustPressed$2,
     set: set
   });
 
   let lastFrameTime = 0;
   let _init;
-  let _update$1;
-  const defaultOptions$1 = {
+  let _update;
+  const defaultOptions$3 = {
       viewSize: { x: 126, y: 126 },
       bodyBackground: "#111",
       viewBackground: "black",
@@ -1999,21 +1977,21 @@ image-rendering: pixelated;
       captureCanvasScale: 1,
       theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
   };
-  let options$1;
+  let options$3;
   let textCacheEnableTicks = 10;
-  function init$2(__init, __update, _options) {
+  function init$6(__init, __update, _options) {
       _init = __init;
-      _update$1 = __update;
-      options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
-      init$8(options$1.theme.isDarkColor);
-      init$6(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.theme);
-      init$3();
-      init$7();
+      _update = __update;
+      options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
+      init(options$3.theme.isDarkColor);
+      init$2(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing, options$3.isCapturingGameCanvasOnly, options$3.captureCanvasScale, options$3.theme);
+      init$5();
+      init$1();
       _init();
-      update$3();
+      update$4();
   }
-  function update$3() {
-      requestAnimationFrame(update$3);
+  function update$4() {
+      requestAnimationFrame(update$4);
       const now = window.performance.now();
       const timeSinceLast = now - lastFrameTime;
       if (timeSinceLast < 1000 / 60 - 5) {
@@ -2021,9 +1999,9 @@ image-rendering: pixelated;
       }
       lastFrameTime = now;
       sss.update();
-      update$4();
-      _update$1();
-      if (options$1.isCapturing) {
+      update$3();
+      _update();
+      if (options$3.isCapturing) {
           capture();
       }
       textCacheEnableTicks--;
@@ -2043,7 +2021,7 @@ image-rendering: pixelated;
           this.characterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
       }
       print(str, _x, _y, _options = {}) {
-          const options = Object.assign(Object.assign({}, defaultOptions$4), _options);
+          const options = Object.assign(Object.assign({}, defaultOptions), _options);
           let x = Math.floor(_x);
           let y = Math.floor(_y);
           const bx = x;
@@ -2086,7 +2064,7 @@ image-rendering: pixelated;
           if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
               return;
           }
-          const options = Object.assign(Object.assign({}, defaultOptions$4), _options);
+          const options = Object.assign(Object.assign({}, defaultOptions), _options);
           const x = Math.floor(_x);
           const y = Math.floor(_y);
           this.letterGrid[x][y] = char;
@@ -2156,29 +2134,29 @@ image-rendering: pixelated;
   }
 
   let particles;
-  const random$1 = new Random();
-  function init$1() {
+  const random = new Random();
+  function init$7() {
       particles = [];
   }
   function add(pos, count = 16, speed = 1, angle = 0, angleWidth = Math.PI * 2) {
       if (count < 1) {
-          if (random$1.get() > count) {
+          if (random.get() > count) {
               return;
           }
           count = 1;
       }
       for (let i = 0; i < count; i++) {
-          const a = angle + random$1.get(angleWidth) - angleWidth / 2;
+          const a = angle + random.get(angleWidth) - angleWidth / 2;
           const p = {
               pos: new Vector(pos),
-              vel: new Vector(speed * random$1.get(0.5, 1), 0).rotate(a),
+              vel: new Vector(speed * random.get(0.5, 1), 0).rotate(a),
               color: currentColor,
-              ticks: clamp(random$1.get(10, 20) * Math.sqrt(Math.abs(speed)), 10, 60),
+              ticks: clamp(random.get(10, 20) * Math.sqrt(Math.abs(speed)), 10, 60),
           };
           particles.push(p);
       }
   }
-  function update$2() {
+  function update$5() {
       saveCurrentColor();
       particles = particles.filter((p) => {
           p.ticks--;
@@ -2207,7 +2185,7 @@ image-rendering: pixelated;
           toggleGroup: [],
       };
   }
-  function update$1(button) {
+  function update$6(button) {
       const o = vec(input.pos).sub(button.pos);
       button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
       if (input.isJustPressed && button.isHovered) {
@@ -2281,15 +2259,15 @@ image-rendering: pixelated;
           baseState: cloneDeep(baseState),
       });
   }
-  function rewind$1(random) {
+  function rewind(random) {
       const fs = frameStates.pop();
       const rs = fs.randomState;
       random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
       storedInput = {
-          pos: vec(pos),
-          isPressed: isPressed,
-          isJustPressed: isJustPressed,
-          isJustReleased: isJustReleased,
+          pos: vec(pos$1),
+          isPressed: isPressed$2,
+          isJustPressed: isJustPressed$2,
+          isJustReleased: isJustReleased$2,
       };
       set(record.inputs.pop());
       return fs;
@@ -2299,10 +2277,10 @@ image-rendering: pixelated;
       const rs = fs.randomState;
       random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
       storedInput = {
-          pos: vec(pos),
-          isPressed: isPressed,
-          isJustPressed: isJustPressed,
-          isJustReleased: isJustReleased,
+          pos: vec(pos$1),
+          isPressed: isPressed$2,
+          isJustPressed: isJustPressed$2,
+          isJustReleased: isJustReleased$2,
       };
       set(record.inputs[record.inputs.length - 1]);
       return fs;
@@ -2338,7 +2316,7 @@ image-rendering: pixelated;
       }
       const l = new Vector(length).rotate(rotate);
       const p = new Vector(x - l.x * centerPosRatio, y - l.y * centerPosRatio);
-      return drawLine(p, l, thickness);
+      return drawLine$1(p, l, thickness);
   }
   function line(x1, y1, x2 = 3, y2 = 3, thickness = 3) {
       const p = new Vector();
@@ -2381,7 +2359,7 @@ image-rendering: pixelated;
               }
           }
       }
-      return drawLine(p, p2.sub(p), thickness);
+      return drawLine$1(p, p2.sub(p), thickness);
   }
   function arc(centerX, centerY, radius, thickness, angleFrom, angleTo) {
       let centerPos = new Vector();
@@ -2429,7 +2407,7 @@ image-rendering: pixelated;
           a += ai;
           p2.set(radius).rotate(a).add(centerPos);
           o.set(p2).sub(p1);
-          const c = drawLine(p1, o, thickness, true);
+          const c = drawLine$1(p1, o, thickness, true);
           collision = Object.assign(Object.assign(Object.assign({}, collision), createShorthand(c.isColliding.rect)), { isColliding: {
                   rect: Object.assign(Object.assign({}, collision.isColliding.rect), c.isColliding.rect),
                   text: Object.assign(Object.assign({}, collision.isColliding.text), c.isColliding.text),
@@ -2476,10 +2454,10 @@ image-rendering: pixelated;
           }
       }
   }
-  function drawLine(p, l, thickness, isAddingToTmp = false) {
+  function drawLine$1(p, l, thickness, isAddingToTmp = false) {
       let isDrawing = true;
       if (theme.name === "shape" || theme.name === "shapeDark") {
-          drawLine$1(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+          drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
       }
       const t = Math.floor(clamp$1(thickness, 3, 10));
       const lx = Math.abs(l.x);
@@ -2542,17 +2520,15 @@ image-rendering: pixelated;
   const round = Math.round;
   const ceil$1 = Math.ceil;
   exports.ticks = 0;
-  exports.difficulty = void 0;
   exports.score = 0;
-  exports.time = void 0;
   function rnd(lowOrHigh = 1, high) {
-      return random.get(lowOrHigh, high);
+      return random$1.get(lowOrHigh, high);
   }
   function rndi(lowOrHigh = 2, high) {
-      return random.getInt(lowOrHigh, high);
+      return random$1.getInt(lowOrHigh, high);
   }
   function rnds(lowOrHigh = 1, high) {
-      return random.get(lowOrHigh, high) * random.getPlusOrMinus();
+      return random$1.get(lowOrHigh, high) * random$1.getPlusOrMinus();
   }
   function end(_gameOverText = "GAME OVER") {
       gameOverText = _gameOverText;
@@ -2614,14 +2590,14 @@ image-rendering: pixelated;
   }
   function frameState(frameState) {
       if (isWaitingRewind) {
-          const rs = getLastFrameState(random);
+          const rs = getLastFrameState(random$1);
           const bs = rs.baseState;
           exports.score = bs.score;
           exports.ticks = bs.ticks;
           return cloneDeep(rs.gameState);
       }
       else if (isRewinding) {
-          const rs = rewind$1(random);
+          const rs = rewind(random$1);
           const bs = rs.baseState;
           exports.score = bs.score;
           exports.ticks = bs.ticks;
@@ -2633,11 +2609,11 @@ image-rendering: pixelated;
       }
       else if (state === "inGame") {
           const baseState = { score: exports.score, ticks: exports.ticks };
-          recordFrameState(frameState, baseState, random);
+          recordFrameState(frameState, baseState, random$1);
       }
       return frameState;
   }
-  function rewind() {
+  function rewind$1() {
       if (isRewinding) {
           return;
       }
@@ -2658,7 +2634,7 @@ image-rendering: pixelated;
       select: "s",
       lucky: "u",
   };
-  const defaultOptions = {
+  const defaultOptions$4 = {
       isPlayingBgm: false,
       isSpeedingUpSound: false,
       isCapturing: false,
@@ -2676,7 +2652,7 @@ image-rendering: pixelated;
       theme: "simple",
   };
   const seedRandom = new Random();
-  const random = new Random();
+  const random$1 = new Random();
   const soundSpeedingUpInterval = 300;
   let state;
   let updateFunc = {
@@ -2711,10 +2687,10 @@ image-rendering: pixelated;
   function onLoad() {
       let opts;
       if (typeof options !== "undefined" && options != null) {
-          opts = Object.assign(Object.assign({}, defaultOptions), options);
+          opts = Object.assign(Object.assign({}, defaultOptions$4), options);
       }
       else {
-          opts = defaultOptions;
+          opts = defaultOptions$4;
       }
       const theme = {
           name: opts.theme,
@@ -2752,9 +2728,9 @@ image-rendering: pixelated;
       if (opts.isMinifying) {
           showMinifiedScript();
       }
-      init$2(init, _update, loopOptions);
+      init$6(init$8, _update$1, loopOptions);
   }
-  function init() {
+  function init$8() {
       if (typeof description !== "undefined" &&
           description != null &&
           description.trim().length > 0) {
@@ -2784,7 +2760,7 @@ image-rendering: pixelated;
           initTitle();
       }
   }
-  function _update() {
+  function _update$1() {
       exports.df = exports.difficulty = exports.ticks / 3600 + 1;
       exports.tc = exports.ticks;
       const prevScore = exports.score;
@@ -2792,12 +2768,12 @@ image-rendering: pixelated;
       exports.sc = exports.score;
       const prevSc = exports.sc;
       exports.inp = {
-          p: pos,
-          ip: isPressed,
-          ijp: isJustPressed,
-          ijr: isJustReleased,
+          p: pos$1,
+          ip: isPressed$2,
+          ijp: isJustPressed$2,
+          ijr: isJustReleased$2,
       };
-      clear$1();
+      clear();
       updateFunc[state]();
       if (theme.isUsingPixi) {
           endFill();
@@ -2817,7 +2793,7 @@ image-rendering: pixelated;
   function initInGame() {
       state = "inGame";
       exports.ticks = -1;
-      init$1();
+      init$7();
       const s = Math.floor(exports.score);
       if (s > hiScore) {
           hiScore = s;
@@ -2834,7 +2810,7 @@ image-rendering: pixelated;
           sss.playBgm();
       }
       const randomSeed = seedRandom.getInt(999999999);
-      random.setSeed(randomSeed);
+      random$1.setSeed(randomSeed);
       if (isReplayEnabled || isRewindEnabled) {
           initRecord(randomSeed);
           initFrameStates();
@@ -2843,24 +2819,24 @@ image-rendering: pixelated;
   }
   function updateInGame() {
       terminal.clear();
-      clear();
+      clear$1();
       if (!isDrawingParticleFront) {
-          update$2();
+          update$5();
       }
       if (!isDrawingScoreFront) {
           updateScoreBoards();
       }
       if (isReplayEnabled || isRewindEnabled) {
           recordInput({
-              pos: vec$1(pos),
-              isPressed: isPressed,
-              isJustPressed: isJustPressed,
-              isJustReleased: isJustReleased,
+              pos: vec$1(pos$1),
+              isPressed: isPressed$2,
+              isJustPressed: isJustPressed$2,
+              isJustReleased: isJustReleased$2,
           });
       }
       update();
       if (isDrawingParticleFront) {
-          update$2();
+          update$5();
       }
       if (isDrawingScoreFront) {
           updateScoreBoards();
@@ -2877,34 +2853,34 @@ image-rendering: pixelated;
   function initTitle() {
       state = "title";
       exports.ticks = -1;
-      init$1();
+      init$7();
       terminal.clear();
-      clear();
+      clear$1();
       if (isRecorded()) {
-          initReplay(random);
+          initReplay(random$1);
           isReplaying = true;
       }
   }
   function updateTitle() {
-      if (isJustPressed) {
+      if (isJustPressed$2) {
           initInGame();
           return;
       }
-      clear();
+      clear$1();
       if (isReplayEnabled && isRecorded()) {
           replayInput();
           exports.inp = {
-              p: pos,
-              ip: isPressed,
-              ijp: isJustPressed,
-              ijr: isJustReleased,
+              p: pos$1,
+              ip: isPressed$2,
+              ijp: isJustPressed$2,
+              ijr: isJustReleased$2,
           };
           if (!isDrawingParticleFront) {
-              update$2();
+              update$5();
           }
           update();
           if (isDrawingParticleFront) {
-              update$2();
+              update$5();
           }
           if (isSpeedingUpSound && exports.ticks % soundSpeedingUpInterval === 0) {
               sss.playInterval = 0.5 / sqrt(exports.difficulty);
@@ -2935,7 +2911,7 @@ image-rendering: pixelated;
   function initGameOver() {
       state = "gameOver";
       if (!isReplaying) {
-          clearJustPressed();
+          clearJustPressed$2();
       }
       exports.ticks = -1;
       drawGameOver();
@@ -2944,7 +2920,7 @@ image-rendering: pixelated;
       }
   }
   function updateGameOver() {
-      if ((isReplaying || exports.ticks > 20) && isJustPressed) {
+      if ((isReplaying || exports.ticks > 20) && isJustPressed$2) {
           initInGame();
       }
       else if (exports.ticks === (isReplayEnabled ? 120 : 300) && !isNoTitle) {
@@ -2981,19 +2957,19 @@ image-rendering: pixelated;
   }
   function updateRewind() {
       terminal.clear();
-      clear();
+      clear$1();
       update();
       drawScoreOrTime();
       restoreInput();
       if (isRewinding) {
           draw(rewindButton);
-          if (isFrameStateEmpty() || !isPressed) {
+          if (isFrameStateEmpty() || !isPressed$2) {
               stopRewind();
           }
       }
       else {
-          update$1(rewindButton);
-          update$1(giveUpButton);
+          update$6(rewindButton);
+          update$6(giveUpButton);
           if (rewindButton.isPressed) {
               isRewinding = true;
               isWaitingRewind = false;
@@ -3013,7 +2989,7 @@ image-rendering: pixelated;
   function stopRewind() {
       isRewinding = false;
       state = "inGame";
-      init$1();
+      init$7();
       if (isPlayingBgm) {
           sss.playBgm();
       }
@@ -3122,14 +3098,10 @@ image-rendering: pixelated;
           console.log(`${minifiedUpdateScript.length} letters`);
       });
   }
-  exports.inp = void 0;
   let clr = color$1;
   let ply = play;
   let tms = times;
   let rmv = remove;
-  exports.tc = void 0;
-  exports.df = void 0;
-  exports.sc = void 0;
   const tr = "transparent";
   const wh = "white";
   const rd = "red";
@@ -3234,7 +3206,7 @@ image-rendering: pixelated;
   exports.rd = rd;
   exports.rect = rect$1;
   exports.remove = remove;
-  exports.rewind = rewind;
+  exports.rewind = rewind$1;
   exports.rmv = rmv;
   exports.rnd = rnd;
   exports.rndi = rndi;
@@ -3248,12 +3220,10 @@ image-rendering: pixelated;
   exports.tms = tms;
   exports.tr = tr;
   exports.uc = uc;
-  exports.updateButton = update$1;
+  exports.updateButton = update$6;
   exports.vec = vec$1;
   exports.wh = wh;
   exports.wrap = wrap;
   exports.yl = yl;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
 
 }(this.window = this.window || {}, PIXI));
