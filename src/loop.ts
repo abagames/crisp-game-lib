@@ -14,7 +14,7 @@ export type Options = {
   isFourWaysStick?: boolean;
   isCapturing?: boolean;
   isCapturingGameCanvasOnly?: boolean;
-  captureCanvasScale?: number
+  captureCanvasScale?: number;
   theme?: Theme;
 };
 

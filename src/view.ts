@@ -143,7 +143,7 @@ image-rendering: pixelated;
     gcc.setOptions({
       scale: optionCaptureScale,
       capturingFps: 60,
-      isSmoothingEnabled: false
+      isSmoothingEnabled: false,
     });
   }
 }
