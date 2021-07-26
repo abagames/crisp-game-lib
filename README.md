@@ -10,7 +10,11 @@ The `crisp-game-lib` itself is well dogfooded, and I have already created [more 
 
 It also has [type definitions in TypeScript](https://github.com/abagames/crisp-game-lib/blob/master/docs/bundle.d.ts), so you can fully benefit from IntelliSense on [VSCode](https://code.visualstudio.com/). Please refer to [the sample code](https://github.com/abagames/crisp-game-lib#sample-code) and [reference](https://github.com/abagames/crisp-game-lib#reference) below for more details on what kind of code you should write.
 
-See also [the article about crisp-game-lib](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/) written by [Terry Cavanagh](https://twitter.com/terrycavanagh), known as the developer of [Super Hexagon](https://store.steampowered.com/app/221640/Super_Hexagon/) and [VVVVVV](https://store.steampowered.com/app/70300/VVVVVV/). A list of the browser games I've made can be found on [my web page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html). By looking at the gif animations of each game, you can easily understand its rules.
+See also [the article about crisp-game-lib](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/) written by [Terry Cavanagh](https://twitter.com/terrycavanagh), known as the developer of [Super Hexagon](https://store.steampowered.com/app/221640/Super_Hexagon/) and [VVVVVV](https://store.steampowered.com/app/70300/VVVVVV/).
+
+I would also like to mention a tutorial article, [Guide to getting start with CrispGameLib](https://github.com/JunoNgx/crisp-game-lib-tutorial), written by [Juno Nguyen](https://twitter.com/JunoNgx). It describes in detail how to write code, how to structure data, and other useful information on how to create games using `crisp-game-lib`.
+
+A list of the browser games I've made can be found on [my web page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html). By looking at the gif animations of each game, you can easily understand its rules.
 
 ## Demo (Click the image to play)
 
