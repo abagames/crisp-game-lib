@@ -471,10 +471,14 @@ l llll
 //   isCapturingGameCanvasOnly?: boolean;
 //    // Additional setting for isCapturing,
 //    // will omit the margins on two sides when enabled.
+//    // Not recommended for pixiJS themes due to complications with scale factor
 //   captureCanvasScale?: number;
 //    // Additional setting for isCapturingGameCanvasOnly,
 //    // set the scale of the output file, default: 1.
 //    // High scale (higher than 4) might lead to poor performance or crashing.
+//    // Will suffer poor performance and not be retained and when used on pixiJS
+//    // themes due to heavy post-processing and resizing. Value below 1 is
+//    // recommended in such cases (e.g. 0.4).
 //   isDrawingParticleFront?: boolean; // Draw particles in front of the screen.
 //   isDrawingScoreFront?: boolean; // Draw the added score in front of the screen.
 //   isShowingScore?: boolean; // Show a score and a hi-score.
