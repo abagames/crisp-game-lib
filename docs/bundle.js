@@ -3046,7 +3046,7 @@ image-rendering: pixelated;
   }
   function addGameScript() {
       let gameName = window.location.search.substring(1);
-      gameName = gameName.replace(/\W/g, "");
+      gameName = gameName.replace(/[^A-Za-z0-9_-]/g, "");
       if (gameName.length === 0) {
           return;
       }
