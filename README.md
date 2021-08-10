@@ -501,3 +501,8 @@ options = {
 - To improve the performance of the game, do the following (mainly for mobile devices):
   - Use `simple` or `dark` theme. Do not specify a theme that uses pixi.js (`pixel`, `shape`, `shapeDark`, `crt`) in options. WebGL post-effects may worsen performance.
   - Minimize drawing bars, lines, or arcs. They are drawn as a combination of many rectangles and highly detrimental to the collision detection process.
+- If you want to create a game that can be played comfortably on a mobile device, I recommend that you adopt one of the following three control methods.
+  - One-button
+  - Slide operation to left or right direction only
+  - Tapping on a specific place on the screen
+- For more information on how to create a one-button game, please refer to the following article I wrote: [How to realize various actions in a one-button game](https://github.com/abagames/various-actions-in-a-one-button-game/blob/main/README.md)
