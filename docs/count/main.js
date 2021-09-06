@@ -77,11 +77,11 @@ gggggg
  bBBb
 bBBBBb
 bbbbbb
-`
+`,
 ];
 
 options = {
-  isPlayingBgm: true
+  isPlayingBgm: true,
 };
 
 let objs,
@@ -102,7 +102,7 @@ function update() {
   if (objs.length === 0) {
     function checkNearest(obj) {
       let isColliding = false;
-      objs.forEach(o => {
+      objs.forEach((o) => {
         if (o.p.distanceTo(obj.p) < (o.scale + obj.scale) * 3) {
           isColliding = true;
         }
@@ -137,7 +137,7 @@ function update() {
         type: isRandType ? rndi(3) : ty,
         color: isRandColor ? rndi(3) : cl,
         scale: rnd(1, scaleMax),
-        isTarget: false
+        isTarget: false,
       };
       if (!checkNearest(o)) {
         objs.push(o);
@@ -146,7 +146,7 @@ function update() {
     const target = objs[rndi(objs.length)];
     targetCount = 0;
     const targetObjs = {};
-    objs.forEach(o => {
+    objs.forEach((o) => {
       if (
         (!isTypeTarget || o.type === target.type) &&
         (!isColorTarget || o.color === target.color)
@@ -157,22 +157,22 @@ function update() {
         targetCount++;
       }
     });
-    targets = Object.keys(targetObjs).map(to => JSON.parse(to));
+    targets = Object.keys(targetObjs).map((to) => JSON.parse(to));
     count = 0;
     countTicks = 79;
     isPressed = false;
   }
   text("How many", 4, 12);
   let x = 56;
-  targets.forEach(o => {
+  targets.forEach((o) => {
     char(addWithCharCode("a", o.type * 3 + o.color), x, 12, {});
     x += 7;
   });
   text(`? ${count}`, x, 12);
   if (!isPressed) {
-    objs.forEach(o => {
+    objs.forEach((o) => {
       char(addWithCharCode("a", o.type * 3 + o.color), o.p, {
-        scale: { x: o.scale, y: o.scale }
+        scale: { x: o.scale, y: o.scale },
       });
     });
     countTicks -= difficulty;
@@ -206,11 +206,11 @@ function update() {
         return;
       }
     }
-    text(`${targetCount}`, 40, 40, { scale: { x: 3, y: 3 } });
-    objs.forEach(o => {
+    text(`${targetCount}`, 50, 50, { scale: { x: 3, y: 3 } });
+    objs.forEach((o) => {
       if (o.isTarget) {
         char(addWithCharCode("a", o.type * 3 + o.color), o.p, {
-          scale: { x: o.scale, y: o.scale }
+          scale: { x: o.scale, y: o.scale },
         });
       }
     });

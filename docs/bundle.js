@@ -1004,14 +1004,14 @@ l l l
   function letters(isCharacter, str, x, y, options) {
       if (typeof x === "number") {
           if (typeof y === "number") {
-              return print(str, x - letterSize / 2, y - letterSize / 2, Object.assign({ isCharacter, isCheckingCollision: true, color: currentColor }, options));
+              return print(str, x, y, Object.assign({ isCharacter, isCheckingCollision: true, color: currentColor }, options));
           }
           else {
               throw "invalid params";
           }
       }
       else {
-          return print(str, x.x - letterSize / 2, x.y - letterSize / 2, Object.assign({ isCharacter, isCheckingCollision: true, color: currentColor }, y));
+          return print(str, x.x, x.y, Object.assign({ isCharacter, isCheckingCollision: true, color: currentColor }, y));
       }
   }
   const dotCount = 6;
@@ -1055,6 +1055,8 @@ l l l
   }
   function print(_str, x, y, _options = {}) {
       const options = mergeDefaultOptions(_options);
+      x -= (letterSize / 2) * options.scale.x;
+      y -= (letterSize / 2) * options.scale.y;
       const bx = Math.floor(x);
       let str = _str;
       let px = bx;

@@ -49,7 +49,7 @@ export function letters(
 ) {
   if (typeof x === "number") {
     if (typeof y === "number") {
-      return print(str, x - letterSize / 2, y - letterSize / 2, {
+      return print(str, x, y, {
         isCharacter,
         isCheckingCollision: true,
         color: currentColor,
@@ -59,7 +59,7 @@ export function letters(
       throw "invalid params";
     }
   } else {
-    return print(str, x.x - letterSize / 2, x.y - letterSize / 2, {
+    return print(str, x.x, x.y, {
       isCharacter,
       isCheckingCollision: true,
       color: currentColor,
@@ -145,6 +145,8 @@ export function print(
   _options: Options = {}
 ): Collision {
   const options = mergeDefaultOptions(_options);
+  x -= (letterSize / 2) * options.scale.x;
+  y -= (letterSize / 2) * options.scale.y;
   const bx = Math.floor(x);
   let str = _str;
   let px = bx;

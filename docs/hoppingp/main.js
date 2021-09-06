@@ -209,7 +209,7 @@ function update() {
     );
     let c;
     if ((h.type === "player" && powerTicks > 0) || h.type === "power") {
-      c = text(texts[h.type], h.pos.x - 3, h.pos.y - 10 * r - 5, {
+      c = text(texts[h.type], h.pos.x, h.pos.y - 10 * r - 2, {
         scale: { x: 2, y: 2 },
       }).isColliding.text;
     } else {
