@@ -214,7 +214,10 @@ function drawLine(
 ) {
   let isDrawing = true;
   if (view.theme.name === "shape" || view.theme.name === "shapeDark") {
-    view.drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+    if (view.currentColor !== "transparent") {
+      view.drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+    }
+    isDrawing = false;
   }
   const t = Math.floor(clamp(thickness, 3, 10));
   const lx = Math.abs(l.x);

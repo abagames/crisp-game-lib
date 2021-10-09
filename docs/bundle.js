@@ -2459,7 +2459,10 @@ image-rendering: pixelated;
   function drawLine$1(p, l, thickness, isAddingToTmp = false) {
       let isDrawing = true;
       if (theme.name === "shape" || theme.name === "shapeDark") {
-          drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+          if (currentColor !== "transparent") {
+              drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+          }
+          isDrawing = false;
       }
       const t = Math.floor(clamp$1(thickness, 3, 10));
       const lx = Math.abs(l.x);
