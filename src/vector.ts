@@ -106,7 +106,7 @@ export class Vector {
     if (isVectorLike(x)) {
       return Math.atan2(x.y - this.y, x.x - this.x);
     } else {
-      return Math.atan2(x - this.y, y - this.x);
+      return Math.atan2(y - this.y, x - this.x);
     }
   }
 
