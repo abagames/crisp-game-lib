@@ -248,6 +248,7 @@ function update() {
   
   text("Interest: " + G.PLAYER_HEALTH.toString(), 4, 40);
   if (G.PLAYER_HEALTH <= 0) {
+    G.PLAYER_HEALTH = 80;
     end();
   }
   if (score <= 0) {
