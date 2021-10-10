@@ -246,7 +246,10 @@ function update() {
     player.pos.y += G.JUMP_HEIGHT;
   }
   
-  text("Interest: " + G.PLAYER_HEALTH.toString(), 4, 40);
+  text("Interest: " + G.PLAYER_HEALTH.toString(), 4, 30);
+  if (G.PLAYER_HEALTH >= 100) {
+    G.PLAYER_HEALTH = 100;
+  }
   if (G.PLAYER_HEALTH <= 0) {
     G.PLAYER_HEALTH = 80;
     end();
