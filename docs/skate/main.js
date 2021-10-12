@@ -152,6 +152,8 @@ let Pit;
 let tempTicks;
 let rightSideUp;
 let upsideDown;
+let rampJumped;
+
 let multiplier;
 
 function update() {
@@ -197,6 +199,7 @@ function update() {
     tempTicks = 0;
     rightSideUp = false;
     upsideDown = false;
+    rampJumped = false;
 
     multiplier = 1;
   }
@@ -296,9 +299,13 @@ function update() {
     char("g", playerSprite.pos);
     rightSideUp = false;
     upsideDown = false;
+    rampJumped = false; // TURN OFF RAMP JUMPED ONCE WE ARE !inAir
     tempTicks = 0;
   }
   else if(input.isPressed){
+    if (char("f", player.pos).isColliding.char.c) { // WHEN INPUT IS PRESSED RAMPJUMPED SET TO TRUE IF PLAYER IS HITTING RAMP
+      rampJumped = true;
+    }
     jumpAnimation();
     text("x" + multiplier, 2, 30);
   }
@@ -310,38 +317,59 @@ function update() {
   }
 
   function jumpAnimation(){
-    playerSprite.pos = vec(player.pos.x, player.pos.y + 6);
-    tempTicks += 0.4;
-    if(tempTicks > 10){
-      tempTicks = 0;
-      rightSideUp = !rightSideUp;
-      upsideDown = !upsideDown;
+    if (rampJumped == true) { // RAMP JUMP
+      playerSprite.pos = vec(player.pos.x, player.pos.y + 6);
+      tempTicks += 0.4;
+      if (tempTicks > 10) {
+        tempTicks = 0;
+        rightSideUp = !rightSideUp;
+        upsideDown = !upsideDown;
+      }
+      else if (tempTicks < 5 && !upsideDown) {
+        char("a", vec(player.pos.x, player.pos.y));
+        char("b", playerSprite.pos);
+      } else if (tempTicks < 5 && upsideDown) {
+        char("j", vec(player.pos.x, player.pos.y));
+        char("k", playerSprite.pos);
+      } else if (tempTicks < 10 && !rightSideUp) {
+        char("d", vec(player.pos.x, player.pos.y));
+        char("e", playerSprite.pos);
+      } else if (tempTicks < 10) {
+        char("h", vec(player.pos.x, player.pos.y));
+        char("i", playerSprite.pos);
+        score += 10 * multiplier;
+        multiplier++;
+        player.airTime++;
+      }
+      else if (upsideDown && player.airTime <= 1)
+        end("Trick bailed!");
     }
-    else if (tempTicks < 5 && !upsideDown){
-      char("a", vec(player.pos.x, player.pos.y)); 
-      char("b", playerSprite.pos);
-    }else if(tempTicks < 5 && upsideDown){
-      char("j", vec(player.pos.x, player.pos.y)); 
-      char("k", playerSprite.pos);
-    }else if (tempTicks < 10 && !rightSideUp){
-      char("d", vec(player.pos.x, player.pos.y)); 
-      char("e", playerSprite.pos);
-    }else if (tempTicks < 10){
-      char("h", vec(player.pos.x, player.pos.y)); 
-      char("i", playerSprite.pos);
-      score += 10 * multiplier;
-      multiplier++;
-      player.airTime ++;
+    else { // NON RAMP JUMP
+      playerSprite.pos = vec(player.pos.x, player.pos.y + 6);
+      tempTicks += 0.4;
+      if (tempTicks > 10) {
+        tempTicks = 0;
+        rightSideUp = !rightSideUp;
+        upsideDown = !upsideDown;
+      }
+      if (tempTicks < 10) {
+        char("a", vec(player.pos.x, player.pos.y));
+        char("b", playerSprite.pos);
+        score += 10 * multiplier;
+        multiplier++;
+        player.airTime--; // REGULAR JUMPS ARE VERY SHORT NOW
+      }
+      else if (upsideDown && player.airTime <= 1)
+        end("Trick bailed!");
     }
-    else if(upsideDown && player.airTime <= 1)
-      end("Trick bailed!");
   }
+
   function followCursor(){
     if (player.pos.x < input.pos.x && !player.inAir){
-      player.pos = vec(player.pos.x + 0.5, player.pos.y);
+      player.pos = vec(player.pos.x + 0.8, player.pos.y);
       playerSprite.pos = vec(player.pos.x, player.pos.y + 2);
     }else if(player.pos.x > input.pos.x && !player.inAir){
-      player.pos = vec(player.pos.x - 0.5, player.pos.y)
+      player.pos = vec(player.pos.x - 0.8, player.pos.y)
       playerSprite.pos = vec(player.pos.x, player.pos.y + 2);;
     }else{
       player.pos = vec(player.pos.x, player.pos.y);
