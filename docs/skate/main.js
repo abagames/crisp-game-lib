@@ -326,6 +326,7 @@ function update() {
         upsideDown = !upsideDown;
       }
       else if (tempTicks < 5 && !upsideDown) {
+        particle(vec(player.pos.x, player.pos.y), 10, 2, 10, 5);
         char("a", vec(player.pos.x, player.pos.y));
         char("b", playerSprite.pos);
       } else if (tempTicks < 5 && upsideDown) {
@@ -339,7 +340,7 @@ function update() {
         char("i", playerSprite.pos);
         score += 10 * multiplier;
         multiplier++;
-        player.airTime--;
+        player.airTime -= 0.5;
       }
       else if (upsideDown && player.airTime <= 1)
         end("Trick bailed!");
@@ -357,7 +358,7 @@ function update() {
         char("b", playerSprite.pos);
         score += 2 * multiplier; // SCORE IS LESS SINCE IT ISNT TRICK JUMP
         multiplier++;
-        player.airTime--; // REGULAR JUMPS ARE VERY SHORT NOW
+        player.airTime-0.5; // REGULAR JUMPS ARE VERY SHORT NOW
       }
       else if (upsideDown && player.airTime <= 1)
         end("Trick bailed!");
