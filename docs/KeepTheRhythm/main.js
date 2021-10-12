@@ -196,10 +196,10 @@ function update() {
   char("b", npc.pos);
 
   // UPDATING AND DRAWING THE PLAYER
-  if (G.PLAYER_SECONDS > 50) {
+  if (G.PLAYER_SECONDS > 40) {
     G.PLAYER_ICON = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS);
     G.PLAYER_SECONDS = 0;
-    G.PLAYER_HEALTH--;
+    G.PLAYER_HEALTH -= 1 * (difficulty + 0.5);
   }
   G.PLAYER_SECONDS++;
   if (G.PLAYER_ICON == 3) {

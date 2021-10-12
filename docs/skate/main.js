@@ -326,6 +326,7 @@ function update() {
         upsideDown = !upsideDown;
       }
       else if (tempTicks < 5 && !upsideDown) {
+        play("jump");
         particle(vec(player.pos.x, player.pos.y), 10, 2, 10, 5);
         char("a", vec(player.pos.x, player.pos.y));
         char("b", playerSprite.pos);
