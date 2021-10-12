@@ -196,7 +196,7 @@ function update() {
   char("b", npc.pos);
 
   // UPDATING AND DRAWING THE PLAYER
-  if (G.PLAYER_SECONDS > 60) {
+  if (G.PLAYER_SECONDS > 50) {
     G.PLAYER_ICON = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS);
     G.PLAYER_SECONDS = 0;
     G.PLAYER_HEALTH--;
@@ -233,11 +233,15 @@ function update() {
     if (G.PLAYER_ICON == G.ICON_CHOOSER) {
       play('coin');
       addScore(10 * difficulty);
-      G.PLAYER_HEALTH += 2;
+      color("green");
+      particle(vec(player.pos.x, player.pos.y - 5), 20, 4, 20, 20);
+      G.PLAYER_HEALTH += 1;
     }
     else {
       play('explosion');
       addScore(-10 * difficulty);
+      color("red");
+      particle(vec(player.pos.x, player.pos.y - 5), 10, 4, 90, 10);
       G.PLAYER_HEALTH -= 2;
     }
   }
