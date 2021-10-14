@@ -110,40 +110,11 @@ let npc;
 /** @type { Player } */
 let player;
 
+
 function update() {
   if (!ticks) {
-    rain = times(20, () => {
-      const posX = rnd(0, G.WIDTH);
-      const posY = rnd(0, G.HEIGHT);
-      return {
-        pos: vec(posX, posY),
-        speed: rnd(G.STAR_SPEED_MIN, G.STAR_SPEED_MAX)
-      };
-    });
-
-    press_me = times(24, () => {
-      const posX = rnd(0, 15);
-      const posY = rnd(-55, G.HEIGHT);
-      return {
-        pos: vec(posX, posY),
-        speed: rnd(G.STAR_SPEED_MIN, G.STAR_SPEED_MAX)
-      };
-    });
-
-    npc = {
-      pos: vec(43, 72), 
-    };
-
-    player = {
-      pos: vec(32, 72),
-    };
+    initialize()
   }
-
-  if (G.GAME_TIMER >= 1200) {
-    G.GAME_CHOOSER = 2; // SHOULD BE rndi(1, x), where x is how many games we have +1
-    G.GAME_TIMER = 0;
-  }
-  G.GAME_TIMER++;
 
   if (G.GAME_CHOOSER == 1) {
     tileMatcher();
@@ -154,6 +125,46 @@ function update() {
   }
 }
 
+//~~~~~~~Main game utility functions~~~~~~~
+function initialize()
+{
+  rain = times(20, () => {
+    const posX = rnd(0, G.WIDTH);
+    const posY = rnd(0, G.HEIGHT);
+    return {
+      pos: vec(posX, posY),
+      speed: rnd(G.STAR_SPEED_MIN, G.STAR_SPEED_MAX)
+    };
+  });
+
+  press_me = times(24, () => {
+    const posX = rnd(0, 15);
+    const posY = rnd(-55, G.HEIGHT);
+    return {
+      pos: vec(posX, posY),
+      speed: rnd(G.STAR_SPEED_MIN, G.STAR_SPEED_MAX)
+    };
+  });
+
+  npc = {
+    pos: vec(43, 72), 
+  };
+
+  player = {
+    pos: vec(32, 72),
+  };
+}
+
+function timerManager()
+{
+  if (G.GAME_TIMER >= 1200) {
+    G.GAME_CHOOSER = 2; // SHOULD BE rndi(1, x), where x is how many games we have +1
+    G.GAME_TIMER = 0;
+  }
+  G.GAME_TIMER++;
+}
+
+//~~~~~~~Microgames~~~~~~~
 function dontPressIt() {
 
   var flag = 1;
