@@ -73,7 +73,7 @@ const G = {
   WIDTH: 75,
   HEIGHT: 75,
 
-  GAME_CHOOSER: 1, // GAME INDEX
+  GAME_CHOOSER: 2, // GAME INDEX
   GAME_TIMER: 0, // TIME UNTIL NEW GAME
 
   // ICON MINIGAME
@@ -98,6 +98,10 @@ options = {
 /** @type  { rain[] } */
 let rain;
 
+/** @typedef {{pos: Vector, speed: number}} press_me */
+/** @type  { press_me[] } */
+let press_me;
+
 /** @typedef {{pos: Vector}} NPC */
 /** @type { NPC } */
 let npc;
@@ -117,6 +121,15 @@ function update() {
       };
     });
 
+    press_me = times(24, () => {
+      const posX = rnd(0, 15);
+      const posY = rnd(-55, G.HEIGHT);
+      return {
+        pos: vec(posX, posY),
+        speed: rnd(G.STAR_SPEED_MIN, G.STAR_SPEED_MAX)
+      };
+    });
+
     npc = {
       pos: vec(43, 72), 
     };
@@ -127,7 +140,7 @@ function update() {
   }
 
   if (G.GAME_TIMER >= 1200) {
-    G.GAME_CHOOSER = 1; // SHOULD BE rndi(1, x), where x is how many games we have +1
+    G.GAME_CHOOSER = 2; // SHOULD BE rndi(1, x), where x is how many games we have +1
     G.GAME_TIMER = 0;
   }
   G.GAME_TIMER++;
@@ -135,6 +148,69 @@ function update() {
   if (G.GAME_CHOOSER == 1) {
     tileMatcher();
   }
+
+  if (G.GAME_CHOOSER == 2) {
+    dontPressIt();
+  }
+}
+
+function dontPressIt() {
+
+  var flag = 1;
+
+  if(ticks % 75  <= 35)
+    flag = -flag;
+  
+  if(flag == -1)
+    color("yellow");
+  else
+    color("red");
+  rect( 18, 19, 38, 35 );
+  color("black");
+  text("DONT", 27, 30);
+  text("PRESS", 24, 40);
+
+  color("transparent");
+
+  //color("red");
+  if(input.isJustPressed &&  rect(input.pos.x, input.pos.y, 1, 1).isColliding.rect.red)
+    addScore(-10 * difficulty);
+
+  if(flag == -1)
+    color("green");
+  else
+    color("black");
+
+  particle(18, 19);
+ //particle(37, 19);
+  particle(56, 19);
+  particle(18, 57);
+  particle(56, 57);
+  
+
+
+    press_me.forEach((s) => {
+      // Move the text downwards
+      s.pos.y += s.speed;
+      // Bring the text back to top once it's past the bottom of the screen
+      s.pos.wrap(0, G.WIDTH, -55, G.HEIGHT);
+
+  
+      // Choose a color to draw
+      color("cyan");
+      // Draw the text
+      text("PRESS ME!!!", s.pos);
+
+      color("yellow");
+
+    });
+
+    color("transparent");
+
+    if(rect(input.pos, 10, 10).isColliding.text["PRESS ME!!!"] && input.isPressed)
+      addScore(10 * difficulty);
+
+
 }
 
 function tileMatcher() {
