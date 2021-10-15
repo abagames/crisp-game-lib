@@ -1,4 +1,4 @@
-title = " RarioWare";
+title = " Rar.ioWare";
 
 description = `
  `;
@@ -75,7 +75,7 @@ const G = {
 
   RANDOM_START: false,
   STARTING_GAME: 1, // FIRST GAME INDEX IF RANDOM IS FALSE
-  GAME_TIMES: [4, 4],  // Measured in seconds
+  GAME_TIMES: [4, 6],  // Measured in seconds
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -85,7 +85,7 @@ const G = {
   MAX_CHARACTERS: 8,
   PLAYER_SECONDS: 0,
   ICON_CHOOSER: 0,
-  PLAYER_ICON: 0,
+  PLAYER_ICON: 3,
 };
 
 options = {
@@ -316,17 +316,19 @@ function tileMatcher() {
     box(s.pos, 1);
   });
 
-  color ("green");
-  box(50, 63, 10, 10);
-
-  color ("blue");
-  box(50, 63, 8, 8);
+  text("MATCH TILES", 6, (G.HEIGHT / 2) - 15);
 
   color ("green");
-  box(32, 63, 10, 10);
+  box((G.WIDTH / 2) + 10, (G.HEIGHT / 2), 10, 10);
 
   color ("blue");
-  box(32, 63, 8, 8);
+  box((G.WIDTH / 2) + 10, (G.HEIGHT / 2), 8, 8);
+
+  color ("green");
+  box((G.WIDTH / 2) - 10, (G.HEIGHT / 2), 10, 10);
+
+  color ("blue");
+  box((G.WIDTH / 2) - 10, (G.HEIGHT / 2), 8, 8);
 
   // CHOOSING ICON AT START OF GAME
   if (G.ICON_CHOOSER == 0) {
@@ -335,28 +337,24 @@ function tileMatcher() {
 
   if (G.ICON_CHOOSER == 3) {
     color("black");
-    char("c", 50, 63)
+    char("c", (G.WIDTH / 2) + 10, (G.HEIGHT / 2))
   }
   else if (G.ICON_CHOOSER == 4) {
     color("black");
-    char("d", 50, 63)
+    char("d", (G.WIDTH / 2) + 10, (G.HEIGHT / 2))
   }
   else if (G.ICON_CHOOSER == 5) {
     color("black");
-    char("e", 50, 63)
+    char("e", (G.WIDTH / 2) + 10, (G.HEIGHT / 2))
   }
   else if (G.ICON_CHOOSER == 6) {
     color("black");
-    char("f", 50, 63)
+    char("f", (G.WIDTH / 2) + 10, (G.HEIGHT / 2))
   }
   else if (G.ICON_CHOOSER == 7) {
     color("black");
-    char("g", 50, 63)
+    char("g", (G.WIDTH / 2) + 10, (G.HEIGHT / 2))
   }
-
-  npc.pos.clamp(0, G.WIDTH, 0, G.HEIGHT);
-  color ("red");
-  char("b", npc.pos);
 
   // UPDATING AND DRAWING THE PLAYER
   if (G.PLAYER_SECONDS > 60) {
@@ -366,42 +364,38 @@ function tileMatcher() {
   G.PLAYER_SECONDS++;
   if (G.PLAYER_ICON == 3) {
     color("black");
-    char("c", 32, 63)
+    char("c", (G.WIDTH / 2) - 10, (G.HEIGHT / 2))
   }
   else if (G.PLAYER_ICON == 4) {
     color("black");
-    char("d", 32, 63)
+    char("d", (G.WIDTH / 2) - 10, (G.HEIGHT / 2))
   }
   else if (G.PLAYER_ICON == 5) {
     color("black");
-    char("e", 32, 63)
+    char("e", (G.WIDTH / 2) - 10, (G.HEIGHT / 2))
   }
   else if (G.PLAYER_ICON == 6) {
     color("black");
-    char("f", 32, 63)
+    char("f", (G.WIDTH / 2) - 10, (G.HEIGHT / 2))
   }
   else if (G.PLAYER_ICON == 7) {
     color("black");
-    char("g", 32, 63)
+    char("g", (G.WIDTH / 2) - 10, (G.HEIGHT / 2))
   }
-
-  player.pos.clamp(0, G.WIDTH, 0, G.HEIGHT - 3);
-  color("black");
-  char("a", player.pos);
 
   // INPUT_DETECTION
   if (input.isJustPressed) {
-    player.pos.y -= G.JUMP_HEIGHT;
     if (G.PLAYER_ICON == G.ICON_CHOOSER) {
+      color("green");
+      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 30, 4, 20, 20);
       play('coin');
       addScore(10 * difficulty);
     }
     else {
+      color("red");
+      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 20, 4, 90, 10);
       play('explosion');
       addScore(-10 * difficulty);
     }
-  }
-  else if (input.isJustReleased || input.isPressed) {
-    player.pos.y += G.JUMP_HEIGHT;
   }
 }
