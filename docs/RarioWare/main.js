@@ -97,15 +97,21 @@ options = {
 
 
 /** @type  { number } */
+let arrayIndex;
+
+/** @type  { number } */
 let gameIndex;
 
 // a storage for unplayed games and their timer
-/** @typedef {{duration: number}} Games */
+/** @typedef {{trueIndex: number}} Games */
 /** @type  { Games[] } */
 let games;
 
 /** @type  { number } */
 let gameTimer = 0;
+
+/** @type  { boolean } */
+let gameStarted = false;
 
 /** @typedef {{pos: Vector, speed: number}} rain */
 /** @type  { rain[] } */
@@ -129,12 +135,19 @@ function update() {
     initialize()
   }
 
-  if (gameIndex == 0) {
-    tileMatcher();
-  }
+  individualInit(); // initializes for the individual game
 
-  if (gameIndex == 1) {
-    dontPressIt();
+  switch(gameIndex) {
+    case 0: 
+      tileMatcher();
+      break;
+
+    case 1:
+      dontPressIt();
+      break;
+
+    case 2: 
+      break;
   }
 
   timerManager();
@@ -147,11 +160,11 @@ function initialize()
   fillGames();
 
   if (G.RANDOM_START) {
-    gameIndex = floor(rnd(0, games.length));
+    arrayIndex = floor(rnd(0, games.length));
   } else {
-    gameIndex = G.STARTING_GAME;
+    arrayIndex = G.STARTING_GAME;
   }
-  
+  gameIndex = games[arrayIndex].trueIndex;
 
   rain = times(20, () => {
     const posX = rnd(0, G.WIDTH);
@@ -180,18 +193,37 @@ function initialize()
   };
 }
 
+function individualInit() 
+{
+  if (!gameStarted) {
+    gameStarted = true;
+
+    // starts at 0
+    switch(gameIndex) {
+      case 0: 
+        break;
+
+      case 1:
+        break;
+
+      case 2: 
+        break;
+    }
+  }
+}
+
 function fillGames() {
   for (let index = 0; index < G.GAME_TIMES.length; index++) {
     games.push({
-      duration: G.GAME_TIMES[index]
+      trueIndex: index
     });
   }
 }
 
 function timerManager() {
   gameTimer += 1/60;
-  var currentGame = games[gameIndex];
-  if (gameTimer > currentGame.duration) {
+  var currentGame = games[arrayIndex];
+  if (gameTimer > G.GAME_TIMES[currentGame.trueIndex]) {
     transitionGame();
   }
 }
@@ -199,12 +231,14 @@ function timerManager() {
 // switches to next index and resets timer
 function transitionGame() {
   if (games.length > 1) {
-    games.splice(gameIndex, 1);
+    games.splice(arrayIndex, 1);
   } else {
     games.pop();
     fillGames();
   }
-  gameIndex = floor(rnd(0, games.length - 1));
+  arrayIndex = floor(rnd(0, games.length - 1));
+  gameIndex = games[arrayIndex].trueIndex;
+  gameStarted = false;
 
   gameTimer = 0;
 }
