@@ -73,8 +73,9 @@ const G = {
   WIDTH: 75,
   HEIGHT: 75,
 
-  GAME_CHOOSER: 2, // GAME INDEX
-  GAME_TIMER: 0, // TIME UNTIL NEW GAME
+  RANDOM_START: false,
+  STARTING_GAME: 1, // FIRST GAME INDEX IF RANDOM IS FALSE
+  GAME_TIMES: [4, 4],  // Measured in seconds
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -93,6 +94,18 @@ options = {
   seed:1124, //4,7,9,11,65, 1124
   viewSize: {x: G.WIDTH, y: G.HEIGHT}
 };
+
+
+/** @type  { number } */
+let gameIndex;
+
+// a storage for unplayed games and their timer
+/** @typedef {{duration: number}} Games */
+/** @type  { Games[] } */
+let games;
+
+/** @type  { number } */
+let gameTimer = 0;
 
 /** @typedef {{pos: Vector, speed: number}} rain */
 /** @type  { rain[] } */
@@ -116,18 +129,30 @@ function update() {
     initialize()
   }
 
-  if (G.GAME_CHOOSER == 1) {
+  if (gameIndex == 0) {
     tileMatcher();
   }
 
-  if (G.GAME_CHOOSER == 2) {
+  if (gameIndex == 1) {
     dontPressIt();
   }
+
+  timerManager();
 }
 
 //~~~~~~~Main game utility functions~~~~~~~
 function initialize()
 {
+  games = [];
+  fillGames();
+
+  if (G.RANDOM_START) {
+    gameIndex = floor(rnd(0, games.length));
+  } else {
+    gameIndex = G.STARTING_GAME;
+  }
+  
+
   rain = times(20, () => {
     const posX = rnd(0, G.WIDTH);
     const posY = rnd(0, G.HEIGHT);
@@ -155,13 +180,33 @@ function initialize()
   };
 }
 
-function timerManager()
-{
-  if (G.GAME_TIMER >= 1200) {
-    G.GAME_CHOOSER = 2; // SHOULD BE rndi(1, x), where x is how many games we have +1
-    G.GAME_TIMER = 0;
+function fillGames() {
+  for (let index = 0; index < G.GAME_TIMES.length; index++) {
+    games.push({
+      duration: G.GAME_TIMES[index]
+    });
   }
-  G.GAME_TIMER++;
+}
+
+function timerManager() {
+  gameTimer += 1/60;
+  var currentGame = games[gameIndex];
+  if (gameTimer > currentGame.duration) {
+    transitionGame();
+  }
+}
+
+// switches to next index and resets timer
+function transitionGame() {
+  if (games.length > 1) {
+    games.splice(gameIndex, 1);
+  } else {
+    games.pop();
+    fillGames();
+  }
+  gameIndex = floor(rnd(0, games.length - 1));
+
+  gameTimer = 0;
 }
 
 //~~~~~~~Microgames~~~~~~~
