@@ -88,8 +88,8 @@ const G = {
   HEIGHT: 75,
 
   RANDOM_START: false,
-  STARTING_GAME: 2, // FIRST GAME INDEX IF RANDOM IS FALSE
-  GAME_TIMES: [4, 6, 15],  // Measured in seconds
+  STARTING_GAME: 3, // FIRST GAME INDEX IF RANDOM IS FALSE
+  GAME_TIMES: [4, 6, 5, 5],  // Measured in seconds
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -236,11 +236,9 @@ function update() {
       break;
 
     case 3:
-      break;
-
-    case 4:
       bubbleFly();
       break;
+
   }
 
   timerManager();
@@ -304,10 +302,10 @@ function individualInit()
         break;
       
       case 3:
+        bubbleFlyInit();
         break;
 
       case 4:
-        bubbleFlyInit();
         break;
     }
   }
