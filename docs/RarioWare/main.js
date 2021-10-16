@@ -89,7 +89,7 @@ const G = {
 
   RANDOM_START: false,
   STARTING_GAME: 3, // FIRST GAME INDEX IF RANDOM IS FALSE
-  GAME_TIMES: [4, 6, 5, 5],  // Measured in seconds
+  GAME_TIMES: [4, 6, 5, 8],  // Measured in seconds
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -679,7 +679,7 @@ function bubbleFly() {
     const c = box(f.pos, f.width, 1).isColliding.char;
     if (c.h) {
       play("explosion");
-      end();
+      transitionGame();
       bubbleTick = 0;
       return true;
     }
@@ -692,7 +692,7 @@ function bubbleFly() {
 
   if(bubble.pos.y >= 75 || bubble.pos.y < -3) {
     play("hit");
-    end();
+    transitionGame();
     bubbleTick = 0;
   }
 
