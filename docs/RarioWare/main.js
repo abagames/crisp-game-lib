@@ -74,8 +74,8 @@ const G = {
   HEIGHT: 75,
 
   RANDOM_START: false,
-  STARTING_GAME: 1, // FIRST GAME INDEX IF RANDOM IS FALSE
-  GAME_TIMES: [4, 6, 4],  // Measured in seconds
+  STARTING_GAME: 2, // FIRST GAME INDEX IF RANDOM IS FALSE
+  GAME_TIMES: [4, 6, 15],  // Measured in seconds
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -87,6 +87,22 @@ const G = {
   ICON_CHOOSER: 0,
   PLAYER_ICON: 3,
 };
+
+// magnet collect variables
+const MC = {
+  PLAYER_MOVE_SPEED: 0.3,
+	PLAYER_FRICTION: 0.9,
+	PLAYER_PULL_RANGE: 30,
+	PLAYER_PULL_SPEED: 0.1,
+
+  DEBRIS_NUMBER: 12,
+	DEBRIS_SIZE_MIN: 3,
+	DEBRIS_SIZE_MAX: 6,
+	DEBRIS_ATTACH_DISTANCE: 5,
+	DEBRIS_FRICTION: 0.95,
+	DEBRIS_SPAWN_SPACING: 10,
+  DEBRIS_SPAWN_OFFSET: 5,
+}
 
 options = {
   theme: 'pixel',
@@ -102,7 +118,7 @@ let arrayIndex;
 /** @type  { number } */
 let gameIndex;
 
-// a storage for unplayed games and their timer
+// a storage for unplayed games
 /** @typedef {{trueIndex: number}} Games */
 /** @type  { Games[] } */
 let games;
@@ -128,6 +144,37 @@ let npc;
 /** @typedef {{pos: Vector}} Player */
 /** @type { Player } */
 let player;
+
+// magnet collect stuff
+/**
+ * @typedef {{
+ * pos: Vector
+ * moveSpeed: number
+ * velocity: Vector
+ * isPulling: boolean
+ * pullCount: number
+ * }} McPlayer
+ */
+
+/**
+ * @type { McPlayer }
+ */
+let mcPlayer;
+
+/**
+ * @typedef {{
+ * pos: Vector
+ * size: number
+ * velocity: Vector
+ * isPulled: boolean
+ * }} McDebris
+ */
+
+/**
+ * @type { McDebris [] }
+ */
+let mcDebris;
+
 
 
 function update() {
@@ -403,9 +450,113 @@ function tileMatcher() {
 }
 
 function magnetCollect() {
+  if (input.isPressed) {
+		if (mcPlayer.pos.distanceTo(input.pos) > mcPlayer.moveSpeed) {
+			if (mcPlayer.pullCount < 0) {
+				// Backup big fix
+				mcPlayer.pullCount = 0;
+			}
+			mcPlayer.velocity.x = mcPlayer.moveSpeed * Math.cos(mcPlayer.pos.angleTo(input.pos)) / (mcPlayer.pullCount / 4 + 1);
+			mcPlayer.velocity.y = mcPlayer.moveSpeed * Math.sin(mcPlayer.pos.angleTo(input.pos)) / (mcPlayer.pullCount / 4 + 1);
+			//clamp and add if anything else moves the player
+		} else {
+			mcPlayer.velocity = vec(0, 0);
+		}
+		mcPlayer.isPulling = true;
+		//color("black");
+		//char(addWithCharCode("a", floor(ticks / 4) % 2), mcPlayer.pos);
+	} else {
+		mcPlayer.velocity.div(1.05);
+		mcPlayer.isPulling = false;
+	}
+  color("black");
+	char("a", mcPlayer.pos);
+	mcPlayer.pos.add(mcPlayer.velocity);
+	mcPlayer.pos.clamp(0, G.WIDTH, 0, G.HEIGHT);
 
+  //debris
+	color("light_blue");
+	mcDebris.forEach((d) => {
+    if (mcPlayer.isPulling && d.pos.distanceTo(mcPlayer.pos) < MC.PLAYER_PULL_RANGE) {
+      // set pulled to true
+      if (d.pos.distanceTo(mcPlayer.pos) < MC.DEBRIS_ATTACH_DISTANCE && !d.isPulled) {
+        d.isPulled = true;
+        d.velocity = vec(0, 0);
+        mcPlayer.pullCount += 1;
+        play("jump");
+      }
+      // circle around player
+      if (d.isPulled) {
+        var posX = mcPlayer.pos.x;
+        var posY = mcPlayer.pos.y;
+        d.pos = vec(posX, posY);
+      } else {
+        // grab object
+        var distancePower = MC.PLAYER_PULL_SPEED * MC.PLAYER_PULL_RANGE / (d.pos.distanceTo(mcPlayer.pos) + MC.PLAYER_PULL_RANGE) + 0.01;
+        d.velocity.x += distancePower * Math.cos(d.pos.angleTo(mcPlayer.pos));
+        d.velocity.y += distancePower * Math.sin(d.pos.angleTo(mcPlayer.pos));
+      }
+    }
+    
+    if (d.velocity.length > 0.2 || d.isPulled) {
+      color("yellow");
+    } else {
+      color("light_blue");
+    }
+    d.velocity = d.velocity.mul(MC.DEBRIS_FRICTION);
+    if (!d.isPulled)
+    {
+      box(d.pos, d.size);
+    }
+      
+    d.pos.add(d.velocity);
+    
+	}) 
+
+  // Debris
+	remove(mcDebris, (d) => {
+    const outOfBounds = !d.pos.isInRect(0, 0, G.WIDTH + d.size, G.HEIGHT + d.size);
+    if (d.isPulled) {
+      mcPlayer.pullCount--;
+      // add score
+    }
+
+    if (d.velocity.length > 0.2) {
+			color("yellow");
+		} else {
+			color("light_blue");
+		}
+    box(d.pos, d.size);
+
+    return (outOfBounds || d.isPulled);
+    });
+    if (mcDebris.length == 0) {
+      transitionGame();
+    }
 }
 
 function magnetInit() {
+  mcPlayer = {
+    pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.5),
+    moveSpeed: MC.PLAYER_MOVE_SPEED,
+    velocity: vec(0, 0),
+    isPulling: false,
+    pullCount: 0
+  };
 
+  mcDebris = times(MC.DEBRIS_NUMBER, () => {
+    return {
+      pos: ExcludeArea(player.pos, MC.DEBRIS_SPAWN_SPACING, MC.DEBRIS_SPAWN_SPACING),
+      size: rnd(MC.DEBRIS_SIZE_MIN, MC.DEBRIS_SIZE_MAX),
+      velocity: vec(0, 0),
+      isPulled: false,
+    };
+  });
+}
+
+function ExcludeArea(pos, width, height) {
+  var posX = rnd(0, 1) < 0.5 ? rnd(MC.DEBRIS_SPAWN_OFFSET, pos.x - width) : rnd(pos.x + width, G.WIDTH - MC.DEBRIS_SPAWN_OFFSET);
+  var posY = rnd(0, 1) < 0.5 ? rnd(MC.DEBRIS_SPAWN_OFFSET, pos.y - height) : rnd(pos.y + height, G.HEIGHT - MC.DEBRIS_SPAWN_OFFSET);
+  const vector = vec(posX, posY);
+  return vector;
 }
