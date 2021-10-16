@@ -79,6 +79,14 @@ bbbbBb
   ll
   ll
   ll
+`, // findIt guy
+`
+rrrrrr
+rlrrlr
+rrrrrr
+rllllr
+rrrrrr
+rr  rr
 `
 ];
   
@@ -89,7 +97,7 @@ const G = {
 
   RANDOM_START: false,
   STARTING_GAME: 3, // FIRST GAME INDEX IF RANDOM IS FALSE
-  GAME_TIMES: [4, 6, 5, 8],  // Measured in seconds
+  GAME_TIMES: [4, 6, 5, 8, 5],  // Measured in seconds
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -215,6 +223,15 @@ let breath;
 let breathBlock = false;
 /////bubbleFly variables//////
 
+//--------findIt Variable---------
+let charPosX;
+let charPosY;
+let timerUIlength;
+let gameComplete;
+let gameFailed;
+let gameTime;
+//---------------------------------
+
 function update() {
   if (!ticks) {
     initialize()
@@ -237,6 +254,9 @@ function update() {
 
     case 3:
       bubbleFly();
+      break;
+    case 4:
+      findIt();
       break;
 
   }
@@ -306,6 +326,7 @@ function individualInit()
         break;
 
       case 4:
+        findItInit();
         break;
     }
   }
@@ -712,4 +733,44 @@ function bubbleFlyInit() {
   nextFloorDist = 0;
   breath = 10;
   bubbleTick = 0;
+}
+
+function findItInit(){
+  charPosX = rnd(20, 70);
+  charPosY = rnd(20, 70);
+  timerUIlength = 18;
+  gameComplete = false;
+  gameFailed = false;
+  gameTime = 100;
+}
+
+function findIt(){
+  color("light_cyan");
+  text("FIND IT", 30,15);
+  arc(input.pos, 10.9, 4);
+  bar(input.pos.x + 15, input.pos.y + 15, 20, 4.5, .7);
+
+  if(!gameComplete){
+    if(input.pos.x <= charPosX + 8  && input.pos.x >= charPosX - 8 && 
+      input.pos.y <= charPosY + 8  && input.pos.y >= charPosY - 8){
+      if(timerUIlength > 0){
+        timerUIlength -= 0.25;
+        color("yellow");
+        bar(input.pos.x, input.pos.y - 15, timerUIlength, 3, 0)
+        color("black");
+      }else{
+        gameComplete = true;
+      }
+    }else{
+      timerUIlength = 18;
+      color("transparent");
+    }
+  }else{
+    color("black");
+    text("YOU WIN", 30,28);
+    particle(charPosX, charPosY, 1.2, 2);
+  }
+
+  char("j", charPosX, charPosY);
+  
 }
