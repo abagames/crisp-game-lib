@@ -65,6 +65,20 @@ y   yy
  yyyyy
   yyy 
   y y 
+`,//bubble for bubbleFly
+`
+ bbbb
+bBBbbb
+bBbbbb
+bbbbbb
+bbbbBb
+ bbbb
+`, //straw for bubbleFly
+`
+ l  l
+  ll
+  ll
+  ll
 `
 ];
   
@@ -129,12 +143,36 @@ let npc;
 /** @type { Player } */
 let player;
 
+/////bubbleFly variables//////
+/**
+ * @type { {
+ * pos: Vector, width: number
+ * }[] }
+ */
+ let floors;
+ let nextFloorDist;
+
+/**
+ * @typedef {{
+ * pos: Vector,
+ * vy: number
+ * }} Bubble
+ */
+
+/**
+ * @type { Bubble }
+ */
+let bubble;
+let bubbleTick = 0;
+let breath;
+let breathBlock = false;
+/////bubbleFly variables//////
 
 function update() {
   if (!ticks) {
     initialize()
   }
-
+  
   individualInit(); // initializes for the individual game
 
   switch(gameIndex) {
@@ -148,6 +186,13 @@ function update() {
 
     case 2: 
       magnetCollect();
+      break;
+
+    case 3:
+      break;
+
+    case 4:
+      bubbleFly();
       break;
   }
 
@@ -209,6 +254,13 @@ function individualInit()
 
       case 2: 
         magnetInit();
+        break;
+      
+      case 3:
+        break;
+
+      case 4:
+        bubbleFlyInit();
         break;
     }
   }
@@ -408,4 +460,107 @@ function magnetCollect() {
 
 function magnetInit() {
 
+}
+
+function bubbleFly() {
+  if (bubbleTick == 0) {
+    bubbleFlyInit();
+  }
+  bubbleTick++;
+  color("black");
+  char("i", G.WIDTH/2, 65);
+  breathBlock = false;
+  floors.forEach( f => {
+    if (f.pos.x - (f.width/2) < G.WIDTH/2 && f.pos.x + (f.width/2) > G.WIDTH/2) {
+      console.log("true: f.pos.x - f.width/2 = " + (f.pos.x - f.width/2) + " G.WIDTH/2 = " + G.WIDTH/2);
+      console.log("f.pos.x + f.width/2 = " + (f.pos.x + f.width/2));
+      breathBlock = true;
+      return;
+    }
+  });
+
+  if(input.isJustPressed) {
+    if (breath >= 2 && !breathBlock) {
+      play("jump");
+      color("black");
+      particle(G.WIDTH/2, 64, 4, 1, -PI/2, PI/4);
+      bubble.vy = -0.1*sqrt(difficulty);
+      breath -= 2;
+    }
+    else {
+      bubble.vy += 0.009 * difficulty;
+      bubble.pos.y += bubble.vy;
+      
+    }
+  } 
+  if(input.isPressed) {
+    if(breath >= 1 && !breathBlock) {
+      play("laser");
+      bubble.vy -= 0.06 * difficulty;
+      bubble.pos.y += bubble.vy;
+      breath--;
+    }
+    else {
+      bubble.vy += 0.009 * difficulty;
+      bubble.pos.y += bubble.vy;
+    }
+  } else {
+    bubble.vy += 0.009 * difficulty;
+    bubble.pos.y += bubble.vy;
+    if (breath < 10 && bubbleTick%10 == 0) {
+      breath++;
+    }
+  }
+  color("black");
+  char("h", bubble.pos);
+
+  nextFloorDist -= difficulty;
+ // generate moving floor
+  if (nextFloorDist < 0) {
+    const width = rnd(20, 50);
+    floors.push({
+      pos: vec(150 + width / 2, rndi(35, 65)),
+      width
+    });
+    nextFloorDist += width + rnd(20, 50);
+  }
+  remove(floors, (f) => {
+    f.pos.x -= difficulty;
+    color("light_black");
+    const c = box(f.pos, f.width, 1).isColliding.char;
+    if (c.h) {
+      play("explosion");
+      end();
+      bubbleTick = 0;
+      return true;
+    }
+    if(f.pos.x < -f.width / 2) {
+      play("coin");
+      addScore(f.width * 0.2, vec(10, f.pos.y));
+    }
+    return f.pos.x < -f.width / 2;
+  });
+
+  if(bubble.pos.y >= 75 || bubble.pos.y < -3) {
+    play("hit");
+    end();
+    bubbleTick = 0;
+  }
+
+  var y = 65;
+  for( var i = 0; i < breath; i++) {
+    rect(3, y, 3, 4);
+    y -= 5;
+  }
+}
+
+function bubbleFlyInit() {
+  bubble = {
+    pos: vec(G.WIDTH * 0.5, G.HEIGHT * 0.5),
+    vy: 0
+  };
+  floors = [];
+  nextFloorDist = 0;
+  breath = 10;
+  bubbleTick = 0;
 }
