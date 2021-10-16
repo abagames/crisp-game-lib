@@ -75,7 +75,7 @@ const G = {
 
   RANDOM_START: false,
   STARTING_GAME: 1, // FIRST GAME INDEX IF RANDOM IS FALSE
-  GAME_TIMES: [4, 6],  // Measured in seconds
+  GAME_TIMES: [4, 6, 4],  // Measured in seconds
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -147,6 +147,7 @@ function update() {
       break;
 
     case 2: 
+      magnetCollect();
       break;
   }
 
@@ -207,6 +208,7 @@ function individualInit()
         break;
 
       case 2: 
+        magnetInit();
         break;
     }
   }
@@ -398,4 +400,12 @@ function tileMatcher() {
       addScore(-10 * difficulty);
     }
   }
+}
+
+function magnetCollect() {
+
+}
+
+function magnetInit() {
+
 }
