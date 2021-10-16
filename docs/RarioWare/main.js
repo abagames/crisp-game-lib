@@ -229,7 +229,7 @@ let charPosY;
 let timerUIlength;
 let gameComplete;
 let gameFailed;
-let gameTime;
+let successPlayed;
 //---------------------------------
 
 function update() {
@@ -740,17 +740,17 @@ function bubbleFlyInit() {
 }
 
 function findItInit(){
-  charPosX = rnd(20, 70);
-  charPosY = rnd(20, 70);
+  charPosX = rnd(15, G.WIDTH);
+  charPosY = rnd(15, G.HEIGHT - 5);
   timerUIlength = 18;
   gameComplete = false;
   gameFailed = false;
-  gameTime = 100;
+  successPlayed = false;
 }
 
 function findIt(){
   color("light_cyan");
-  text("FIND IT", 30,15);
+  text("FIND IT", 20,15);
   arc(input.pos, 10.9, 4);
   bar(input.pos.x + 15, input.pos.y + 15, 20, 4.5, .7);
 
@@ -769,10 +769,24 @@ function findIt(){
       timerUIlength = 18;
       color("transparent");
     }
+    if(successPlayed){
+      successPlayed = false;
+    }
   }else{
     color("black");
-    text("YOU WIN", 30,28);
+    text("YOU WIN", 20,28);
+    addScore(30);
     particle(charPosX, charPosY, 1.2, 2);
+    if(!successPlayed){
+      play("coin");
+      successPlayed = true;
+    }
+  }
+
+  // if the game was lost, subtract 20 points
+  if(!gameComplete && gameTimer >= 4.99){
+    play("explosion");
+    addScore(-20);
   }
 
   char("j", charPosX, charPosY);
