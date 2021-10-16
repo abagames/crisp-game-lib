@@ -262,6 +262,7 @@ function update() {
   }
 
   timerManager();
+  //??
 }
 
 //~~~~~~~Main game utility functions~~~~~~~
@@ -343,6 +344,9 @@ function fillGames() {
 function timerManager() {
   gameTimer += 1/60;
   var currentGame = games[arrayIndex];
+  color("green");
+  let barLength =  ((G.GAME_TIMES[currentGame.trueIndex] - gameTimer)/G.GAME_TIMES[currentGame.trueIndex]) * G.WIDTH;
+  bar(0,G.HEIGHT - 1, barLength, 4.5,0,0);
   if (gameTimer > G.GAME_TIMES[currentGame.trueIndex]) {
     transitionGame();
   }
