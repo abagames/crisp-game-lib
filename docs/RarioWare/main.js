@@ -545,13 +545,13 @@ function tileMatcher() {
   if (input.isJustPressed) {
     if (G.PLAYER_ICON == G.ICON_CHOOSER) {
       color("green");
-      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 30, 4, 20, 20);
+      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 40, 4, 20, 20);
       play('coin');
       addScore(10 * difficulty);
     }
     else {
       color("red");
-      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 20, 4, 90, 10);
+      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 40, 4, 90, 10);
       play('explosion');
       addScore(-10 * difficulty);
     }
