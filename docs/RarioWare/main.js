@@ -5,12 +5,12 @@ description = `
 
 characters = [
 `
- l  l 
- llll 
- lyyl
-rllllb
- llll
- l  l
+  bbb 
+  bbb 
+   b  
+  bbb 
+   b  
+  b b
 `,
 
 `
@@ -79,14 +79,13 @@ bbbbBb
   ll
   ll
   ll
-`, // findIt guy
-`
-rrrrrr
-rlrrlr
-rrrrrr
-rllllr
-rrrrrr
-rr  rr
+`, //ufo
+` 
+  cc
+ LLLL
+LLLLLL
+LLLLLL
+ cccc
 `
 ];
   
@@ -96,8 +95,9 @@ const G = {
   HEIGHT: 75,
 
   RANDOM_START: false,
-  STARTING_GAME: 2, // FIRST GAME INDEX IF RANDOM IS FALSE
-  GAME_TIMES: [8, 8, 6, 8, 8],  // Measured in seconds
+  STARTING_GAME: 3, // FIRST GAME INDEX IF RANDOM IS FALSE
+  GAME_TIMES: [4, 6, 5, 8, 10],  // Measured in seconds
+  LIVES: 3,
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -112,17 +112,17 @@ const G = {
 
 // magnet collect variables
 const MC = {
-  PLAYER_MOVE_SPEED: 0.65,
+  PLAYER_MOVE_SPEED: 0.3,
 	PLAYER_FRICTION: 0.9,
-	PLAYER_PULL_RANGE: 20,
+	PLAYER_PULL_RANGE: 30,
 	PLAYER_PULL_SPEED: 0.1,
 
-  DEBRIS_NUMBER: 15,
-	DEBRIS_SIZE_MIN: 4,
-	DEBRIS_SIZE_MAX: 7,
+  DEBRIS_NUMBER: 12,
+	DEBRIS_SIZE_MIN: 3,
+	DEBRIS_SIZE_MAX: 6,
 	DEBRIS_ATTACH_DISTANCE: 5,
 	DEBRIS_FRICTION: 0.95,
-	DEBRIS_SPAWN_SPACING: 15,
+	DEBRIS_SPAWN_SPACING: 10,
   DEBRIS_SPAWN_OFFSET: 5,
 }
 
@@ -150,6 +150,9 @@ let gameTimer = 0;
 
 /** @type  { boolean } */
 let gameStarted = false;
+
+/** @type { number } */
+let lifeCount;
 
 /** @typedef {{pos: Vector, speed: number}} rain */
 /** @type  { rain[] } */
@@ -218,18 +221,36 @@ let mcDebris;
  * @type { Bubble }
  */
 let bubble;
+let bubbleTick = 0;
 let breath;
 let breathBlock = false;
 /////bubbleFly variables//////
 
-//--------findIt Variable---------
-let charPosX;
-let charPosY;
-let timerUIlength;
-let gameComplete;
-let gameFailed;
-let successPlayed;
-//---------------------------------
+//ufo minigame
+/**
+ * @type { Player }
+ */
+ let platform;
+
+ /**
+  * @type { Player }
+  */
+ let ufoPlayer
+
+ /**
+  * @type { Player }
+  */
+ let enemy;
+
+ /**
+  * @type { boolean }
+  */
+ let right;
+
+ /**
+  * @type { number }
+  */
+ let frameCount;
 
 function update() {
   if (!ticks) {
@@ -254,14 +275,14 @@ function update() {
     case 3:
       bubbleFly();
       break;
+
     case 4:
-      findIt();
+      ufo();
       break;
 
   }
 
   timerManager();
-  //??
 }
 
 //~~~~~~~Main game utility functions~~~~~~~
@@ -302,6 +323,8 @@ function initialize()
   player = {
     pos: vec(32, 72),
   };
+
+  lifeCount = G.LIVES;
 }
 
 function individualInit() 
@@ -326,7 +349,7 @@ function individualInit()
         break;
 
       case 4:
-        findItInit();
+        ufoInit();
         break;
     }
   }
@@ -343,11 +366,8 @@ function fillGames() {
 function timerManager() {
   gameTimer += 1/60;
   var currentGame = games[arrayIndex];
-  color("green");
-  let barLength =  ((G.GAME_TIMES[currentGame.trueIndex] - gameTimer)/G.GAME_TIMES[currentGame.trueIndex]) * G.WIDTH;
-  bar(0,G.HEIGHT - 1, barLength, 4.5,0,0);
   if (gameTimer > G.GAME_TIMES[currentGame.trueIndex]) {
-    transitionGame();
+    winGame();
   }
 }
 
@@ -359,11 +379,24 @@ function transitionGame() {
     games.pop();
     fillGames();
   }
-  arrayIndex = floor(rnd(0, games.length - 1));
+  arrayIndex = floor(rndi(0, games.length - 1));
   gameIndex = games[arrayIndex].trueIndex;
   gameStarted = false;
 
   gameTimer = 0;
+}
+
+function loseGame() {
+  lifeCount--;
+  if (lifeCount == 0) {
+    play("lucky");
+    end();
+  }
+  transitionGame();
+}
+
+function winGame() {
+  transitionGame();
 }
 
 //~~~~~~~Microgames~~~~~~~
@@ -455,7 +488,7 @@ function tileMatcher() {
 
   // CHOOSING ICON AT START OF GAME
   if (G.ICON_CHOOSER == 0) {
-    G.ICON_CHOOSER = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS - 2);
+    G.ICON_CHOOSER = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS);
   }
 
   if (G.ICON_CHOOSER == 3) {
@@ -480,8 +513,8 @@ function tileMatcher() {
   }
 
   // UPDATING AND DRAWING THE PLAYER
-  if (G.PLAYER_SECONDS > 45) {
-    G.PLAYER_ICON = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS - 2);
+  if (G.PLAYER_SECONDS > 60) {
+    G.PLAYER_ICON = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS);
     G.PLAYER_SECONDS = 0;
   }
   G.PLAYER_SECONDS++;
@@ -510,13 +543,13 @@ function tileMatcher() {
   if (input.isJustPressed) {
     if (G.PLAYER_ICON == G.ICON_CHOOSER) {
       color("green");
-      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 40, 4, 20, 20);
+      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 30, 4, 20, 20);
       play('coin');
       addScore(10 * difficulty);
     }
     else {
       color("red");
-      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 40, 4, 90, 10);
+      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 20, 4, 90, 10);
       play('explosion');
       addScore(-10 * difficulty);
     }
@@ -524,17 +557,14 @@ function tileMatcher() {
 }
 
 function magnetCollect() {
-  color("light_blue");
-  text("COLLECT", 19,15);
-  text(String(mcDebris.length), 37, 25);
   if (input.isPressed) {
 		if (mcPlayer.pos.distanceTo(input.pos) > mcPlayer.moveSpeed) {
 			if (mcPlayer.pullCount < 0) {
 				// Backup big fix
 				mcPlayer.pullCount = 0;
 			}
-			mcPlayer.velocity.x = mcPlayer.moveSpeed * Math.cos(mcPlayer.pos.angleTo(input.pos)) / (mcPlayer.pullCount / 5 + 1);
-			mcPlayer.velocity.y = mcPlayer.moveSpeed * Math.sin(mcPlayer.pos.angleTo(input.pos)) / (mcPlayer.pullCount / 5 + 1);
+			mcPlayer.velocity.x = mcPlayer.moveSpeed * Math.cos(mcPlayer.pos.angleTo(input.pos)) / (mcPlayer.pullCount / 4 + 1);
+			mcPlayer.velocity.y = mcPlayer.moveSpeed * Math.sin(mcPlayer.pos.angleTo(input.pos)) / (mcPlayer.pullCount / 4 + 1);
 			//clamp and add if anything else moves the player
 		} else {
 			mcPlayer.velocity = vec(0, 0);
@@ -560,7 +590,7 @@ function magnetCollect() {
         d.isPulled = true;
         d.velocity = vec(0, 0);
         mcPlayer.pullCount += 1;
-        play("hit");
+        play("jump");
       }
       // circle around player
       if (d.isPulled) {
@@ -608,7 +638,7 @@ function magnetCollect() {
     return (outOfBounds || d.isPulled);
     });
     if (mcDebris.length == 0) {
-      transitionGame();
+      winGame();
     }
 }
 
@@ -633,12 +663,16 @@ function magnetInit() {
 
 function ExcludeArea(pos, width, height) {
   var posX = rnd(0, 1) < 0.5 ? rnd(MC.DEBRIS_SPAWN_OFFSET, pos.x - width) : rnd(pos.x + width, G.WIDTH - MC.DEBRIS_SPAWN_OFFSET);
-  var posY = rnd(0, 1) < 0.5 ? rnd(MC.DEBRIS_SPAWN_OFFSET, pos.y - height) : rnd(pos.y + height, G.HEIGHT - (MC.DEBRIS_SPAWN_OFFSET + 5000));
+  var posY = rnd(0, 1) < 0.5 ? rnd(MC.DEBRIS_SPAWN_OFFSET, pos.y - height) : rnd(pos.y + height, G.HEIGHT - MC.DEBRIS_SPAWN_OFFSET);
   const vector = vec(posX, posY);
   return vector;
 }
 
 function bubbleFly() {
+  if (bubbleTick == 0) {
+    bubbleFlyInit();
+  }
+  bubbleTick++;
   color("black");
   char("i", G.WIDTH/2, 65);
   breathBlock = false;
@@ -656,11 +690,11 @@ function bubbleFly() {
       play("jump");
       color("black");
       particle(G.WIDTH/2, 64, 4, 1, -PI/2, PI/4);
-      bubble.vy = -0.1*sqrt(1);
+      bubble.vy = -0.1*sqrt(difficulty);
       breath -= 2;
     }
     else {
-      bubble.vy += 0.009 * 1;
+      bubble.vy += 0.009 * difficulty;
       bubble.pos.y += bubble.vy;
       
     }
@@ -668,25 +702,25 @@ function bubbleFly() {
   if(input.isPressed) {
     if(breath >= 1 && !breathBlock) {
       play("laser");
-      bubble.vy -= 0.06 * 1;
+      bubble.vy -= 0.06 * difficulty;
       bubble.pos.y += bubble.vy;
       breath--;
     }
     else {
-      bubble.vy += 0.009 * 1;
+      bubble.vy += 0.009 * difficulty;
       bubble.pos.y += bubble.vy;
     }
   } else {
-    bubble.vy += 0.009 * 1;
+    bubble.vy += 0.009 * difficulty;
     bubble.pos.y += bubble.vy;
-    if (breath < 10 && ticks%10 == 0) {
+    if (breath < 10 && bubbleTick%10 == 0) {
       breath++;
     }
   }
   color("black");
   char("h", bubble.pos);
 
-  nextFloorDist -= 1;
+  nextFloorDist -= difficulty;
  // generate moving floor
   if (nextFloorDist < 0) {
     const width = rnd(20, 50);
@@ -697,13 +731,13 @@ function bubbleFly() {
     nextFloorDist += width + rnd(20, 50);
   }
   remove(floors, (f) => {
-    f.pos.x -= 1;
+    f.pos.x -= difficulty;
     color("light_black");
     const c = box(f.pos, f.width, 1).isColliding.char;
     if (c.h) {
       play("explosion");
-      addScore(-10 * difficulty);
-      transitionGame();
+      loseGame();
+      bubbleTick = 0;
       return true;
     }
     if(f.pos.x < -f.width / 2) {
@@ -715,8 +749,8 @@ function bubbleFly() {
 
   if(bubble.pos.y >= 75 || bubble.pos.y < -3) {
     play("hit");
-    addScore(-10 * difficulty);
-    transitionGame();
+    loseGame();
+    bubbleTick = 0;
   }
 
   var y = 65;
@@ -734,58 +768,86 @@ function bubbleFlyInit() {
   floors = [];
   nextFloorDist = 0;
   breath = 10;
+  bubbleTick = 0;
 }
 
-function findItInit(){
-  charPosX = rnd(15, G.WIDTH);
-  charPosY = rnd(15, G.HEIGHT - 5);
-  timerUIlength = 18;
-  gameComplete = false;
-  gameFailed = false;
-  successPlayed = false;
+function ufo() {
+  color("black");
+	char("j", enemy.pos);
+
+	color("cyan");
+	particle(
+		enemy.pos.x,
+		enemy.pos.y,
+		100,
+		10,
+		PI/2,
+		PI/3
+	);
+
+	color("cyan");
+	line(platform.pos.x-7, platform.pos.y+7, platform.pos.x-7, platform.pos.y+35, 1);
+
+	color("cyan");
+	line(platform.pos.x+7, platform.pos.y+7, platform.pos.x+7, platform.pos.y+35, 1);
+	
+	color("red");
+	line(platform.pos.x-5, platform.pos.y, platform.pos.x+5, platform.pos.y, 4);
+
+	color("white");
+	line(platform.pos.x, platform.pos.y+7, platform.pos.x, platform.pos.y+35, 14);
+
+	color("green");
+	box(player.pos.x, player.pos.y, 3, 3);
+
+	color("white");
+	line(0, G.HEIGHT, G.WIDTH, G.HEIGHT, 20);
+
+	if (right) {
+		platform.pos.x += 0.1 * difficulty;
+		if (platform.pos.x >= G.WIDTH-20) right = false;
+	} else {
+		platform.pos.x -= 0.1 * difficulty;
+		if (platform.pos.x <= 20) right = true;
+	}
+
+	if (input.isJustPressed) {
+		if(right) {
+			player.pos.x += 1;
+		} else {
+			player.pos.x -= 1;
+		}
+	}
+
+	color("transparent");
+	const isColliding = box(player.pos.x, player.pos.y, 3, 3).isColliding.rect.cyan;
+	if (isColliding) {
+		play("select");
+		loseGame();
+	}
+
+	frameCount++;
+	if (frameCount == 60) {
+		addScore(10, G.WIDTH, G.HEIGHT/2);
+		frameCount = 0;
+	}
+	color("red");
+	text("MASH!", enemy.pos.x-33, G.HEIGHT/4);
 }
 
-function findIt(){
-  color("light_cyan");
-  text("FIND IT", 20,15);
-  arc(input.pos, 10.9, 4);
-  bar(input.pos.x + 15, input.pos.y + 15, 20, 4.5, .7);
+function ufoInit() {
+  platform = {
+    pos: vec(G.WIDTH/2-5, G.HEIGHT * 0.6)
+  };
 
-  if(!gameComplete){
-    if(input.pos.x <= charPosX + 8  && input.pos.x >= charPosX - 8 && 
-      input.pos.y <= charPosY + 8  && input.pos.y >= charPosY - 8){
-      if(timerUIlength > 0){
-        timerUIlength -= 0.25;
-        color("yellow");
-        bar(input.pos.x, input.pos.y - 15, timerUIlength, 3, 0)
-        color("black");
-      }else{
-        gameComplete = true;
-      }
-    }else{
-      timerUIlength = 18;
-      color("transparent");
-    }
-    if(successPlayed){
-      successPlayed = false;
-    }
-  }else{
-    color("black");
-    text("YOU WIN", 20,28);
-    addScore(30);
-    particle(charPosX, charPosY, 1.2, 2);
-    if(!successPlayed){
-      play("coin");
-      successPlayed = true;
-    }
-  }
+  enemy = {
+    pos: vec(G.WIDTH/2, 2)
+  };
 
-  // if the game was lost, subtract 20 points
-  if(!gameComplete && gameTimer >= 4.99){
-    play("explosion");
-    addScore(-20);
-  }
+  player = {
+    pos: vec(G.WIDTH/2, G.HEIGHT*0.7)
+  };
 
-  char("j", charPosX, charPosY);
-  
+  right = true;
+  frameCount = 0;
 }
