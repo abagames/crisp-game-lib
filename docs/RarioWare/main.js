@@ -218,7 +218,6 @@ let mcDebris;
  * @type { Bubble }
  */
 let bubble;
-let bubbleTick = 0;
 let breath;
 let breathBlock = false;
 /////bubbleFly variables//////
@@ -637,10 +636,6 @@ function ExcludeArea(pos, width, height) {
 }
 
 function bubbleFly() {
-  if (bubbleTick == 0) {
-    bubbleFlyInit();
-  }
-  bubbleTick++;
   color("black");
   char("i", G.WIDTH/2, 65);
   breathBlock = false;
@@ -658,11 +653,11 @@ function bubbleFly() {
       play("jump");
       color("black");
       particle(G.WIDTH/2, 64, 4, 1, -PI/2, PI/4);
-      bubble.vy = -0.1*sqrt(difficulty);
+      bubble.vy = -0.1*sqrt(1);
       breath -= 2;
     }
     else {
-      bubble.vy += 0.009 * difficulty;
+      bubble.vy += 0.009 * 1;
       bubble.pos.y += bubble.vy;
       
     }
@@ -670,25 +665,25 @@ function bubbleFly() {
   if(input.isPressed) {
     if(breath >= 1 && !breathBlock) {
       play("laser");
-      bubble.vy -= 0.06 * difficulty;
+      bubble.vy -= 0.06 * 1;
       bubble.pos.y += bubble.vy;
       breath--;
     }
     else {
-      bubble.vy += 0.009 * difficulty;
+      bubble.vy += 0.009 * 1;
       bubble.pos.y += bubble.vy;
     }
   } else {
-    bubble.vy += 0.009 * difficulty;
+    bubble.vy += 0.009 * 1;
     bubble.pos.y += bubble.vy;
-    if (breath < 10 && bubbleTick%10 == 0) {
+    if (breath < 10 && ticks%10 == 0) {
       breath++;
     }
   }
   color("black");
   char("h", bubble.pos);
 
-  nextFloorDist -= difficulty;
+  nextFloorDist -= 1;
  // generate moving floor
   if (nextFloorDist < 0) {
     const width = rnd(20, 50);
@@ -699,13 +694,13 @@ function bubbleFly() {
     nextFloorDist += width + rnd(20, 50);
   }
   remove(floors, (f) => {
-    f.pos.x -= difficulty;
+    f.pos.x -= 1;
     color("light_black");
     const c = box(f.pos, f.width, 1).isColliding.char;
     if (c.h) {
       play("explosion");
+      addScore(-10 * difficulty);
       transitionGame();
-      bubbleTick = 0;
       return true;
     }
     if(f.pos.x < -f.width / 2) {
@@ -717,8 +712,8 @@ function bubbleFly() {
 
   if(bubble.pos.y >= 75 || bubble.pos.y < -3) {
     play("hit");
+    addScore(-10 * difficulty);
     transitionGame();
-    bubbleTick = 0;
   }
 
   var y = 65;
@@ -736,7 +731,6 @@ function bubbleFlyInit() {
   floors = [];
   nextFloorDist = 0;
   breath = 10;
-  bubbleTick = 0;
 }
 
 function findItInit(){
