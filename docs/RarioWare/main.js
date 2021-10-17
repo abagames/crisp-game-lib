@@ -288,15 +288,6 @@ function initialize()
     };
   });
 
-  press_me = times(24, () => {
-    const posX = rnd(0, 15);
-    const posY = rnd(-55, G.HEIGHT);
-    return {
-      pos: vec(posX, posY),
-      speed: rnd(G.STAR_SPEED_MIN, G.STAR_SPEED_MAX)
-    };
-  });
-
   npc = {
     pos: vec(43, 72), 
   };
@@ -317,6 +308,7 @@ function individualInit()
         break;
 
       case 1:
+        dontPressItInit();
         break;
 
       case 2: 
@@ -388,8 +380,10 @@ function dontPressIt() {
   color("transparent");
 
   //color("red");
-  if(input.isJustPressed &&  rect(input.pos.x, input.pos.y, 1, 1).isColliding.rect.red)
+  if(input.isJustPressed &&  rect(input.pos.x, input.pos.y, 1, 1).isColliding.rect.red) {
     addScore(-10 * difficulty);
+    transitionGame();
+  }
 
   if(flag == -1)
     color("green");
@@ -397,7 +391,6 @@ function dontPressIt() {
     color("black");
 
   particle(18, 19);
- //particle(37, 19);
   particle(56, 19);
   particle(18, 57);
   particle(56, 57);
@@ -422,10 +415,17 @@ function dontPressIt() {
 
     color("transparent");
 
-    if(rect(input.pos, 10, 10).isColliding.text["PRESS ME!!!"] && input.isPressed)
-      addScore(10 * difficulty);
+}
 
-
+function dontPressItInit() {
+  press_me = times(24, () => {
+    const posX = rnd(0, 15);
+    const posY = rnd(-55, G.HEIGHT);
+    return {
+      pos: vec(posX, posY),
+      speed: rnd(G.STAR_SPEED_MIN, G.STAR_SPEED_MAX)
+    };
+  });
 }
 
 function tileMatcher() {
