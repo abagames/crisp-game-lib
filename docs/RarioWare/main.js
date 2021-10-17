@@ -1,6 +1,8 @@
 title = " Rar.ioWare";
 
-description = `
+description = 
+` Beat each 
+ minigame!
  `;
 
 characters = [
@@ -488,7 +490,7 @@ function tileMatcher() {
 
   // CHOOSING ICON AT START OF GAME
   if (G.ICON_CHOOSER == 0) {
-    G.ICON_CHOOSER = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS);
+    G.ICON_CHOOSER = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS - 2);
   }
 
   if (G.ICON_CHOOSER == 3) {
@@ -513,8 +515,8 @@ function tileMatcher() {
   }
 
   // UPDATING AND DRAWING THE PLAYER
-  if (G.PLAYER_SECONDS > 60) {
-    G.PLAYER_ICON = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS);
+  if (G.PLAYER_SECONDS > 45) {
+    G.PLAYER_ICON = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS - 2);
     G.PLAYER_SECONDS = 0;
   }
   G.PLAYER_SECONDS++;
