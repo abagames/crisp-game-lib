@@ -97,7 +97,7 @@ const G = {
 
   RANDOM_START: false,
   STARTING_GAME: 3, // FIRST GAME INDEX IF RANDOM IS FALSE
-  GAME_TIMES: [4, 6, 5, 8, 5],  // Measured in seconds
+  GAME_TIMES: [8, 8, 8, 8, 8],  // Measured in seconds
 
   // ICON MINIGAME
   STAR_SPEED_MIN: 0.5,
@@ -455,7 +455,7 @@ function tileMatcher() {
 
   // CHOOSING ICON AT START OF GAME
   if (G.ICON_CHOOSER == 0) {
-    G.ICON_CHOOSER = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS);
+    G.ICON_CHOOSER = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS - 2);
   }
 
   if (G.ICON_CHOOSER == 3) {
@@ -480,8 +480,8 @@ function tileMatcher() {
   }
 
   // UPDATING AND DRAWING THE PLAYER
-  if (G.PLAYER_SECONDS > 60) {
-    G.PLAYER_ICON = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS);
+  if (G.PLAYER_SECONDS > 45) {
+    G.PLAYER_ICON = rndi(G.MIN_CHARACTERS, G.MAX_CHARACTERS - 2);
     G.PLAYER_SECONDS = 0;
   }
   G.PLAYER_SECONDS++;
@@ -510,13 +510,13 @@ function tileMatcher() {
   if (input.isJustPressed) {
     if (G.PLAYER_ICON == G.ICON_CHOOSER) {
       color("green");
-      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 30, 4, 20, 20);
+      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 40, 4, 20, 20);
       play('coin');
       addScore(10 * difficulty);
     }
     else {
       color("red");
-      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 20, 4, 90, 10);
+      particle(vec((G.WIDTH / 2 - 10), G.HEIGHT / 2), 40, 4, 90, 10);
       play('explosion');
       addScore(-10 * difficulty);
     }
