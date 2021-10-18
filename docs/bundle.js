@@ -2484,7 +2484,19 @@ image-rendering: pixelated;
       }
       return collision;
   }
-  function addRect(isAlignCenter, x, y, width, height, isAddingToTmp = false, isDrawing = true) {
+  function addRect(isAlignCenter, x, y, width, height, isAddingToTmp = false, _isDrawing = true) {
+      let isDrawing = _isDrawing;
+      if ((theme.name === "shape" || theme.name === "shapeDark") &&
+          isDrawing &&
+          currentColor !== "transparent") {
+          if (isAlignCenter) {
+              fillRect(x - width / 2, y - height / 2, width, height);
+          }
+          else {
+              fillRect(x, y, width, height);
+          }
+          isDrawing = false;
+      }
       let pos = isAlignCenter
           ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
           : { x: Math.floor(x), y: Math.floor(y) };

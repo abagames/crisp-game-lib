@@ -260,8 +260,21 @@ function addRect(
   width: number,
   height: number,
   isAddingToTmp = false,
-  isDrawing = true
+  _isDrawing = true
 ) {
+  let isDrawing = _isDrawing;
+  if (
+    (view.theme.name === "shape" || view.theme.name === "shapeDark") &&
+    isDrawing &&
+    view.currentColor !== "transparent"
+  ) {
+    if (isAlignCenter) {
+      view.fillRect(x - width / 2, y - height / 2, width, height);
+    } else {
+      view.fillRect(x, y, width, height);
+    }
+    isDrawing = false;
+  }
   let pos = isAlignCenter
     ? { x: Math.floor(x - width / 2), y: Math.floor(y - height / 2) }
     : { x: Math.floor(x), y: Math.floor(y) };
