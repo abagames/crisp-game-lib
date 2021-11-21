@@ -14,8 +14,6 @@ See also [the article about crisp-game-lib](https://terrysfreegameoftheweek.com/
 
 I would also like to mention a tutorial article, [Guide to getting start with CrispGameLib](https://github.com/JunoNgx/crisp-game-lib-tutorial), written by [Juno Nguyen](https://twitter.com/JunoNgx). It describes in detail how to write code, how to structure data, and other useful information on how to create games using `crisp-game-lib`.
 
-A list of the browser games I've made can be found on [my web page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html). By looking at the gif animations of each game, you can easily understand its rules.
-
 ## Demo (Click the image to play)
 
 <a href="https://abagames.github.io/crisp-game-lib-games/?cywall"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/cywall/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?lland"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/lland/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?bamboo"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/bamboo/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?subjump"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/subjump/screenshot.gif" width="25%" loading="lazy"></a>
