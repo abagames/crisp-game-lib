@@ -129,7 +129,7 @@ function update() {
 
 ## 始め方
 
-1. [docs/getting_started/index.html](https://github.com/abagames/crisp-game-lib/blob/master/docs/getting_started/index.html)をダウンロードします。
+1. [docs/getting_started/index.html](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/getting_started/index.html)をダウンロードします。
 
 1. `index.html`をテキストエディタで開き、`<script>`エレメントにあなたのゲームのコードを書きます。
 

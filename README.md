@@ -132,7 +132,7 @@ Sample code for each game is `main.js` in each directory in the [crisp-game-lib-
 
 ## Getting started
 
-1. Download [docs/getting_started/index.html](https://github.com/abagames/crisp-game-lib/blob/master/docs/getting_started/index.html).
+1. Download [docs/getting_started/index.html](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/getting_started/index.html).
 
 1. Open `index.html` in a text editor and write the code of your game in the `<script>` element.
 
