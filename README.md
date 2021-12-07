@@ -4,7 +4,7 @@
 
 <a href="https://abagames.github.io/crisp-game-lib-games/?doshin"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/doshin/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/cardq/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?earock"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/earock/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?shiny"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/shiny/screenshot.gif" width="25%" loading="lazy"></a>
 
-English | [日本語](https://github.com/abagames/crisp-game-lib/README_ja.md)
+English | [日本語](https://github.com/abagames/crisp-game-lib/blob/master/README_ja.md)
 
 `crisp-game-lib` is a JavaScript library for creating browser games quickly and easily. I developed [50 minigames in 2014](http://www.asahi-net.or.jp/~cs8k-cyu/blog/2014/12/12/games-in-2014/), as well as the Haxe library [mgl](https://github.com/abagames/mgl) and the CoffeeScript library [mgl.coffee](https://github.com/abagames/mgl.coffee) to make them. After that I continued to work on minigames and libraries. Using this experience, `crisp-game-lib` was created as a library with the minimum functionality necessary to create classic arcade-like minigames.
 
