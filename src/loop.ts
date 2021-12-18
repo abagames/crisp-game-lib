@@ -18,7 +18,7 @@ export type Options = {
   theme?: Theme;
 };
 
-let lastFrameTime = 0;
+let nextFrameTime = 0;
 let _init: () => void;
 let _update: () => void;
 const defaultOptions: Options = {
@@ -61,12 +61,10 @@ export function init(
 
 function update() {
   requestAnimationFrame(update);
-  const now = window.performance.now();
-  const timeSinceLast = now - lastFrameTime;
-  if (timeSinceLast < 1000 / 60 - 5) {
+  if (window.performance.now() < nextFrameTime) {
     return;
   }
-  lastFrameTime = now;
+  nextFrameTime += 1000 / 60;
   sss.update();
   input.update();
   _update();
