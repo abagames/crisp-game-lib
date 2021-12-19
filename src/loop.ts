@@ -61,10 +61,15 @@ export function init(
 
 function update() {
   requestAnimationFrame(update);
-  if (window.performance.now() < nextFrameTime) {
+  const now = window.performance.now();
+  if (now < nextFrameTime - 5) {
     return;
   }
-  nextFrameTime += 1000 / 60;
+  const delta = 1000 / 60;
+  nextFrameTime += delta;
+  if (nextFrameTime < now || nextFrameTime > now + delta) {
+    nextFrameTime = now + delta;
+  }
   sss.update();
   input.update();
   _update();
