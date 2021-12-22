@@ -59,6 +59,23 @@ export function init(
   update();
 }
 
+let lastSpeedCheckTime = 0;
+let speedOverMsec = 0;
+function isOverSpeed(delta) {
+  const now = window.performance.now();
+  speedOverMsec += delta;
+  speedOverMsec -= now - lastSpeedCheckTime;
+  lastSpeedCheckTime = now;
+  if (speedOverMsec < -1000 || 1000 <= speedOverMsec) {
+    speedOverMsec = 0;
+  }
+  if (speedOverMsec >= 50) {
+    speedOverMsec -= delta;
+    return true;
+  } else {
+    false;
+  }
+}
 function update() {
   requestAnimationFrame(update);
   const now = window.performance.now();
@@ -70,6 +87,7 @@ function update() {
   if (nextFrameTime < now || nextFrameTime > now + delta) {
     nextFrameTime = now + delta;
   }
+  if (isOverSpeed(delta)) return;
   sss.update();
   input.update();
   _update();
