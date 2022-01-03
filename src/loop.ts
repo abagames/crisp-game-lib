@@ -18,9 +18,12 @@ export type Options = {
   theme?: Theme;
 };
 
-let nextFrameTime = 0;
 let _init: () => void;
 let _update: () => void;
+const targetFps = 60;
+const practicalFps = targetFps * 0.8;
+const deltaTime = 1000 / practicalFps;
+let nextFrameTime = 0;
 const defaultOptions: Options = {
   viewSize: { x: 126, y: 126 },
   bodyBackground: "#111",
@@ -59,35 +62,16 @@ export function init(
   update();
 }
 
-let lastSpeedCheckTime = 0;
-let speedOverMsec = 0;
-function isOverSpeed(delta) {
-  const now = window.performance.now();
-  speedOverMsec += delta;
-  speedOverMsec -= now - lastSpeedCheckTime;
-  lastSpeedCheckTime = now;
-  if (speedOverMsec < -1000 || 1000 <= speedOverMsec) {
-    speedOverMsec = 0;
-  }
-  if (speedOverMsec >= 50) {
-    speedOverMsec -= delta;
-    return true;
-  } else {
-    false;
-  }
-}
 function update() {
   requestAnimationFrame(update);
   const now = window.performance.now();
-  if (now < nextFrameTime - 5) {
+  if (now < nextFrameTime - practicalFps / 12) {
     return;
   }
-  const delta = 1000 / 60;
-  nextFrameTime += delta;
-  if (nextFrameTime < now || nextFrameTime > now + delta) {
-    nextFrameTime = now + delta;
+  nextFrameTime += deltaTime;
+  if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
+    nextFrameTime = now + deltaTime;
   }
-  if (isOverSpeed(delta)) return;
   sss.update();
   input.update();
   _update();
