@@ -35,13 +35,13 @@ declare let difficulty: number;
 declare let score: number;
 
 // Add score
-declare function addScore(value: number);
-declare function addScore(value: number, x: number, y: number);
-declare function addScore(value: number, pos: VectorLike);
+declare function addScore(value: number): void;
+declare function addScore(value: number, x: number, y: number): void;
+declare function addScore(value: number, pos: VectorLike): void;
 
 // End game
-declare function end(gameOverText?: string);
-declare function complete(completeText?: string);
+declare function end(gameOverText?: string): void;
+declare function complete(completeText?: string): void;
 
 // color
 declare type Color =
@@ -61,7 +61,7 @@ declare type Color =
   | "light_purple"
   | "light_cyan"
   | "light_black";
-declare function color(colorName: Color);
+declare function color(colorName: Color): void;
 
 // Draw functions return a collision info.
 type Collision = {
@@ -222,20 +222,20 @@ declare function particle(
   speed?: number,
   angle?: number,
   angleWidth?: number
-);
+): void;
 declare function particle(
   pos: VectorLike,
   count?: number,
   speed?: number,
   angle?: number,
   angleWidth?: number
-);
+): void;
 
 // Record/Restore a frame state for replaying and rewinding
 declare function frameState(state: any): any;
 
 // Rewind a game
-declare function rewind();
+declare function rewind(): void;
 
 // Return Vector
 declare function vec(x?: number | VectorLike, y?: number): Vector;
@@ -434,7 +434,7 @@ declare type SoundEffectType =
   | "jump"
   | "select"
   | "lucky";
-declare function play(type: SoundEffectType);
+declare function play(type: SoundEffectType): void;
 
 declare const PI: number;
 declare function abs(v: number): number;
@@ -459,7 +459,7 @@ declare function addWithCharCode(char: string, offset: number): string;
 declare interface Vector {
   x: number;
   y: number;
-  constructor(x?: number | VectorLike, y?: number);
+  constructor(x?: number | VectorLike, y?: number): Vector;
   set(x?: number | VectorLike, y?: number): this;
   add(x?: number | VectorLike, y?: number): this;
   sub(x?: number | VectorLike, y?: number): this;
@@ -514,4 +514,4 @@ declare function getButton({
   onClick?: () => void;
 }): Button;
 
-declare function updateButton(button: Button);
+declare function updateButton(button: Button): void;
