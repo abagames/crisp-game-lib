@@ -20,9 +20,8 @@ export type Options = {
 
 let _init: () => void;
 let _update: () => void;
-const targetFps = 60;
-const practicalFps = targetFps * 0.8;
-const deltaTime = 1000 / practicalFps;
+const targetFps = 68;
+const deltaTime = 1000 / targetFps;
 let nextFrameTime = 0;
 const defaultOptions: Options = {
   viewSize: { x: 126, y: 126 },
@@ -65,7 +64,7 @@ export function init(
 function update() {
   requestAnimationFrame(update);
   const now = window.performance.now();
-  if (now < nextFrameTime - practicalFps / 12) {
+  if (now < nextFrameTime - targetFps / 12) {
     return;
   }
   nextFrameTime += deltaTime;
