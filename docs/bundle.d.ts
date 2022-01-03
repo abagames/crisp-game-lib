@@ -26,7 +26,7 @@ declare type Options = {
   theme?: ThemeName;
 };
 declare let options: Options;
-declare function update();
+declare function update(): void;
 
 declare let ticks: number;
 // difficulty (Starts from 1, increments by a minute)
