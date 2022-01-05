@@ -1965,9 +1965,11 @@ image-rendering: pixelated;
     set: set
   });
 
-  let lastFrameTime = 0;
   let _init;
   let _update;
+  const targetFps = 68;
+  const deltaTime = 1000 / targetFps;
+  let nextFrameTime = 0;
   const defaultOptions$3 = {
       viewSize: { x: 126, y: 126 },
       bodyBackground: "#111",
@@ -1995,11 +1997,13 @@ image-rendering: pixelated;
   function update$4() {
       requestAnimationFrame(update$4);
       const now = window.performance.now();
-      const timeSinceLast = now - lastFrameTime;
-      if (timeSinceLast < 1000 / 60 - 5) {
+      if (now < nextFrameTime - targetFps / 12) {
           return;
       }
-      lastFrameTime = now;
+      nextFrameTime += deltaTime;
+      if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
+          nextFrameTime = now + deltaTime;
+      }
       sss.update();
       update$3();
       _update();
