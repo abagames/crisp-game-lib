@@ -18,9 +18,11 @@ export type Options = {
   theme?: Theme;
 };
 
-let lastFrameTime = 0;
 let _init: () => void;
 let _update: () => void;
+const targetFps = 68;
+const deltaTime = 1000 / targetFps;
+let nextFrameTime = 0;
 const defaultOptions: Options = {
   viewSize: { x: 126, y: 126 },
   bodyBackground: "#111",
@@ -62,11 +64,13 @@ export function init(
 function update() {
   requestAnimationFrame(update);
   const now = window.performance.now();
-  const timeSinceLast = now - lastFrameTime;
-  if (timeSinceLast < 1000 / 60 - 5) {
+  if (now < nextFrameTime - targetFps / 12) {
     return;
   }
-  lastFrameTime = now;
+  nextFrameTime += deltaTime;
+  if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
+    nextFrameTime = now + deltaTime;
+  }
   sss.update();
   input.update();
   _update();
