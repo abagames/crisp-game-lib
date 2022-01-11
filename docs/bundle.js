@@ -2194,13 +2194,13 @@ image-rendering: pixelated;
   function update$6(button) {
       const o = vec(input.pos).sub(button.pos);
       button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
-      if (input.isJustPressed && button.isHovered) {
+      if (button.isHovered && isJustPressed$1) {
           button.isPressed = true;
       }
       if (button.isPressed && !button.isHovered) {
           button.isPressed = false;
       }
-      if (button.isPressed && input.isJustReleased) {
+      if (button.isPressed && isJustReleased$1) {
           button.onClick();
           button.isPressed = false;
           if (button.isToggle) {
