@@ -144,7 +144,7 @@ export const codes = [
   "BrowserRefresh",
   "BrowserStop",
   "BrowserForward",
-  "BrowserBack"
+  "BrowserBack",
 ];
 export type Code = typeof codes[number];
 
@@ -162,7 +162,7 @@ type Options = {
   onKeyDown?: Function;
 };
 const defaultOptions: Options = {
-  onKeyDown: undefined
+  onKeyDown: undefined,
 };
 let options: Options;
 
@@ -176,26 +176,33 @@ let releasedCode: { [key: string]: boolean } = {};
 export function init(_options?: Options) {
   options = { ...defaultOptions, ..._options };
   code = fromEntities(
-    codes.map(c => [
+    codes.map((c) => [
       c,
       {
         isPressed: false,
         isJustPressed: false,
-        isJustReleased: false
-      }
+        isJustReleased: false,
+      },
     ])
   );
-  document.addEventListener("keydown", e => {
+  document.addEventListener("keydown", (e) => {
     isKeyPressing = isKeyPressed = true;
     pressingCode[e.code] = pressedCode[e.code] = true;
     if (options.onKeyDown != null) {
       options.onKeyDown();
     }
-    if (e.code === "AltLeft" || e.code === "AltRight") {
+    if (
+      e.code === "AltLeft" ||
+      e.code === "AltRight" ||
+      e.code === "ArrowRight" ||
+      e.code === "ArrowDown" ||
+      e.code === "ArrowLeft" ||
+      e.code === "ArrowUp"
+    ) {
       e.preventDefault();
     }
   });
-  document.addEventListener("keyup", e => {
+  document.addEventListener("keyup", (e) => {
     isKeyPressing = false;
     isKeyReleased = true;
     pressingCode[e.code] = false;

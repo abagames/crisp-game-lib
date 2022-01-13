@@ -1663,11 +1663,11 @@ image-rendering: pixelated;
       "BrowserRefresh",
       "BrowserStop",
       "BrowserForward",
-      "BrowserBack"
+      "BrowserBack",
   ];
   let code;
   const defaultOptions$1 = {
-      onKeyDown: undefined
+      onKeyDown: undefined,
   };
   let options$1;
   let isKeyPressing = false;
@@ -1678,25 +1678,30 @@ image-rendering: pixelated;
   let releasedCode = {};
   function init$3(_options) {
       options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
-      code = fromEntities(codes.map(c => [
+      code = fromEntities(codes.map((c) => [
           c,
           {
               isPressed: false,
               isJustPressed: false,
-              isJustReleased: false
-          }
+              isJustReleased: false,
+          },
       ]));
-      document.addEventListener("keydown", e => {
+      document.addEventListener("keydown", (e) => {
           isKeyPressing = isKeyPressed = true;
           pressingCode[e.code] = pressedCode[e.code] = true;
           if (options$1.onKeyDown != null) {
               options$1.onKeyDown();
           }
-          if (e.code === "AltLeft" || e.code === "AltRight") {
+          if (e.code === "AltLeft" ||
+              e.code === "AltRight" ||
+              e.code === "ArrowRight" ||
+              e.code === "ArrowDown" ||
+              e.code === "ArrowLeft" ||
+              e.code === "ArrowUp") {
               e.preventDefault();
           }
       });
-      document.addEventListener("keyup", e => {
+      document.addEventListener("keyup", (e) => {
           isKeyPressing = false;
           isKeyReleased = true;
           pressingCode[e.code] = false;
