@@ -34,6 +34,8 @@ declare let ticks: number;
 declare let difficulty: number;
 // score
 declare let score: number;
+declare let time: number;
+declare let isReplaying: boolean;
 
 // Add score
 declare function addScore(value: number): void;

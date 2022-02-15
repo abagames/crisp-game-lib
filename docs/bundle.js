@@ -2550,6 +2550,7 @@ image-rendering: pixelated;
   const ceil$1 = Math.ceil;
   exports.ticks = 0;
   exports.score = 0;
+  exports.isReplaying = false;
   function rnd(lowOrHigh = 1, high) {
       return random$1.get(lowOrHigh, high);
   }
@@ -2571,7 +2572,7 @@ image-rendering: pixelated;
       initGameOver();
   }
   function addScore(value, x, y) {
-      if (isReplaying) {
+      if (exports.isReplaying) {
           return;
       }
       exports.score += value;
@@ -2632,7 +2633,7 @@ image-rendering: pixelated;
           exports.ticks = bs.ticks;
           return rs.gameState;
       }
-      else if (isReplaying) {
+      else if (exports.isReplaying) {
           const rs = getFrameStateForReplay();
           return rs.gameState;
       }
@@ -2646,7 +2647,7 @@ image-rendering: pixelated;
       if (isRewinding) {
           return;
       }
-      if (!isReplaying && isRewindEnabled) {
+      if (!exports.isReplaying && isRewindEnabled) {
           initRewind();
       }
       else {
@@ -2708,7 +2709,6 @@ image-rendering: pixelated;
   let isSoundEnabled;
   let terminalSize;
   let scoreBoards;
-  let isReplaying = false;
   let isWaitingRewind = false;
   let isRewinding = false;
   let rewindButton;
@@ -2817,7 +2817,7 @@ image-rendering: pixelated;
           }
       }
       exports.ticks++;
-      if (isReplaying) {
+      if (exports.isReplaying) {
           exports.score = prevScore;
           exports.time = prevTime;
       }
@@ -2849,7 +2849,7 @@ image-rendering: pixelated;
       if (isReplayEnabled || isRewindEnabled) {
           initRecord(randomSeed);
           initFrameStates();
-          isReplaying = false;
+          exports.isReplaying = false;
       }
   }
   function updateInGame() {
@@ -2895,7 +2895,7 @@ image-rendering: pixelated;
       clear$1();
       if (isRecorded()) {
           initReplay(random$1);
-          isReplaying = true;
+          exports.isReplaying = true;
       }
   }
   function updateTitle() {
@@ -2949,7 +2949,7 @@ image-rendering: pixelated;
   }
   function initGameOver() {
       state = "gameOver";
-      if (!isReplaying) {
+      if (!exports.isReplaying) {
           clearJustPressed$2();
       }
       exports.ticks = -1;
@@ -2959,7 +2959,7 @@ image-rendering: pixelated;
       }
   }
   function updateGameOver() {
-      if ((isReplaying || exports.ticks > 20) && isJustPressed$2) {
+      if ((exports.isReplaying || exports.ticks > 20) && isJustPressed$2) {
           initInGame();
       }
       else if (exports.ticks === (isReplayEnabled ? 120 : 300) && !isNoTitle) {
@@ -2967,7 +2967,7 @@ image-rendering: pixelated;
       }
   }
   function drawGameOver() {
-      if (isReplaying) {
+      if (exports.isReplaying) {
           return;
       }
       terminal.print(gameOverText, Math.floor((terminalSize.x - gameOverText.length) / 2), Math.floor(terminalSize.y / 2));

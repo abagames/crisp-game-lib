@@ -43,6 +43,7 @@ export let ticks = 0;
 export let difficulty: number;
 export let score = 0;
 export let time: number;
+export let isReplaying = false;
 export type SoundEffectType =
   | "coin"
   | "laser"
@@ -262,7 +263,6 @@ let isDrawingScoreFront: boolean;
 let isSoundEnabled: boolean;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
-let isReplaying = false;
 let isWaitingRewind = false;
 let isRewinding = false;
 let rewindButton: Button;
