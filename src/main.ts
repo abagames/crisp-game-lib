@@ -130,7 +130,7 @@ export function vec(x?: number | VectorLike, y?: number) {
 }
 
 export function play(type: SoundEffectType) {
-  if (!isWaitingRewind && !isRewinding) {
+  if (!isWaitingRewind && !isRewinding && isSoundEnabled) {
     sss.play(soundEffectTypeToString[type]);
   }
 }
@@ -192,6 +192,7 @@ const defaultOptions: Options = {
   isDrawingParticleFront: false,
   isDrawingScoreFront: false,
   isMinifying: false,
+  isSoundEnabled: true,
   viewSize: { x: 100, y: 100 },
   seed: 0,
   theme: "simple",
@@ -225,6 +226,7 @@ declare type Options = {
   isDrawingParticleFront?: boolean;
   isDrawingScoreFront?: boolean;
   isMinifying?: boolean;
+  isSoundEnabled?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
   theme?: ThemeName;
@@ -257,6 +259,7 @@ let isReplayEnabled: boolean;
 let isRewindEnabled: boolean;
 let isDrawingParticleFront: boolean;
 let isDrawingScoreFront: boolean;
+let isSoundEnabled: boolean;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isReplaying = false;
@@ -295,6 +298,7 @@ export function onLoad() {
     bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
     viewBackground: theme.isDarkColor ? "blue" : "white",
     theme,
+    isSoundEnabled: opts.isSoundEnabled,
   };
   seed = opts.seed;
   loopOptions.isCapturing = opts.isCapturing;
@@ -309,6 +313,7 @@ export function onLoad() {
   isRewindEnabled = opts.isRewindEnabled;
   isDrawingParticleFront = opts.isDrawingParticleFront;
   isDrawingScoreFront = opts.isDrawingScoreFront;
+  isSoundEnabled = opts.isSoundEnabled;
   if (opts.isMinifying) {
     showMinifiedScript();
   }
@@ -336,7 +341,9 @@ function init() {
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
   }
-  sss.init(seed);
+  if (isSoundEnabled) {
+    sss.init(seed);
+  }
   const sz = loopOptions.viewSize;
   terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };
   terminal = new Terminal(terminalSize);
@@ -395,7 +402,7 @@ function initInGame() {
   score = 0;
   time = 0;
   scoreBoards = [];
-  if (isPlayingBgm) {
+  if (isPlayingBgm && isSoundEnabled) {
     sss.playBgm();
   }
   const randomSeed = seedRandom.getInt(999999999);
@@ -436,7 +443,11 @@ function updateInGame() {
   if (isShowingTime && time != null) {
     time++;
   }
-  if (isSpeedingUpSound && ticks % soundSpeedingUpInterval === 0) {
+  if (
+    isSpeedingUpSound &&
+    ticks % soundSpeedingUpInterval === 0 &&
+    isSoundEnabled
+  ) {
     sss.playInterval = 0.5 / sqrt(difficulty);
   }
 }
@@ -474,7 +485,11 @@ function updateTitle() {
     if (isDrawingParticleFront) {
       _particle.update();
     }
-    if (isSpeedingUpSound && ticks % soundSpeedingUpInterval === 0) {
+    if (
+      isSpeedingUpSound &&
+      ticks % soundSpeedingUpInterval === 0 &&
+      isSoundEnabled
+    ) {
       sss.playInterval = 0.5 / sqrt(difficulty);
     }
   }
@@ -512,7 +527,7 @@ function initGameOver() {
   }
   ticks = -1;
   drawGameOver();
-  if (isPlayingBgm) {
+  if (isPlayingBgm && isSoundEnabled) {
     sss.stopBgm();
   }
 }
@@ -550,7 +565,7 @@ function initRewind() {
     size: { x: 36, y: 7 },
     text: "GiveUp",
   });
-  if (isPlayingBgm) {
+  if (isPlayingBgm && isSoundEnabled) {
     sss.stopBgm();
   }
   if (view.theme.isUsingPixi) {
@@ -593,7 +608,7 @@ function stopRewind() {
   isRewinding = false;
   state = "inGame";
   _particle.init();
-  if (isPlayingBgm) {
+  if (isPlayingBgm && isSoundEnabled) {
     sss.playBgm();
   }
 }

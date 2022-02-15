@@ -1930,12 +1930,12 @@ image-rendering: pixelated;
   let isPressed$2 = false;
   let isJustPressed$2 = false;
   let isJustReleased$2 = false;
-  function init$5() {
+  function init$5(onInputDownOrUp) {
       init$3({
-          onKeyDown: sss.playEmpty,
+          onKeyDown: onInputDownOrUp,
       });
       init$4(canvas, size, {
-          onPointerDownOrUp: sss.playEmpty,
+          onPointerDownOrUp: onInputDownOrUp,
           anchor: new Vector(0.5, 0.5),
       });
   }
@@ -1983,6 +1983,7 @@ image-rendering: pixelated;
       isFourWaysStick: false,
       isCapturing: false,
       isCapturingGameCanvasOnly: false,
+      isSoundEnabled: true,
       captureCanvasScale: 1,
       theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
   };
@@ -1994,7 +1995,7 @@ image-rendering: pixelated;
       options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
       init(options$3.theme.isDarkColor);
       init$2(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing, options$3.isCapturingGameCanvasOnly, options$3.captureCanvasScale, options$3.theme);
-      init$5();
+      init$5(options$3.isSoundEnabled ? sss.playEmpty : () => { });
       init$1();
       _init();
       update$4();
@@ -2009,7 +2010,9 @@ image-rendering: pixelated;
       if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
           nextFrameTime = now + deltaTime;
       }
-      sss.update();
+      if (options$3.isSoundEnabled) {
+          sss.update();
+      }
       update$3();
       _update();
       if (options$3.isCapturing) {
@@ -2610,7 +2613,7 @@ image-rendering: pixelated;
       return new Vector(x, y);
   }
   function play(type) {
-      if (!isWaitingRewind && !isRewinding) {
+      if (!isWaitingRewind && !isRewinding && isSoundEnabled) {
           sss.play(soundEffectTypeToString[type]);
       }
   }
@@ -2673,6 +2676,7 @@ image-rendering: pixelated;
       isDrawingParticleFront: false,
       isDrawingScoreFront: false,
       isMinifying: false,
+      isSoundEnabled: true,
       viewSize: { x: 100, y: 100 },
       seed: 0,
       theme: "simple",
@@ -2701,6 +2705,7 @@ image-rendering: pixelated;
   let isRewindEnabled;
   let isDrawingParticleFront;
   let isDrawingScoreFront;
+  let isSoundEnabled;
   let terminalSize;
   let scoreBoards;
   let isReplaying = false;
@@ -2737,6 +2742,7 @@ image-rendering: pixelated;
           bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
           viewBackground: theme.isDarkColor ? "blue" : "white",
           theme,
+          isSoundEnabled: opts.isSoundEnabled,
       };
       seed = opts.seed;
       loopOptions.isCapturing = opts.isCapturing;
@@ -2751,6 +2757,7 @@ image-rendering: pixelated;
       isRewindEnabled = opts.isRewindEnabled;
       isDrawingParticleFront = opts.isDrawingParticleFront;
       isDrawingScoreFront = opts.isDrawingScoreFront;
+      isSoundEnabled = opts.isSoundEnabled;
       if (opts.isMinifying) {
           showMinifiedScript();
       }
@@ -2773,7 +2780,9 @@ image-rendering: pixelated;
       if (typeof characters !== "undefined" && characters != null) {
           defineCharacters(characters, "a");
       }
-      sss.init(seed);
+      if (isSoundEnabled) {
+          sss.init(seed);
+      }
       const sz = loopOptions.viewSize;
       terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };
       terminal = new Terminal(terminalSize);
@@ -2832,7 +2841,7 @@ image-rendering: pixelated;
       exports.score = 0;
       exports.time = 0;
       scoreBoards = [];
-      if (isPlayingBgm) {
+      if (isPlayingBgm && isSoundEnabled) {
           sss.playBgm();
       }
       const randomSeed = seedRandom.getInt(999999999);
@@ -2872,7 +2881,9 @@ image-rendering: pixelated;
       if (isShowingTime && exports.time != null) {
           exports.time++;
       }
-      if (isSpeedingUpSound && exports.ticks % soundSpeedingUpInterval === 0) {
+      if (isSpeedingUpSound &&
+          exports.ticks % soundSpeedingUpInterval === 0 &&
+          isSoundEnabled) {
           sss.playInterval = 0.5 / sqrt(exports.difficulty);
       }
   }
@@ -2908,7 +2919,9 @@ image-rendering: pixelated;
           if (isDrawingParticleFront) {
               update$5();
           }
-          if (isSpeedingUpSound && exports.ticks % soundSpeedingUpInterval === 0) {
+          if (isSpeedingUpSound &&
+              exports.ticks % soundSpeedingUpInterval === 0 &&
+              isSoundEnabled) {
               sss.playInterval = 0.5 / sqrt(exports.difficulty);
           }
       }
@@ -2941,7 +2954,7 @@ image-rendering: pixelated;
       }
       exports.ticks = -1;
       drawGameOver();
-      if (isPlayingBgm) {
+      if (isPlayingBgm && isSoundEnabled) {
           sss.stopBgm();
       }
   }
@@ -2973,7 +2986,7 @@ image-rendering: pixelated;
           size: { x: 36, y: 7 },
           text: "GiveUp",
       });
-      if (isPlayingBgm) {
+      if (isPlayingBgm && isSoundEnabled) {
           sss.stopBgm();
       }
       if (theme.isUsingPixi) {
@@ -3016,7 +3029,7 @@ image-rendering: pixelated;
       isRewinding = false;
       state = "inGame";
       init$7();
-      if (isPlayingBgm) {
+      if (isPlayingBgm && isSoundEnabled) {
           sss.playBgm();
       }
   }

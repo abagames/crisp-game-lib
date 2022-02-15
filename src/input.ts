@@ -2,19 +2,18 @@ import * as keyboard from "./keyboard";
 import * as pointer from "./pointer";
 import * as view from "./view";
 import { Vector } from "./vector";
-declare const sss;
 
 export let pos = new Vector();
 export let isPressed = false;
 export let isJustPressed = false;
 export let isJustReleased = false;
 
-export function init() {
+export function init(onInputDownOrUp: Function) {
   keyboard.init({
-    onKeyDown: sss.playEmpty,
+    onKeyDown: onInputDownOrUp,
   });
   pointer.init(view.canvas, view.size, {
-    onPointerDownOrUp: sss.playEmpty,
+    onPointerDownOrUp: onInputDownOrUp,
     anchor: new Vector(0.5, 0.5),
   });
 }

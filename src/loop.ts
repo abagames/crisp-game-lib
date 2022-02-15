@@ -14,6 +14,7 @@ export type Options = {
   isFourWaysStick?: boolean;
   isCapturing?: boolean;
   isCapturingGameCanvasOnly?: boolean;
+  isSoundEnabled?: boolean;
   captureCanvasScale?: number;
   theme?: Theme;
 };
@@ -31,6 +32,7 @@ const defaultOptions: Options = {
   isFourWaysStick: false,
   isCapturing: false,
   isCapturingGameCanvasOnly: false,
+  isSoundEnabled: true,
   captureCanvasScale: 1,
   theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
 };
@@ -55,7 +57,7 @@ export function init(
     options.captureCanvasScale,
     options.theme
   );
-  input.init();
+  input.init(options.isSoundEnabled ? sss.playEmpty : () => {});
   letter.init();
   _init();
   update();
@@ -71,7 +73,9 @@ function update() {
   if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
     nextFrameTime = now + deltaTime;
   }
-  sss.update();
+  if (options.isSoundEnabled) {
+    sss.update();
+  }
   input.update();
   _update();
   if (options.isCapturing) {

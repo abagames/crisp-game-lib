@@ -21,6 +21,7 @@ declare type Options = {
   isDrawingParticleFront?: boolean;
   isDrawingScoreFront?: boolean;
   isMinifying?: boolean;
+  isSoundEnabled?: boolean;
   viewSize?: { x: number; y: number };
   seed?: number;
   theme?: ThemeName;
