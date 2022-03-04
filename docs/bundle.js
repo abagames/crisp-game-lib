@@ -1995,7 +1995,7 @@ image-rendering: pixelated;
       options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
       init(options$3.theme.isDarkColor);
       init$2(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing, options$3.isCapturingGameCanvasOnly, options$3.captureCanvasScale, options$3.theme);
-      init$5(options$3.isSoundEnabled ? sss.playEmpty : () => { });
+      init$5(options$3.isSoundEnabled ? sss.startAudio : () => { });
       init$1();
       _init();
       update$4();

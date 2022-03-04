@@ -57,7 +57,7 @@ export function init(
     options.captureCanvasScale,
     options.theme
   );
-  input.init(options.isSoundEnabled ? sss.playEmpty : () => {});
+  input.init(options.isSoundEnabled ? sss.startAudio : () => {});
   letter.init();
   _init();
   update();
