@@ -5,9 +5,12 @@ description = `
 
 characters = [];
 
+let seed = 31;
+
 options = {
+  isPlayingBgm: true,
+  seed,
   isShowingScore: false,
-  seed: 6,
 };
 
 let playingButtons;
@@ -23,10 +26,10 @@ function update() {
       "hit",
       "jump",
       "select",
-      "lucky",
+      "random",
     ].map((p, i) =>
       getButton({
-        pos: vec(5, 5 + i * 9),
+        pos: vec(5, 2 + i * 9),
         size: vec(56, 7),
         text: p,
         isToggle: false,
@@ -41,8 +44,27 @@ function update() {
   playingButtons.forEach((pb) => {
     updateButton(pb);
   });
+  const bp = vec(5, 73);
+  color("light_blue");
+  rect(bp.x, bp.y, 90, 5);
+  color("white");
+  rect(bp.x + 1, bp.y + 1, 88, 3);
+  if (input.pos.isInRect(bp.x + 1, bp.y + 1, 88, 3)) {
+    let nextSeed = input.pos.x - bp.x;
+    color("blue");
+    rect(bp.x + nextSeed, bp.y + 1, 1, 3);
+    text(`${nextSeed}`, 85, bp.y - 3);
+    if (input.isJustPressed) {
+      seed = nextSeed;
+      sss.stopBgm();
+      sss.setSeed(seed);
+      sss.playBgm();
+    }
+  }
   color("black");
+  rect(bp.x + seed, bp.y + 1, 1, 3);
+  text(`seed: ${seed}`, 5, 88);
   if (currentPlay != null) {
-    text(`play("${currentPlay}");`, 5, 90);
+    text(`play("${currentPlay}");`, 5, 95);
   }
 }

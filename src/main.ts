@@ -52,7 +52,8 @@ export type SoundEffectType =
   | "hit"
   | "jump"
   | "select"
-  | "lucky";
+  | "lucky"
+  | "random";
 
 export function rnd(lowOrHigh: number = 1, high?: number) {
   return random.get(lowOrHigh, high);
@@ -179,10 +180,10 @@ const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
   jump: "j",
   select: "s",
   lucky: "u",
+  random: "r",
 };
 const defaultOptions: Options = {
   isPlayingBgm: false,
-  isSpeedingUpSound: false,
   isCapturing: false,
   isCapturingGameCanvasOnly: false,
   captureCanvasScale: 1,
@@ -216,7 +217,6 @@ export type Theme = {
 };
 declare type Options = {
   isPlayingBgm?: boolean;
-  isSpeedingUpSound?: boolean;
   isCapturing?: boolean;
   isCapturingGameCanvasOnly?: boolean;
   captureCanvasScale?: number;
@@ -237,7 +237,6 @@ declare function update();
 
 const seedRandom = new Random();
 const random = new Random();
-const soundSpeedingUpInterval = 300;
 type State = "title" | "inGame" | "gameOver" | "rewind";
 let state: State;
 let updateFunc = {
@@ -253,7 +252,6 @@ let isNoTitle = true;
 let seed = 0;
 let loopOptions;
 let isPlayingBgm: boolean;
-let isSpeedingUpSound: boolean;
 let isShowingScore: boolean;
 let isShowingTime: boolean;
 let isReplayEnabled: boolean;
@@ -306,7 +304,6 @@ export function onLoad() {
   loopOptions.captureCanvasScale = opts.captureCanvasScale;
   loopOptions.viewSize = opts.viewSize;
   isPlayingBgm = opts.isPlayingBgm;
-  isSpeedingUpSound = opts.isSpeedingUpSound;
   isShowingScore = opts.isShowingScore && !opts.isShowingTime;
   isShowingTime = opts.isShowingTime;
   isReplayEnabled = opts.isReplayEnabled;
@@ -443,13 +440,6 @@ function updateInGame() {
   if (isShowingTime && time != null) {
     time++;
   }
-  if (
-    isSpeedingUpSound &&
-    ticks % soundSpeedingUpInterval === 0 &&
-    isSoundEnabled
-  ) {
-    sss.playInterval = 0.5 / sqrt(difficulty);
-  }
 }
 
 function initTitle() {
@@ -484,13 +474,6 @@ function updateTitle() {
     update();
     if (isDrawingParticleFront) {
       _particle.update();
-    }
-    if (
-      isSpeedingUpSound &&
-      ticks % soundSpeedingUpInterval === 0 &&
-      isSoundEnabled
-    ) {
-      sss.playInterval = 0.5 / sqrt(difficulty);
     }
   }
   if (ticks === 0) {

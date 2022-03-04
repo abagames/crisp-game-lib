@@ -10,7 +10,6 @@ declare type ThemeName =
   | "dark";
 declare type Options = {
   isPlayingBgm?: boolean;
-  isSpeedingUpSound?: boolean;
   isCapturing?: boolean;
   isCapturingGameCanvasOnly?: boolean;
   captureCanvasScale?: number;
@@ -427,18 +426,6 @@ declare type Pointer = {
 
 declare let pointer: Pointer;
 
-// Play sound
-declare type SoundEffectType =
-  | "coin"
-  | "laser"
-  | "explosion"
-  | "powerUp"
-  | "hit"
-  | "jump"
-  | "select"
-  | "lucky";
-declare function play(type: SoundEffectType): void;
-
 declare const PI: number;
 declare function abs(v: number): number;
 declare function sin(v: number): number;
@@ -488,6 +475,92 @@ declare interface Vector {
 declare interface VectorLike {
   x: number;
   y: number;
+}
+
+// Play sound
+declare type SoundEffectType =
+  | "coin"
+  | "laser"
+  | "explosion"
+  | "powerUp"
+  | "hit"
+  | "jump"
+  | "select"
+  | "lucky"
+  | "random";
+declare function play(type: SoundEffectType): void;
+
+// sounds-some-sounds interface
+// https://github.com/abagames/sounds-some-sounds
+declare module sss {
+  // Play the sound effect
+  function play(
+    name?: string,
+    numberOfSounds?: number,
+    pitch?: number,
+    volume?: number
+  ): void;
+  function playSoundEffect(
+    type?:
+      | "coin"
+      | "laser"
+      | "explosion"
+      | "powerUp"
+      | "hit"
+      | "jump"
+      | "select"
+      | "random"
+      | "synth"
+      | "tone"
+      | "click",
+    _options?: {
+      seed?: number;
+      numberOfSounds?: number;
+      pitch?: number;
+      volume?: number;
+    }
+  ): void;
+  // Play generated background music
+  function playBgm(
+    name?: string,
+    pitch?: number,
+    len?: number,
+    interval?: number,
+    numberOfTracks?: number,
+    soundEffectTypes?: string[],
+    volume?: number
+  ): void;
+  // Stop the background music
+  function stopBgm(): void;
+  // Play generated jingle
+  function playJingle(
+    name?: string,
+    isSoundEffect?: boolean,
+    note?: number,
+    len?: number,
+    interval?: number,
+    numberOfTracks?: number,
+    volume?: number
+  ): void;
+  // Stop all jingles
+  function stopJingles(): void;
+  // Play music described in MML
+  function playMml(
+    mmlStrings: string[],
+    _options?: { volume?: number; speed?: number; isLooping?: boolean }
+  ): void;
+  // Stop MML music
+  function stopMml(): void;
+  // Set the tempo of the music
+  function setTempo(tempo?: number): void;
+  // Set the quantize timing of sound effects by the length of the note
+  function setQuantize(noteLength?: number): void;
+  // Set a master volume
+  function setVolume(volume?: number): void;
+  // Rest all states
+  function reset(): void;
+  // Set a random number seed
+  function setSeed(baseRandomSeed?: number): void;
 }
 
 // Button
