@@ -301,7 +301,7 @@ function update() {
 function update() {
   // Plays a sound effect.
   // play(type: "coin" | "laser" | "explosion" | "powerUp" |
-  // "hit" | "jump" | "select" | "lucky");
+  // "hit" | "jump" | "select" | "random");
   play("coin");
 }
 ```
