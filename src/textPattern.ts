@@ -1,15 +1,15 @@
 export const textPatterns = [
   // !
   `
-  l
-  l
-  l
+l
+l
+l
 
-  l
+l
 `,
   `
- l l
- l l
+l l
+l l
 
 
 
@@ -43,25 +43,25 @@ l  l
  ll l
 `,
   `
-  l
-  l
+l
+l
 
 
 
 `,
   `
-   l
-  l
-  l
-  l
-   l
+ l
+l
+l
+l
+ l
 `,
   `
+l
  l
-  l
-  l
-  l
  l
+ l
+l
 `,
   `
   l
@@ -81,8 +81,8 @@ lllll
 
 
 
-  l
  l
+l
 `,
   `
 
@@ -96,7 +96,7 @@ lllll
 
 
 
-  l
+l
 `,
   `
     l
@@ -179,17 +179,17 @@ l   l
   // :
   `
 
-  l
+l
 
-  l
+l
 
 `,
   `
 
-  l
-
-  l
  l
+
+ l
+l
 `,
   `
    ll
@@ -274,7 +274,7 @@ l
 l
 l  ll
 l   l
- llll
+ lll
 `,
   `
 l   l
@@ -291,7 +291,7 @@ lllll
 lllll
 `,
   `
- llll
+  lll
    l
    l
 l  l
@@ -377,13 +377,13 @@ l   l
   `
 l   l
 l   l
- l l
+l   l
  l l
   l
 `,
   `
 l   l
-l   l
+l l l
 l l l
 l l l
  l l
@@ -453,11 +453,11 @@ lllll
 `,
   // a
   `
- ll
-   l
+
  lll
 l  l
- ll
+l  l
+ lll
 `,
   `
 l
@@ -468,10 +468,10 @@ lll
 `,
   `
 
- ll
+ lll
 l  
 l
- ll
+ lll
 `,
   `
    l
@@ -481,46 +481,46 @@ l  l
  lll
 `,
   `
- ll
-l  l
-lll
-l
- ll
-`,
-  `
-   l
-  l 
- lll
-  l
-  l
-`,
-  `
- lll
-l  l
- lll
-   l
- ll
-`,
-  `
-l
-l
-lll
-l  l
-l  l
-`,
-  `
-  l
 
-  l
-  l
-  l
+ ll
+l ll
+ll
+ ll
 `,
   `
-   l
-
-   l
+  l
+ l 
+lll
+ l
+ l
+`,
+  `
+ ll
+l  l
+ lll
    l
  ll
+`,
+  `
+l
+l
+ll
+l l
+l l
+`,
+  `
+
+l
+
+l
+l
+`,
+  `
+ l
+
+ l
+ l
+l
 `,
   `
 l
@@ -530,25 +530,25 @@ ll
 l l
 `,
   `
- ll
-  l
-  l
-  l
- lll
+ll
+ l
+ l
+ l
+lll
 `,
   `
 
-ll l
+llll
 l l l
 l l l
-l l l
+l   l
 `,
   `
 
-l ll
-ll  l
-l   l
-l   l
+lll
+l  l
+l  l
+l  l
 `,
   `
 
@@ -579,16 +579,16 @@ l
 l
 `,
   `
- ll
-l
- ll  
-   l
- ll
+
+ lll
+ll
+  ll
+lll
 `,
   `
+
  l
 lll
- l
  l
   l
 `,
@@ -597,7 +597,7 @@ lll
 l  l
 l  l
 l  l
- ll
+ lll
 `,
   `
 
@@ -608,7 +608,7 @@ l  l
 `,
   `
 
-l l l
+l   l
 l l l
 l l l
  l l
@@ -636,25 +636,25 @@ llll
 `,
   //{
   `
-  ll
-  l
+ ll
+ l
+l
+ l
+ ll
+`,
+  `
+l
+l
+l
+l
+l
+`,
+  `
+ll
  l
   l
-  ll
-`,
-  `
-  l
-  l
-  l
-  l
-  l
-`,
-  `
- ll
-  l
-   l
-  l
- ll
+ l
+ll
 `,
   `
 
@@ -662,5 +662,5 @@ llll
 l l l
    l
 
-`
+`,
 ];

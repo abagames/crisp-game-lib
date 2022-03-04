@@ -19,16 +19,16 @@ ll  ll
   lll
 ll l l
  llll
+  ll
  l  l
-ll  ll
+ l  l
 `,
   `
   lll
 ll l l
  llll
-  ll
  l  l
- l  l
+ll  ll
 `,
   `
 lllll
@@ -300,5 +300,5 @@ lll
    lll
    lll
    lll
-`
+`,
 ];

@@ -276,15 +276,15 @@
   const textPatterns = [
       // !
       `
-  l
-  l
-  l
+l
+l
+l
 
-  l
+l
 `,
       `
- l l
- l l
+l l
+l l
 
 
 
@@ -318,25 +318,25 @@ l  l
  ll l
 `,
       `
-  l
-  l
+l
+l
 
 
 
 `,
       `
-   l
-  l
-  l
-  l
-   l
+ l
+l
+l
+l
+ l
 `,
       `
+l
  l
-  l
-  l
-  l
  l
+ l
+l
 `,
       `
   l
@@ -356,8 +356,8 @@ lllll
 
 
 
-  l
  l
+l
 `,
       `
 
@@ -371,7 +371,7 @@ lllll
 
 
 
-  l
+l
 `,
       `
     l
@@ -454,17 +454,17 @@ l   l
       // :
       `
 
-  l
+l
 
-  l
+l
 
 `,
       `
 
-  l
-
-  l
  l
+
+ l
+l
 `,
       `
    ll
@@ -549,7 +549,7 @@ l
 l
 l  ll
 l   l
- llll
+ lll
 `,
       `
 l   l
@@ -566,7 +566,7 @@ lllll
 lllll
 `,
       `
- llll
+  lll
    l
    l
 l  l
@@ -652,13 +652,13 @@ l   l
       `
 l   l
 l   l
- l l
+l   l
  l l
   l
 `,
       `
 l   l
-l   l
+l l l
 l l l
 l l l
  l l
@@ -728,11 +728,11 @@ lllll
 `,
       // a
       `
- ll
-   l
+
  lll
 l  l
- ll
+l  l
+ lll
 `,
       `
 l
@@ -743,10 +743,10 @@ lll
 `,
       `
 
- ll
+ lll
 l  
 l
- ll
+ lll
 `,
       `
    l
@@ -756,46 +756,46 @@ l  l
  lll
 `,
       `
- ll
-l  l
-lll
-l
- ll
-`,
-      `
-   l
-  l 
- lll
-  l
-  l
-`,
-      `
- lll
-l  l
- lll
-   l
- ll
-`,
-      `
-l
-l
-lll
-l  l
-l  l
-`,
-      `
-  l
 
-  l
-  l
-  l
+ ll
+l ll
+ll
+ ll
 `,
       `
-   l
-
-   l
+  l
+ l 
+lll
+ l
+ l
+`,
+      `
+ ll
+l  l
+ lll
    l
  ll
+`,
+      `
+l
+l
+ll
+l l
+l l
+`,
+      `
+
+l
+
+l
+l
+`,
+      `
+ l
+
+ l
+ l
+l
 `,
       `
 l
@@ -805,25 +805,25 @@ ll
 l l
 `,
       `
- ll
-  l
-  l
-  l
- lll
+ll
+ l
+ l
+ l
+lll
 `,
       `
 
-ll l
+llll
 l l l
 l l l
-l l l
+l   l
 `,
       `
 
-l ll
-ll  l
-l   l
-l   l
+lll
+l  l
+l  l
+l  l
 `,
       `
 
@@ -854,16 +854,16 @@ l
 l
 `,
       `
- ll
-l
- ll  
-   l
- ll
+
+ lll
+ll
+  ll
+lll
 `,
       `
+
  l
 lll
- l
  l
   l
 `,
@@ -872,7 +872,7 @@ lll
 l  l
 l  l
 l  l
- ll
+ lll
 `,
       `
 
@@ -883,7 +883,7 @@ l  l
 `,
       `
 
-l l l
+l   l
 l l l
 l l l
  l l
@@ -911,25 +911,25 @@ llll
 `,
       //{
       `
-  ll
-  l
+ ll
+ l
+l
+ l
+ ll
+`,
+      `
+l
+l
+l
+l
+l
+`,
+      `
+ll
  l
   l
-  ll
-`,
-      `
-  l
-  l
-  l
-  l
-  l
-`,
-      `
- ll
-  l
-   l
-  l
- ll
+ l
+ll
 `,
       `
 
@@ -937,7 +937,7 @@ llll
 l l l
    l
 
-`
+`,
   ];
 
   let hitBoxes;
@@ -2663,10 +2663,10 @@ image-rendering: pixelated;
       jump: "j",
       select: "s",
       lucky: "u",
+      random: "r",
   };
   const defaultOptions$4 = {
       isPlayingBgm: false,
-      isSpeedingUpSound: false,
       isCapturing: false,
       isCapturingGameCanvasOnly: false,
       captureCanvasScale: 1,
@@ -2684,7 +2684,6 @@ image-rendering: pixelated;
   };
   const seedRandom = new Random();
   const random$1 = new Random();
-  const soundSpeedingUpInterval = 300;
   let state;
   let updateFunc = {
       title: updateTitle,
@@ -2699,7 +2698,6 @@ image-rendering: pixelated;
   let seed = 0;
   let loopOptions;
   let isPlayingBgm;
-  let isSpeedingUpSound;
   let isShowingScore;
   let isShowingTime;
   let isReplayEnabled;
@@ -2750,7 +2748,6 @@ image-rendering: pixelated;
       loopOptions.captureCanvasScale = opts.captureCanvasScale;
       loopOptions.viewSize = opts.viewSize;
       isPlayingBgm = opts.isPlayingBgm;
-      isSpeedingUpSound = opts.isSpeedingUpSound;
       isShowingScore = opts.isShowingScore && !opts.isShowingTime;
       isShowingTime = opts.isShowingTime;
       isReplayEnabled = opts.isReplayEnabled;
@@ -2881,11 +2878,6 @@ image-rendering: pixelated;
       if (isShowingTime && exports.time != null) {
           exports.time++;
       }
-      if (isSpeedingUpSound &&
-          exports.ticks % soundSpeedingUpInterval === 0 &&
-          isSoundEnabled) {
-          sss.playInterval = 0.5 / sqrt(exports.difficulty);
-      }
   }
   function initTitle() {
       state = "title";
@@ -2918,11 +2910,6 @@ image-rendering: pixelated;
           update();
           if (isDrawingParticleFront) {
               update$5();
-          }
-          if (isSpeedingUpSound &&
-              exports.ticks % soundSpeedingUpInterval === 0 &&
-              isSoundEnabled) {
-              sss.playInterval = 0.5 / sqrt(exports.difficulty);
           }
       }
       if (exports.ticks === 0) {
