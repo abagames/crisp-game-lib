@@ -62,10 +62,12 @@ function update() {
     coinCount = 0;
     multiplier = 1;
   }
-  if (!isReplaying && ticks % 600 === 0) {
+  if (ticks % 600 === 0) {
     sss.stopBgm();
-    sss.setTempo(clamp(120 + (ticks / 600) * 10, 240));
-    sss.playBgm();
+    sss.setTempo(clamp(120 + (ticks / 600) * 10, 120, 240));
+    if (!isReplaying) {
+      sss.playBgm();
+    }
   }
   const scr = difficulty * 0.5;
   walls.forEach((w) => {
