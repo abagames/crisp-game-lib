@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+declare const PIXI;
 
 const gridFilterFragment = `
 varying vec2 vTextureCoord;

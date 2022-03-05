@@ -1,16 +1,15 @@
-import * as PIXI from "pixi.js";
 import { Vector, VectorLike } from "./vector";
 import { Theme } from "./main";
 import { colorToNumber, colorToStyle } from "./color";
-import { LetterImage, letterSize } from "./letter";
 import { getGridFilter } from "./filters";
+declare const PIXI;
 declare const gcc;
 
 export const size = new Vector();
 export let canvas: HTMLCanvasElement;
+export let context: CanvasRenderingContext2D;
+export let graphics; //: PIXI.Graphics;
 let canvasSize = new Vector();
-let context: CanvasRenderingContext2D;
-let graphics: PIXI.Graphics;
 const graphicsScale = 5;
 
 let background = document.createElement("img");
@@ -184,7 +183,7 @@ export function setColor(colorName: Color) {
   context.fillStyle = colorToStyle(colorName);
 }
 
-function beginFillColor(color: number) {
+export function beginFillColor(color: number) {
   endFill();
   graphics.beginFill(color);
   isFilling = true;
@@ -233,35 +232,6 @@ export function drawLine(
   graphics.moveTo(x1, y1);
   graphics.lineTo(x2, y2);
   graphics.lineStyle(0);
-}
-
-export function drawLetterImage(
-  li: LetterImage,
-  x: number,
-  y: number,
-  width?: number,
-  height?: number
-) {
-  if (theme.isUsingPixi) {
-    endFill();
-    graphics.beginTextureFill({
-      texture: li.texture,
-      matrix: new PIXI.Matrix().translate(x, y),
-    });
-    graphics.drawRect(
-      x,
-      y,
-      width == null ? letterSize : width,
-      height == null ? letterSize : height
-    );
-    beginFillColor(colorToNumber(currentColor));
-    return;
-  }
-  if (width == null) {
-    context.drawImage(li.image, x, y);
-  } else {
-    context.drawImage(li.image, x, y, width, height);
-  }
 }
 
 export function updateCrtFilter() {

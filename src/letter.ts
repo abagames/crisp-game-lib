@@ -1,18 +1,27 @@
-import * as PIXI from "pixi.js";
 import { textPatterns } from "./textPattern";
 import {
   fillRect,
-  drawLetterImage,
   setColor,
   currentColor,
   saveCurrentColor,
   loadCurrentColor,
   theme,
+  beginFillColor,
+  endFill,
+  context,
+  graphics,
 } from "./view";
-import { Color, colorChars, colors, colorToStyle } from "./color";
+import {
+  Color,
+  colorChars,
+  colors,
+  colorToStyle,
+  colorToNumber,
+} from "./color";
 import { Vector, VectorLike } from "./vector";
 import { HitBox, hitBoxes, checkHitBoxes, Collision } from "./collision";
 import { wrap } from "./util";
+declare const PIXI;
 
 export type LetterOptions = {
   color?: Color;
@@ -74,7 +83,7 @@ export const letterSize = dotCount * dotSize;
 
 export type LetterImage = {
   image: HTMLImageElement | HTMLCanvasElement;
-  texture?: PIXI.Texture;
+  texture?; //: PIXI.Texture;
   hitBox: HitBox;
 };
 
@@ -255,7 +264,7 @@ export function printChar(
     letterContext.globalCompositeOperation = "source-over";
   }
   const hitBox = getHitBox(c, options.isCharacter);
-  let texture: PIXI.Texture;
+  let texture; //: PIXI.Texture;
   if (isCacheEnabled || theme.isUsingPixi) {
     const cachedImage = document.createElement("img");
     cachedImage.src = letterCanvas.toDataURL();
@@ -308,6 +317,35 @@ function drawAndTestLetterImage(
     hitBoxes.push(hitBox);
   }
   return collision;
+}
+
+function drawLetterImage(
+  li: LetterImage,
+  x: number,
+  y: number,
+  width?: number,
+  height?: number
+) {
+  if (theme.isUsingPixi) {
+    endFill();
+    graphics.beginTextureFill({
+      texture: li.texture,
+      matrix: new PIXI.Matrix().translate(x, y),
+    });
+    graphics.drawRect(
+      x,
+      y,
+      width == null ? letterSize : width,
+      height == null ? letterSize : height
+    );
+    beginFillColor(colorToNumber(currentColor));
+    return;
+  }
+  if (width == null) {
+    context.drawImage(li.image, x, y);
+  } else {
+    context.drawImage(li.image, x, y, width, height);
+  }
 }
 
 function createLetterImages(
