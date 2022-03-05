@@ -1,5 +1,6 @@
-import typescript from "rollup-plugin-typescript2";
-import commonjs from "rollup-plugin-commonjs";
+import typescript from "@rollup/plugin-typescript";
+import commonjs from "@rollup/plugin-commonjs";
+import replace from "@rollup/plugin-replace";
 
 export default {
   input: "src/main.ts",
@@ -9,5 +10,12 @@ export default {
     name: "window",
     extend: true,
   },
-  plugins: [typescript({ tsconfig: "tsconfig-rollup.json" }), commonjs()],
+  plugins: [
+    typescript({ tsconfig: "tsconfig-rollup.json" }),
+    commonjs(),
+    replace({
+      values: { "this.window = this.window": "window" },
+      preventAssignment: true,
+    }),
+  ],
 };

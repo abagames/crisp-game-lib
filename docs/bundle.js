@@ -216,7 +216,7 @@
       0x03a9f4,
       0x616161,
   ];
-  function init(isDarkColor) {
+  function init$8(isDarkColor) {
       const [wr, wb, wg] = getRgb(0, isDarkColor);
       values = fromEntities(colors.map((c, i) => {
           if (i < 1) {
@@ -304,7 +304,7 @@ void main(void) {
   let graphics; //: PIXI.Graphics;
   let canvasSize = new Vector();
   const graphicsScale = 5;
-  let background = document.createElement("img");
+  document.createElement("img");
   let captureCanvas;
   let captureContext;
   let calculatedCanvasScale = 1;
@@ -314,7 +314,7 @@ void main(void) {
   let isFilling = false;
   let theme;
   let crtFilter;
-  function init$1(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, _theme) {
+  function init$7(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, _theme) {
       size.set(_size);
       theme = _theme;
       viewBackground = _viewBackground;
@@ -428,7 +428,7 @@ image-rendering: pixelated;
           });
       }
   }
-  function clear() {
+  function clear$1() {
       if (theme.isUsingPixi) {
           graphics.clear();
           isFilling = false;
@@ -488,7 +488,7 @@ image-rendering: pixelated;
       }
       context.fillRect(x, y, width, height);
   }
-  function drawLine(x1, y1, x2, y2, thickness) {
+  function drawLine$1(x1, y1, x2, y2, thickness) {
       const cn = colorToNumber(currentColor);
       beginFillColor(cn);
       graphics.drawCircle(x1, y1, thickness * 0.5);
@@ -1184,7 +1184,7 @@ l l l
 
   let hitBoxes;
   let tmpHitBoxes;
-  function clear$1() {
+  function clear() {
       hitBoxes = [];
       tmpHitBoxes = [];
   }
@@ -1265,7 +1265,7 @@ l l l
   let isCacheEnabled = false;
   let letterCanvas;
   let letterContext;
-  const defaultOptions = {
+  const defaultOptions$4 = {
       color: "black",
       backgroundColor: "transparent",
       rotation: 0,
@@ -1274,7 +1274,7 @@ l l l
       isCharacter: false,
       isCheckingCollision: false,
   };
-  function init$2() {
+  function init$6() {
       letterCanvas = document.createElement("canvas");
       letterCanvas.width = letterCanvas.height = letterSize;
       letterContext = letterCanvas.getContext("2d");
@@ -1510,19 +1510,19 @@ l l l
       return b;
   }
   function mergeDefaultOptions(_options) {
-      let options = Object.assign(Object.assign({}, defaultOptions), _options);
+      let options = Object.assign(Object.assign({}, defaultOptions$4), _options);
       if (_options.scale != null) {
-          options.scale = Object.assign(Object.assign({}, defaultOptions.scale), _options.scale);
+          options.scale = Object.assign(Object.assign({}, defaultOptions$4.scale), _options.scale);
       }
       if (_options.mirror != null) {
-          options.mirror = Object.assign(Object.assign({}, defaultOptions.mirror), _options.mirror);
+          options.mirror = Object.assign(Object.assign({}, defaultOptions$4.mirror), _options.mirror);
       }
       return options;
   }
 
-  let isPressed = false;
-  let isJustPressed = false;
-  let isJustReleased = false;
+  let isPressed$2 = false;
+  let isJustPressed$2 = false;
+  let isJustReleased$2 = false;
   const codes = [
       "Escape",
       "Digit0",
@@ -1666,18 +1666,18 @@ l l l
       "BrowserBack",
   ];
   let code;
-  const defaultOptions$1 = {
+  const defaultOptions$3 = {
       onKeyDown: undefined,
   };
-  let options$1;
+  let options$3;
   let isKeyPressing = false;
   let isKeyPressed = false;
   let isKeyReleased = false;
   let pressingCode = {};
   let pressedCode = {};
   let releasedCode = {};
-  function init$3(_options) {
-      options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
+  function init$5(_options) {
+      options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
       code = fromEntities(codes.map((c) => [
           c,
           {
@@ -1689,8 +1689,8 @@ l l l
       document.addEventListener("keydown", (e) => {
           isKeyPressing = isKeyPressed = true;
           pressingCode[e.code] = pressedCode[e.code] = true;
-          if (options$1.onKeyDown != null) {
-              options$1.onKeyDown();
+          if (options$3.onKeyDown != null) {
+              options$3.onKeyDown();
           }
           if (e.code === "AltLeft" ||
               e.code === "AltRight" ||
@@ -1708,11 +1708,11 @@ l l l
           releasedCode[e.code] = true;
       });
   }
-  function update$1() {
-      isJustPressed = !isPressed && isKeyPressed;
-      isJustReleased = isPressed && isKeyReleased;
+  function update$6() {
+      isJustPressed$2 = !isPressed$2 && isKeyPressed;
+      isJustReleased$2 = isPressed$2 && isKeyReleased;
       isKeyPressed = isKeyReleased = false;
-      isPressed = isKeyPressing;
+      isPressed$2 = isKeyPressing;
       entries(code).forEach(([c, s]) => {
           s.isJustPressed = !s.isPressed && pressedCode[c];
           s.isJustReleased = s.isPressed && releasedCode[c];
@@ -1721,21 +1721,21 @@ l l l
       pressedCode = {};
       releasedCode = {};
   }
-  function clearJustPressed() {
-      isJustPressed = false;
-      isPressed = true;
+  function clearJustPressed$2() {
+      isJustPressed$2 = false;
+      isPressed$2 = true;
   }
 
   var keyboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    get isPressed () { return isPressed; },
-    get isJustPressed () { return isJustPressed; },
-    get isJustReleased () { return isJustReleased; },
+    get isPressed () { return isPressed$2; },
+    get isJustPressed () { return isJustPressed$2; },
+    get isJustReleased () { return isJustReleased$2; },
     codes: codes,
     get code () { return code; },
-    init: init$3,
-    update: update$1,
-    clearJustPressed: clearJustPressed
+    init: init$5,
+    update: update$6,
+    clearJustPressed: clearJustPressed$2
   });
 
   class Random {
@@ -1790,7 +1790,7 @@ l l l
       }
   }
 
-  const pos = new Vector();
+  const pos$1 = new Vector();
   let isPressed$1 = false;
   let isJustPressed$1 = false;
   let isJustReleased$1 = false;
@@ -1841,11 +1841,11 @@ l l l
           onUp();
       }, { passive: false });
   }
-  function update$2() {
-      calcPointerPos(cursorPos.x, cursorPos.y, pos);
-      if (options$2.isDebugMode && !pos.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
+  function update$5() {
+      calcPointerPos(cursorPos.x, cursorPos.y, pos$1);
+      if (options$2.isDebugMode && !pos$1.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
           updateDebug();
-          pos.set(debugPos);
+          pos$1.set(debugPos);
           isJustPressed$1 = !isPressed$1 && debugIsDown;
           isJustReleased$1 = isPressed$1 && !debugIsDown;
           isPressed$1 = debugIsDown;
@@ -1917,21 +1917,21 @@ l l l
 
   var pointer = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    pos: pos,
+    pos: pos$1,
     get isPressed () { return isPressed$1; },
     get isJustPressed () { return isJustPressed$1; },
     get isJustReleased () { return isJustReleased$1; },
     init: init$4,
-    update: update$2,
+    update: update$5,
     clearJustPressed: clearJustPressed$1
   });
 
-  let pos$1 = new Vector();
-  let isPressed$2 = false;
-  let isJustPressed$2 = false;
-  let isJustReleased$2 = false;
-  function init$5(onInputDownOrUp) {
-      init$3({
+  let pos = new Vector();
+  let isPressed = false;
+  let isJustPressed = false;
+  let isJustReleased = false;
+  function init$3(onInputDownOrUp) {
+      init$5({
           onKeyDown: onInputDownOrUp,
       });
       init$4(canvas, size, {
@@ -1939,43 +1939,43 @@ l l l
           anchor: new Vector(0.5, 0.5),
       });
   }
-  function update$3() {
-      update$1();
-      update$2();
-      pos$1 = pos;
-      isPressed$2 = isPressed || isPressed$1;
-      isJustPressed$2 = isJustPressed || isJustPressed$1;
-      isJustReleased$2 = isJustReleased || isJustReleased$1;
+  function update$4() {
+      update$6();
+      update$5();
+      pos = pos$1;
+      isPressed = isPressed$2 || isPressed$1;
+      isJustPressed = isJustPressed$2 || isJustPressed$1;
+      isJustReleased = isJustReleased$2 || isJustReleased$1;
   }
-  function clearJustPressed$2() {
-      clearJustPressed();
+  function clearJustPressed() {
+      clearJustPressed$2();
       clearJustPressed$1();
   }
   function set(state) {
-      pos$1.set(state.pos);
-      isPressed$2 = state.isPressed;
-      isJustPressed$2 = state.isJustPressed;
-      isJustReleased$2 = state.isJustReleased;
+      pos.set(state.pos);
+      isPressed = state.isPressed;
+      isJustPressed = state.isJustPressed;
+      isJustReleased = state.isJustReleased;
   }
 
   var input$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    get pos () { return pos$1; },
-    get isPressed () { return isPressed$2; },
-    get isJustPressed () { return isJustPressed$2; },
-    get isJustReleased () { return isJustReleased$2; },
-    init: init$5,
-    update: update$3,
-    clearJustPressed: clearJustPressed$2,
+    get pos () { return pos; },
+    get isPressed () { return isPressed; },
+    get isJustPressed () { return isJustPressed; },
+    get isJustReleased () { return isJustReleased; },
+    init: init$3,
+    update: update$4,
+    clearJustPressed: clearJustPressed,
     set: set
   });
 
   let _init;
-  let _update;
+  let _update$1;
   const targetFps = 68;
   const deltaTime = 1000 / targetFps;
   let nextFrameTime = 0;
-  const defaultOptions$3 = {
+  const defaultOptions$1 = {
       viewSize: { x: 126, y: 126 },
       bodyBackground: "#111",
       viewBackground: "black",
@@ -1987,21 +1987,21 @@ l l l
       captureCanvasScale: 1,
       theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
   };
-  let options$3;
+  let options$1;
   let textCacheEnableTicks = 10;
-  function init$6(__init, __update, _options) {
+  function init$2(__init, __update, _options) {
       _init = __init;
-      _update = __update;
-      options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
-      init(options$3.theme.isDarkColor);
-      init$1(options$3.viewSize, options$3.bodyBackground, options$3.viewBackground, options$3.isCapturing, options$3.isCapturingGameCanvasOnly, options$3.captureCanvasScale, options$3.theme);
-      init$5(options$3.isSoundEnabled ? sss.startAudio : () => { });
-      init$2();
+      _update$1 = __update;
+      options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
+      init$8(options$1.theme.isDarkColor);
+      init$7(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.theme);
+      init$3(options$1.isSoundEnabled ? sss.startAudio : () => { });
+      init$6();
       _init();
-      update$4();
+      update$3();
   }
-  function update$4() {
-      requestAnimationFrame(update$4);
+  function update$3() {
+      requestAnimationFrame(update$3);
       const now = window.performance.now();
       if (now < nextFrameTime - targetFps / 12) {
           return;
@@ -2010,12 +2010,12 @@ l l l
       if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
           nextFrameTime = now + deltaTime;
       }
-      if (options$3.isSoundEnabled) {
+      if (options$1.isSoundEnabled) {
           sss.update();
       }
-      update$3();
-      _update();
-      if (options$3.isCapturing) {
+      update$4();
+      _update$1();
+      if (options$1.isCapturing) {
           capture();
       }
       textCacheEnableTicks--;
@@ -2035,7 +2035,7 @@ l l l
           this.characterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
       }
       print(str, _x, _y, _options = {}) {
-          const options = Object.assign(Object.assign({}, defaultOptions), _options);
+          const options = Object.assign(Object.assign({}, defaultOptions$4), _options);
           let x = Math.floor(_x);
           let y = Math.floor(_y);
           const bx = x;
@@ -2078,7 +2078,7 @@ l l l
           if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
               return;
           }
-          const options = Object.assign(Object.assign({}, defaultOptions), _options);
+          const options = Object.assign(Object.assign({}, defaultOptions$4), _options);
           const x = Math.floor(_x);
           const y = Math.floor(_y);
           this.letterGrid[x][y] = char;
@@ -2148,29 +2148,29 @@ l l l
   }
 
   let particles;
-  const random = new Random();
-  function init$7() {
+  const random$1 = new Random();
+  function init$1() {
       particles = [];
   }
   function add(pos, count = 16, speed = 1, angle = 0, angleWidth = Math.PI * 2) {
       if (count < 1) {
-          if (random.get() > count) {
+          if (random$1.get() > count) {
               return;
           }
           count = 1;
       }
       for (let i = 0; i < count; i++) {
-          const a = angle + random.get(angleWidth) - angleWidth / 2;
+          const a = angle + random$1.get(angleWidth) - angleWidth / 2;
           const p = {
               pos: new Vector(pos),
-              vel: new Vector(speed * random.get(0.5, 1), 0).rotate(a),
+              vel: new Vector(speed * random$1.get(0.5, 1), 0).rotate(a),
               color: currentColor,
-              ticks: clamp(random.get(10, 20) * Math.sqrt(Math.abs(speed)), 10, 60),
+              ticks: clamp(random$1.get(10, 20) * Math.sqrt(Math.abs(speed)), 10, 60),
           };
           particles.push(p);
       }
   }
-  function update$5() {
+  function update$2() {
       saveCurrentColor();
       particles = particles.filter((p) => {
           p.ticks--;
@@ -2199,7 +2199,7 @@ l l l
           toggleGroup: [],
       };
   }
-  function update$6(button) {
+  function update$1(button) {
       const o = vec(input.pos).sub(button.pos);
       button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
       if (button.isHovered && isJustPressed$1) {
@@ -2273,15 +2273,15 @@ l l l
           baseState: cloneDeep(baseState),
       });
   }
-  function rewind(random) {
+  function rewind$1(random) {
       const fs = frameStates.pop();
       const rs = fs.randomState;
       random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
       storedInput = {
-          pos: vec(pos$1),
-          isPressed: isPressed$2,
-          isJustPressed: isJustPressed$2,
-          isJustReleased: isJustReleased$2,
+          pos: vec(pos),
+          isPressed: isPressed,
+          isJustPressed: isJustPressed,
+          isJustReleased: isJustReleased,
       };
       set(record.inputs.pop());
       return fs;
@@ -2291,10 +2291,10 @@ l l l
       const rs = fs.randomState;
       random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
       storedInput = {
-          pos: vec(pos$1),
-          isPressed: isPressed$2,
-          isJustPressed: isJustPressed$2,
-          isJustReleased: isJustReleased$2,
+          pos: vec(pos),
+          isPressed: isPressed,
+          isJustPressed: isJustPressed,
+          isJustReleased: isJustReleased,
       };
       set(record.inputs[record.inputs.length - 1]);
       return fs;
@@ -2330,7 +2330,7 @@ l l l
       }
       const l = new Vector(length).rotate(rotate);
       const p = new Vector(x - l.x * centerPosRatio, y - l.y * centerPosRatio);
-      return drawLine$1(p, l, thickness);
+      return drawLine(p, l, thickness);
   }
   function line(x1, y1, x2 = 3, y2 = 3, thickness = 3) {
       const p = new Vector();
@@ -2373,7 +2373,7 @@ l l l
               }
           }
       }
-      return drawLine$1(p, p2.sub(p), thickness);
+      return drawLine(p, p2.sub(p), thickness);
   }
   function arc(centerX, centerY, radius, thickness, angleFrom, angleTo) {
       let centerPos = new Vector();
@@ -2421,7 +2421,7 @@ l l l
           a += ai;
           p2.set(radius).rotate(a).add(centerPos);
           o.set(p2).sub(p1);
-          const c = drawLine$1(p1, o, thickness, true);
+          const c = drawLine(p1, o, thickness, true);
           collision = Object.assign(Object.assign(Object.assign({}, collision), createShorthand(c.isColliding.rect)), { isColliding: {
                   rect: Object.assign(Object.assign({}, collision.isColliding.rect), c.isColliding.rect),
                   text: Object.assign(Object.assign({}, collision.isColliding.text), c.isColliding.text),
@@ -2468,11 +2468,11 @@ l l l
           }
       }
   }
-  function drawLine$1(p, l, thickness, isAddingToTmp = false) {
+  function drawLine(p, l, thickness, isAddingToTmp = false) {
       let isDrawing = true;
       if (theme.name === "shape" || theme.name === "shapeDark") {
           if (currentColor !== "transparent") {
-              drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+              drawLine$1(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
           }
           isDrawing = false;
       }
@@ -2549,16 +2549,18 @@ l l l
   const round = Math.round;
   const ceil$1 = Math.ceil;
   exports.ticks = 0;
+  exports.difficulty = void 0;
   exports.score = 0;
+  exports.time = void 0;
   exports.isReplaying = false;
   function rnd(lowOrHigh = 1, high) {
-      return random$1.get(lowOrHigh, high);
+      return random.get(lowOrHigh, high);
   }
   function rndi(lowOrHigh = 2, high) {
-      return random$1.getInt(lowOrHigh, high);
+      return random.getInt(lowOrHigh, high);
   }
   function rnds(lowOrHigh = 1, high) {
-      return random$1.get(lowOrHigh, high) * random$1.getPlusOrMinus();
+      return random.get(lowOrHigh, high) * random.getPlusOrMinus();
   }
   function end(_gameOverText = "GAME OVER") {
       gameOverText = _gameOverText;
@@ -2620,14 +2622,14 @@ l l l
   }
   function frameState(frameState) {
       if (isWaitingRewind) {
-          const rs = getLastFrameState(random$1);
+          const rs = getLastFrameState(random);
           const bs = rs.baseState;
           exports.score = bs.score;
           exports.ticks = bs.ticks;
           return cloneDeep(rs.gameState);
       }
       else if (isRewinding) {
-          const rs = rewind(random$1);
+          const rs = rewind$1(random);
           const bs = rs.baseState;
           exports.score = bs.score;
           exports.ticks = bs.ticks;
@@ -2639,11 +2641,11 @@ l l l
       }
       else if (state === "inGame") {
           const baseState = { score: exports.score, ticks: exports.ticks };
-          recordFrameState(frameState, baseState, random$1);
+          recordFrameState(frameState, baseState, random);
       }
       return frameState;
   }
-  function rewind$1() {
+  function rewind() {
       if (isRewinding) {
           return;
       }
@@ -2665,7 +2667,7 @@ l l l
       lucky: "u",
       random: "r",
   };
-  const defaultOptions$4 = {
+  const defaultOptions = {
       isPlayingBgm: false,
       isCapturing: false,
       isCapturingGameCanvasOnly: false,
@@ -2683,7 +2685,7 @@ l l l
       theme: "simple",
   };
   const seedRandom = new Random();
-  const random$1 = new Random();
+  const random = new Random();
   let state;
   let updateFunc = {
       title: updateTitle,
@@ -2716,10 +2718,10 @@ l l l
   function onLoad() {
       let opts;
       if (typeof options !== "undefined" && options != null) {
-          opts = Object.assign(Object.assign({}, defaultOptions$4), options);
+          opts = Object.assign(Object.assign({}, defaultOptions), options);
       }
       else {
-          opts = defaultOptions$4;
+          opts = defaultOptions;
       }
       const theme = {
           name: opts.theme,
@@ -2758,9 +2760,9 @@ l l l
       if (opts.isMinifying) {
           showMinifiedScript();
       }
-      init$6(init$8, _update$1, loopOptions);
+      init$2(init, _update, loopOptions);
   }
-  function init$8() {
+  function init() {
       if (typeof description !== "undefined" &&
           description != null &&
           description.trim().length > 0) {
@@ -2792,7 +2794,7 @@ l l l
           initTitle();
       }
   }
-  function _update$1() {
+  function _update() {
       exports.df = exports.difficulty = exports.ticks / 3600 + 1;
       exports.tc = exports.ticks;
       const prevScore = exports.score;
@@ -2800,12 +2802,12 @@ l l l
       exports.sc = exports.score;
       const prevSc = exports.sc;
       exports.inp = {
-          p: pos$1,
-          ip: isPressed$2,
-          ijp: isJustPressed$2,
-          ijr: isJustReleased$2,
+          p: pos,
+          ip: isPressed,
+          ijp: isJustPressed,
+          ijr: isJustReleased,
       };
-      clear$1();
+      clear();
       updateFunc[state]();
       if (theme.isUsingPixi) {
           endFill();
@@ -2825,7 +2827,7 @@ l l l
   function initInGame() {
       state = "inGame";
       exports.ticks = -1;
-      init$7();
+      init$1();
       const s = Math.floor(exports.score);
       if (s > hiScore) {
           hiScore = s;
@@ -2842,7 +2844,7 @@ l l l
           sss.playBgm();
       }
       const randomSeed = seedRandom.getInt(999999999);
-      random$1.setSeed(randomSeed);
+      random.setSeed(randomSeed);
       if (isReplayEnabled || isRewindEnabled) {
           initRecord(randomSeed);
           initFrameStates();
@@ -2851,24 +2853,24 @@ l l l
   }
   function updateInGame() {
       terminal.clear();
-      clear();
+      clear$1();
       if (!isDrawingParticleFront) {
-          update$5();
+          update$2();
       }
       if (!isDrawingScoreFront) {
           updateScoreBoards();
       }
       if (isReplayEnabled || isRewindEnabled) {
           recordInput({
-              pos: vec$1(pos$1),
-              isPressed: isPressed$2,
-              isJustPressed: isJustPressed$2,
-              isJustReleased: isJustReleased$2,
+              pos: vec$1(pos),
+              isPressed: isPressed,
+              isJustPressed: isJustPressed,
+              isJustReleased: isJustReleased,
           });
       }
       update();
       if (isDrawingParticleFront) {
-          update$5();
+          update$2();
       }
       if (isDrawingScoreFront) {
           updateScoreBoards();
@@ -2882,34 +2884,34 @@ l l l
   function initTitle() {
       state = "title";
       exports.ticks = -1;
-      init$7();
+      init$1();
       terminal.clear();
-      clear();
+      clear$1();
       if (isRecorded()) {
-          initReplay(random$1);
+          initReplay(random);
           exports.isReplaying = true;
       }
   }
   function updateTitle() {
-      if (isJustPressed$2) {
+      if (isJustPressed) {
           initInGame();
           return;
       }
-      clear();
+      clear$1();
       if (isReplayEnabled && isRecorded()) {
           replayInput();
           exports.inp = {
-              p: pos$1,
-              ip: isPressed$2,
-              ijp: isJustPressed$2,
-              ijr: isJustReleased$2,
+              p: pos,
+              ip: isPressed,
+              ijp: isJustPressed,
+              ijr: isJustReleased,
           };
           if (!isDrawingParticleFront) {
-              update$5();
+              update$2();
           }
           update();
           if (isDrawingParticleFront) {
-              update$5();
+              update$2();
           }
       }
       if (exports.ticks === 0) {
@@ -2937,7 +2939,7 @@ l l l
   function initGameOver() {
       state = "gameOver";
       if (!exports.isReplaying) {
-          clearJustPressed$2();
+          clearJustPressed();
       }
       exports.ticks = -1;
       drawGameOver();
@@ -2946,7 +2948,7 @@ l l l
       }
   }
   function updateGameOver() {
-      if ((exports.isReplaying || exports.ticks > 20) && isJustPressed$2) {
+      if ((exports.isReplaying || exports.ticks > 20) && isJustPressed) {
           initInGame();
       }
       else if (exports.ticks === (isReplayEnabled ? 120 : 300) && !isNoTitle) {
@@ -2983,19 +2985,19 @@ l l l
   }
   function updateRewind() {
       terminal.clear();
-      clear();
+      clear$1();
       update();
       drawScoreOrTime();
       restoreInput();
       if (isRewinding) {
           draw(rewindButton);
-          if (isFrameStateEmpty() || !isPressed$2) {
+          if (isFrameStateEmpty() || !isPressed) {
               stopRewind();
           }
       }
       else {
-          update$6(rewindButton);
-          update$6(giveUpButton);
+          update$1(rewindButton);
+          update$1(giveUpButton);
           if (rewindButton.isPressed) {
               isRewinding = true;
               isWaitingRewind = false;
@@ -3015,7 +3017,7 @@ l l l
   function stopRewind() {
       isRewinding = false;
       state = "inGame";
-      init$7();
+      init$1();
       if (isPlayingBgm && isSoundEnabled) {
           sss.playBgm();
       }
@@ -3124,10 +3126,14 @@ l l l
           console.log(`${minifiedUpdateScript.length} letters`);
       });
   }
+  exports.inp = void 0;
   let clr = color$1;
   let ply = play;
   let tms = times;
   let rmv = remove;
+  exports.tc = void 0;
+  exports.df = void 0;
+  exports.sc = void 0;
   const tr = "transparent";
   const wh = "white";
   const rd = "red";
@@ -3232,7 +3238,7 @@ l l l
   exports.rd = rd;
   exports.rect = rect$1;
   exports.remove = remove;
-  exports.rewind = rewind$1;
+  exports.rewind = rewind;
   exports.rmv = rmv;
   exports.rnd = rnd;
   exports.rndi = rndi;
@@ -3246,10 +3252,12 @@ l l l
   exports.tms = tms;
   exports.tr = tr;
   exports.uc = uc;
-  exports.updateButton = update$6;
+  exports.updateButton = update$1;
   exports.vec = vec$1;
   exports.wh = wh;
   exports.wrap = wrap;
   exports.yl = yl;
 
-}(this.window = this.window || {}));
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+})(window || {});
