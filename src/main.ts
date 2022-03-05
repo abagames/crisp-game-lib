@@ -268,6 +268,22 @@ let giveUpButton: Button;
 let gameOverText: string;
 let gameScriptFile: string;
 
+export function init(settings: {
+  update: () => void;
+  title?: string;
+  description?: string;
+  characters?: string[];
+  options?: Options;
+}) {
+  const win: any = window;
+  win.update = settings.update;
+  win.title = settings.title;
+  win.description = settings.description;
+  win.characters = settings.characters;
+  win.options = settings.options;
+  onLoad();
+}
+
 export function onLoad() {
   let opts: Options;
   if (typeof options !== "undefined" && options != null) {
@@ -314,10 +330,10 @@ export function onLoad() {
   if (opts.isMinifying) {
     showMinifiedScript();
   }
-  loop.init(init, _update, loopOptions);
+  loop.init(_init, _update, loopOptions);
 }
 
-function init() {
+function _init() {
   if (
     typeof description !== "undefined" &&
     description != null &&

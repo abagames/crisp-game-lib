@@ -165,6 +165,20 @@ function update() {
 
 1. `[ゲームのルートディレクトリのアドレス]/index.html?[あなたのゲームの名前]`の URL をブラウザで開きます。
 
+## バンドラーを使う
+
+ゲームをバンドラー（例 [Vite](https://ja.vitejs.dev/)）を使ってビルドしたい場合は、以下のようにして下さい。
+
+1. `npm install crisp-game-lib`をプロジェクトのディレクトリで実行する。
+
+1. [docs/\_template_bundler/index.html](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/_template_bundler/index.html)と[docs/\_template_bundler/main.js](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/_template_bundler/main.js)をプロジェクトのディレクトリにコピーする。
+
+1. ゲームのコードを`main.js`に記述する。
+
+1. バンドラーを使ってビルドする。
+
+TypeScript を使いたい場合は、`main.js`を`main.ts`にリネームして下さい。
+
 ## リファレンス
 
 ### 描画 ([デモ](https://abagames.github.io/crisp-game-lib-games/?ref_drawing))
@@ -492,3 +506,4 @@ options = {
   - 左右へのスライド操作
   - 画面上のタップ
 - ワンボタンゲームをどのように作れば良いかについては、次の記事も参照ください：[ワンボタンゲームをたくさん作ったので、その作り方をおさらいしたい](https://aba.hatenablog.com/entry/2021/08/08/195706)
+- [sounds-some-sounds ライブラリ](https://github.com/abagames/sounds-some-sounds)を使って音楽を再生できます。MML で記述された音声を再生するには、`sss.playMml()` 関数を使います。

@@ -156,7 +156,7 @@ Sample code for each game is `main.js` in each directory in the [crisp-game-lib-
 
 ## Publish your own game
 
-1. Place `main.js`, [docs/bundle.js](https://github.com/abagames/crisp-game-lib/blob/master/docs/bundle.js) and [docs/index.html](https://github.com/abagames/crisp-game-lib/blob/master/docs/index.html) on the web server in the following directory structure.
+1. Place `main.js`, [docs/bundle.js](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/bundle.js) and [docs/index.html](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/index.html) on the web server in the following directory structure.
 
    ```
    ┝ [games root directory (any name)]
@@ -167,6 +167,20 @@ Sample code for each game is `main.js` in each directory in the [crisp-game-lib-
    ```
 
 1. Open the URL `[Address of games root directory]/index.html?[your own game name]` with a browser.
+
+## Use with a bundler
+
+If you want to build a game using a bundler (e.g. [Vite](https://vitejs.dev/)), do the following.
+
+1. `npm install crisp-game-lib` at your project directory.
+
+1. Copy [docs/\_template_bundler/index.html](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/_template_bundler/index.html) and [docs/\_template_bundler/main.js](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/_template_bundler/main.js) to your project directory.
+
+1. Write game code in `main.js`.
+
+1. Build with the bundler.
+
+If you want to describe the game using TypeScript, rename `main.js` to `main.ts`.
 
 ## Reference
 
@@ -506,3 +520,4 @@ options = {
   - Slide operation to left or right direction only
   - Tapping on a specific place on the screen
 - For more information on how to create a one-button game, please refer to the following article I wrote: [How to realize various actions in a one-button game](https://github.com/abagames/various-actions-in-a-one-button-game/blob/main/README.md)
+- The [sounds-some-sounds library](https://github.com/abagames/sounds-some-sounds) can be used to play music. To play music written in MML, use the `sss.playMml()` function.

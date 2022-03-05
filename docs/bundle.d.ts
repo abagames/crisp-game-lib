@@ -591,3 +591,11 @@ declare function getButton({
 }): Button;
 
 declare function updateButton(button: Button): void;
+
+declare function init(settings: {
+  update: () => void;
+  title?: string;
+  description?: string;
+  characters?: string[];
+  options?: Options;
+});
