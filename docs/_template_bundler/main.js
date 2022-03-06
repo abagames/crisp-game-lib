@@ -7,6 +7,11 @@ const description = `
 
 const characters = [];
 
+function update() {
+  if (!ticks) {
+  }
+}
+
 init({
   update,
   title,
@@ -14,8 +19,3 @@ init({
   characters,
   options: {},
 });
-
-function update() {
-  if (!ticks) {
-  }
-}
