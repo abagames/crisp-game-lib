@@ -54,7 +54,7 @@ function update() {
     color("blue");
     rect(bp.x + nextSeed, bp.y + 1, 1, 3);
     text(`${nextSeed}`, 85, bp.y - 3);
-    if (input.isJustPressed) {
+    if (input.isJustReleased) {
       seed = nextSeed;
       sss.stopBgm();
       sss.setSeed(seed);
