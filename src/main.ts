@@ -23,10 +23,12 @@ declare const sss;
 declare const Terser;
 declare const cloneDeep;
 
+export type { Vector, VectorLike };
+export type { Color };
+export type { Options };
 export { clamp, wrap, range, times, remove, addWithCharCode } from "./util";
 export { rect, box, bar, line, arc } from "./rect";
 export { text, char } from "./letter";
-export { Color };
 export { input, keyboard, pointer };
 export { getButton, updateButton };
 export const PI = Math.PI;
