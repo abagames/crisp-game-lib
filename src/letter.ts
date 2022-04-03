@@ -93,6 +93,8 @@ let cachedImages: { [key: string]: LetterImage };
 let isCacheEnabled = false;
 let letterCanvas: HTMLCanvasElement;
 let letterContext: CanvasRenderingContext2D;
+let scaledLetterCanvas: HTMLCanvasElement;
+let scaledLetterContext: CanvasRenderingContext2D;
 
 export type Options = {
   color?: Color;
@@ -118,6 +120,8 @@ export function init() {
   letterCanvas = document.createElement("canvas");
   letterCanvas.width = letterCanvas.height = letterSize;
   letterContext = letterCanvas.getContext("2d");
+  scaledLetterCanvas = document.createElement("canvas");
+  scaledLetterContext = scaledLetterCanvas.getContext("2d");
   textImages = textPatterns.map((lp, i) => {
     return {
       ...createLetterImages(lp),
@@ -219,7 +223,8 @@ export function printChar(
     options.color === "black" &&
     rotation === 0 &&
     options.mirror.x === 1 &&
-    options.mirror.y === 1
+    options.mirror.y === 1 &&
+    (!theme.isUsingPixi || (options.scale.x === 1 && options.scale.y === 1))
   ) {
     return drawAndTestLetterImage(
       li,
@@ -242,34 +247,28 @@ export function printChar(
       options.color !== "transparent"
     );
   }
+  let isUsingScaled = false;
+  if (theme.isUsingPixi && (options.scale.x !== 1 || options.scale.y !== 1)) {
+    scaledLetterCanvas.width = letterSize * options.scale.x;
+    scaledLetterCanvas.height = letterSize * options.scale.y;
+    scaledLetterContext.imageSmoothingEnabled = false;
+    scaledLetterContext.scale(options.scale.x, options.scale.y);
+    createLatterContext(scaledLetterContext, rotation, options, li);
+    isUsingScaled = true;
+  }
   letterContext.clearRect(0, 0, letterSize, letterSize);
-  if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
-    letterContext.drawImage(li.image, 0, 0);
-  } else {
-    letterContext.save();
-    letterContext.translate(letterSize / 2, letterSize / 2);
-    letterContext.rotate((Math.PI / 2) * rotation);
-    if (options.mirror.x === -1 || options.mirror.y === -1) {
-      letterContext.scale(options.mirror.x, options.mirror.y);
-    }
-    letterContext.drawImage(li.image, -letterSize / 2, -letterSize / 2);
-    letterContext.restore();
-  }
-  if (options.color !== "black") {
-    letterContext.globalCompositeOperation = "source-in";
-    letterContext.fillStyle = colorToStyle(
-      options.color === "transparent" ? "black" : options.color
-    );
-    letterContext.fillRect(0, 0, letterSize, letterSize);
-    letterContext.globalCompositeOperation = "source-over";
-  }
+  createLatterContext(letterContext, rotation, options, li);
   const hitBox = getHitBox(c, options.isCharacter);
   let texture; //: PIXI.Texture;
   if (isCacheEnabled || theme.isUsingPixi) {
     const cachedImage = document.createElement("img");
     cachedImage.src = letterCanvas.toDataURL();
     if (theme.isUsingPixi) {
-      texture = PIXI.Texture.from(cachedImage);
+      const textureImage = document.createElement("img");
+      textureImage.src = (
+        isUsingScaled ? scaledLetterCanvas : letterCanvas
+      ).toDataURL();
+      texture = PIXI.Texture.from(textureImage);
     }
     if (isCacheEnabled) {
       cachedImages[cacheIndex] = {
@@ -287,6 +286,34 @@ export function printChar(
     options.isCheckingCollision,
     options.color !== "transparent"
   );
+}
+
+function createLatterContext(
+  context: CanvasRenderingContext2D,
+  rotation,
+  options,
+  li
+) {
+  if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
+    context.drawImage(li.image, 0, 0);
+  } else {
+    context.save();
+    context.translate(letterSize / 2, letterSize / 2);
+    context.rotate((Math.PI / 2) * rotation);
+    if (options.mirror.x === -1 || options.mirror.y === -1) {
+      context.scale(options.mirror.x, options.mirror.y);
+    }
+    context.drawImage(li.image, -letterSize / 2, -letterSize / 2);
+    context.restore();
+  }
+  if (options.color !== "black") {
+    context.globalCompositeOperation = "source-in";
+    context.fillStyle = colorToStyle(
+      options.color === "transparent" ? "black" : options.color
+    );
+    context.fillRect(0, 0, letterSize, letterSize);
+    context.globalCompositeOperation = "source-over";
+  }
 }
 
 function drawAndTestLetterImage(
@@ -309,7 +336,10 @@ function drawAndTestLetterImage(
   }
   const hitBox = {
     pos: { x: x + li.hitBox.pos.x, y: y + li.hitBox.pos.y },
-    size: { x: li.hitBox.size.x * scale.x, y: li.hitBox.size.y * scale.y },
+    size: {
+      x: li.hitBox.size.x + letterSize * (scale.x - 1),
+      y: li.hitBox.size.y + letterSize * (scale.y - 1),
+    },
     collision: li.hitBox.collision,
   };
   const collision = checkHitBoxes(hitBox);
