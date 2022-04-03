@@ -1,6 +1,6 @@
 {
   "name": "crisp-game-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Minimal JavaScript library for creating classic arcade-like mini-games running in the browser",
   "author": "abagames",
   "license": "MIT",
