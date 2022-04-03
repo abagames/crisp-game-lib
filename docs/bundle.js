@@ -1424,10 +1424,10 @@ l l l
             return;
         }
         const hitBox = {
-            pos: { x: x + li.hitBox.pos.x, y: y + li.hitBox.pos.y },
+            pos: { x: x + li.hitBox.pos.x * scale.x, y: y + li.hitBox.pos.y * scale.y },
             size: {
-                x: li.hitBox.size.x + letterSize * (scale.x - 1),
-                y: li.hitBox.size.y + letterSize * (scale.y - 1),
+                x: li.hitBox.size.x * scale.x,
+                y: li.hitBox.size.y * scale.y,
             },
             collision: li.hitBox.collision,
         };
