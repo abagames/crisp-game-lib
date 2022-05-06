@@ -126,6 +126,8 @@ function update() {
 }
 ```
 
+See also [the article for a step-by-step explanation](https://abagames.github.io/literate-diff-viewer/pinclimb/index.html) of how the above code works.
+
 ## More sample codes
 
 Sample code for each game is `main.js` in each directory in the [crisp-game-lib-games/docs directory](https://github.com/abagames/crisp-game-lib-games/tree/main/docs).

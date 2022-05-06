@@ -123,6 +123,8 @@ function update() {
 }
 ```
 
+上記コードの仕組みを[ステップバイステップで説明する記事](https://abagames.github.io/literate-diff-viewer/pinclimb/index.html?lang=ja)も参照ください。
+
 ## その他のサンプルコード
 
 各ゲームのサンプルコードは、[crisp-game-lib-games/docs](https://github.com/abagames/crisp-game-lib-games/tree/main/docs)内の各ディレクトリの`main.js`です。
