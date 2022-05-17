@@ -92,6 +92,8 @@ TypeScript を使いたい場合は、`main.js`を`main.ts`にリネームして
 
 - `crisp-game-lib`を使うための準備の詳細については、[@cat2151](https://twitter.com/cat2151)による[crisp-game-lib でゲームをつくるための手順](https://qiita.com/cat2151/items/851aa4923bebd125fcd7)も参照ください
 
+- [残りゲーム制作体力 10%な人のためのずぼらゲームライブラリ crisp-game-lib](https://aba.hatenablog.com/entry/2021/04/02/204732)
+
 ## Tips
 
 - `color("transparent")`で描画することで、形を描画することなく衝突判定を行うことができます。

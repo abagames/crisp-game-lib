@@ -84,11 +84,13 @@ Sample code for each game is `main.js` in each directory in the [crisp-game-lib-
 
 - Sound ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_sound))
 
-## Articles
+## Related articles
 
 - [Kenta Cho’s “Crisp Game Lib” Games](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/), written by [Terry Cavanagh](https://twitter.com/terrycavanagh), known as the developer of [Super Hexagon](https://store.steampowered.com/app/221640/Super_Hexagon/) and [VVVVVV](https://store.steampowered.com/app/70300/VVVVVV/)
 
 - [Guide to getting started with CrispGameLib](https://github.com/JunoNgx/crisp-game-lib-tutorial), written by [Juno Nguyen](https://twitter.com/JunoNgx)
+
+- [crisp-game-lib, a game library for creating mini-games with minimal effort](https://dev.to/abagames/crisp-game-lib-a-game-library-for-creating-mini-games-with-minimal-effort-3816)
 
 ## Tips
 
