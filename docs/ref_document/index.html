@@ -47,7 +47,7 @@
   <h2>Publish your own game</h2>
 </a>
 <ol>
-<li><p>Place <code>main.js</code>, <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/bundle.js">docs/bundle.js</a> and <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/index.html">docs/index.html</a> on the web server in the following directory structure.</p>
+<li><p>Place <code>main.js</code>, <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/bundle.js">docs/bundle.js</a>, and <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/index.html">docs/index.html</a> on the webserver in the following directory structure.</p>
 <pre><code><span class="hl-1">┝ [</span><span class="hl-0">games</span><span class="hl-1"> </span><span class="hl-0">root</span><span class="hl-1"> </span><span class="hl-3">directory</span><span class="hl-1"> (</span><span class="hl-0">any</span><span class="hl-1"> </span><span class="hl-0">name</span><span class="hl-1">)]</span><br/><span class="hl-1">   ┝ [</span><span class="hl-0">your</span><span class="hl-1"> </span><span class="hl-0">own</span><span class="hl-1"> </span><span class="hl-0">game</span><span class="hl-1"> </span><span class="hl-0">name</span><span class="hl-1">]</span><br/><span class="hl-1">   │  └ </span><span class="hl-0">main</span><span class="hl-1">.</span><span class="hl-0">js</span><br/><span class="hl-1">   ┝ </span><span class="hl-0">bundle</span><span class="hl-1">.</span><span class="hl-0">js</span><br/><span class="hl-1">   └ </span><span class="hl-0">index</span><span class="hl-1">.</span><span class="hl-0">html</span>
 </code></pre>
 </li>
@@ -101,7 +101,7 @@
 <ul>
 <li><p><a href="https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/">Kenta Cho’s “Crisp Game Lib” Games</a>, written by <a href="https://twitter.com/terrycavanagh">Terry Cavanagh</a>, known as the developer of <a href="https://store.steampowered.com/app/221640/Super_Hexagon/">Super Hexagon</a> and <a href="https://store.steampowered.com/app/70300/VVVVVV/">VVVVVV</a></p>
 </li>
-<li><p><a href="https://github.com/JunoNgx/crisp-game-lib-tutorial">Guide to getting start with CrispGameLib</a>, written by <a href="https://twitter.com/JunoNgx">Juno Nguyen</a></p>
+<li><p><a href="https://github.com/JunoNgx/crisp-game-lib-tutorial">Guide to getting started with CrispGameLib</a>, written by <a href="https://twitter.com/JunoNgx">Juno Nguyen</a></p>
 </li>
 </ul>
 
@@ -114,7 +114,7 @@
 <li>The base value for the random seed for sound generation is generated from the <code>title</code> and <code>description</code> strings. If you want to use <code>seed</code> in <code>options</code> to adjust the generated sound, it is better to do so after the <code>title</code> and <code>description</code> are fixed.</li>
 <li>To improve the performance of the game, do the following (mainly for mobile devices):<ul>
 <li>Use <code>simple</code> or <code>dark</code> theme. Do not specify a theme that uses pixi.js (<code>pixel</code>, <code>shape</code>, <code>shapeDark</code>, <code>crt</code>) in options. WebGL post-effects may worsen performance.</li>
-<li>Minimize drawing bars, lines, or arcs. They are drawn as a combination of many rectangles and highly detrimental to the collision detection process.</li>
+<li>Minimize drawing bars, lines, or arcs. They are drawn as a combination of many rectangles and are highly detrimental to the collision detection process.</li>
 </ul>
 </li>
 <li>If you want to create a game that can be played comfortably on a mobile device, I recommend that you adopt one of the following three control methods.<ul>
