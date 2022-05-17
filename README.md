@@ -10,7 +10,7 @@ English | [日本語](https://github.com/abagames/crisp-game-lib/blob/master/REA
 
 - [Step-by-step guide on creating a game using the crisp-game-lib](https://abagames.github.io/literate-diff-viewer/pinclimb/index.html)
 
-- [Reference of crisp-game-lib](https://abagames.github.io/crisp-game-lib-games/ref_document/modules.html)
+- [Reference of crisp-game-lib](https://abagames.github.io/crisp-game-lib/ref_document/modules.html)
 
 ## Getting started
 
@@ -38,7 +38,7 @@ English | [日本語](https://github.com/abagames/crisp-game-lib/blob/master/REA
 
 ## Publish your own game
 
-1. Place `main.js`, [docs/bundle.js](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/bundle.js) and [docs/index.html](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/index.html) on the web server in the following directory structure.
+1. Place `main.js`, [docs/bundle.js](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/bundle.js), and [docs/index.html](https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/index.html) on the webserver in the following directory structure.
 
    ```
    ┝ [games root directory (any name)]
@@ -88,7 +88,7 @@ Sample code for each game is `main.js` in each directory in the [crisp-game-lib-
 
 - [Kenta Cho’s “Crisp Game Lib” Games](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/), written by [Terry Cavanagh](https://twitter.com/terrycavanagh), known as the developer of [Super Hexagon](https://store.steampowered.com/app/221640/Super_Hexagon/) and [VVVVVV](https://store.steampowered.com/app/70300/VVVVVV/)
 
-- [Guide to getting start with CrispGameLib](https://github.com/JunoNgx/crisp-game-lib-tutorial), written by [Juno Nguyen](https://twitter.com/JunoNgx)
+- [Guide to getting started with CrispGameLib](https://github.com/JunoNgx/crisp-game-lib-tutorial), written by [Juno Nguyen](https://twitter.com/JunoNgx)
 
 ## Tips
 
@@ -97,7 +97,7 @@ Sample code for each game is `main.js` in each directory in the [crisp-game-lib-
 - The base value for the random seed for sound generation is generated from the `title` and `description` strings. If you want to use `seed` in `options` to adjust the generated sound, it is better to do so after the `title` and `description` are fixed.
 - To improve the performance of the game, do the following (mainly for mobile devices):
   - Use `simple` or `dark` theme. Do not specify a theme that uses pixi.js (`pixel`, `shape`, `shapeDark`, `crt`) in options. WebGL post-effects may worsen performance.
-  - Minimize drawing bars, lines, or arcs. They are drawn as a combination of many rectangles and highly detrimental to the collision detection process.
+  - Minimize drawing bars, lines, or arcs. They are drawn as a combination of many rectangles and are highly detrimental to the collision detection process.
 - If you want to create a game that can be played comfortably on a mobile device, I recommend that you adopt one of the following three control methods.
   - One-button
   - Slide operation left or right direction only

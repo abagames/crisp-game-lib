@@ -10,7 +10,7 @@
 
 - [crisp-game-lib を使ったゲームの作り方をステップバイステップで説明](https://abagames.github.io/literate-diff-viewer/pinclimb/index.html?lang=ja)
 
-- [crisp-game-lib のリファレンス](https://abagames.github.io/crisp-game-lib-games/ref_document/modules.html)
+- [crisp-game-lib のリファレンス](https://abagames.github.io/crisp-game-lib/ref_document/modules.html)
 
 ## 始め方
 
@@ -88,7 +88,7 @@ TypeScript を使いたい場合は、`main.js`を`main.ts`にリネームして
 
 - [Super Hexagon](https://store.steampowered.com/app/221640/Super_Hexagon/)や[VVVVVV](https://store.steampowered.com/app/70300/VVVVVV/)の開発者である[Terry Cavanagh](https://twitter.com/terrycavanagh)の[crisp-game-lib に関する記事（英語）](https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/)も参照ください
 
-- [Juno Nguyen](https://twitter.com/JunoNgx)のチュートリアル記事、[Guide to getting start with CrispGameLib（英語）](https://github.com/JunoNgx/crisp-game-lib-tutorial)には、`crisp-game-lib`を使ってゲームを作るために、どのようなコードを書けばよいか、どのようにデータを持つべきか、などの有益な情報があります
+- [Juno Nguyen](https://twitter.com/JunoNgx)のチュートリアル記事、[Guide to getting started with CrispGameLib（英語）](https://github.com/JunoNgx/crisp-game-lib-tutorial)には、`crisp-game-lib`を使ってゲームを作るために、どのようなコードを書けばよいか、どのようにデータを持つべきか、などの有益な情報があります
 
 - `crisp-game-lib`を使うための準備の詳細については、[@cat2151](https://twitter.com/cat2151)による[crisp-game-lib でゲームをつくるための手順](https://qiita.com/cat2151/items/851aa4923bebd125fcd7)も参照ください
 
