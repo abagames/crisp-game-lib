@@ -28,7 +28,18 @@ export function times<T>(count: number, func: (index: number) => T): T[] {
   return range(count).map((i) => func(i));
 }
 
-export function remove<T>(array: T[], func: (v: T, index?: number) => any) {
+/**
+ * A function that takes an **array** as its first argument and a **func**tion as its second argument.
+ * The function receives each element of the array as a first argument.
+ * If the function returns `true`, this element is removed from the array.
+ * @param array
+ * @param func
+ * @returns Removed array elements.
+ */
+export function remove<T>(
+  array: T[],
+  func: (v: T, index?: number) => any
+): T[] {
   let removed = [];
   for (let i = 0, index = 0; i < array.length; index++) {
     if (func(array[i], index)) {
@@ -52,6 +63,14 @@ export function entries(obj) {
   return Object.keys(obj).map((p) => [p, obj[p]]);
 }
 
+/**
+ * Return a character whose character code is the character code of
+ * the first argument **char** plus the value of the second argument **offset**.
+ * It is mainly used to animate a character with the `char()`.
+ * @param char
+ * @param offset
+ * @returns
+ */
 export function addWithCharCode(char: string, offset: number) {
   return String.fromCharCode(char.charCodeAt(0) + offset);
 }

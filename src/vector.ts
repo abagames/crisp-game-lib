@@ -1,5 +1,8 @@
 import { clamp, isInRange, wrap } from "./util";
 
+/**
+ * A two-dimensional vector interface.
+ */
 export interface VectorLike {
   x: number;
   y: number;
@@ -9,6 +12,9 @@ function isVectorLike(v: any): v is VectorLike {
   return v.x != null && v.y != null;
 }
 
+/**
+ * A two-dimensional vector class with functions useful for working with (x, y) coordinates.
+ */
 export class Vector {
   x = 0;
   y = 0;

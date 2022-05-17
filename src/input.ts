@@ -3,11 +3,16 @@ import * as pointer from "./pointer";
 import * as view from "./view";
 import { Vector } from "./vector";
 
+/** A pressed position of mouse or touch screen. */
 export let pos = new Vector();
+/** A variable that becomes `true` while the button is pressed. */
 export let isPressed = false;
+/** A variable that becomes `true` when the button is just pressed. */
 export let isJustPressed = false;
+/** A variable that becomes `true` when the button is just released. */
 export let isJustReleased = false;
 
+/** @ignore */
 export function init(onInputDownOrUp: Function) {
   keyboard.init({
     onKeyDown: onInputDownOrUp,
@@ -18,6 +23,7 @@ export function init(onInputDownOrUp: Function) {
   });
 }
 
+/** @ignore */
 export function update() {
   keyboard.update();
   pointer.update();
@@ -27,11 +33,13 @@ export function update() {
   isJustReleased = keyboard.isJustReleased || pointer.isJustReleased;
 }
 
+/** @ignore */
 export function clearJustPressed() {
   keyboard.clearJustPressed();
   pointer.clearJustPressed();
 }
 
+/** @ignore */
 export function set(state: {
   pos: Vector;
   isPressed: boolean;

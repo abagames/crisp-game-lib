@@ -1,0 +1,129 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>crisp-game-lib</title><meta name="description" content="Documentation for crisp-game-lib"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">crisp-game-lib</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>crisp-game-lib </h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography"><p><a href="https://abagames.github.io/crisp-game-lib-games/?survivor"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/survivor/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?chargebeam"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/chargebeam/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?pillars3d"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/pillars3d/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?thunder"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/thunder/screenshot.gif" width="25%" loading="lazy"></a></p>
+<h1 align="center">crisp-game-lib</h1>
+
+<p><a href="https://abagames.github.io/crisp-game-lib-games/?growth"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/growth/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/cardq/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?flipo"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/flipo/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?shiny"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/shiny/screenshot.gif" width="25%" loading="lazy"></a></p>
+<p>English | <a href="https://github.com/abagames/crisp-game-lib/blob/master/README_ja.md">日本語</a></p>
+<p><code>crisp-game-lib</code> is a JavaScript library for creating browser games quickly and easily. Click the image above to play a sample game on your browser (PC or mobile).</p>
+<ul>
+<li><p><a href="https://abagames.github.io/literate-diff-viewer/pinclimb/index.html">Step-by-step guide on creating a game using the crisp-game-lib</a></p>
+</li>
+<li><p><a href="https://abagames.github.io/crisp-game-lib-games/ref_document/modules.html">Reference of crisp-game-lib</a></p>
+</li>
+</ul>
+
+<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
+  <h2>Getting started</h2>
+</a>
+<ol>
+<li><p>Download <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/getting_started/index.html">docs/getting_started/index.html</a>.</p>
+</li>
+<li><p>Open <code>index.html</code> in a text editor and write the code of your game in the <code>&lt;script&gt;</code> element.</p>
+</li>
+<li><p>Open <code>index.html</code> in a browser and play the game.</p>
+</li>
+<li><p>You can publish the game by putting <code>index.html</code> on your web server.</p>
+</li>
+</ol>
+
+<a href="#write-your-own-game-with-the-help-of-intellisense-and-live-reload" id="write-your-own-game-with-the-help-of-intellisense-and-live-reload" style="color: inherit; text-decoration: none;">
+  <h2>Write your own game (with the help of IntelliSense and Live Reload)</h2>
+</a>
+<ol>
+<li><p>Clone or <a href="https://github.com/abagames/crisp-game-lib/archive/refs/heads/master.zip">download</a> this repository.</p>
+</li>
+<li><p><code>npm install</code></p>
+</li>
+<li><p>Copy the <code>docs/_template</code> directory and rename it to <code>docs/[your own game name]</code>.</p>
+</li>
+<li><p>Open <code>docs/[your own game name]/main.js</code> with the editor (<a href="https://code.visualstudio.com/">VSCode</a> is recommended) and write your own game code.</p>
+</li>
+<li><p><code>npm run watch_games</code></p>
+</li>
+<li><p>Open the URL <code>http://localhost:4000?[your own game name]</code> with a browser to play the game. The page is live-reloaded when the code is rewritten.</p>
+</li>
+</ol>
+
+<a href="#publish-your-own-game" id="publish-your-own-game" style="color: inherit; text-decoration: none;">
+  <h2>Publish your own game</h2>
+</a>
+<ol>
+<li><p>Place <code>main.js</code>, <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/bundle.js">docs/bundle.js</a> and <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/index.html">docs/index.html</a> on the web server in the following directory structure.</p>
+<pre><code><span class="hl-1">┝ [</span><span class="hl-0">games</span><span class="hl-1"> </span><span class="hl-0">root</span><span class="hl-1"> </span><span class="hl-3">directory</span><span class="hl-1"> (</span><span class="hl-0">any</span><span class="hl-1"> </span><span class="hl-0">name</span><span class="hl-1">)]</span><br/><span class="hl-1">   ┝ [</span><span class="hl-0">your</span><span class="hl-1"> </span><span class="hl-0">own</span><span class="hl-1"> </span><span class="hl-0">game</span><span class="hl-1"> </span><span class="hl-0">name</span><span class="hl-1">]</span><br/><span class="hl-1">   │  └ </span><span class="hl-0">main</span><span class="hl-1">.</span><span class="hl-0">js</span><br/><span class="hl-1">   ┝ </span><span class="hl-0">bundle</span><span class="hl-1">.</span><span class="hl-0">js</span><br/><span class="hl-1">   └ </span><span class="hl-0">index</span><span class="hl-1">.</span><span class="hl-0">html</span>
+</code></pre>
+</li>
+<li><p>Open the URL <code>[Address of games root directory]/index.html?[your own game name]</code> with a browser.</p>
+</li>
+</ol>
+
+<a href="#use-with-a-bundler" id="use-with-a-bundler" style="color: inherit; text-decoration: none;">
+  <h2>Use with a bundler</h2>
+</a>
+<p>If you want to build a game using a bundler (e.g. <a href="https://vitejs.dev/">Vite</a>), do the following.</p>
+<ol>
+<li><p><code>npm install crisp-game-lib</code> at your project directory.</p>
+</li>
+<li><p>Copy <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/_template_bundler/index.html">docs/_template_bundler/index.html</a> and <a href="https://raw.githubusercontent.com/abagames/crisp-game-lib/master/docs/_template_bundler/main.js">docs/_template_bundler/main.js</a> to your project directory.</p>
+</li>
+<li><p>Write game code in <code>main.js</code>.</p>
+</li>
+<li><p>Build with the bundler.</p>
+</li>
+</ol>
+<p>If you want to describe the game using TypeScript, rename <code>main.js</code> to <code>main.ts</code>.</p>
+
+<a href="#sample-games-and-sample-codes" id="sample-games-and-sample-codes" style="color: inherit; text-decoration: none;">
+  <h2>Sample games and sample codes</h2>
+</a>
+<p>Sample games are listed on <a href="http://www.asahi-net.or.jp/~cs8k-cyu/browser.html">my browser games page</a>.</p>
+<p>Sample code for each game is <code>main.js</code> in each directory in the <a href="https://github.com/abagames/crisp-game-lib-games/tree/main/docs">crisp-game-lib-games/docs directory</a>.</p>
+
+<a href="#function-introduction-demo" id="function-introduction-demo" style="color: inherit; text-decoration: none;">
+  <h2>Function introduction demo</h2>
+</a>
+<ul>
+<li>Drawing (<a href="https://abagames.github.io/crisp-game-lib-games/?ref_drawing">DEMO</a>)</li>
+</ul>
+<p><a href="https://abagames.github.io/crisp-game-lib-games/?ref_drawing"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_drawing/screenshot.gif" alt="ref_drawing screenshot"></a></p>
+<ul>
+<li>Collision (<a href="https://abagames.github.io/crisp-game-lib-games/?ref_collision">DEMO</a>)</li>
+</ul>
+<p><a href="https://abagames.github.io/crisp-game-lib-games/?ref_collision"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_collision/screenshot.gif" alt="ref_collision screenshot"></a></p>
+<ul>
+<li><p>Input (<a href="https://abagames.github.io/crisp-game-lib-games/?ref_input">DEMO</a>)</p>
+</li>
+<li><p>Sound (<a href="https://abagames.github.io/crisp-game-lib-games/?ref_sound">DEMO</a>)</p>
+</li>
+</ul>
+
+<a href="#articles" id="articles" style="color: inherit; text-decoration: none;">
+  <h2>Articles</h2>
+</a>
+<ul>
+<li><p><a href="https://terrysfreegameoftheweek.com/kento-chos-crisp-game-lib-games/">Kenta Cho’s “Crisp Game Lib” Games</a>, written by <a href="https://twitter.com/terrycavanagh">Terry Cavanagh</a>, known as the developer of <a href="https://store.steampowered.com/app/221640/Super_Hexagon/">Super Hexagon</a> and <a href="https://store.steampowered.com/app/70300/VVVVVV/">VVVVVV</a></p>
+</li>
+<li><p><a href="https://github.com/JunoNgx/crisp-game-lib-tutorial">Guide to getting start with CrispGameLib</a>, written by <a href="https://twitter.com/JunoNgx">Juno Nguyen</a></p>
+</li>
+</ul>
+
+<a href="#tips" id="tips" style="color: inherit; text-decoration: none;">
+  <h2>Tips</h2>
+</a>
+<ul>
+<li>By drawing with <code>color(&quot;transparent&quot;)</code>, you can get the result of collision detection without drawing any shape on the screen.</li>
+<li>The collision detection is based on the drawing history of the shape. Therefore, even if a drawn shape is overwritten with a background-colored shape, the collision detection in that area will not disappear.</li>
+<li>The base value for the random seed for sound generation is generated from the <code>title</code> and <code>description</code> strings. If you want to use <code>seed</code> in <code>options</code> to adjust the generated sound, it is better to do so after the <code>title</code> and <code>description</code> are fixed.</li>
+<li>To improve the performance of the game, do the following (mainly for mobile devices):<ul>
+<li>Use <code>simple</code> or <code>dark</code> theme. Do not specify a theme that uses pixi.js (<code>pixel</code>, <code>shape</code>, <code>shapeDark</code>, <code>crt</code>) in options. WebGL post-effects may worsen performance.</li>
+<li>Minimize drawing bars, lines, or arcs. They are drawn as a combination of many rectangles and highly detrimental to the collision detection process.</li>
+</ul>
+</li>
+<li>If you want to create a game that can be played comfortably on a mobile device, I recommend that you adopt one of the following three control methods.<ul>
+<li>One-button</li>
+<li>Slide operation left or right direction only</li>
+<li>Tapping on a specific place on the screen</li>
+</ul>
+</li>
+<li>For more information on how to create a one-button game, please refer to the following article I wrote: <a href="https://dev.to/abagames/how-to-realize-various-actions-in-a-one-button-game-fak">How to realize various actions in a one-button game</a></li>
+<li>The <a href="https://github.com/abagames/sounds-some-sounds">sounds-some-sounds library</a> can be used to play music. To play music written in MML, use the <code>sss.playMml()</code> function.</li>
+</ul>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li><li class=" tsd-kind-namespace"><a href="modules/input.html">input</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-class"><a href="classes/Vector.html" class="tsd-kind-icon">Vector</a></li><li class="tsd-kind-interface"><a href="interfaces/VectorLike.html" class="tsd-kind-icon">Vector<wbr/>Like</a></li><li class="tsd-kind-type-alias"><a href="modules.html#Collision" class="tsd-kind-icon">Collision</a></li><li class="tsd-kind-type-alias"><a href="modules.html#Color" class="tsd-kind-icon">Color</a></li><li class="tsd-kind-type-alias"><a href="modules.html#LetterOptions" class="tsd-kind-icon">Letter<wbr/>Options</a></li><li class="tsd-kind-type-alias"><a href="modules.html#Options" class="tsd-kind-icon">Options</a></li><li class="tsd-kind-type-alias"><a href="modules.html#SoundEffectType" class="tsd-kind-icon">Sound<wbr/>Effect<wbr/>Type</a></li><li class="tsd-kind-type-alias"><a href="modules.html#ThemeName" class="tsd-kind-icon">Theme<wbr/>Name</a></li><li class="tsd-kind-variable"><a href="modules.html#PI" class="tsd-kind-icon">PI</a></li><li class="tsd-kind-variable"><a href="modules.html#difficulty" class="tsd-kind-icon">difficulty</a></li><li class="tsd-kind-variable"><a href="modules.html#score" class="tsd-kind-icon">score</a></li><li class="tsd-kind-variable"><a href="modules.html#ticks" class="tsd-kind-icon">ticks</a></li><li class="tsd-kind-function"><a href="modules.html#abs" class="tsd-kind-icon">abs</a></li><li class="tsd-kind-function"><a href="modules.html#addScore" class="tsd-kind-icon">add<wbr/>Score</a></li><li class="tsd-kind-function"><a href="modules.html#addWithCharCode" class="tsd-kind-icon">add<wbr/>With<wbr/>Char<wbr/>Code</a></li><li class="tsd-kind-function"><a href="modules.html#arc" class="tsd-kind-icon">arc</a></li><li class="tsd-kind-function"><a href="modules.html#atan2" class="tsd-kind-icon">atan2</a></li><li class="tsd-kind-function"><a href="modules.html#bar" class="tsd-kind-icon">bar</a></li><li class="tsd-kind-function"><a href="modules.html#box" class="tsd-kind-icon">box</a></li><li class="tsd-kind-function"><a href="modules.html#ceil" class="tsd-kind-icon">ceil</a></li><li class="tsd-kind-function"><a href="modules.html#char" class="tsd-kind-icon">char</a></li><li class="tsd-kind-function"><a href="modules.html#clamp" class="tsd-kind-icon">clamp</a></li><li class="tsd-kind-function"><a href="modules.html#color" class="tsd-kind-icon">color</a></li><li class="tsd-kind-function"><a href="modules.html#cos" class="tsd-kind-icon">cos</a></li><li class="tsd-kind-function"><a href="modules.html#end" class="tsd-kind-icon">end</a></li><li class="tsd-kind-function"><a href="modules.html#floor" class="tsd-kind-icon">floor</a></li><li class="tsd-kind-function"><a href="modules.html#line" class="tsd-kind-icon">line</a></li><li class="tsd-kind-function"><a href="modules.html#particle" class="tsd-kind-icon">particle</a></li><li class="tsd-kind-function"><a href="modules.html#play" class="tsd-kind-icon">play</a></li><li class="tsd-kind-function"><a href="modules.html#pow" class="tsd-kind-icon">pow</a></li><li class="tsd-kind-function"><a href="modules.html#range" class="tsd-kind-icon">range</a></li><li class="tsd-kind-function"><a href="modules.html#rect" class="tsd-kind-icon">rect</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#remove" class="tsd-kind-icon">remove</a></li><li class="tsd-kind-function"><a href="modules.html#rnd" class="tsd-kind-icon">rnd</a></li><li class="tsd-kind-function"><a href="modules.html#rndi" class="tsd-kind-icon">rndi</a></li><li class="tsd-kind-function"><a href="modules.html#rnds" class="tsd-kind-icon">rnds</a></li><li class="tsd-kind-function"><a href="modules.html#round" class="tsd-kind-icon">round</a></li><li class="tsd-kind-function"><a href="modules.html#sin" class="tsd-kind-icon">sin</a></li><li class="tsd-kind-function"><a href="modules.html#sqrt" class="tsd-kind-icon">sqrt</a></li><li class="tsd-kind-function"><a href="modules.html#text" class="tsd-kind-icon">text</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#times" class="tsd-kind-icon">times</a></li><li class="tsd-kind-function"><a href="modules.html#vec" class="tsd-kind-icon">vec</a></li><li class="tsd-kind-function"><a href="modules.html#wrap" class="tsd-kind-icon">wrap</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li><li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li><li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>

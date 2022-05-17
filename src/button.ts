@@ -12,6 +12,7 @@ export type Button = {
   toggleGroup: Button[];
 };
 
+/** @ignore */
 export function get({
   pos,
   size,
@@ -38,6 +39,7 @@ export function get({
   };
 }
 
+/** @ignore */
 export function update(button: Button) {
   const o = vec(input.pos).sub(button.pos);
   button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);

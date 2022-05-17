@@ -1,6 +1,15 @@
 import { VectorLike } from "./vector";
 import { entries } from "./util";
 
+/**
+ * A return value type for collision detection.
+ * - **isColliding.char** is used to test a collision to specific character.
+ *  e.g. `isColliding.char.f`
+ * - **isColliding.rect** is used to test a collision to specific color rects.
+ *  e.g. `isColliding.rect.blue`
+ * - **isColliding.text** is used to test a collision to specific text.
+ *  e.g. `isColliding.text.e`
+ */
 export type Collision = {
   isColliding: {
     rect?: {
@@ -24,21 +33,37 @@ export type Collision = {
     text?: { [k: string]: boolean };
     char?: { [k: string]: boolean };
   };
+  /** @ignore */
   transparent?: boolean;
+  /** @ignore */
   white?: boolean;
+  /** @ignore */
   red?: boolean;
+  /** @ignore */
   green?: boolean;
+  /** @ignore */
   yellow?: boolean;
+  /** @ignore */
   blue?: boolean;
+  /** @ignore */
   purple?: boolean;
+  /** @ignore */
   cyan?: boolean;
+  /** @ignore */
   black?: boolean;
+  /** @ignore */
   light_red?: boolean;
+  /** @ignore */
   light_green?: boolean;
+  /** @ignore */
   light_yellow?: boolean;
+  /** @ignore */
   light_blue?: boolean;
+  /** @ignore */
   light_purple?: boolean;
+  /** @ignore */
   light_cyan?: boolean;
+  /** @ignore */
   light_black?: boolean;
 };
 export type HitBox = {

@@ -11,6 +11,14 @@ import {
   createShorthand,
 } from "./collision";
 
+/**
+ * Draw a rectangle.
+ * @param x An x-coordinate or `Vector` position of the top left corner.
+ * @param y A y-coordinate of the top left corner.
+ * @param width
+ * @param height
+ * @returns Information about objects that collided during drawing.
+ */
 export function rect(
   x: number | VectorLike,
   y: number | VectorLike,
@@ -20,6 +28,14 @@ export function rect(
   return drawRect(false, x, y, width, height);
 }
 
+/**
+ * Draw a box.
+ * @param x An x-coordinate or `Vector` position of the center of the box.
+ * @param y A y-coordinate of center of the box.
+ * @param width
+ * @param height
+ * @returns Information about objects that collided during drawing.
+ */
 export function box(
   x: number | VectorLike,
   y: number | VectorLike,
@@ -29,6 +45,16 @@ export function box(
   return drawRect(true, x, y, width, height);
 }
 
+/**
+ * Draw a bar, which is a line specified by the center coordinates and length.
+ * @param x An x-coordinate or `Vector` position of the center of the bar.
+ * @param y A y-coordinate of center of the bar.
+ * @param length
+ * @param thickness
+ * @param rotate Angle of the bar.
+ * @param centerPosRatio A value from 0 to 1 that defines where the center coordinates are on the line, default: 0.5.
+ * @returns Information about objects that collided during drawing.
+ */
 export function bar(
   x: number | VectorLike,
   y: number,
@@ -50,6 +76,15 @@ export function bar(
   return drawLine(p, l, thickness);
 }
 
+/**
+ * Draw a line.
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y2
+ * @param thickness
+ * @returns Information about objects that collided during drawing.
+ */
 export function line(
   x1: number | VectorLike,
   y1: number | VectorLike,
@@ -94,6 +129,16 @@ export function line(
   return drawLine(p, p2.sub(p), thickness);
 }
 
+/**
+ * Draw an arc.
+ * @param centerX
+ * @param centerY
+ * @param radius
+ * @param thickness
+ * @param angleFrom
+ * @param angleTo
+ * @returns Information about objects that collided during drawing.
+ */
 export function arc(
   centerX: number | VectorLike,
   centerY: number,

@@ -24,12 +24,23 @@ declare const Terser;
 declare const cloneDeep;
 
 export type { Vector, VectorLike };
+/**
+ * Color name: *"transparent" | "white" | "red" | "green" | "blue" |
+ *  "yellow" | "purple" | "cyan" | "black" | "light_red" | "light_green" |
+ *  "light_blue" | "light_yellow" | "light_purple" | "light_cyan" | "light_black"*
+ */
 export type { Color };
 export type { Options };
+export type { Collision } from "./collision";
+export type { LetterOptions } from "./letter";
 export { clamp, wrap, range, times, remove, addWithCharCode } from "./util";
 export { rect, box, bar, line, arc } from "./rect";
 export { text, char } from "./letter";
-export { input, keyboard, pointer };
+/** Input state from the mouse, touch screen, or keyboard. */
+export { input };
+/** @ignore */
+export { keyboard, pointer };
+/** @ignore */
 export { getButton, updateButton };
 export const PI = Math.PI;
 export const abs = Math.abs;
@@ -41,11 +52,19 @@ export const pow = Math.pow;
 export const floor = Math.floor;
 export const round = Math.round;
 export const ceil = Math.ceil;
+/** A variable incremented by one every 1/60 of a second. */
 export let ticks = 0;
+/** A variable that is one at the beginning of the game, two after 1 minute, and increasing by one every minute. */
 export let difficulty: number;
+/** Game score. */
 export let score = 0;
+/** Game time. */
+/** @ignore */
 export let time: number;
+/** A variable that becomes `true` if the game is replaying. */
+/** @ignore */
 export let isReplaying = false;
+/** Type of sound effects. */
 export type SoundEffectType =
   | "coin"
   | "laser"
@@ -57,18 +76,43 @@ export type SoundEffectType =
   | "lucky"
   | "random";
 
+/**
+ * Get a random float value.
+ * If **high** parameter isn't specified, return a value from 0 to **lowOrHigh**.
+ * @param lowOrHigh
+ * @param high
+ * @returns
+ */
 export function rnd(lowOrHigh: number = 1, high?: number) {
   return random.get(lowOrHigh, high);
 }
 
+/**
+ * Get a random int value.
+ * If **high** parameter isn't specified, return a value from 0 to **lowOrHigh**-1.
+ * @param lowOrHigh
+ * @param high
+ * @returns
+ */
 export function rndi(lowOrHigh: number = 2, high?: number) {
   return random.getInt(lowOrHigh, high);
 }
 
+/**
+ * Get a random float value that becomes negative with a one-half probability.
+ * If **high** parameter isn't specified, return a value from -**lowOrHigh** to **lowOrHigh**.
+ * @param lowOrHigh
+ * @param high
+ * @returns
+ */
 export function rnds(lowOrHigh: number = 1, high?: number) {
   return random.get(lowOrHigh, high) * random.getPlusOrMinus();
 }
 
+/**
+ * Transition to the game-over state.
+ * @param _gameOverText
+ */
 export function end(_gameOverText = "GAME OVER") {
   gameOverText = _gameOverText;
   if (isShowingTime) {
@@ -77,11 +121,22 @@ export function end(_gameOverText = "GAME OVER") {
   initGameOver();
 }
 
+/**
+ * Transition to the game complete state.
+ * @param _gameOverText
+ */
+/** @ignore */
 export function complete(completeText = "COMPLETE") {
   gameOverText = completeText;
   initGameOver();
 }
 
+/**
+ * Add a score point.
+ * @param value Point to add.
+ * @param x An x-coordinate or `Vector` position where added point is displayed.
+ * @param y A y-coordinate where added point is displayed.
+ */
 export function addScore(value: number, x?: number | VectorLike, y?: number) {
   if (isReplaying) {
     return;
@@ -107,10 +162,25 @@ export function addScore(value: number, x?: number | VectorLike, y?: number) {
   });
 }
 
+/**
+ * Set the color for drawing rectangles, particles, texts, and characters.
+ * Setting the color prior to `char()` will recolor the pixel art.
+ * Use color("black") to restore and use the original colors.
+ * @param colorName
+ */
 export function color(colorName: Color) {
   view.setColor(colorName);
 }
 
+/**
+ * Add particles.
+ * @param x
+ * @param y
+ * @param count Count of particles.
+ * @param speed Speed of particles.
+ * @param angle Angle of particles spreading.
+ * @param angleWidth The range of angles over which particles diffuse. If omitted, it spreads in a circular shape.
+ */
 export function particle(
   x: number | VectorLike,
   y: number,
@@ -129,16 +199,32 @@ export function particle(
   }
 }
 
+/**
+ * Return a `Vector` instance.
+ * @param x
+ * @param y
+ * @returns
+ */
 export function vec(x?: number | VectorLike, y?: number) {
   return new Vector(x, y);
 }
 
+/**
+ * Play a sound effect.
+ * @param type
+ */
 export function play(type: SoundEffectType) {
   if (!isWaitingRewind && !isRewinding && isSoundEnabled) {
     sss.play(soundEffectTypeToString[type]);
   }
 }
 
+/**
+ * Save and load game frame states. Used for realizing a rewind function.
+ * @param frameState
+ * @returns
+ */
+/** @ignore */
 export function frameState(frameState: any) {
   if (isWaitingRewind) {
     const rs = replay.getLastFrameState(random);
@@ -162,6 +248,10 @@ export function frameState(frameState: any) {
   return frameState;
 }
 
+/**
+ * Rewind the game.
+ */
+/** @ignore */
 export function rewind() {
   if (isRewinding) {
     return;
@@ -205,6 +295,7 @@ const defaultOptions: Options = {
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
+/** Name for an appearance theme. */
 export type ThemeName =
   | "simple"
   | "pixel"
@@ -212,26 +303,46 @@ export type ThemeName =
   | "shapeDark"
   | "crt"
   | "dark";
+/** @ignore */
 export type Theme = {
   name: ThemeName;
   isUsingPixi: boolean;
   isDarkColor: boolean;
 };
+/** Game setting options. */
 declare type Options = {
+  /** Play BGM. */
   isPlayingBgm?: boolean;
+  /** Capture a screen by pressing 'c' key. */
   isCapturing?: boolean;
+  /** Additional setting for isCapturing, will omit the margins on two sides when enabled. */
   isCapturingGameCanvasOnly?: boolean;
+  /** Additional setting for isCapturingGameCanvasOnly, set the scale of the output file, default: 1. */
   captureCanvasScale?: number;
+  /** Show a score and a hi-score, default: true. */
   isShowingScore?: boolean;
+  /** Show a time. */
+  /** @ignore */
   isShowingTime?: boolean;
+  /** Enable replay of the previous game on the title screen. */
   isReplayEnabled?: boolean;
+  /** Enable rewind. */
+  /** @ignore */
   isRewindEnabled?: boolean;
+  /** Display particles on the front of of the screen. */
   isDrawingParticleFront?: boolean;
+  /** Display added score points on the front of the screen. */
   isDrawingScoreFront?: boolean;
+  /** Show a minified code to the console. */
+  /** @ignore */
   isMinifying?: boolean;
+  /** Enable BGM and sound effects, default: true. */
   isSoundEnabled?: boolean;
+  /** Screen size of the game, default: {x: 100, y: 100}. */
   viewSize?: { x: number; y: number };
+  /** Random number seed for BGM and sound effects generation. */
   seed?: number;
+  /** Appearance theme of the game. */
   theme?: ThemeName;
 };
 declare let options: Options;
@@ -270,6 +381,7 @@ let giveUpButton: Button;
 let gameOverText: string;
 let gameScriptFile: string;
 
+/** @ignore */
 export function init(settings: {
   update: () => void;
   title?: string;
@@ -286,6 +398,7 @@ export function init(settings: {
   onLoad();
 }
 
+/** @ignore */
 export function onLoad() {
   let opts: Options;
   if (typeof options !== "undefined" && options != null) {
@@ -670,6 +783,7 @@ function getHash(v: string) {
   return hash;
 }
 
+/** @ignore */
 export function addGameScript() {
   let gameName = window.location.search.substring(1);
   gameName = gameName.replace(/[^A-Za-z0-9_-]/g, "");
@@ -731,32 +845,58 @@ function showMinifiedScript() {
     });
 }
 
+/** @ignore */
 export let inp: { p: Vector; ip: boolean; ijp: boolean; ijr: boolean };
+/** @ignore */
 export let clr = color;
+/** @ignore */
 export let ply = play;
+/** @ignore */
 export let tms = times;
+/** @ignore */
 export let rmv = remove;
+/** @ignore */
 export let tc: number;
+/** @ignore */
 export let df: number;
+/** @ignore */
 export let sc: number;
+/** @ignore */
 export const tr = "transparent";
+/** @ignore */
 export const wh = "white";
+/** @ignore */
 export const rd = "red";
+/** @ignore */
 export const gr = "green";
+/** @ignore */
 export const yl = "yellow";
+/** @ignore */
 export const bl = "blue";
+/** @ignore */
 export const pr = "purple";
+/** @ignore */
 export const cy = "cyan";
+/** @ignore */
 export const lc = "black";
+/** @ignore */
 export const cn = "coin";
+/** @ignore */
 export const ls = "laser";
+/** @ignore */
 export const ex = "explosion";
+/** @ignore */
 export const pw = "powerUp";
+/** @ignore */
 export const ht = "hit";
+/** @ignore */
 export const jm = "jump";
+/** @ignore */
 export const sl = "select";
+/** @ignore */
 export const uc = "lucky";
 
+/** @ignore */
 export let minifyReplaces = [
   ["===", "=="],
   ["!==", "!="],
