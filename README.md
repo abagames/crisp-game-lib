@@ -74,8 +74,6 @@ Sample code for each game is `main.js` in each directory in the [crisp-game-lib-
 
 - Drawing ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_drawing))
 
-<a href="https://abagames.github.io/crisp-game-lib-games/?ref_drawing"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_drawing/screenshot.gif" loading="lazy"></a>
-
 [![ref_drawing screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_drawing/screenshot.gif)](https://abagames.github.io/crisp-game-lib-games/?ref_drawing)
 
 - Collision ([DEMO](https://abagames.github.io/crisp-game-lib-games/?ref_collision))
