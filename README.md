@@ -6,11 +6,17 @@
 
 English | [日本語](https://github.com/abagames/crisp-game-lib/blob/master/README_ja.md)
 
-`crisp-game-lib` is a JavaScript library for creating browser games quickly and easily. Click the image above to play a sample game on your browser (PC or mobile).
+`crisp-game-lib` is a JavaScript library for creating browser games quickly and easily.
 
 - [Step-by-step guide on creating a game using the crisp-game-lib](https://abagames.github.io/literate-diff-viewer/pinclimb/index.html)
 
 - [Reference of crisp-game-lib](https://abagames.github.io/crisp-game-lib/ref_document/modules.html)
+
+## Sample games and sample codes
+
+Sample games are listed on [my browser games page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html).
+
+Sample code for each game is `main.js` in each directory in the [crisp-game-lib-games/docs directory](https://github.com/abagames/crisp-game-lib-games/tree/main/docs).
 
 ## Getting started
 
@@ -63,12 +69,6 @@ If you want to build a game using a bundler (e.g. [Vite](https://vitejs.dev/)), 
 1. Build with the bundler.
 
 If you want to describe the game using TypeScript, rename `main.js` to `main.ts`.
-
-## Sample games and sample codes
-
-Sample games are listed on [my browser games page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html).
-
-Sample code for each game is `main.js` in each directory in the [crisp-game-lib-games/docs directory](https://github.com/abagames/crisp-game-lib-games/tree/main/docs).
 
 ## Function introduction demo
 

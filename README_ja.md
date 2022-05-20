@@ -6,11 +6,17 @@
 
 [English](https://github.com/abagames/crisp-game-lib/blob/master/README.md) | 日本語
 
-`crisp-game-lib`はブラウザゲームを素早く簡単に作るための JavaScript ライブラリです。上の画像をクリックすると、サンプルゲームがブラウザで遊べます（PC、スマホ、タブレット対応）。
+`crisp-game-lib`はブラウザゲームを素早く簡単に作るための JavaScript ライブラリです。
 
 - [crisp-game-lib を使ったゲームの作り方をステップバイステップで説明](https://abagames.github.io/literate-diff-viewer/pinclimb/index.html?lang=ja)
 
 - [crisp-game-lib のリファレンス](https://abagames.github.io/crisp-game-lib/ref_document/modules.html)
+
+## サンプルゲームとサンプルコード
+
+サンプルゲームについては、[私のブラウザゲームページ](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html)に一覧があります。
+
+各ゲームのサンプルコードは、[crisp-game-lib-games/docs](https://github.com/abagames/crisp-game-lib-games/tree/main/docs)内の各ディレクトリの`main.js`です。
 
 ## 始め方
 
@@ -63,12 +69,6 @@
 1. バンドラーを使ってビルドする。
 
 TypeScript を使いたい場合は、`main.js`を`main.ts`にリネームして下さい。
-
-## サンプルゲームとサンプルコード
-
-その他のサンプルゲームについては、[私のブラウザゲームページ](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html)に一覧があります。
-
-各ゲームのサンプルコードは、[crisp-game-lib-games/docs](https://github.com/abagames/crisp-game-lib-games/tree/main/docs)内の各ディレクトリの`main.js`です。
 
 ## 機能紹介デモ
 
