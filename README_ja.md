@@ -14,7 +14,7 @@
 
 ## サンプルゲームとサンプルコード
 
-サンプルゲームについては、[私のブラウザゲームページ](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html)に一覧があります。
+サンプルゲームについては、[私のブラウザゲームページ](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html)に一覧があります。`Play`ボタンを押すことで、ブラウザ上で遊べます（PC、スマホ、タブレット対応）。
 
 各ゲームのサンプルコードは、[crisp-game-lib-games/docs](https://github.com/abagames/crisp-game-lib-games/tree/main/docs)内の各ディレクトリの`main.js`です。
 

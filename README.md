@@ -14,7 +14,7 @@ English | [日本語](https://github.com/abagames/crisp-game-lib/blob/master/REA
 
 ## Sample games and sample codes
 
-Sample games are listed on [my browser games page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html).
+Sample games are listed on [my browser games page](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html). Click `Play` to play the game in your browser (PC or mobile).
 
 Sample code for each game is `main.js` in each directory in the [crisp-game-lib-games/docs directory](https://github.com/abagames/crisp-game-lib-games/tree/main/docs).
 
