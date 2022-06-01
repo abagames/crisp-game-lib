@@ -2,7 +2,7 @@
 
 # crisp-game-lib
 
-<a href="https://abagames.github.io/crisp-game-lib-games/?growth"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/growth/screenshot.gif" width="150px" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/cardq/screenshot.gif" width="150px" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?flipo"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/flipo/screenshot.gif" width="150px" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?shiny"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/shiny/screenshot.gif" width="150px" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-games/?growth"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/growth/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/cardq/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?flipo"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/flipo/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?shiny"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/shiny/screenshot.gif" width="25%" loading="lazy"></a>
 
 English | [日本語](https://github.com/abagames/crisp-game-lib/blob/master/README_ja.md)
 
