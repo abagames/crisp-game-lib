@@ -17,13 +17,13 @@ import {
   draw as drawButton,
   Button,
 } from "./button";
-
 import * as replay from "./replay";
+import { Theme, ThemeName } from "./loop";
 declare const sss;
 declare const Terser;
 declare const cloneDeep;
 
-export type { Vector, VectorLike };
+export type { Vector, VectorLike, Theme, ThemeName };
 /**
  * Color name: *"transparent" | "white" | "red" | "green" | "blue" |
  *  "yellow" | "purple" | "cyan" | "black" | "light_red" | "light_green" |
@@ -295,20 +295,6 @@ const defaultOptions: Options = {
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
-/** Name for an appearance theme. */
-export type ThemeName =
-  | "simple"
-  | "pixel"
-  | "shape"
-  | "shapeDark"
-  | "crt"
-  | "dark";
-/** @ignore */
-export type Theme = {
-  name: ThemeName;
-  isUsingPixi: boolean;
-  isDarkColor: boolean;
-};
 /** Game setting options. */
 declare type Options = {
   /** Play BGM. */

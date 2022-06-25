@@ -1,6 +1,6 @@
 import { Vector, VectorLike } from "./vector";
 import { Theme } from "./main";
-import { colorToNumber, colorToStyle } from "./color";
+import { Color, colorToNumber, colorToStyle } from "./color";
 import { getGridFilter } from "./filters";
 declare const PIXI;
 declare const gcc;

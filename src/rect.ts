@@ -179,7 +179,7 @@ export function arc(
   if (ao < 0.01) {
     return;
   }
-  const lc = clamp(ceil(ao * Math.sqrt(radius * 0.25)), 1, 36);
+  const lc = clamp(Math.ceil(ao * Math.sqrt(radius * 0.25)), 1, 36);
   const ai = ao / lc;
   let a = af;
   let p1 = new Vector(radius).rotate(a).add(centerPos);

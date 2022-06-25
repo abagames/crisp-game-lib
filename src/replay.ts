@@ -71,7 +71,7 @@ export function rewind(random: Random) {
   const rs = fs.randomState;
   random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
   storedInput = {
-    pos: vec(input.pos),
+    pos: new Vector(input.pos),
     isPressed: input.isPressed,
     isJustPressed: input.isJustPressed,
     isJustReleased: input.isJustReleased,
@@ -85,7 +85,7 @@ export function getLastFrameState(random: Random) {
   const rs = fs.randomState;
   random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
   storedInput = {
-    pos: vec(input.pos),
+    pos: new Vector(input.pos),
     isPressed: input.isPressed,
     isJustPressed: input.isJustPressed,
     isJustReleased: input.isJustReleased,

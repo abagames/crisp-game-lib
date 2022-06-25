@@ -3,13 +3,27 @@ import * as letter from "./letter";
 import * as input from "./input";
 import * as color from "./color";
 import { VectorLike } from "./vector";
-import { Theme } from "./main";
 declare const sss;
+
+/** Name for an appearance theme. */
+export type ThemeName =
+  | "simple"
+  | "pixel"
+  | "shape"
+  | "shapeDark"
+  | "crt"
+  | "dark";
+/** @ignore */
+export type Theme = {
+  name: ThemeName;
+  isUsingPixi: boolean;
+  isDarkColor: boolean;
+};
 
 export type Options = {
   viewSize?: VectorLike;
   bodyBackground?: string;
-  viewBackground?: Color;
+  viewBackground?: color.Color;
   isUsingVirtualPad?: boolean;
   isFourWaysStick?: boolean;
   isCapturing?: boolean;

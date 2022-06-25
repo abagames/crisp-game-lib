@@ -1,4 +1,9 @@
 import * as pointer from "./pointer";
+import { Vector, VectorLike } from "./vector";
+import * as input from "./input";
+import { setColor } from "./view";
+import { rect } from "./rect";
+import { text } from "./letter";
 
 export type Button = {
   pos: VectorLike;
@@ -41,7 +46,7 @@ export function get({
 
 /** @ignore */
 export function update(button: Button) {
-  const o = vec(input.pos).sub(button.pos);
+  const o = new Vector(input.pos).sub(button.pos);
   button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
   if (button.isHovered && pointer.isJustPressed) {
     button.isPressed = true;
@@ -67,10 +72,10 @@ export function update(button: Button) {
 }
 
 export function draw(button: Button) {
-  color(button.isPressed ? "blue" : "light_blue");
+  setColor(button.isPressed ? "blue" : "light_blue");
   rect(button.pos.x, button.pos.y, button.size.x, button.size.y);
   if (button.isToggle && !button.isSelected) {
-    color("white");
+    setColor("white");
     rect(
       button.pos.x + 1,
       button.pos.y + 1,
@@ -78,6 +83,6 @@ export function draw(button: Button) {
       button.size.y - 2
     );
   }
-  color(button.isHovered ? "black" : "blue");
+  setColor(button.isHovered ? "black" : "blue");
   text(button.text, button.pos.x + 3, button.pos.y + 3);
 }

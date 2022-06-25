@@ -1,4 +1,6 @@
+import { Color } from "./color";
 import { Random } from "./random";
+import { clamp } from "./util";
 import { Vector } from "./vector";
 import {
   fillRect,
