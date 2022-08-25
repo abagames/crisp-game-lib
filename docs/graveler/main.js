@@ -63,10 +63,10 @@ function update() {
     multiplier = 1;
   }
   if (ticks % 600 === 0) {
-    sss.stopBgm();
+    stopBgm();
     sss.setTempo(clamp(120 + (ticks / 600) * 10, 120, 240));
     if (!isReplaying) {
-      sss.playBgm();
+      playBgm();
     }
   }
   const scr = difficulty * 0.5;
