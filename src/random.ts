@@ -33,7 +33,7 @@ export class Random {
     return this.getInt(2) * 2 - 1;
   }
 
-  select(values: any[]) {
+  select<T>(values: T[]): T {
     return values[this.getInt(values.length)];
   }
 
