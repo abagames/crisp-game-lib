@@ -150,11 +150,13 @@ image-rendering: pixelated;
 export function clear() {
   if (theme.isUsingPixi) {
     graphics.clear();
-    isFilling = false;
-    beginFillColor(colorToNumber(viewBackground, theme.isDarkColor ? 0.15 : 1));
+    graphics.beginFill(
+      colorToNumber(viewBackground, theme.isDarkColor ? 0.15 : 1)
+    );
     graphics.drawRect(0, 0, size.x, size.y);
-    endFill();
-    isFilling = false;
+    graphics.endFill();
+    graphics.beginFill(colorToNumber(currentColor));
+    isFilling = true;
     return;
   }
   context.fillStyle = colorToStyle(
