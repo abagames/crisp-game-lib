@@ -1,7 +1,7 @@
 (function (exports) {
     'use strict';
 
-    function clamp$1(v, low = 0, high = 1) {
+    function clamp(v, low = 0, high = 1) {
         return Math.max(low, Math.min(v, high));
     }
     function wrap(v, low, high) {
@@ -27,6 +27,14 @@
     function times(count, func) {
         return range(count).map((i) => func(i));
     }
+    /**
+     * A function that takes an **array** as its first argument and a **func**tion as its second argument.
+     * The function receives each element of the array as a first argument.
+     * If the function returns `true`, this element is removed from the array.
+     * @param array
+     * @param func
+     * @returns Removed array elements.
+     */
     function remove(array, func) {
         let removed = [];
         for (let i = 0, index = 0; i < array.length; index++) {
@@ -49,6 +57,14 @@
     function entries(obj) {
         return Object.keys(obj).map((p) => [p, obj[p]]);
     }
+    /**
+     * Return a character whose character code is the character code of
+     * the first argument **char** plus the value of the second argument **offset**.
+     * It is mainly used to animate a character with the `char()`.
+     * @param char
+     * @param offset
+     * @returns
+     */
     function addWithCharCode(char, offset) {
         return String.fromCharCode(char.charCodeAt(0) + offset);
     }
@@ -56,6 +72,9 @@
     function isVectorLike(v) {
         return v.x != null && v.y != null;
     }
+    /**
+     * A two-dimensional vector class with functions useful for working with (x, y) coordinates.
+     */
     class Vector {
         constructor(x, y) {
             this.x = 0;
@@ -103,8 +122,8 @@
             return this;
         }
         clamp(xLow, xHigh, yLow, yHigh) {
-            this.x = clamp$1(this.x, xLow, xHigh);
-            this.y = clamp$1(this.y, yLow, yHigh);
+            this.x = clamp(this.x, xLow, xHigh);
+            this.y = clamp(this.y, yLow, yHigh);
             return this;
         }
         wrap(xLow, xHigh, yLow, yHigh) {
@@ -207,13 +226,7 @@
     const colorChars = "twrgybpclRGYBPCL";
     let values;
     const rgbNumbers = [
-        0xeeeeee,
-        0xe91e63,
-        0x4caf50,
-        0xffc107,
-        0x3f51b5,
-        0x9c27b0,
-        0x03a9f4,
+        0xeeeeee, 0xe91e63, 0x4caf50, 0xffc107, 0x3f51b5, 0x9c27b0, 0x03a9f4,
         0x616161,
     ];
     function init$8(isDarkColor) {
@@ -431,11 +444,11 @@ image-rendering: pixelated;
     function clear$1() {
         if (theme.isUsingPixi) {
             graphics.clear();
-            isFilling = false;
-            beginFillColor(colorToNumber(viewBackground, theme.isDarkColor ? 0.15 : 1));
+            graphics.beginFill(colorToNumber(viewBackground, theme.isDarkColor ? 0.15 : 1));
             graphics.drawRect(0, 0, size.x, size.y);
-            endFill();
-            isFilling = false;
+            graphics.endFill();
+            graphics.beginFill(colorToNumber(currentColor));
+            isFilling = true;
             return;
         }
         context.fillStyle = colorToStyle(viewBackground, theme.isDarkColor ? 0.15 : 1);
@@ -1237,9 +1250,44 @@ l l l
         return shorthandRects;
     }
 
-    function text$1(str, x, y, options) {
+    /**
+     * Draw a text.
+     * @param str
+     * @param x
+     * @param y
+     * @param options
+     * @returns Information about objects that collided during drawing.
+     */
+    function text(str, x, y, options) {
         return letters(false, str, x, y, options);
     }
+    /**
+     * Draw a pixel art.
+     *
+     * You can define pixel arts (6x6 dots) of characters with `characters` array.
+     * Each letter represents a pixel color
+     * ( *l: black, r: red, g: green, b: blue, y: yellow, p: purple, c: cyan,
+     *  L: light_black, R: light_red, G: light_green, B: light_blue, Y: light_yellow,
+     *  P: light_purple, C: light_cyan* ).
+     * ```js
+     * characters = [
+     * `
+     *  r rr
+     * rrrrrr
+     *  grr
+     *  grr
+     * rrrrrr
+     * r rr
+     * `,
+     * ```
+     * Pixel arts are assigned from 'a'. `char("a", 0, 0)` draws the character
+     * defined by the first element of the `characters` array.
+     * @param str
+     * @param x
+     * @param y
+     * @param options
+     * @returns Information about objects that collided during drawing.
+     */
     function char(str, x, y, options) {
         return letters(true, str, x, y, options);
     }
@@ -1948,10 +1996,15 @@ l l l
         clearJustPressed: clearJustPressed$1
     });
 
+    /** A pressed position of mouse or touch screen. */
     let pos = new Vector();
+    /** A variable that becomes `true` while the button is pressed. */
     let isPressed = false;
+    /** A variable that becomes `true` when the button is just pressed. */
     let isJustPressed = false;
+    /** A variable that becomes `true` when the button is just released. */
     let isJustReleased = false;
+    /** @ignore */
     function init$3(onInputDownOrUp) {
         init$5({
             onKeyDown: onInputDownOrUp,
@@ -1961,6 +2014,7 @@ l l l
             anchor: new Vector(0.5, 0.5),
         });
     }
+    /** @ignore */
     function update$4() {
         update$6();
         update$5();
@@ -1969,10 +2023,12 @@ l l l
         isJustPressed = isJustPressed$2 || isJustPressed$1;
         isJustReleased = isJustReleased$2 || isJustReleased$1;
     }
+    /** @ignore */
     function clearJustPressed() {
         clearJustPressed$2();
         clearJustPressed$1();
     }
+    /** @ignore */
     function set(state) {
         pos.set(state.pos);
         isPressed = state.isPressed;
@@ -1980,7 +2036,7 @@ l l l
         isJustReleased = state.isJustReleased;
     }
 
-    var input$1 = /*#__PURE__*/Object.freeze({
+    var input = /*#__PURE__*/Object.freeze({
         __proto__: null,
         get pos () { return pos; },
         get isPressed () { return isPressed; },
@@ -2208,139 +2264,38 @@ l l l
         loadCurrentColor();
     }
 
-    function get({ pos, size, text, isToggle = false, onClick = () => { }, }) {
-        return {
-            pos,
-            size,
-            text,
-            isToggle,
-            onClick,
-            isPressed: false,
-            isSelected: false,
-            isHovered: false,
-            toggleGroup: [],
-        };
-    }
-    function update$1(button) {
-        const o = vec(input.pos).sub(button.pos);
-        button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
-        if (button.isHovered && isJustPressed$1) {
-            button.isPressed = true;
-        }
-        if (button.isPressed && !button.isHovered) {
-            button.isPressed = false;
-        }
-        if (button.isPressed && isJustReleased$1) {
-            button.onClick();
-            button.isPressed = false;
-            if (button.isToggle) {
-                if (button.toggleGroup.length === 0) {
-                    button.isSelected = !button.isSelected;
-                }
-                else {
-                    button.toggleGroup.forEach((b) => {
-                        b.isSelected = false;
-                    });
-                    button.isSelected = true;
-                }
-            }
-        }
-        draw(button);
-    }
-    function draw(button) {
-        color(button.isPressed ? "blue" : "light_blue");
-        rect(button.pos.x, button.pos.y, button.size.x, button.size.y);
-        if (button.isToggle && !button.isSelected) {
-            color("white");
-            rect(button.pos.x + 1, button.pos.y + 1, button.size.x - 2, button.size.y - 2);
-        }
-        color(button.isHovered ? "black" : "blue");
-        text(button.text, button.pos.x + 3, button.pos.y + 3);
-    }
-
-    let record;
-    let inputIndex;
-    let frameStates;
-    let storedInput;
-    function initRecord(randomSeed) {
-        record = {
-            randomSeed,
-            inputs: [],
-        };
-    }
-    function recordInput(input) {
-        record.inputs.push(input);
-    }
-    function isRecorded() {
-        return record != null;
-    }
-    function initReplay(random) {
-        inputIndex = 0;
-        random.setSeed(record.randomSeed);
-    }
-    function replayInput() {
-        if (inputIndex >= record.inputs.length) {
-            return;
-        }
-        set(record.inputs[inputIndex]);
-        inputIndex++;
-    }
-    function initFrameStates() {
-        frameStates = [];
-    }
-    function recordFrameState(state, baseState, random) {
-        frameStates.push({
-            randomState: random.getState(),
-            gameState: cloneDeep(state),
-            baseState: cloneDeep(baseState),
-        });
-    }
-    function rewind$1(random) {
-        const fs = frameStates.pop();
-        const rs = fs.randomState;
-        random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
-        storedInput = {
-            pos: vec(pos),
-            isPressed: isPressed,
-            isJustPressed: isJustPressed,
-            isJustReleased: isJustReleased,
-        };
-        set(record.inputs.pop());
-        return fs;
-    }
-    function getLastFrameState(random) {
-        const fs = frameStates[frameStates.length - 1];
-        const rs = fs.randomState;
-        random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
-        storedInput = {
-            pos: vec(pos),
-            isPressed: isPressed,
-            isJustPressed: isJustPressed,
-            isJustReleased: isJustReleased,
-        };
-        set(record.inputs[record.inputs.length - 1]);
-        return fs;
-    }
-    function restoreInput() {
-        set(storedInput);
-    }
-    function isFrameStateEmpty() {
-        return frameStates.length === 0;
-    }
-    function getFrameStateForReplay() {
-        const i = inputIndex - 1;
-        if (i >= record.inputs.length) {
-            return;
-        }
-        return frameStates[i];
-    }
-
-    function rect$1(x, y, width, height) {
+    /**
+     * Draw a rectangle.
+     * @param x An x-coordinate or `Vector` position of the top left corner.
+     * @param y A y-coordinate of the top left corner.
+     * @param width
+     * @param height
+     * @returns Information about objects that collided during drawing.
+     */
+    function rect(x, y, width, height) {
         return drawRect(false, x, y, width, height);
     }
+    /**
+     * Draw a box.
+     * @param x An x-coordinate or `Vector` position of the center of the box.
+     * @param y A y-coordinate of center of the box.
+     * @param width
+     * @param height
+     * @returns Information about objects that collided during drawing.
+     */
     function box(x, y, width, height) {
         return drawRect(true, x, y, width, height);
     }
+    /**
+     * Draw a bar, which is a line specified by the center coordinates and length.
+     * @param x An x-coordinate or `Vector` position of the center of the bar.
+     * @param y A y-coordinate of center of the bar.
+     * @param length
+     * @param thickness
+     * @param rotate Angle of the bar.
+     * @param centerPosRatio A value from 0 to 1 that defines where the center coordinates are on the line, default: 0.5.
+     * @returns Information about objects that collided during drawing.
+     */
     function bar(x, y, length, thickness, rotate = 0.5, centerPosRatio = 0.5) {
         if (typeof x !== "number") {
             centerPosRatio = rotate;
@@ -2354,6 +2309,15 @@ l l l
         const p = new Vector(x - l.x * centerPosRatio, y - l.y * centerPosRatio);
         return drawLine(p, l, thickness);
     }
+    /**
+     * Draw a line.
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @param thickness
+     * @returns Information about objects that collided during drawing.
+     */
     function line(x1, y1, x2 = 3, y2 = 3, thickness = 3) {
         const p = new Vector();
         const p2 = new Vector();
@@ -2397,6 +2361,16 @@ l l l
         }
         return drawLine(p, p2.sub(p), thickness);
     }
+    /**
+     * Draw an arc.
+     * @param centerX
+     * @param centerY
+     * @param radius
+     * @param thickness
+     * @param angleFrom
+     * @param angleTo
+     * @returns Information about objects that collided during drawing.
+     */
     function arc(centerX, centerY, radius, thickness, angleFrom, angleTo) {
         let centerPos = new Vector();
         if (typeof centerX === "number") {
@@ -2428,11 +2402,11 @@ l l l
             af = angleFrom;
             ao = angleTo - angleFrom;
         }
-        ao = clamp$1(ao, 0, Math.PI * 2);
+        ao = clamp(ao, 0, Math.PI * 2);
         if (ao < 0.01) {
             return;
         }
-        const lc = clamp$1(ceil(ao * Math.sqrt(radius * 0.25)), 1, 36);
+        const lc = clamp(Math.ceil(ao * Math.sqrt(radius * 0.25)), 1, 36);
         const ai = ao / lc;
         let a = af;
         let p1 = new Vector(radius).rotate(a).add(centerPos);
@@ -2498,10 +2472,10 @@ l l l
             }
             isDrawing = false;
         }
-        const t = Math.floor(clamp$1(thickness, 3, 10));
+        const t = Math.floor(clamp(thickness, 3, 10));
         const lx = Math.abs(l.x);
         const ly = Math.abs(l.y);
-        const rn = clamp$1(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
+        const rn = clamp(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
         l.div(rn - 1);
         let collision = { isColliding: { rect: {}, text: {}, char: {} } };
         for (let i = 0; i < rn; i++) {
@@ -2560,6 +2534,137 @@ l l l
         return collision;
     }
 
+    /** @ignore */
+    function get({ pos, size, text, isToggle = false, onClick = () => { }, }) {
+        return {
+            pos,
+            size,
+            text,
+            isToggle,
+            onClick,
+            isPressed: false,
+            isSelected: false,
+            isHovered: false,
+            toggleGroup: [],
+        };
+    }
+    /** @ignore */
+    function update$1(button) {
+        const o = new Vector(pos).sub(button.pos);
+        button.isHovered = o.isInRect(0, 0, button.size.x, button.size.y);
+        if (button.isHovered && isJustPressed$1) {
+            button.isPressed = true;
+        }
+        if (button.isPressed && !button.isHovered) {
+            button.isPressed = false;
+        }
+        if (button.isPressed && isJustReleased$1) {
+            button.onClick();
+            button.isPressed = false;
+            if (button.isToggle) {
+                if (button.toggleGroup.length === 0) {
+                    button.isSelected = !button.isSelected;
+                }
+                else {
+                    button.toggleGroup.forEach((b) => {
+                        b.isSelected = false;
+                    });
+                    button.isSelected = true;
+                }
+            }
+        }
+        draw(button);
+    }
+    function draw(button) {
+        saveCurrentColor();
+        setColor(button.isPressed ? "blue" : "light_blue");
+        rect(button.pos.x, button.pos.y, button.size.x, button.size.y);
+        if (button.isToggle && !button.isSelected) {
+            setColor("white");
+            rect(button.pos.x + 1, button.pos.y + 1, button.size.x - 2, button.size.y - 2);
+        }
+        setColor(button.isHovered ? "black" : "blue");
+        text(button.text, button.pos.x + 3, button.pos.y + 3);
+        loadCurrentColor();
+    }
+
+    let record;
+    let inputIndex;
+    let frameStates;
+    let storedInput;
+    function initRecord(randomSeed) {
+        record = {
+            randomSeed,
+            inputs: [],
+        };
+    }
+    function recordInput(input) {
+        record.inputs.push(input);
+    }
+    function isRecorded() {
+        return record != null;
+    }
+    function initReplay(random) {
+        inputIndex = 0;
+        random.setSeed(record.randomSeed);
+    }
+    function replayInput() {
+        if (inputIndex >= record.inputs.length) {
+            return;
+        }
+        set(record.inputs[inputIndex]);
+        inputIndex++;
+    }
+    function initFrameStates() {
+        frameStates = [];
+    }
+    function recordFrameState(state, baseState, random) {
+        frameStates.push({
+            randomState: random.getState(),
+            gameState: cloneDeep(state),
+            baseState: cloneDeep(baseState),
+        });
+    }
+    function rewind$1(random) {
+        const fs = frameStates.pop();
+        const rs = fs.randomState;
+        random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
+        storedInput = {
+            pos: new Vector(pos),
+            isPressed: isPressed,
+            isJustPressed: isJustPressed,
+            isJustReleased: isJustReleased,
+        };
+        set(record.inputs.pop());
+        return fs;
+    }
+    function getLastFrameState(random) {
+        const fs = frameStates[frameStates.length - 1];
+        const rs = fs.randomState;
+        random.setSeed(rs.w, rs.x, rs.y, rs.z, 0);
+        storedInput = {
+            pos: new Vector(pos),
+            isPressed: isPressed,
+            isJustPressed: isJustPressed,
+            isJustReleased: isJustReleased,
+        };
+        set(record.inputs[record.inputs.length - 1]);
+        return fs;
+    }
+    function restoreInput() {
+        set(storedInput);
+    }
+    function isFrameStateEmpty() {
+        return frameStates.length === 0;
+    }
+    function getFrameStateForReplay() {
+        const i = inputIndex - 1;
+        if (i >= record.inputs.length) {
+            return;
+        }
+        return frameStates[i];
+    }
+
     const PI = Math.PI;
     const abs = Math.abs;
     const sin = Math.sin;
@@ -2569,21 +2674,53 @@ l l l
     const pow = Math.pow;
     const floor = Math.floor;
     const round = Math.round;
-    const ceil$1 = Math.ceil;
+    const ceil = Math.ceil;
+    /** A variable incremented by one every 1/60 of a second. */
     exports.ticks = 0;
+    /** A variable that is one at the beginning of the game, two after 1 minute, and increasing by one every minute. */
     exports.difficulty = void 0;
+    /** Game score. */
     exports.score = 0;
+    /** Game time. */
+    /** @ignore */
     exports.time = void 0;
+    /** A variable that becomes `true` if the game is replaying. */
+    /** @ignore */
     exports.isReplaying = false;
+    /**
+     * Get a random float value.
+     * If **high** parameter isn't specified, return a value from 0 to **lowOrHigh**.
+     * @param lowOrHigh
+     * @param high
+     * @returns
+     */
     function rnd(lowOrHigh = 1, high) {
         return random.get(lowOrHigh, high);
     }
+    /**
+     * Get a random int value.
+     * If **high** parameter isn't specified, return a value from 0 to **lowOrHigh**-1.
+     * @param lowOrHigh
+     * @param high
+     * @returns
+     */
     function rndi(lowOrHigh = 2, high) {
         return random.getInt(lowOrHigh, high);
     }
+    /**
+     * Get a random float value that becomes negative with a one-half probability.
+     * If **high** parameter isn't specified, return a value from -**lowOrHigh** to **lowOrHigh**.
+     * @param lowOrHigh
+     * @param high
+     * @returns
+     */
     function rnds(lowOrHigh = 1, high) {
         return random.get(lowOrHigh, high) * random.getPlusOrMinus();
     }
+    /**
+     * Transition to the game-over state.
+     * @param _gameOverText
+     */
     function end(_gameOverText = "GAME OVER") {
         gameOverText = _gameOverText;
         if (isShowingTime) {
@@ -2591,10 +2728,21 @@ l l l
         }
         initGameOver();
     }
+    /**
+     * Transition to the game complete state.
+     * @param _gameOverText
+     */
+    /** @ignore */
     function complete(completeText = "COMPLETE") {
         gameOverText = completeText;
         initGameOver();
     }
+    /**
+     * Add a score point.
+     * @param value Point to add.
+     * @param x An x-coordinate or `Vector` position where added point is displayed.
+     * @param y A y-coordinate where added point is displayed.
+     */
     function addScore(value, x, y) {
         if (exports.isReplaying) {
             return;
@@ -2620,9 +2768,24 @@ l l l
             ticks: 30,
         });
     }
-    function color$1(colorName) {
+    /**
+     * Set the color for drawing rectangles, particles, texts, and characters.
+     * Setting the color prior to `char()` will recolor the pixel art.
+     * Use color("black") to restore and use the original colors.
+     * @param colorName
+     */
+    function color(colorName) {
         setColor(colorName);
     }
+    /**
+     * Add particles.
+     * @param x
+     * @param y
+     * @param count Count of particles.
+     * @param speed Speed of particles.
+     * @param angle Angle of particles spreading.
+     * @param angleWidth The range of angles over which particles diffuse. If omitted, it spreads in a circular shape.
+     */
     function particle(x, y, count, speed, angle, angleWidth) {
         let pos = new Vector();
         if (typeof x === "number") {
@@ -2634,14 +2797,59 @@ l l l
             add(pos, y, count, speed, angle);
         }
     }
-    function vec$1(x, y) {
+    /**
+     * Return a `Vector` instance.
+     * @param x
+     * @param y
+     * @returns
+     */
+    function vec(x, y) {
         return new Vector(x, y);
     }
-    function play(type) {
+    /**
+     * Play a sound effect.
+     * @param type
+     * @param options
+     */
+    function play(type, options) {
         if (!isWaitingRewind && !isRewinding && isSoundEnabled) {
-            sss.play(soundEffectTypeToString[type]);
+            if (options != null && typeof sss.playSoundEffect === "function") {
+                sss.playSoundEffect(type, options);
+            }
+            else {
+                sss.play(soundEffectTypeToString[type]);
+            }
         }
     }
+    let bgmTrack;
+    /**
+     * Play a background music
+     */
+    /** @ignore */
+    function playBgm() {
+        if (typeof sss.generateMml === "function") {
+            bgmTrack = sss.playMml(sss.generateMml());
+        }
+        else {
+            sss.playBgm();
+        }
+    }
+    /**
+     * Stop a background music
+     */
+    /** @ignore */
+    function stopBgm() {
+        if (bgmTrack != null) {
+            sss.stopMml(bgmTrack);
+        }
+        sss.stopBgm();
+    }
+    /**
+     * Save and load game frame states. Used for realizing a rewind function.
+     * @param frameState
+     * @returns
+     */
+    /** @ignore */
     function frameState(frameState) {
         if (isWaitingRewind) {
             const rs = getLastFrameState(random);
@@ -2667,6 +2875,10 @@ l l l
         }
         return frameState;
     }
+    /**
+     * Rewind the game.
+     */
+    /** @ignore */
     function rewind() {
         if (isRewinding) {
             return;
@@ -2688,6 +2900,9 @@ l l l
         select: "s",
         lucky: "u",
         random: "r",
+        click: "i",
+        synth: "y",
+        tone: "t",
     };
     const defaultOptions = {
         isPlayingBgm: false,
@@ -2737,6 +2952,7 @@ l l l
     let giveUpButton;
     let gameOverText;
     let gameScriptFile;
+    /** @ignore */
     function init(settings) {
         const win = window;
         win.update = settings.update;
@@ -2746,6 +2962,7 @@ l l l
         win.options = settings.options;
         onLoad();
     }
+    /** @ignore */
     function onLoad() {
         let opts;
         if (typeof options !== "undefined" && options != null) {
@@ -2872,7 +3089,7 @@ l l l
         exports.time = 0;
         scoreBoards = [];
         if (isPlayingBgm && isSoundEnabled) {
-            sss.playBgm();
+            playBgm();
         }
         const randomSeed = seedRandom.getInt(999999999);
         random.setSeed(randomSeed);
@@ -2893,13 +3110,15 @@ l l l
         }
         if (isReplayEnabled || isRewindEnabled) {
             recordInput({
-                pos: vec$1(pos),
+                pos: vec(pos),
                 isPressed: isPressed,
                 isJustPressed: isJustPressed,
                 isJustReleased: isJustReleased,
             });
         }
-        update();
+        if (typeof update === "function") {
+            update();
+        }
         if (isDrawingParticleFront) {
             update$2();
         }
@@ -2975,7 +3194,7 @@ l l l
         exports.ticks = -1;
         drawGameOver();
         if (isPlayingBgm && isSoundEnabled) {
-            sss.stopBgm();
+            stopBgm();
         }
     }
     function updateGameOver() {
@@ -2997,17 +3216,17 @@ l l l
         state = "rewind";
         isWaitingRewind = true;
         rewindButton = get({
-            pos: { x: 61, y: 11 },
+            pos: { x: size.x - 39, y: 11 },
             size: { x: 36, y: 7 },
             text: "Rewind",
         });
         giveUpButton = get({
-            pos: { x: 61, y: 81 },
+            pos: { x: size.x - 39, y: size.y - 19 },
             size: { x: 36, y: 7 },
             text: "GiveUp",
         });
         if (isPlayingBgm && isSoundEnabled) {
-            sss.stopBgm();
+            stopBgm();
         }
         if (theme.isUsingPixi) {
             draw(rewindButton);
@@ -3050,7 +3269,7 @@ l l l
         state = "inGame";
         init$1();
         if (isPlayingBgm && isSoundEnabled) {
-            sss.playBgm();
+            playBgm();
         }
     }
     function drawScoreOrTime() {
@@ -3103,6 +3322,7 @@ l l l
         }
         return hash;
     }
+    /** @ignore */
     function addGameScript() {
         let gameName = window.location.search.substring(1);
         gameName = gameName.replace(/[^A-Za-z0-9_-]/g, "");
@@ -3157,31 +3377,65 @@ l l l
             console.log(`${minifiedUpdateScript.length} letters`);
         });
     }
+    /** @ignore */
     exports.inp = void 0;
-    let clr = color$1;
-    let ply = play;
-    let tms = times;
-    let rmv = remove;
+    /** @ignore */
+    function clr(...args) {
+        return color.apply(this, args);
+    }
+    /** @ignore */
+    function ply(...args) {
+        return play.apply(this, args);
+    }
+    /** @ignore */
+    function tms(...args) {
+        return times.apply(this, args);
+    }
+    /** @ignore */
+    function rmv(...args) {
+        return remove.apply(this.args);
+    }
+    /** @ignore */
     exports.tc = void 0;
+    /** @ignore */
     exports.df = void 0;
+    /** @ignore */
     exports.sc = void 0;
+    /** @ignore */
     const tr = "transparent";
+    /** @ignore */
     const wh = "white";
+    /** @ignore */
     const rd = "red";
+    /** @ignore */
     const gr = "green";
+    /** @ignore */
     const yl = "yellow";
+    /** @ignore */
     const bl = "blue";
+    /** @ignore */
     const pr = "purple";
+    /** @ignore */
     const cy = "cyan";
+    /** @ignore */
     const lc = "black";
+    /** @ignore */
     const cn = "coin";
+    /** @ignore */
     const ls = "laser";
+    /** @ignore */
     const ex = "explosion";
+    /** @ignore */
     const pw = "powerUp";
+    /** @ignore */
     const ht = "hit";
+    /** @ignore */
     const jm = "jump";
+    /** @ignore */
     const sl = "select";
+    /** @ignore */
     const uc = "lucky";
+    /** @ignore */
     let minifyReplaces = [
         ["===", "=="],
         ["!==", "!="],
@@ -3234,12 +3488,12 @@ l l l
     exports.bar = bar;
     exports.bl = bl;
     exports.box = box;
-    exports.ceil = ceil$1;
+    exports.ceil = ceil;
     exports.char = char;
-    exports.clamp = clamp$1;
+    exports.clamp = clamp;
     exports.clr = clr;
     exports.cn = cn;
-    exports.color = color$1;
+    exports.color = color;
     exports.complete = complete;
     exports.cos = cos;
     exports.cy = cy;
@@ -3251,7 +3505,7 @@ l l l
     exports.gr = gr;
     exports.ht = ht;
     exports.init = init;
-    exports.input = input$1;
+    exports.input = input;
     exports.jm = jm;
     exports.keyboard = keyboard;
     exports.lc = lc;
@@ -3261,6 +3515,7 @@ l l l
     exports.onLoad = onLoad;
     exports.particle = particle;
     exports.play = play;
+    exports.playBgm = playBgm;
     exports.ply = ply;
     exports.pointer = pointer;
     exports.pow = pow;
@@ -3268,7 +3523,7 @@ l l l
     exports.pw = pw;
     exports.range = range;
     exports.rd = rd;
-    exports.rect = rect$1;
+    exports.rect = rect;
     exports.remove = remove;
     exports.rewind = rewind;
     exports.rmv = rmv;
@@ -3279,13 +3534,14 @@ l l l
     exports.sin = sin;
     exports.sl = sl;
     exports.sqrt = sqrt;
-    exports.text = text$1;
+    exports.stopBgm = stopBgm;
+    exports.text = text;
     exports.times = times;
     exports.tms = tms;
     exports.tr = tr;
     exports.uc = uc;
     exports.updateButton = update$1;
-    exports.vec = vec$1;
+    exports.vec = vec;
     exports.wh = wh;
     exports.wrap = wrap;
     exports.yl = yl;
