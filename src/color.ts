@@ -18,6 +18,7 @@ export const colors = [
   "light_cyan",
   "light_black",
 ] as const;
+/** @ignore */
 export type Color = typeof colors[number];
 export const colorChars = "twrgybpclRGYBPCL";
 type RgbValues = {
@@ -26,13 +27,7 @@ type RgbValues = {
 let values: RgbValues;
 
 const rgbNumbers = [
-  0xeeeeee,
-  0xe91e63,
-  0x4caf50,
-  0xffc107,
-  0x3f51b5,
-  0x9c27b0,
-  0x03a9f4,
+  0xeeeeee, 0xe91e63, 0x4caf50, 0xffc107, 0x3f51b5, 0x9c27b0, 0x03a9f4,
   0x616161,
 ];
 
