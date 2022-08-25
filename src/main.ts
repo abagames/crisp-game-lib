@@ -24,11 +24,6 @@ declare const Terser;
 declare const cloneDeep;
 
 export type { Vector, VectorLike, Theme, ThemeName };
-/**
- * Color name: *"transparent" | "white" | "red" | "green" | "blue" |
- *  "yellow" | "purple" | "cyan" | "black" | "light_red" | "light_green" |
- *  "light_blue" | "light_yellow" | "light_purple" | "light_cyan" | "light_black"*
- */
 export type { Color };
 export type { Options };
 export type { Collision } from "./collision";
@@ -74,8 +69,10 @@ export type SoundEffectType =
   | "jump"
   | "select"
   | "lucky"
-  | "random";
-
+  | "random"
+  | "click"
+  | "synth"
+  | "tone";
 /**
  * Get a random float value.
  * If **high** parameter isn't specified, return a value from 0 to **lowOrHigh**.
@@ -205,18 +202,62 @@ export function particle(
  * @param y
  * @returns
  */
-export function vec(x?: number | VectorLike, y?: number) {
+export function vec(x?: number | VectorLike, y?: number): Vector {
   return new Vector(x, y);
 }
 
 /**
  * Play a sound effect.
  * @param type
+ * @param options
  */
-export function play(type: SoundEffectType) {
-  if (!isWaitingRewind && !isRewinding && isSoundEnabled) {
-    sss.play(soundEffectTypeToString[type]);
+export function play(
+  type: SoundEffectType,
+  options?: {
+    // Random seed (default = 0)
+    seed?: number;
+    // Number of simultaneous sounds (default = 2)
+    numberOfSounds?: number;
+    // Sound volume (default = 1)
+    volume?: number;
+    // To set the pitch of the sound, set one of the following 3 parameters
+    pitch?: number; // MIDI note number
+    freq?: number; // Frequency (Hz)
+    note?: string; // Note string (e.g. "C4", "F#3", "Ab5")
   }
+) {
+  if (!isWaitingRewind && !isRewinding && isSoundEnabled) {
+    if (options != null && typeof sss.playSoundEffect === "function") {
+      sss.playSoundEffect(type, options);
+    } else {
+      sss.play(soundEffectTypeToString[type]);
+    }
+  }
+}
+
+let bgmTrack;
+
+/**
+ * Play a background music
+ */
+/** @ignore */
+export function playBgm() {
+  if (typeof sss.generateMml === "function") {
+    bgmTrack = sss.playMml(sss.generateMml());
+  } else {
+    sss.playBgm();
+  }
+}
+
+/**
+ * Stop a background music
+ */
+/** @ignore */
+export function stopBgm() {
+  if (bgmTrack != null) {
+    sss.stopMml(bgmTrack);
+  }
+  sss.stopBgm();
 }
 
 /**
@@ -273,6 +314,9 @@ const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
   select: "s",
   lucky: "u",
   random: "r",
+  click: "i",
+  synth: "y",
+  tone: "t",
 };
 const defaultOptions: Options = {
   isPlayingBgm: false,
@@ -517,7 +561,7 @@ function initInGame() {
   time = 0;
   scoreBoards = [];
   if (isPlayingBgm && isSoundEnabled) {
-    sss.playBgm();
+    playBgm();
   }
   const randomSeed = seedRandom.getInt(999999999);
   random.setSeed(randomSeed);
@@ -545,7 +589,9 @@ function updateInGame() {
       isJustReleased: input.isJustReleased,
     });
   }
-  update();
+  if (typeof update === "function") {
+    update();
+  }
   if (isDrawingParticleFront) {
     _particle.update();
   }
@@ -628,7 +674,7 @@ function initGameOver() {
   ticks = -1;
   drawGameOver();
   if (isPlayingBgm && isSoundEnabled) {
-    sss.stopBgm();
+    stopBgm();
   }
 }
 
@@ -656,17 +702,17 @@ function initRewind() {
   state = "rewind";
   isWaitingRewind = true;
   rewindButton = getButton({
-    pos: { x: 61, y: 11 },
+    pos: { x: view.size.x - 39, y: 11 },
     size: { x: 36, y: 7 },
     text: "Rewind",
   });
   giveUpButton = getButton({
-    pos: { x: 61, y: 81 },
+    pos: { x: view.size.x - 39, y: view.size.y - 19 },
     size: { x: 36, y: 7 },
     text: "GiveUp",
   });
   if (isPlayingBgm && isSoundEnabled) {
-    sss.stopBgm();
+    stopBgm();
   }
   if (view.theme.isUsingPixi) {
     drawButton(rewindButton);
@@ -709,7 +755,7 @@ function stopRewind() {
   state = "inGame";
   _particle.init();
   if (isPlayingBgm && isSoundEnabled) {
-    sss.playBgm();
+    playBgm();
   }
 }
 
@@ -834,13 +880,21 @@ function showMinifiedScript() {
 /** @ignore */
 export let inp: { p: Vector; ip: boolean; ijp: boolean; ijr: boolean };
 /** @ignore */
-export let clr = color;
+export function clr(...args) {
+  return color.apply(this, args);
+}
 /** @ignore */
-export let ply = play;
+export function ply(...args) {
+  return play.apply(this, args);
+}
 /** @ignore */
-export let tms = times;
+export function tms(...args) {
+  return times.apply(this, args);
+}
 /** @ignore */
-export let rmv = remove;
+export function rmv(...args) {
+  return remove.apply(this.args);
+}
 /** @ignore */
 export let tc: number;
 /** @ignore */
