@@ -1,7 +1,7 @@
 import * as pointer from "./pointer";
 import { Vector, VectorLike } from "./vector";
 import * as input from "./input";
-import { setColor } from "./view";
+import { loadCurrentColor, saveCurrentColor, setColor } from "./view";
 import { rect } from "./rect";
 import { text } from "./letter";
 
@@ -72,6 +72,7 @@ export function update(button: Button) {
 }
 
 export function draw(button: Button) {
+  saveCurrentColor();
   setColor(button.isPressed ? "blue" : "light_blue");
   rect(button.pos.x, button.pos.y, button.size.x, button.size.y);
   if (button.isToggle && !button.isSelected) {
@@ -85,4 +86,5 @@ export function draw(button: Button) {
   }
   setColor(button.isHovered ? "black" : "blue");
   text(button.text, button.pos.x + 3, button.pos.y + 3);
+  loadCurrentColor();
 }
