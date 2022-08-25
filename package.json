@@ -17,14 +17,14 @@
     "generate_reference": "typedoc src/main.ts --out ./docs/ref_document/"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.0.2",
+    "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-replace": "^4.0.0",
-    "@rollup/plugin-typescript": "^8.3.1",
+    "@rollup/plugin-typescript": "^8.4.0",
     "@types/pixi.js": "^5.0.0",
     "light-server": "^2.9.1",
-    "rollup": "^2.69.1",
-    "tslib": "^2.3.1",
-    "typedoc": "^0.22.15",
+    "rollup": "^2.78.1",
+    "tslib": "^2.4.0",
+    "typedoc": "^0.23.10",
     "typescript": "^4.7.4"
   }
 }
