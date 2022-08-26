@@ -1,8 +1,8 @@
-<a href="https://abagames.github.io/crisp-game-lib-games/?survivor"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/survivor/screenshot.gif" width="25%" style="width: 100%;" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?chargebeam"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/chargebeam/screenshot.gif" width="25%" style="width: 100%;" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?pillars3d"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/pillars3d/screenshot.gif" width="25%" style="width: 100%;" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?thunder"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/thunder/screenshot.gif" width="25%" style="width: 100%;" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-11-games/?survivor"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/survivor/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?chargebeam"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/chargebeam/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?pillars3d"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/pillars3d/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?thunder"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/thunder/screenshot.gif" width="25%" loading="lazy"></a>
 
 # crisp-game-lib
 
-<a href="https://abagames.github.io/crisp-game-lib-games/?growth"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/growth/screenshot.gif" width="25%" style="width: 100%;" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/cardq/screenshot.gif" width="25%" style="width: 100%;" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?flipo"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/flipo/screenshot.gif" width="25%" style="width: 100%;" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-games/?shiny"><img src="https://github.com/abagames/crisp-game-lib-games/raw/main/docs/shiny/screenshot.gif" width="25%" style="width: 100%;" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-11-games/?growth"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/growth/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/cardq/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?flipo"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/flipo/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?shiny"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/shiny/screenshot.gif" width="25%" loading="lazy"></a>
 
 [English](https://github.com/abagames/crisp-game-lib/blob/master/README.md) | 日本語
 
@@ -72,17 +72,17 @@ TypeScript を使いたい場合は、`main.js`を`main.ts`にリネームして
 
 ## 機能紹介デモ
 
-- 描画 ([デモ](https://abagames.github.io/crisp-game-lib-games/?ref_drawing))
+- 描画 ([デモ](https://abagames.github.io/crisp-game-lib/?ref_drawing))
 
-[![ref_drawing screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_drawing/screenshot.gif)](https://abagames.github.io/crisp-game-lib-games/?ref_drawing)
+[![ref_drawing screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_drawing/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?ref_drawing)
 
-- 衝突判定 ([デモ](https://abagames.github.io/crisp-game-lib-games/?ref_collision))
+- 衝突判定 ([デモ](https://abagames.github.io/crisp-game-lib/?ref_collision))
 
-[![ref_collision screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_collision/screenshot.gif)](https://abagames.github.io/crisp-game-lib-games/?ref_collision)
+[![ref_collision screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_collision/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?ref_collision)
 
-- 入力判定 ([デモ](https://abagames.github.io/crisp-game-lib-games/?ref_input))
+- 入力判定 ([デモ](https://abagames.github.io/crisp-game-lib/?ref_input))
 
-- 音 ([デモ](https://abagames.github.io/crisp-game-lib-games/?ref_sound))
+- 音 ([デモ](https://abagames.github.io/crisp-game-lib/?ref_sound))
 
 ## 関連記事
 
