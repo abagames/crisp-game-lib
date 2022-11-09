@@ -108,3 +108,4 @@ TypeScript を使いたい場合は、`main.js`を`main.ts`にリネームして
   - 画面上のタップ
 - ワンボタンゲームをどのように作れば良いかについては、次の記事も参照ください：[ワンボタンゲームをたくさん作ったので、その作り方をおさらいしたい](https://aba.hatenablog.com/entry/2021/08/08/195706)
 - [sounds-some-sounds ライブラリ](https://github.com/abagames/sounds-some-sounds)を使って音楽を再生できます。MML で記述された音声を再生するには、`sss.playMml()` 関数を使います。
+- crisp-game-lib で作られたゲームを M5Stack や Adafruit PyBadge などの小さなデバイスで動作させたい場合は、C 言語で実装された[crisp-game-lib-portable](https://github.com/abagames/crisp-game-lib-portable)の利用も検討ください。

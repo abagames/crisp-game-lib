@@ -106,3 +106,4 @@ If you want to describe the game using TypeScript, rename `main.js` to `main.ts`
   - Tapping on a specific place on the screen
 - For more information on how to create a one-button game, please refer to the following article I wrote: [How to realize various actions in a one-button game](https://dev.to/abagames/how-to-realize-various-actions-in-a-one-button-game-fak)
 - The [sounds-some-sounds library](https://github.com/abagames/sounds-some-sounds) can be used to play music. To play music written in MML, use the `sss.playMml()` function.
+- If you want to run crisp-game-lib games on small devices such as M5Stack or Adafruit PyBadge, you can use the C implementation version [crisp-game-lib-portable](https://github.com/abagames/crisp-game-lib-portable).
