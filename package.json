@@ -13,18 +13,18 @@
   "typings": "docs/bundle.d.ts",
   "scripts": {
     "watch_games": "light-server -s docs -w \"docs/**/* # # reload\"",
-    "watch_lib": "rollup -c -w",
+    "watch_lib": "rollup -c -w --bundleConfigAsCjs",
     "generate_reference": "typedoc src/main.ts --out ./docs/ref_document/"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-replace": "^4.0.0",
-    "@rollup/plugin-typescript": "^8.4.0",
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-typescript": "^10.0.1",
     "@types/pixi.js": "^5.0.0",
     "light-server": "^2.9.1",
-    "rollup": "^2.78.1",
-    "tslib": "^2.4.0",
-    "typedoc": "^0.23.10",
-    "typescript": "^4.7.4"
+    "rollup": "^3.8.1",
+    "tslib": "^2.4.1",
+    "typedoc": "^0.23.23",
+    "typescript": "^4.9.4"
   }
 }
