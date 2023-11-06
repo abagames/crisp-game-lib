@@ -27,7 +27,7 @@ const MID_HEIGHT = (MIN_HEIGHT + MAX_HEIGHT)/2;
 
 options = {
   theme: "dark",
-  viewSize: windowLen,
+  viewSize: { x: 200, y: 80 },
 };
 
 let stars;
