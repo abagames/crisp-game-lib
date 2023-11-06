@@ -7,6 +7,7 @@ characters = [];
 
 options = {
   theme: "dark",
+  isPlayingBgm: true,
   viewSize: { x: 200, y: 80 },
 };
 
