@@ -5,7 +5,9 @@ description = `
 
 characters = [];
 
-options = {};
+options = {
+  viewSize: { x: 200, y: 80 },
+};
 
 function update() {
   if (!ticks) {
