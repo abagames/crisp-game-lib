@@ -5,16 +5,18 @@ description = `
 
 characters = [
   `
-   ll  
-  l  l
-   ll
-  l  l
+ ll
+ ll
+ l
+lll
+l l
   `,
   `
-   ll 
-  l  l
-   ll
-   ll
+  ll
+  ll
+  l
+  l
+  l
   `
 ];
 
@@ -34,7 +36,7 @@ options = {
 let stars;
 
 let player;
-let playerPos = {x: options.viewSize.x - 100, y: options.viewSize.y - 50}
+let playerPos = {x: options.viewSize.x - 100, y: options.viewSize.y - 33}
 
 function update() {
   if (!ticks) {
