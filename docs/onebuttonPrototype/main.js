@@ -1,6 +1,7 @@
-title = "";
+title = "BUBBLE POP!";
 
 description = `
+[SPACE] SHOOT
 `;
 
 characters = [
