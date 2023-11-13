@@ -26,5 +26,8 @@
     "tslib": "^2.4.1",
     "typedoc": "^0.23.23",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "vite": "^4.5.0"
   }
 }
