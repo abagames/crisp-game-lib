@@ -31,7 +31,8 @@ const MID_HEIGHT = (MIN_HEIGHT + MAX_HEIGHT)/2;
 options = {
   theme: "dark",
   viewSize: windowLen,
-  isPlayingBgm: true
+  isPlayingBgm: true,
+  isReplayEnabled: true,
 };
 
 let stars;
