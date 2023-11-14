@@ -88,6 +88,8 @@ function update() {
     enemies[2].posX--; 
     dilate(); 
   }
+
+  playerShoot()
 }
 
 function playerMovement() {
@@ -179,5 +181,40 @@ function dilate() {
   }
   else {
     enemies[2].color = "black"; 
+  }
+}
+
+function playerShoot() {
+  if(input.isJustReleased){
+    console.log("shoot")
+
+    // select control
+
+    // shoot ( quick press)
+    console.log(enemies.length)
+    for (let i = 0; i < enemies.length; i += 1) {
+      if (enemies[i].radius < 8){ // box is damagable.
+        console.log("shoot");
+        // add laser
+        color("blue")
+        line(player.pos.x, player.pos.y, enemies[i].posX, enemies[i].posY, 3);
+        // remove target
+        enemies[i].posX = -100
+        // increase score
+        addScore(1);
+        break
+      }
+    }
+
+    // shield ( long press)
+    // if (timer > 10 && player.shieldDuration <= 0){
+    //   console.log("add shield");
+    //   player.shieldDuration = 100;
+    //   player.shieldsLeft--;
+
+    // }
+
+
+    // timer = 0;
   }
 }
