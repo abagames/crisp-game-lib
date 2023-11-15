@@ -83,9 +83,7 @@ function update() {
   resetEnemy();
 
   if (ticks % 2) {
-    enemies[0].posX--; 
-    enemies[1].posX--; 
-    enemies[2].posX--; 
+    enemies.forEach(enemy=> enemy.posX--); 
     dilate(); 
   }
 
@@ -97,90 +95,42 @@ function playerMovement() {
 }
 
 function drawEnemy() {
-  color(enemies[0].color)
-  arc(enemies[0].posX, enemies[0].posY, enemies[0].radius); 
-  color(enemies[1].color)
-  arc(enemies[1].posX, enemies[1].posY, enemies[1].radius);
-  color(enemies[2].color) 
-  arc(enemies[2].posX, enemies[2].posY, enemies[2].radius); 
+  for (const enemy of enemies){
+    color(enemy.color)
+    arc(enemy.posX, enemy.posY, enemy.radius); 
+  }
 }
 
 function resetEnemy() {
-  if (enemies[0].posX < 0 - 20) {
-    enemies[0].posX = options.viewSize.x + 10; 
-    enemies[0].posY = rnd(20, 60);
-    enemies[0].radius = rnd(5, 15);
-  }
-
-  if (enemies[1].posX < 0 - 20) {
-    enemies[1].posX = options.viewSize.x + 10; 
-    enemies[1].posY = rnd(20, 60);
-    enemies[1].radius = rnd(5, 15);
-  }
-
-  if (enemies[2].posX < 0 - 20) {
-    enemies[2].posX = options.viewSize.x + 10; 
-    enemies[2].posY = rnd(20, 60);
-    enemies[2].radius = rnd(5, 15);
+  for (const enemy of enemies){
+    if (enemy.posX < 0 - 20) {
+      enemy.posX = options.viewSize.x + 10; 
+      enemy.posY = rnd(20, 60);
+      enemy.radius = rnd(5, 15);
+    }
   }
 }
 
 function dilate() {
-  if (enemies[0].grow == 0) {
-    enemies[0].radius--; 
-    if (enemies[0].radius <= 5) {
-      enemies[0].grow = 1; 
+  for (const enemy of enemies){
+    if (enemy.grow == 0) {
+      enemy.radius--; 
+      if (enemy.radius <= 5) {
+        enemy.grow = 1; 
+      }
     }
-  }
-  else if (enemies[0].grow == 1) {
-    enemies[0].radius++; 
-    if (enemies[0].radius > 15) {
-      enemies[0].grow = 0; 
+    else if (enemy.grow == 1) {
+      enemy.radius++; 
+      if (enemy.radius > 15) {
+        enemy.grow = 0; 
+      }
     }
-  }
-  if (enemies[0].radius < 8) {
-    enemies[0].color = "purple"; 
-  }
-  else {
-    enemies[0].color = "black"; 
-  }
-
-  if (enemies[1].grow == 0) {
-    enemies[1].radius--; 
-    if (enemies[1].radius < 5) {
-      enemies[1].grow = 1; 
+    if (enemy.radius < 8) {
+      enemy.color = "purple"; 
     }
-  }
-  else if (enemies[1].grow == 1) {
-    enemies[1].radius++; 
-    if (enemies[1].radius > 15) {
-      enemies[1].grow = 0; 
+    else {
+      enemy.color = "black"; 
     }
-  }
-  if (enemies[1].radius < 8) {
-    enemies[1].color = "purple"; 
-  }
-  else {
-    enemies[1].color = "black"; 
-  }
-
-  if (enemies[2].grow == 0) {
-    enemies[2].radius--; 
-    if (enemies[2].radius < 5) {
-      enemies[2].grow = 1; 
-    }
-  }
-  else if (enemies[2].grow == 1) {
-    enemies[2].radius++; 
-    if (enemies[2].radius > 15) {
-      enemies[2].grow = 0; 
-    }
-  }
-  if (enemies[2].radius < 8) {
-    enemies[2].color = "purple"; 
-  }
-  else {
-    enemies[2].color = "black"; 
   }
 }
 
@@ -192,14 +142,14 @@ function playerShoot() {
 
     // shoot ( quick press)
     console.log(enemies.length)
-    for (let i = 0; i < enemies.length; i += 1) {
-      if (enemies[i].radius < 8){ // box is damagable.
+    for (const enemy of enemies) {
+      if (enemy.radius < 8){ // box is damagable.
         console.log("shoot");
         // add laser
         color("blue")
-        line(player.pos.x, player.pos.y, enemies[i].posX, enemies[i].posY, 3);
+        line(player.pos.x, player.pos.y, enemy.posX, enemy.posY, 3);
         // remove target
-        enemies[i].posX = -100
+        enemy.posX = -100
         // increase score
         addScore(1);
         break
