@@ -1,3 +1,36 @@
+
+// Game: BUBBLE POP!
+// Group Members: 
+
+//---------------------------------- Global vars ------------------------------------------------------
+
+
+// view constants
+const windowLen= {x: 120, y: 100}
+const leftMargin = 20;
+const MIN_HEIGHT = windowLen.y - 30;
+const MAX_HEIGHT = 20;
+const MID_HEIGHT = (MIN_HEIGHT + MAX_HEIGHT)/2;
+const MIN_RADIUS = 5;
+const MAX_RADIUS = 15;
+
+const enemyDefaultColor = "black";
+const enemyHighlightColor = "purple";
+const enemySpawnLocationX = windowLen.x + 50;
+
+const powerUpSpawnProbability = 0.2
+const radiusOffset = 2;
+
+
+
+let stars;
+let player;
+let playerPos = {x: windowLen.x - 100, y: windowLen.y - 13}
+let enemies; 
+
+//---------------------------------- Crisp game setup ------------------------------------------------------
+
+
 title = "BUBBLE POP!";
 
 description = `
@@ -21,19 +54,6 @@ l l
   `
 ];
 
-// view constants
-const windowLen= {x: 120, y: 100}
-const leftMargin = 20;
-const MIN_HEIGHT = windowLen.y - 30;
-const MAX_HEIGHT = 20;
-const MID_HEIGHT = (MIN_HEIGHT + MAX_HEIGHT)/2;
-const MIN_RADIUS = 5;
-const MAX_RADIUS = 15;
-const enemyDefaultColor = "black";
-const enemyHighlightColor = "purple";
-const powerUpSpawnProbability = 0.2
-const radiusOffset = 1;
-
 options = {
   theme: "dark",
   viewSize: windowLen,
@@ -41,12 +61,82 @@ options = {
   isReplayEnabled: true,
 };
 
-let stars;
+//---------------------------------- Helper functions ------------------------------------------------------
 
-let player;
-let playerPos = {x: windowLen.x - 100, y: windowLen.y - 13}
+function playerMovement() {
+  char((ticks % 20 < 10) ? "a":"b", player.pos.x, player.pos.y)
+}
 
-let enemies; 
+function drawEnemy() {
+  for (const enemy of enemies){
+    color(enemy.color)
+    arc(enemy.posX, enemy.posY, enemy.radius); 
+  }
+}
+
+function resetEnemy() {
+  for (const enemy of enemies){
+    if (enemy.posX < 0) {
+      enemy.posX = windowLen.x + 10; 
+      enemy.posY = randHeight();
+      enemy.radius = randRad();
+
+      console.log("bubble hit ship")
+      // subtract a point if score > 0
+      addScore((score <= 0)? 0: -1)
+      play("select");
+    }
+  }
+}
+
+function dilate() {
+  for (const enemy of enemies){
+    if (enemy.isGrowing) {
+      enemy.radius++; 
+      if (enemy.radius >= MAX_RADIUS) {
+        enemy.isGrowing = false; 
+      }
+    }
+    else{
+      enemy.radius--; 
+      if (enemy.radius <= MIN_RADIUS) {
+        enemy.isGrowing = true; 
+      }
+    }
+    if (enemy.radius < MIN_RADIUS + radiusOffset) {
+      enemy.color = enemyHighlightColor; 
+    }
+    else {
+      enemy.color = enemyDefaultColor; 
+    }
+  }
+}
+
+function playerShoot() {
+  if(input.isJustReleased){
+    console.log("shoot")
+
+    //sort enemies - closest enemy to player is first
+    const sortedEnemies = enemies.sort(enemy=> enemy.posX);
+
+    for (const enemy of sortedEnemies) {
+      if (enemy.color == enemyHighlightColor){ // bubble is popable.
+        console.log("shoot");
+        // add laser
+        color("green")
+        line(player.pos.x, player.pos.y, enemy.posX, enemy.posY, 3);
+        color("black");
+        // respawn enemy
+        enemy.posX = enemySpawnLocationX;
+        // increase score
+        addScore(1);
+        play("coin");
+        break
+      }
+    }
+  }
+}
+
 
 //returns true with [powerUpSpawnProbability] pobability, otherwise false
 function hasPowerup(){
@@ -65,6 +155,7 @@ function randBool(){
   return rndi(0, 1) == 0;
 }
 
+//---------------------------------- Update loop ------------------------------------------------------
 
 function update() {
   if (!ticks) {
@@ -77,8 +168,8 @@ function update() {
     // enemies
     enemies = [
       {posX: windowLen.x + 10, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
-      {posX: windowLen.x + 60, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
-      {posX: windowLen.x + 110, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}
+      {posX: windowLen.x + 80, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
+      {posX: windowLen.x + 130, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}
     ];
   }
 
@@ -114,81 +205,3 @@ function update() {
   playerShoot()
 }
 
-function playerMovement() {
-  char((ticks % 20 < 10) ? "a":"b", player.pos.x, player.pos.y)
-}
-
-function drawEnemy() {
-  for (const enemy of enemies){
-    color(enemy.color)
-    arc(enemy.posX, enemy.posY, enemy.radius); 
-  }
-}
-
-function resetEnemy() {
-  for (const enemy of enemies){
-    if (enemy.posX < 0 - 20) {
-      enemy.posX = options.viewSize.x + 10; 
-      enemy.posY = rnd(MAX_HEIGHT, MIN_HEIGHT);
-      enemy.radius = rnd(MIN_RADIUS, MAX_RADIUS);
-    }
-  }
-}
-
-function dilate() {
-  for (const enemy of enemies){
-    if (enemy.isGrowing) {
-      enemy.radius++; 
-      if (enemy.radius >= MAX_RADIUS) {
-        enemy.isGrowing = false; 
-      }
-    }
-    else{
-      enemy.radius--; 
-      if (enemy.radius <= MIN_RADIUS) {
-        enemy.isGrowing = true; 
-      }
-    }
-    if (enemy.radius < MIN_RADIUS + radiusOffset) {
-      enemy.color = enemyHighlightColor; 
-    }
-    else {
-      enemy.color = enemyDefaultColor; 
-    }
-  }
-}
-
-function playerShoot() {
-  if(input.isJustReleased){
-    console.log("shoot")
-
-    // select control
-
-    // shoot ( quick press)
-    console.log(enemies.length)
-    for (const enemy of enemies) {
-      if (enemy.radius < 8){ // box is damagable.
-        console.log("shoot");
-        // add laser
-        color("blue")
-        line(player.pos.x, player.pos.y, enemy.posX, enemy.posY, 3);
-        // remove target
-        enemy.posX = -100
-        // increase score
-        addScore(1);
-        break
-      }
-    }
-
-    // shield ( long press)
-    // if (timer > 10 && player.shieldDuration <= 0){
-    //   console.log("add shield");
-    //   player.shieldDuration = 100;
-    //   player.shieldsLeft--;
-
-    // }
-
-
-    // timer = 0;
-  }
-}
