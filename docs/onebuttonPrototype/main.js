@@ -27,6 +27,9 @@ const leftMargin = 20;
 const MIN_HEIGHT = windowLen.y - 20;
 const MAX_HEIGHT = 20;
 const MID_HEIGHT = (MIN_HEIGHT + MAX_HEIGHT)/2;
+const MIN_RADIUS = 5;
+const MAX_RADIUS = 15;
+const enemyDefaultColor = "black";
 
 options = {
   theme: "dark",
@@ -38,7 +41,7 @@ options = {
 let stars;
 
 let player;
-let playerPos = {x: options.viewSize.x - 100, y: options.viewSize.y - 13}
+let playerPos = {x: windowLen.x - 100, y: windowLen.y - 13}
 
 let enemies; 
 
@@ -52,9 +55,9 @@ function update() {
 
     // enemies
     enemies = [
-      {posX: options.viewSize.x + 10, posY: rnd(20, 60), body: null, radius: rnd(5, 15), grow: rndi(0, 1), color: "black"}, 
-      {posX: options.viewSize.x + 60, posY: rnd(20, 60), body: null, radius: rnd(5, 15), grow: rndi(0, 1), color: "black"}, 
-      {posX: options.viewSize.x + 110, posY: rnd(20, 60), body: null, radius: rnd(5, 15), grow: rndi(0, 1), color: "black"}
+      {posX: windowLen.x + 10, posY: rnd(MAX_HEIGHT, MIN_HEIGHT), body: null, radius: rnd(MIN_RADIUS, MAX_RADIUS), grow: rndi(0, 1), color: enemyDefaultColor}, 
+      {posX: windowLen.x + 60, posY: rnd(MAX_HEIGHT, MIN_HEIGHT), body: null, radius: rnd(MIN_RADIUS, MAX_RADIUS), grow: rndi(0, 1), color: enemyDefaultColor}, 
+      {posX: windowLen.x + 110, posY: rnd(MAX_HEIGHT, MIN_HEIGHT), body: null, radius: rnd(MIN_RADIUS, MAX_RADIUS), grow: rndi(0, 1), color: enemyDefaultColor}
     ];
   }
 
@@ -105,8 +108,8 @@ function resetEnemy() {
   for (const enemy of enemies){
     if (enemy.posX < 0 - 20) {
       enemy.posX = options.viewSize.x + 10; 
-      enemy.posY = rnd(20, 60);
-      enemy.radius = rnd(5, 15);
+      enemy.posY = rnd(MAX_HEIGHT, MIN_HEIGHT);
+      enemy.radius = rnd(MIN_RADIUS, MAX_RADIUS);
     }
   }
 }
