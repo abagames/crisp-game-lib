@@ -24,12 +24,15 @@ l l
 // view constants
 const windowLen= {x: 120, y: 100}
 const leftMargin = 20;
-const MIN_HEIGHT = windowLen.y - 20;
+const MIN_HEIGHT = windowLen.y - 30;
 const MAX_HEIGHT = 20;
 const MID_HEIGHT = (MIN_HEIGHT + MAX_HEIGHT)/2;
 const MIN_RADIUS = 5;
 const MAX_RADIUS = 15;
 const enemyDefaultColor = "black";
+const enemyHighlightColor = "purple";
+const powerUpSpawnProbability = 0.2
+const radiusOffset = 1;
 
 options = {
   theme: "dark",
@@ -45,6 +48,24 @@ let playerPos = {x: windowLen.x - 100, y: windowLen.y - 13}
 
 let enemies; 
 
+//returns true with [powerUpSpawnProbability] pobability, otherwise false
+function hasPowerup(){
+  return rndi() < powerUpSpawnProbability;
+}
+//returns a random radius between MIN_RADIUS and MAX_RADIUS
+function randRad(){
+  return rnd(MIN_RADIUS, MAX_RADIUS);
+}
+//returns a random height between MIN_HEIGHT and MAX_HEIGHT
+function randHeight(){
+  return rnd(MAX_HEIGHT, MIN_HEIGHT);
+}
+// 50 / 50 probability returns true or false
+function randBool(){
+  return rndi(0, 1) == 0;
+}
+
+
 function update() {
   if (!ticks) {
     // stars pooling
@@ -55,9 +76,9 @@ function update() {
 
     // enemies
     enemies = [
-      {posX: windowLen.x + 10, posY: rnd(MAX_HEIGHT, MIN_HEIGHT), body: null, radius: rnd(MIN_RADIUS, MAX_RADIUS), grow: rndi(0, 1), color: enemyDefaultColor}, 
-      {posX: windowLen.x + 60, posY: rnd(MAX_HEIGHT, MIN_HEIGHT), body: null, radius: rnd(MIN_RADIUS, MAX_RADIUS), grow: rndi(0, 1), color: enemyDefaultColor}, 
-      {posX: windowLen.x + 110, posY: rnd(MAX_HEIGHT, MIN_HEIGHT), body: null, radius: rnd(MIN_RADIUS, MAX_RADIUS), grow: rndi(0, 1), color: enemyDefaultColor}
+      {posX: windowLen.x + 10, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
+      {posX: windowLen.x + 60, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
+      {posX: windowLen.x + 110, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}
     ];
   }
 
@@ -116,23 +137,23 @@ function resetEnemy() {
 
 function dilate() {
   for (const enemy of enemies){
-    if (enemy.grow == 0) {
-      enemy.radius--; 
-      if (enemy.radius <= 5) {
-        enemy.grow = 1; 
-      }
-    }
-    else if (enemy.grow == 1) {
+    if (enemy.isGrowing) {
       enemy.radius++; 
-      if (enemy.radius > 15) {
-        enemy.grow = 0; 
+      if (enemy.radius >= MAX_RADIUS) {
+        enemy.isGrowing = false; 
       }
     }
-    if (enemy.radius < 8) {
-      enemy.color = "purple"; 
+    else{
+      enemy.radius--; 
+      if (enemy.radius <= MIN_RADIUS) {
+        enemy.isGrowing = true; 
+      }
+    }
+    if (enemy.radius < MIN_RADIUS + radiusOffset) {
+      enemy.color = enemyHighlightColor; 
     }
     else {
-      enemy.color = "black"; 
+      enemy.color = enemyDefaultColor; 
     }
   }
 }
