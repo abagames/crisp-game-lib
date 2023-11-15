@@ -62,13 +62,32 @@ options = {
 };
 
 //---------------------------------- Helper functions ------------------------------------------------------
-
+//returns true with [powerUpSpawnProbability] pobability, otherwise false
+function hasPowerup(){
+  return rndi() < powerUpSpawnProbability;
+}
+//returns a random radius between MIN_RADIUS and MAX_RADIUS
+function randRad(){
+  return rnd(MIN_RADIUS, MAX_RADIUS);
+}
+//returns a random height between MIN_HEIGHT and MAX_HEIGHT
+function randHeight(){
+  return rnd(MAX_HEIGHT, MIN_HEIGHT);
+}
+// 50 / 50 probability returns true or false
+function randBool(){
+  return rndi(0, 1) == 0;
+}
 function playerMovement() {
   char((ticks % 20 < 10) ? "a":"b", player.pos.x, player.pos.y)
 }
 
 function drawEnemy() {
   for (const enemy of enemies){
+    
+    //check if enemy contains a power up
+    if (enemy.hasPowerup)
+
     color(enemy.color)
     arc(enemy.posX, enemy.posY, enemy.radius); 
   }
@@ -91,6 +110,9 @@ function resetEnemy() {
 
 function dilate() {
   for (const enemy of enemies){
+    //change enemy color when radius is smallest
+    enemy.color = (enemy.radius <= MIN_RADIUS + radiusOffset)? enemyHighlightColor: enemyDefaultColor; 
+
     if (enemy.isGrowing) {
       enemy.radius++; 
       if (enemy.radius >= MAX_RADIUS) {
@@ -103,25 +125,17 @@ function dilate() {
         enemy.isGrowing = true; 
       }
     }
-    if (enemy.radius < MIN_RADIUS + radiusOffset) {
-      enemy.color = enemyHighlightColor; 
-    }
-    else {
-      enemy.color = enemyDefaultColor; 
-    }
   }
 }
 
 function playerShoot() {
   if(input.isJustReleased){
-    console.log("shoot")
-
     //sort enemies - closest enemy to player is first
     const sortedEnemies = enemies.sort(enemy=> enemy.posX);
 
     for (const enemy of sortedEnemies) {
-      if (enemy.color == enemyHighlightColor){ // bubble is popable.
-        console.log("shoot");
+      if (enemy.color == enemyHighlightColor && enemy.posX <=  windowLen.x){ // bubble is popable and in view
+  
         // add laser
         color("green")
         line(player.pos.x, player.pos.y, enemy.posX, enemy.posY, 3);
@@ -137,24 +151,6 @@ function playerShoot() {
   }
 }
 
-
-//returns true with [powerUpSpawnProbability] pobability, otherwise false
-function hasPowerup(){
-  return rndi() < powerUpSpawnProbability;
-}
-//returns a random radius between MIN_RADIUS and MAX_RADIUS
-function randRad(){
-  return rnd(MIN_RADIUS, MAX_RADIUS);
-}
-//returns a random height between MIN_HEIGHT and MAX_HEIGHT
-function randHeight(){
-  return rnd(MAX_HEIGHT, MIN_HEIGHT);
-}
-// 50 / 50 probability returns true or false
-function randBool(){
-  return rndi(0, 1) == 0;
-}
-
 //---------------------------------- Update loop ------------------------------------------------------
 
 function update() {
@@ -167,9 +163,9 @@ function update() {
 
     // enemies
     enemies = [
-      {posX: windowLen.x + 10, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
-      {posX: windowLen.x + 80, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
-      {posX: windowLen.x + 130, posY: randHeight(), body: null, radius: randRad(), isGrowning: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}
+      {posX: enemySpawnLocationX - 20, posY: randHeight(), radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
+      {posX: enemySpawnLocationX + 20, posY: randHeight(), radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
+      {posX: enemySpawnLocationX + 80, posY: randHeight(), radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}
     ];
   }
 
@@ -197,11 +193,10 @@ function update() {
   drawEnemy(); 
   resetEnemy();
 
-  if (ticks % 2) {
+  if (ticks%2 ) {
     enemies.forEach(enemy=> enemy.posX--); 
     dilate(); 
   }
 
-  playerShoot()
+  playerShoot();
 }
-
