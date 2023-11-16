@@ -7,7 +7,8 @@
 
 // view constants
 const windowLen= {x: 120, y: 100}
-const leftMargin = 20;
+const MIN_XPOS = windowLen.x - 30;
+const MAX_XPOS = windowLen.x + 10;
 const MIN_HEIGHT = windowLen.y - 30;
 const MAX_HEIGHT = 20;
 const MID_HEIGHT = (MIN_HEIGHT + MAX_HEIGHT)/2;
@@ -16,16 +17,13 @@ const MAX_RADIUS = 15;
 
 const enemyDefaultColor = "black";
 const enemyHighlightColor = "purple";
-const enemySpawnLocationX = windowLen.x + 50;
+const spawnOffset = 50;
 
-const powerUpSpawnProbability = 0.2
+const powerUpSpawnProbability = 0.2 
 const radiusOffset = 2;
 
-
-
 let stars;
-let player;
-let playerPos = {x: windowLen.x - 100, y: windowLen.y - 13}
+let player = {posX: windowLen.x - 100, posY: windowLen.y - 13 , powerUpActive: false, powerUpTTL: 5} // powerUpTTL = time to live of powerup , powerup removed after TTL reaches 0
 let enemies; 
 
 //---------------------------------- Crisp game setup ------------------------------------------------------
@@ -64,50 +62,85 @@ options = {
 //---------------------------------- Helper functions ------------------------------------------------------
 //returns true with [powerUpSpawnProbability] pobability, otherwise false
 function hasPowerup(){
-  return rndi() < powerUpSpawnProbability;
+  return rnd () < powerUpSpawnProbability;
 }
 //returns a random radius between MIN_RADIUS and MAX_RADIUS
 function randRad(){
-  return rnd(MIN_RADIUS, MAX_RADIUS);
+  return rndi(MIN_RADIUS, MAX_RADIUS);
 }
 //returns a random height between MIN_HEIGHT and MAX_HEIGHT
 function randHeight(){
-  return rnd(MAX_HEIGHT, MIN_HEIGHT);
+  return rndi(MAX_HEIGHT, MIN_HEIGHT);
+}
+//returns a random width between MIN_XPOS and MAX_XPOS
+function randXpos(){
+  return rndi(MIN_XPOS, MAX_XPOS);
 }
 // 50 / 50 probability returns true or false
 function randBool(){
   return rndi(0, 1) == 0;
 }
-function playerMovement() {
-  char((ticks % 20 < 10) ? "a":"b", player.pos.x, player.pos.y)
+function animatePlayer() {
+  char((ticks % 20 < 10) ? "a":"b", player.posX, player.posY)
 }
 
-function drawEnemy() {
+function drawEnemies() {
   for (const enemy of enemies){
-    
-    //check if enemy contains a power up
-    if (enemy.hasPowerup)
-
+    //display power up if enemy contains a power up
+    if (enemy.hasPowerup == true){
+      color("cyan");
+      enemy.powerUpBody = char("x", enemy.posX, enemy.posY, {rotation: ticks/60});
+      color("black");
+    }
+    // draw the enemy
     color(enemy.color)
     arc(enemy.posX, enemy.posY, enemy.radius); 
   }
 }
 
-function resetEnemy() {
-  for (const enemy of enemies){
-    if (enemy.posX < 0) {
-      enemy.posX = windowLen.x + 10; 
-      enemy.posY = randHeight();
-      enemy.radius = randRad();
+function resetEnemy(enemy){
+  enemy.posX = windowLen.x + 10; 
+  enemy.radius = randRad();
+  enemy.hasPowerup = hasPowerup();
+  enemy.powerUpBody = null;
+}
 
-      console.log("bubble hit ship")
-      // subtract a point if score > 0
-      addScore((score <= 0)? 0: -1)
-      play("select");
+//resets enemy bubble if popped either by a shield, or if popped on ship
+function updateEnemies() {
+  for (const enemy of enemies){
+    if (player.powerUpActive){ // only do this if power up is active
+      if (enemy.posX <= player.posX + 25) { // if enemy reaches power up shield
+        console.log("shield popped bubble!");
+        resetEnemy(enemy);
+        addScore(1)
+        play("coin");
+      }
+    }else{ //if power up is not active
+      if (enemy.posX < 0) { // if enemy reaches left side of screen
+        console.log("bubble hit ship");
+        resetEnemy(enemy);
+        // subtract a point if score > 0
+        addScore((score <= 0)? 0: -1)
+        play("select");
+      }
     }
   }
 }
 
+//checks if power up has expired and sets powerUpActive to false, otherwise draw the shield 
+function drawShield(){
+  if (player.powerUpTTL > 0){ //display power up if TTL is not expired
+    color("blue");
+    arc(-60, 50, 100, 3);
+    color("black");
+    if (ticks % 60 == 0) player.powerUpTTL--; // TTL - 1 every sec (~ every 60 frames)
+  }else{
+    player.powerUpActive= false;
+    console.log("POWERUP OVER");
+  }
+}
+
+// shrink or expand the radius of each enemy and alternate once it reaches max or min radius 
 function dilate() {
   for (const enemy of enemies){
     //change enemy color when radius is smallest
@@ -135,13 +168,22 @@ function playerShoot() {
 
     for (const enemy of sortedEnemies) {
       if (enemy.color == enemyHighlightColor && enemy.posX <=  windowLen.x){ // bubble is popable and in view
-  
+        console.log("popped a bubble");
         // add laser
         color("green")
-        line(player.pos.x, player.pos.y, enemy.posX, enemy.posY, 3);
+        line(player.posX, player.posY, enemy.posX, enemy.posY, 3);
         color("black");
+
+        //activate power up if available
+        if (enemy.hasPowerup == true){
+          player.powerUpActive = true;
+          player.powerUpTTL = 5;
+          play("powerUp");
+          console.log("POWERUP ACTIVE");
+        }
         // respawn enemy
-        enemy.posX = enemySpawnLocationX;
+        resetEnemy(enemy);
+  
         // increase score
         addScore(1);
         play("coin");
@@ -159,13 +201,12 @@ function update() {
     stars = times(20, () => {
       return { pos: vec(rnd(200), rnd(80)), vy: rnd(1, 2) };
     });
-    player = {pos: vec(playerPos.x, playerPos.y)}
 
     // enemies
     enemies = [
-      {posX: enemySpawnLocationX - 20, posY: randHeight(), radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
-      {posX: enemySpawnLocationX + 20, posY: randHeight(), radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}, 
-      {posX: enemySpawnLocationX + 80, posY: randHeight(), radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), color: enemyDefaultColor}
+      {posX: randXpos() + spawnOffset, posY: MAX_HEIGHT, radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), powerUpBody: null, color: enemyDefaultColor}, 
+      {posX: randXpos() + spawnOffset, posY: MID_HEIGHT, radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), powerUpBody: null, color: enemyDefaultColor}, 
+      {posX: randXpos() + spawnOffset, posY: MIN_HEIGHT , radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), powerUpBody: null, color: enemyDefaultColor}
     ];
   }
 
@@ -187,12 +228,15 @@ function update() {
 
   // player spawn
   color("black")
-  playerMovement()
+  animatePlayer()
 
-  // enemies
-  drawEnemy(); 
-  resetEnemy();
+  if (player.powerUpActive) drawShield();
 
+  // draw enemies and update every frame
+  drawEnemies(); 
+  updateEnemies();
+
+  //dialate the radius of the bubbles/enemies
   if (ticks%2 ) {
     enemies.forEach(enemy=> enemy.posX--); 
     dilate(); 
