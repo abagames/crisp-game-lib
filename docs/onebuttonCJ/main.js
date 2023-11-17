@@ -1,249 +1,152 @@
-var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
-if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
-{
-  let window = _____WB$wombat$assign$function_____("window");
-  let self = _____WB$wombat$assign$function_____("self");
-  let document = _____WB$wombat$assign$function_____("document");
-  let location = _____WB$wombat$assign$function_____("location");
-  let top = _____WB$wombat$assign$function_____("top");
-  let parent = _____WB$wombat$assign$function_____("parent");
-  let frames = _____WB$wombat$assign$function_____("frames");
-  let opener = _____WB$wombat$assign$function_____("opener");
-
-title = "ONE BUTTON";
+title = "S OR P";
 
 description = `
-[Tap]  Climb out
-[Hold] Throw
+[SPACE] SWIPE
 `;
 
 characters = [
   `
-  ll
-  l
- llll
- ll
+  lll
+ l l ll
   llll
-ll   l
-`,
-  `
-ll
-l  ll
- ll
-ll
+  l  l
+ ll  ll
+   `,
+   `
+  lll
+ l l ll
   llll
-ll   
-`,
-  `
-  ll
-  l
- lllll
-l l
-  llll
-ll 
-`,
-  `
    ll
-ll l
-  lll
-   l l
-llll
-    l
-`,
-  `
-  ll
-llll
-  lll
- llll
-l l ll
- llll
-`,
-  `
- llll
-llll
- llll
-`,
+  l  l
+  l  l
+   `,
+   `
+ llllll
+ ll l l
+ ll l l
+ llllll
+  l  l
+  l  l
+     `,
+   `
+ llllll
+ ll l l
+ ll l l
+ llllll
+ ll  ll
+     `,
 ];
 
 options = {
+  theme: "dark",
   isPlayingBgm: true,
   isReplayEnabled: true,
 };
 
-/** @type { {x: number}[] } */
-let holes;
-/** @type { {x: number, vx: number, fireTicks: number, fireInterval: number, fireSpeed: number}[] } */
-let tanks;
-let tankAddTicks;
-/** @type { {x: number, vx: number}[] } */
-let bullets;
-let px;
-/** @type { "in_hole" | "throwing" | "running"} */
-let pState;
-let pAngle;
-/** @type { {pos: Vector, vel: Vector}[] } */
-let grenades;
-let speedRatio;
+// var defs
+let dates;
+let px, pt, pi, pvx;
+let gy;
+let tgy;
+let bi;
+let scr;
+let isFirstPressing;
 
 function update() {
   if (!ticks) {
-    holes = [{ x: 10 }];
-    tanks = [];
-    bullets = [];
-    grenades = [];
-    px = 10;
-    pState = "in_hole";
-    tankAddTicks = 0;
-    speedRatio = 1;
+    // initalize vars
+    dates = [];
+    px = 50;
+    pt = -1;
+    pi = 0;
+    pvx = -1;
+    gy = 50;
+    bi = 0;
+    scr = 0.1;
+    isFirstPressing = true;
+    gy = tgy = 91;
   }
-  const scr = (px - 10) * 0.05;
+
+  // targets
   color("black");
-  rect(0, 70, 200, 9);
-  color("white");
-  holes = holes.filter((h) => {
-    h.x -= scr;
-    if (box(h.x, 70, 6, 10).isColliding.char.e) {
-      return false;
-    }
-    return h.x > -4;
-  });
+  gy += (tgy - gy) * 0.1;
   color("red");
-  /*tanks.forEach((t) => {
-    char("e", t.x, 67);
-  });*/
-  color("black");
-  grenades = grenades.filter((g) => {
-    g.pos.add(g.vel);
-    g.vel.y += 0.1 * difficulty;
-    if (text("o", g.pos).isColliding.char.e) {
-      return false;
+  rect(0, gy, 50, 8);
+  color("green");
+  rect(50, gy, 50, 8);
+  color("white");
+  char(":", 5, gy + 4);
+  char("(", 10, gy + 4);
+  text("PASS", 20, gy + 4);
+  char("3", 95, gy + 4);
+  char("<", 88, gy + 4);
+  text("SMASH", 55, gy + 4);
+
+  // swipe input
+  color(pt < 0 ? "red" : "green");
+  char(addWithCharCode("a", pt + 1 + (floor(ticks / 30) % 2)), px, 9);
+  if (gy <= 12) {
+    play("explosion");
+    end();
+  }
+  pi--;
+  let speed = 1;
+  if (input.isPressed && !isFirstPressing) {
+    if (pi < 0) {
+      const p = {
+        pos: vec(px, 9),
+        vel: vec(),
+        type: pt,
+        prevPos: vec(),
+      };
+      p.prevPos.set(p.pos);
+      dates.push(p);
+      pi = 9;
     }
-    if (g.pos.y > 68) {
-      play("hit");
-      particle(g.pos, 10, 1, -PI / 2, PI * 0.7);
-      //holes.push({ x: g.pos.x });
-      return false;
+    speed = 0.1;
+  }
+  px += pvx * difficulty * speed;
+  if ((px < 10 && pvx < 0) || (px > 90 && pvx > 0)) {
+    pvx *= -1;
+  }
+  if (input.isJustReleased) {
+    if (isFirstPressing) {
+      isFirstPressing = false;
+    } else {
+      pt *= -1;
+    }
+  }
+
+  // dates spawn
+  dates = dates.filter((p) => {
+    p.vel.y += 0.2;
+    p.vel.mul(0.9);
+    p.prevPos.set(p.pos);
+    p.pos.add(p.vel);
+    color(p.type < 0 ? "red" : "green");
+    const c = char(
+      addWithCharCode("a", p.type + 1 + (floor(ticks / 30) % 2)),
+      p.pos
+    ).isColliding.char;
+
+    // romance score
+    if (p.pos.y > gy) {
+      const isOk = (p.pos.x - 50) * p.type > 0;
+      if (isOk) {
+        play("explosion");
+        addScore(1, p.pos);
+        return false;
+      } else {
+        play("powerUp");
+        addScore(-5, p.pos);
+        let oy = sqrt(1) * difficulty;
+        if (oy > 20) {
+          oy = 20;
+        }
+        tgy -= oy + 10;
+        return false;
+      }
     }
     return true;
   });
-  tankAddTicks--;
-  /*if (tankAddTicks < 0) {
-    const sd = rnd(sqrt(difficulty) - 1) + 1;
-    const fi = 300 / (rnd(sqrt(difficulty)) + 1);
-    const fs = rnd(sqrt(sqrt(difficulty)) - 1) + 1;
-    tanks.push({
-      x: 203,
-      vx: 0.08 * sd,
-      fireTicks: rnd(fi),
-      fireInterval: fi,
-      fireSpeed: 0.4 * fs,
-    });
-    tankAddTicks = 200 / (rnd(sqrt(difficulty)) + 1);
-  }
-  tanks = tanks.filter((t) => {
-    t.x -= t.vx * speedRatio + scr;
-    color("transparent");
-    if (box(t.x, 67, 6, 6).isColliding.text.o) {
-      play("explosion");
-      color("red");
-      particle(t.x, 67, 20, 2, -PI / 2, PI * 1.2);
-      addScore(t.x, t.x, 67);
-      return false;
-    }
-    t.fireTicks--;
-    if (t.x > 150 && pState !== "in_hole" && t.fireTicks < 0) {
-      play("laser");
-      t.fireTicks = t.fireInterval;
-      bullets.push({ x: t.x - 5, vx: t.fireSpeed });
-    }
-    return t.x > -4;
-  });*/
-  color("red");
-  bullets = bullets.filter((b) => {
-    b.x -= b.vx * speedRatio + scr;
-    char("f", b.x, 65);
-    return b.x > -4;
-  });
-  if (tanks.length === 0) {
-    tankAddTicks *= 0.7;
-  }
-  color("transparent");
-  holes = holes.filter((h) => {
-    return !box(h.x, 70, 7, 10).isColliding.char.e;
-  });
-  color("black");
-  px -= scr;
-  if (pState === "in_hole") {
-    speedRatio += 0.05;
-    if (input.isJustPressed) {
-      pState = "running";
-      px += 6;
-    } else {
-      if (char("a", px, 72).isColliding.char.e) {
-        play("lucky");
-        end();
-      }
-      color("transparent");
-      if (box(px + 5, 72, 6, 6).isColliding.rect.white) {
-        px++;
-      }
-    }
-  } else if (pState === "running") {
-    speedRatio += (1 - speedRatio) * 0.1;
-    px += 0.8 * sqrt(difficulty);
-    const c = char(addWithCharCode("c", floor(ticks / 30) % 2), px, 67)
-      .isColliding;
-    if (c.char.e || c.char.f) {
-      play("lucky");
-      end();
-    }
-    if (c.rect.white) {
-      pState = "in_hole";
-    } else if (input.isJustPressed) {
-      pState = "throwing";
-      pAngle = 0;
-    }
-  } else if (pState === "throwing") {
-    speedRatio += (1 - speedRatio) * 0.1;
-    const p = vec(px, 67);
-    if (input.isJustReleased || pAngle < -1) {
-      play("powerUp");
-      grenades.push({
-        pos: vec(p),
-        vel: vec((4 - pAngle * 0.5) * sqrt(difficulty), 0).rotate(pAngle),
-      });
-      pState = "running";
-    } else {
-      const c = char("b", p).isColliding.char;
-      if (c.e || c.f) {
-        play("lucky");
-        end();
-      }
-      line(p, vec(p).add(vec(10, 0).rotate(pAngle)), 2);
-      pAngle -= 0.02 * sqrt(difficulty);
-    }
-  }
 }
-
-
-}
-/*
-     FILE ARCHIVED ON 15:45:04 Oct 02, 2021 AND RETRIEVED FROM THE
-     INTERNET ARCHIVE ON 05:26:25 Nov 04, 2023.
-     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
-
-     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
-     SECTION 108(a)(3)).
-*/
-/*
-playback timings (ms):
-  captures_list: 93.96
-  exclusion.robots: 0.073
-  exclusion.robots.policy: 0.062
-  cdx.remote: 0.069
-  esindex: 0.011
-  LoadShardBlock: 40.029 (3)
-  PetaboxLoader3.datanode: 48.689 (4)
-  load_resource: 162.229
-  PetaboxLoader3.resolve: 134.015
-*/
