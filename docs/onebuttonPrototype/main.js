@@ -1,9 +1,5 @@
 
-// Game: BUBBLE POP!
-// Group Members: 
-
 //---------------------------------- Global vars ------------------------------------------------------
-
 
 // view constants
 const windowLen= {x: 120, y: 100}
@@ -25,9 +21,12 @@ const radiusOffset = 2;
 let stars;
 let player = {posX: windowLen.x - 100, posY: windowLen.y - 13 , powerUpActive: false, powerUpTTL: 5} // powerUpTTL = time to live of powerup , powerup removed after TTL reaches 0
 let enemies;
+const shipColors = ["light_red", "red", "light_blue", "light_black", "black"];
+let shipHealth = 5;
+
+let passedFirst = false ; //avoids playing sound on first button press
 
 //---------------------------------- Crisp game setup ------------------------------------------------------
-
 
 title = "BUBBLE POP!";
 
@@ -110,21 +109,26 @@ function updateEnemies() {
   for (const enemy of enemies){
     if (player.powerUpActive){ // only do this if power up is active
       if (enemy.posX <= player.posX + 25) { // if enemy reaches power up shield
-        console.log("shield popped bubble!");
         resetEnemy(enemy);
         addScore(1)
         play("coin");
       }
     } else{ //if power up is not active
-      if (enemy.posX < player.posX + 10) { // if enemy reaches left side of screen
-        console.log("bubble hit ship");
+      if (enemy.posX < player.posX + 10) { // if bubble hits the ship
+        shipHealth--; //decrease ship health / color
         resetEnemy(enemy);
-        // subtract a point if score > 0
-        if (score <= 0) {
-          end("Ship got destroyed!")
+        play("explosion", {numberOfSounds: 10});
+        //blow up ship when health reaches 0 and end game
+        if (shipHealth <= 0) {
+          color("red");
+          particle(player.posX - 20 , 50 , 1000, 5);
+          color("yellow");
+          particle(player.posX - 20 , 50 , 1000 , 5 );
+          play("explosion", {numberOfSounds: 100 });
+          color("black");
+          setTimeout(()=> end("Ship got destroyed!"), 700);
+         ;
         }
-        addScore((score <= 0) ? 0 : -1)
-        play("select");
       }
     }
   }
@@ -139,7 +143,6 @@ function drawShield(){
     if (ticks % 60 == 0) player.powerUpTTL--; // TTL - 1 every sec (~ every 60 frames)
   }else{
     player.powerUpActive= false;
-    console.log("POWERUP OVER");
   }
 }
 
@@ -168,10 +171,10 @@ function playerShoot() {
   if(input.isJustReleased){
     //sort enemies - closest enemy to player is first
     const sortedEnemies = enemies.sort(enemy=> enemy.posX);
+    let hit = false;
 
     for (const enemy of sortedEnemies) {
       if (enemy.color == enemyHighlightColor && enemy.posX <=  windowLen.x){ // bubble is popable and in view
-        console.log("popped a bubble");
         // add laser
         color("green")
         line(player.posX, player.posY, enemy.posX, enemy.posY, 3);
@@ -182,32 +185,39 @@ function playerShoot() {
           player.powerUpActive = true;
           player.powerUpTTL = 5;
           play("powerUp");
-          console.log("POWERUP ACTIVE");
         }
         // respawn enemy
         resetEnemy(enemy);
-  
         // increase score
         addScore(1);
         play("coin");
+        hit = true;
         break
       }
     }
+    if (!hit && passedFirst){ //remove point and play sfx when player misses a shot
+      addScore(score>0? -1: 0);
+      play("select");
+    } 
+    passedFirst = true; 
   }
 }
 
 function showShip() {
-  color("light_black");
-  rect(0, 10, 20, 10);
-    rect(5, 20, 20, 10);
-      rect(10, 30, 20, 10);
-        rect(15, 40, 20, 10);
-      rect(10, 50, 20, 10);
-    rect(5, 60, 20, 10);
-  rect(0, 70, 20, 10);
+  if (shipHealth > 0){
+    // @ts-ignore
+    color(shipColors[shipHealth-1]);
+    rect(0, 10, 20, 10);
+      rect(5, 20, 20, 10);
+        rect(10, 30, 20, 10);
+          rect(15, 40, 20, 10);
+        rect(10, 50, 20, 10);
+      rect(5, 60, 20, 10);
+    rect(0, 70, 20, 10);
 
-  color("light_blue");
-  rect(32, 40, 3, 10);
+    color("light_blue");
+    rect(32, 40, 3, 10);
+  }
 }
 
 //---------------------------------- Update loop ------------------------------------------------------
@@ -219,12 +229,15 @@ function update() {
       return { pos: vec(rnd(200), rnd(80)), vy: rnd(1, 2) };
     });
 
+    shipHealth = 5; //reset ship health
+
     // enemies
     enemies = [
       {posX: randXpos() + spawnOffset, posY: MAX_HEIGHT, radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), powerUpBody: null, color: enemyDefaultColor}, 
       {posX: randXpos() + spawnOffset, posY: MID_HEIGHT, radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), powerUpBody: null, color: enemyDefaultColor}, 
       {posX: randXpos() + spawnOffset, posY: MIN_HEIGHT , radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), powerUpBody: null, color: enemyDefaultColor}
     ];
+
   }
 
   // star manager
@@ -251,12 +264,15 @@ function update() {
 
   // draw enemies and update every frame
   drawEnemies(); 
-  updateEnemies();
-
-  //dialate the radius of the bubbles/enemies
-  if (ticks%2 ) {
-    enemies.forEach(enemy=> enemy.posX--); 
-    dilate(); 
+  
+  //only move enemies when game is active 
+  if (shipHealth > 0){
+    updateEnemies();
+    //dialate the radius of the bubbles/enemies
+    if (ticks%2 ) {
+      enemies.forEach(enemy=> enemy.posX--); 
+      dilate(); 
+    }
   }
 
   playerShoot();
