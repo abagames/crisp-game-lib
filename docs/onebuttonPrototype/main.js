@@ -117,7 +117,7 @@ function updateEnemies() {
         play("coin");
       }
     } else{ //if power up is not active
-      if (enemy.posX < spaceship.pos.x) { // if enemy reaches left side of screen
+      if (enemy.posX < spaceship.pos.x + 25) { // if enemy reaches left side of screen
         console.log("bubble hit ship");
         resetEnemy(enemy);
         // subtract a point if score > 0
