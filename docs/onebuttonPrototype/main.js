@@ -24,7 +24,8 @@ const radiusOffset = 2;
 
 let stars;
 let player = {posX: windowLen.x - 100, posY: windowLen.y - 13 , powerUpActive: false, powerUpTTL: 5} // powerUpTTL = time to live of powerup , powerup removed after TTL reaches 0
-let enemies; 
+let enemies;
+let spaceship;
 
 //---------------------------------- Crisp game setup ------------------------------------------------------
 
@@ -115,12 +116,15 @@ function updateEnemies() {
         addScore(1)
         play("coin");
       }
-    }else{ //if power up is not active
-      if (enemy.posX < 0) { // if enemy reaches left side of screen
+    } else{ //if power up is not active
+      if (enemy.posX < spaceship.pos.x) { // if enemy reaches left side of screen
         console.log("bubble hit ship");
         resetEnemy(enemy);
         // subtract a point if score > 0
-        addScore((score <= 0)? 0: -1)
+        if (score <= 0) {
+          end("Ship got destroyed!")
+        }
+        addScore((score <= 0) ? 0 : -1)
         play("select");
       }
     }
@@ -193,6 +197,11 @@ function playerShoot() {
   }
 }
 
+function showShip() {
+  color(spaceship.color)
+  rect(spaceship.pos, 20, 70)
+}
+
 //---------------------------------- Update loop ------------------------------------------------------
 
 function update() {
@@ -208,6 +217,8 @@ function update() {
       {posX: randXpos() + spawnOffset, posY: MID_HEIGHT, radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), powerUpBody: null, color: enemyDefaultColor}, 
       {posX: randXpos() + spawnOffset, posY: MIN_HEIGHT , radius: randRad(), isGrowing: randBool(), hasPowerup: hasPowerup(), powerUpBody: null, color: enemyDefaultColor}
     ];
+
+    spaceship = {pos: vec(0, 10), color: "light_black"}
   }
 
   // star manager
@@ -243,4 +254,6 @@ function update() {
   }
 
   playerShoot();
+
+  showShip()
 }
