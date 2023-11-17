@@ -66,10 +66,8 @@ llll
 ];
 
 options = {
-  viewSize: { x: 200, y: 80 },
   isPlayingBgm: true,
   isReplayEnabled: true,
-  seed: 5,
 };
 
 /** @type { {x: number}[] } */
