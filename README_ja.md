@@ -1,8 +1,8 @@
-<a href="https://abagames.github.io/crisp-game-lib-11-games/?survivor"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/survivor/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?chargebeam"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/chargebeam/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?pillars3d"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/pillars3d/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?thunder"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/thunder/screenshot.gif" width="25%" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-11-games/?pakupaku"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/pakupaku/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?timbertest"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/timbertest/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?meteoplanet"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/meteoplanet/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?up1way"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/up1way/screenshot.gif" width="25%" loading="lazy"></a>
 
 # crisp-game-lib
 
-<a href="https://abagames.github.io/crisp-game-lib-11-games/?growth"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/growth/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/cardq/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?flipo"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/flipo/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?shiny"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/shiny/screenshot.gif" width="25%" loading="lazy"></a>
+<a href="https://abagames.github.io/crisp-game-lib-11-games/?cardq"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/cardq/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?chargebeam"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/chargebeam/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?pillars3d"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/pillars3d/screenshot.gif" width="25%" loading="lazy"></a><a href="https://abagames.github.io/crisp-game-lib-11-games/?thunder"><img src="https://github.com/abagames/crisp-game-lib-11-games/raw/main/docs/thunder/screenshot.gif" width="25%" loading="lazy"></a>
 
 [English](https://github.com/abagames/crisp-game-lib/blob/master/README.md) | 日本語
 
@@ -12,11 +12,7 @@
 
 - [crisp-game-lib のリファレンス](https://abagames.github.io/crisp-game-lib/ref_document/modules.html)
 
-## サンプルゲームとサンプルコード
-
-サンプルゲームについては、[私のブラウザゲームページ](http://www.asahi-net.or.jp/~cs8k-cyu/browser.html)に一覧があります。`Play`ボタンを押すことで、ブラウザ上で遊べます（PC、スマホ、タブレット対応）。
-
-各ゲームのサンプルコードは、[crisp-game-lib-games/docs](https://github.com/abagames/crisp-game-lib-games/tree/main/docs)内の各ディレクトリの`main.js`です。
+- [サンプルゲームとサンプルコード](https://github.com/abagames/crisp-game-lib-11-games/blob/main/README.md)
 
 ## 始め方
 
