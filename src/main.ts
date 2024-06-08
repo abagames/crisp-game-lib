@@ -112,7 +112,7 @@ export function rnds(lowOrHigh: number = 1, high?: number) {
  */
 export function end(_gameOverText = "GAME OVER") {
   gameOverText = _gameOverText;
-  if (isShowingTime) {
+  if (currentOptions.isShowingTime) {
     time = undefined;
   }
   initGameOver();
@@ -226,7 +226,7 @@ export function play(
     note?: string; // Note string (e.g. "C4", "F#3", "Ab5")
   }
 ) {
-  if (!isWaitingRewind && !isRewinding && isSoundEnabled) {
+  if (!isWaitingRewind && !isRewinding && currentOptions.isSoundEnabled) {
     if (options != null && typeof sss.playSoundEffect === "function") {
       sss.playSoundEffect(type, options);
     } else {
@@ -297,7 +297,7 @@ export function rewind() {
   if (isRewinding) {
     return;
   }
-  if (!isReplaying && isRewindEnabled) {
+  if (!isReplaying && currentOptions.isRewindEnabled) {
     initRewind();
   } else {
     end();
@@ -393,15 +393,8 @@ let hiScore = 0;
 let fastestTime: number;
 let isNoTitle = true;
 let seed = 0;
+let currentOptions: Options;
 let loopOptions;
-let isPlayingBgm: boolean;
-let isShowingScore: boolean;
-let isShowingTime: boolean;
-let isReplayEnabled: boolean;
-let isRewindEnabled: boolean;
-let isDrawingParticleFront: boolean;
-let isDrawingScoreFront: boolean;
-let isSoundEnabled: boolean;
 let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isWaitingRewind = false;
@@ -430,25 +423,24 @@ export function init(settings: {
 
 /** @ignore */
 export function onLoad() {
-  let opts: Options;
   if (typeof options !== "undefined" && options != null) {
-    opts = { ...defaultOptions, ...options };
+    currentOptions = { ...defaultOptions, ...options };
   } else {
-    opts = defaultOptions;
+    currentOptions = defaultOptions;
   }
   const theme = {
-    name: opts.theme,
+    name: currentOptions.theme,
     isUsingPixi: false,
     isDarkColor: false,
   };
-  if (opts.theme !== "simple" && opts.theme !== "dark") {
+  if (currentOptions.theme !== "simple" && currentOptions.theme !== "dark") {
     theme.isUsingPixi = true;
   }
   if (
-    opts.theme === "pixel" ||
-    opts.theme === "shapeDark" ||
-    opts.theme === "crt" ||
-    opts.theme === "dark"
+    currentOptions.theme === "pixel" ||
+    currentOptions.theme === "shapeDark" ||
+    currentOptions.theme === "crt" ||
+    currentOptions.theme === "dark"
   ) {
     theme.isDarkColor = true;
   }
@@ -457,22 +449,15 @@ export function onLoad() {
     bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
     viewBackground: theme.isDarkColor ? "blue" : "white",
     theme,
-    isSoundEnabled: opts.isSoundEnabled,
+    isSoundEnabled: currentOptions.isSoundEnabled,
   };
-  seed = opts.seed;
-  loopOptions.isCapturing = opts.isCapturing;
-  loopOptions.isCapturingGameCanvasOnly = opts.isCapturingGameCanvasOnly;
-  loopOptions.captureCanvasScale = opts.captureCanvasScale;
-  loopOptions.viewSize = opts.viewSize;
-  isPlayingBgm = opts.isPlayingBgm;
-  isShowingScore = opts.isShowingScore && !opts.isShowingTime;
-  isShowingTime = opts.isShowingTime;
-  isReplayEnabled = opts.isReplayEnabled;
-  isRewindEnabled = opts.isRewindEnabled;
-  isDrawingParticleFront = opts.isDrawingParticleFront;
-  isDrawingScoreFront = opts.isDrawingScoreFront;
-  isSoundEnabled = opts.isSoundEnabled;
-  if (opts.isMinifying) {
+  seed = currentOptions.seed;
+  loopOptions.isCapturing = currentOptions.isCapturing;
+  loopOptions.isCapturingGameCanvasOnly =
+    currentOptions.isCapturingGameCanvasOnly;
+  loopOptions.captureCanvasScale = currentOptions.captureCanvasScale;
+  loopOptions.viewSize = currentOptions.viewSize;
+  if (currentOptions.isMinifying) {
     showMinifiedScript();
   }
   loop.init(_init, _update, loopOptions);
@@ -499,7 +484,7 @@ function _init() {
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
   }
-  if (isSoundEnabled) {
+  if (currentOptions.isSoundEnabled) {
     sss.init(seed);
   }
   const sz = loopOptions.viewSize;
@@ -552,7 +537,7 @@ function initInGame() {
   if (s > hiScore) {
     hiScore = s;
   }
-  if (isShowingTime && time != null) {
+  if (currentOptions.isShowingTime && time != null) {
     if (fastestTime == null || fastestTime > time) {
       fastestTime = time;
     }
@@ -560,12 +545,12 @@ function initInGame() {
   score = 0;
   time = 0;
   scoreBoards = [];
-  if (isPlayingBgm && isSoundEnabled) {
+  if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
     playBgm();
   }
   const randomSeed = seedRandom.getInt(999999999);
   random.setSeed(randomSeed);
-  if (isReplayEnabled || isRewindEnabled) {
+  if (currentOptions.isReplayEnabled || currentOptions.isRewindEnabled) {
     replay.initRecord(randomSeed);
     replay.initFrameStates();
     isReplaying = false;
@@ -575,13 +560,13 @@ function initInGame() {
 function updateInGame() {
   terminal.clear();
   view.clear();
-  if (!isDrawingParticleFront) {
+  if (!currentOptions.isDrawingParticleFront) {
     _particle.update();
   }
-  if (!isDrawingScoreFront) {
+  if (!currentOptions.isDrawingScoreFront) {
     updateScoreBoards();
   }
-  if (isReplayEnabled || isRewindEnabled) {
+  if (currentOptions.isReplayEnabled || currentOptions.isRewindEnabled) {
     replay.recordInput({
       pos: vec(input.pos),
       isPressed: input.isPressed,
@@ -592,15 +577,15 @@ function updateInGame() {
   if (typeof update === "function") {
     update();
   }
-  if (isDrawingParticleFront) {
+  if (currentOptions.isDrawingParticleFront) {
     _particle.update();
   }
-  if (isDrawingScoreFront) {
+  if (currentOptions.isDrawingScoreFront) {
     updateScoreBoards();
   }
   drawScoreOrTime();
   terminal.draw();
-  if (isShowingTime && time != null) {
+  if (currentOptions.isShowingTime && time != null) {
     time++;
   }
 }
@@ -623,7 +608,7 @@ function updateTitle() {
     return;
   }
   view.clear();
-  if (isReplayEnabled && replay.isRecorded()) {
+  if (currentOptions.isReplayEnabled && replay.isRecorded()) {
     replay.replayInput();
     inp = {
       p: input.pos,
@@ -631,11 +616,11 @@ function updateTitle() {
       ijp: input.isJustPressed,
       ijr: input.isJustReleased,
     };
-    if (!isDrawingParticleFront) {
+    if (!currentOptions.isDrawingParticleFront) {
       _particle.update();
     }
     update();
-    if (isDrawingParticleFront) {
+    if (currentOptions.isDrawingParticleFront) {
       _particle.update();
     }
   }
@@ -673,7 +658,7 @@ function initGameOver() {
   }
   ticks = -1;
   drawGameOver();
-  if (isPlayingBgm && isSoundEnabled) {
+  if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
     stopBgm();
   }
 }
@@ -681,7 +666,10 @@ function initGameOver() {
 function updateGameOver() {
   if ((isReplaying || ticks > 20) && input.isJustPressed) {
     initInGame();
-  } else if (ticks === (isReplayEnabled ? 120 : 300) && !isNoTitle) {
+  } else if (
+    ticks === (currentOptions.isReplayEnabled ? 120 : 300) &&
+    !isNoTitle
+  ) {
     initTitle();
   }
 }
@@ -711,7 +699,7 @@ function initRewind() {
     size: { x: 36, y: 7 },
     text: "GiveUp",
   });
-  if (isPlayingBgm && isSoundEnabled) {
+  if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
     stopBgm();
   }
   if (view.theme.isUsingPixi) {
@@ -745,7 +733,7 @@ function updateRewind() {
   } else {
     terminal.draw();
   }
-  if (isShowingTime && time != null) {
+  if (currentOptions.isShowingTime && time != null) {
     time++;
   }
 }
@@ -754,18 +742,18 @@ function stopRewind() {
   isRewinding = false;
   state = "inGame";
   _particle.init();
-  if (isPlayingBgm && isSoundEnabled) {
+  if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
     playBgm();
   }
 }
 
 function drawScoreOrTime() {
-  if (isShowingScore) {
+  if (currentOptions.isShowingScore) {
     terminal.print(`${Math.floor(score)}`, 0, 0);
     const hs = `HI ${hiScore}`;
     terminal.print(hs, terminalSize.x - hs.length, 0);
   }
-  if (isShowingTime) {
+  if (currentOptions.isShowingTime) {
     drawTime(time, 0, 0);
     drawTime(fastestTime, 9, 0);
   }
