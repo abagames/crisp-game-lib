@@ -14,8 +14,8 @@ options = {
   isPlayingBgm: true,
   isReplayEnabled: true,
   // If you want to play a different BGM or SE,
-  // you can try changing the 'seed' value.
-  seed: 400,
+  // you can try changing the 'audioSeed' value.
+  audioSeed: 400,
 };
 
 // (Optional) Defining the types of variables is useful for
