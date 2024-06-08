@@ -25,6 +25,7 @@ declare type Options = {
   viewSize?: { x: number; y: number };
   audioSeed?: number;
   seed?: number;
+  audioVolume?: number;
   theme?: ThemeName;
 };
 declare let options: Options;

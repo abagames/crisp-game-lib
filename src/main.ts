@@ -342,6 +342,7 @@ const defaultOptions: Options = {
   viewSize: { x: 100, y: 100 },
   audioSeed: 0,
   seed: 0,
+  audioVolume: 1,
   theme: "simple",
 };
 
@@ -383,8 +384,10 @@ declare type Options = {
   viewSize?: { x: number; y: number };
   /** Random number seed for BGM and sound effects generation. */
   audioSeed?: number;
-  /** @ignore */
+  /** @deprecated Random number seed for BGM and sound effects generation. */
   seed?: number;
+  /** Audio volume, default: 1. */
+  audioVolume?: number;
   /** Appearance theme of the game. */
   theme?: ThemeName;
 };
@@ -500,6 +503,7 @@ function _init() {
   }
   if (currentOptions.isSoundEnabled) {
     sss.init(audioSeed);
+    sss.setVolume(0.1 * currentOptions.audioVolume);
   }
   const sz = loopOptions.viewSize;
   view.setColor("black");
