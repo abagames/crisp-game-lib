@@ -1195,6 +1195,673 @@ l l l
 `,
     ];
 
+    const smallTextPatterns = [
+        // !
+        `
+ l
+ l
+ l
+
+ l
+`,
+        `
+l l
+l l
+
+
+
+`,
+        `
+l l
+lll
+l l
+lll
+l l
+`,
+        `
+ ll
+ll
+lll
+ ll
+ll
+`,
+        `
+l l
+  l
+ l
+l
+l l
+`,
+        `
+ll
+ll
+lll
+l 
+lll
+`,
+        `
+ l
+ l
+
+
+
+`,
+        `
+  l
+ l
+ l
+ l
+  l
+`,
+        `
+l
+ l
+ l
+ l
+l
+`,
+        `
+ l
+lll
+ l
+lll
+ l
+`,
+        `
+ l
+ l
+lll
+ l
+ l
+`,
+        `
+
+
+
+ l
+l
+`,
+        `
+
+
+lll
+
+
+`,
+        `
+
+
+
+
+ l
+`,
+        `
+  l
+ l
+ l
+ l
+l
+`,
+        // 0
+        `
+lll
+l l
+l l
+l l
+lll
+`,
+        `
+  l
+  l
+  l
+  l
+  l
+`,
+        `
+lll
+  l
+lll
+l
+lll
+`,
+        `
+lll
+  l
+lll
+  l
+lll
+`,
+        `
+l l
+l l
+lll
+  l
+  l
+`,
+        `
+lll
+l
+lll
+  l
+lll
+`,
+        `
+l
+l
+lll
+l l
+lll
+`,
+        `
+lll
+  l
+  l
+  l
+  l
+`,
+        `
+lll
+l l
+lll
+l l
+lll
+`,
+        `
+lll
+l l
+lll
+  l
+  l
+`,
+        // :
+        `
+
+ l
+
+ l
+
+`,
+        `
+
+ l
+
+ l
+l
+`,
+        `
+  l
+ l
+l
+ l
+  l
+`,
+        `
+
+lll
+
+lll
+
+`,
+        `
+l
+ l
+  l
+ l
+l
+`,
+        `
+lll
+  l
+ ll
+
+ l
+`,
+        `
+
+lll
+l l
+l
+ ll
+`,
+        // A
+        `
+lll
+l l
+lll
+l l
+l l
+`,
+        `
+ll
+l l
+lll
+l l
+ll
+`,
+        `
+lll
+l
+l
+l
+lll
+`,
+        `
+ll
+l l
+l l
+l l
+ll
+`,
+        `
+lll
+l
+lll
+l
+lll
+`,
+        `
+lll
+l
+lll
+l
+l
+`,
+        `
+lll
+l
+l l
+l l
+ ll
+`,
+        `
+l l
+l l
+lll
+l l
+l l
+`,
+        `
+ l
+ l
+ l
+ l
+ l
+`,
+        `
+  l
+  l
+  l
+  l
+ll
+`,
+        `
+l l
+l l
+ll
+l l
+l l
+`,
+        `
+l
+l
+l
+l
+lll
+`,
+        `
+l l
+lll
+l l
+l l
+l l
+`,
+        `
+l l
+lll
+lll
+lll
+l l
+`,
+        `
+lll
+l l
+l l
+l l
+lll
+`,
+        `
+lll
+l l
+lll
+l
+l
+`,
+        `
+lll
+l l
+l l
+lll
+lll
+`,
+        `
+ll
+l l
+ll
+l l
+l l
+`,
+        `
+lll
+l
+lll
+  l
+lll
+`,
+        `
+lll
+ l
+ l
+ l
+ l
+`,
+        `
+l l
+l l
+l l
+l l
+lll
+`,
+        `
+l l
+l l
+l l
+l l
+ l
+`,
+        `
+l l
+l l
+lll
+lll
+l l
+`,
+        `
+l l
+l l
+ l
+l l
+l l
+`,
+        `
+l l
+l l
+lll
+ l
+ l
+`,
+        `
+lll
+  l
+ l
+l
+lll
+`,
+        `
+ ll
+ l
+ l
+ l
+ ll
+`,
+        `
+l
+ l
+ l
+ l
+  l
+`,
+        `
+ll
+ l
+ l
+ l
+ll
+`,
+        `
+ l
+l l
+
+
+
+`,
+        `
+
+
+
+
+lll
+`,
+        `
+l
+ l
+
+
+
+`,
+        // a
+        `
+
+
+ ll
+l l
+ ll
+`,
+        `
+
+l
+lll
+l l
+lll
+`,
+        `
+
+
+lll
+l
+lll
+`,
+        `
+
+  l
+lll
+l l
+lll
+`,
+        `
+
+
+lll
+l
+ ll
+`,
+        `
+
+ ll
+ l
+lll
+ l
+`,
+        `
+
+lll
+lll
+  l
+ll
+`,
+        `
+
+l
+l
+lll
+l l
+`,
+        `
+
+ l
+
+ l
+ l
+`,
+        `
+
+ l
+
+ l
+ll
+`,
+        `
+
+l
+l l
+ll
+l l
+`,
+        `
+
+ l
+ l
+ l
+ l
+`,
+        `
+
+
+lll
+lll
+l l
+`,
+        `
+
+
+ll
+l l
+l l
+`,
+        `
+
+
+lll
+l l
+lll
+`,
+        `
+
+
+lll
+lll
+l
+`,
+        `
+
+
+lll
+lll
+  l
+`,
+        `
+
+
+lll
+l
+l
+`,
+        `
+
+
+ ll
+lll
+ll
+`,
+        `
+
+
+lll
+ l
+ l
+`,
+        `
+
+
+l l
+l l
+lll
+`,
+        `
+
+
+l l
+l l
+ l
+`,
+        `
+
+
+l l
+lll
+l l
+`,
+        `
+
+
+l l
+ l
+l l
+`,
+        `
+
+
+l l
+ l
+l
+`,
+        `
+
+
+lll
+ l
+lll
+`,
+        //{
+        `
+ ll
+ l
+l
+ l
+ ll
+`,
+        `
+ l
+ l
+ l
+ l
+ l
+`,
+        `
+ll
+ l
+  l
+ l
+ll
+`,
+        `
+
+l
+lll
+  l
+
+`,
+    ];
+
     let hitBoxes;
     let tmpHitBoxes;
     function clear() {
@@ -1305,9 +1972,12 @@ l l l
         }
     }
     const dotCount = 6;
+    const smallLetterDotCount = 4;
     const dotSize = 1;
     const letterSize = dotCount * dotSize;
+    const smallLetterWidth = smallLetterDotCount * dotSize;
     let textImages;
+    let smallTextImages;
     let characterImages;
     let cachedImages;
     let isCacheEnabled = false;
@@ -1321,6 +1991,7 @@ l l l
         rotation: 0,
         mirror: { x: 1, y: 1 },
         scale: { x: 1, y: 1 },
+        isSmallText: false,
         isCharacter: false,
         isCheckingCollision: false,
     };
@@ -1331,6 +2002,9 @@ l l l
         scaledLetterCanvas = document.createElement("canvas");
         scaledLetterContext = scaledLetterCanvas.getContext("2d");
         textImages = textPatterns.map((lp, i) => {
+            return Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + i), false) });
+        });
+        smallTextImages = smallTextPatterns.map((lp, i) => {
             return Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + i), false) });
         });
         characterImages = textPatterns.map((lp, i) => {
@@ -1356,6 +2030,7 @@ l l l
         let px = bx;
         let py = Math.floor(y);
         let collision = { isColliding: { rect: {}, text: {}, char: {} } };
+        const lw = options.isSmallText ? smallLetterWidth : letterSize;
         for (let i = 0; i < str.length; i++) {
             const c = str[i];
             if (c === "\n") {
@@ -1373,7 +2048,7 @@ l l l
                     },
                 };
             }
-            px += letterSize * options.scale.x;
+            px += lw * options.scale.x;
         }
         return collision;
     }
@@ -1393,7 +2068,11 @@ l l l
             return { isColliding: { rect: {}, text: {}, char: {} } };
         }
         const cc = cca - 0x21;
-        const li = options.isCharacter ? characterImages[cc] : textImages[cc];
+        const li = options.isCharacter
+            ? characterImages[cc]
+            : options.isSmallText
+                ? smallTextImages[cc]
+                : textImages[cc];
         const rotation = wrap(options.rotation, 0, 4);
         if (options.color === "black" &&
             rotation === 0 &&
@@ -2054,11 +2733,9 @@ l l l
     const deltaTime = 1000 / targetFps;
     let nextFrameTime = 0;
     const defaultOptions$1 = {
-        viewSize: { x: 126, y: 126 },
+        viewSize: { x: 100, y: 100 },
         bodyBackground: "#111",
         viewBackground: "black",
-        isUsingVirtualPad: true,
-        isFourWaysStick: false,
         isCapturing: false,
         isCapturingGameCanvasOnly: false,
         isSoundEnabled: true,
@@ -2099,129 +2776,6 @@ l l l
         textCacheEnableTicks--;
         if (textCacheEnableTicks === 0) {
             enableCache();
-        }
-    }
-
-    class Terminal {
-        constructor(_size) {
-            this.size = new Vector();
-            this.size.set(_size);
-            this.letterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-            this.colorGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-            this.backgroundColorGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-            this.rotationGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-            this.characterGrid = range(this.size.x).map(() => range(this.size.y).map(() => undefined));
-        }
-        print(str, _x, _y, _options = {}) {
-            const options = Object.assign(Object.assign({}, defaultOptions$4), _options);
-            let x = Math.floor(_x);
-            let y = Math.floor(_y);
-            const bx = x;
-            for (let i = 0; i < str.length; i++) {
-                const c = str[i];
-                if (c === "\n") {
-                    x = bx;
-                    y++;
-                    continue;
-                }
-                if (x < 0 || x >= this.size.x || y < 0 || y >= this.size.y) {
-                    x++;
-                    continue;
-                }
-                this.letterGrid[x][y] = c;
-                this.colorGrid[x][y] = options.color;
-                this.backgroundColorGrid[x][y] = options.backgroundColor;
-                this.rotationGrid[x][y] = options.rotation;
-                this.characterGrid[x][y] = options.isCharacter;
-                x++;
-            }
-        }
-        getCharAt(_x, _y) {
-            if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
-                return undefined;
-            }
-            const x = Math.floor(_x);
-            const y = Math.floor(_y);
-            const char = this.letterGrid[x][y];
-            const cg = this.colorGrid[x][y];
-            const bg = this.backgroundColorGrid[x][y];
-            const rg = this.rotationGrid[x][y];
-            const hg = this.characterGrid[x][y];
-            return {
-                char,
-                options: { color: cg, backgroundColor: bg, rotation: rg, isCharacter: hg }
-            };
-        }
-        setCharAt(_x, _y, char, _options) {
-            if (_x < 0 || _x >= this.size.x || _y < 0 || _y >= this.size.y) {
-                return;
-            }
-            const options = Object.assign(Object.assign({}, defaultOptions$4), _options);
-            const x = Math.floor(_x);
-            const y = Math.floor(_y);
-            this.letterGrid[x][y] = char;
-            this.colorGrid[x][y] = options.color;
-            this.backgroundColorGrid[x][y] = options.backgroundColor;
-            this.rotationGrid[x][y] = options.rotation;
-            this.characterGrid[x][y] = options.isCharacter;
-        }
-        draw() {
-            for (let x = 0; x < this.size.x; x++) {
-                for (let y = 0; y < this.size.y; y++) {
-                    const c = this.letterGrid[x][y];
-                    if (c == null) {
-                        continue;
-                    }
-                    const cg = this.colorGrid[x][y];
-                    const bg = this.backgroundColorGrid[x][y];
-                    const rg = this.rotationGrid[x][y];
-                    const hg = this.characterGrid[x][y];
-                    printChar(c, x * letterSize, y * letterSize, {
-                        color: cg,
-                        backgroundColor: bg,
-                        rotation: rg,
-                        isCharacter: hg
-                    });
-                }
-            }
-        }
-        clear() {
-            for (let x = 0; x < this.size.x; x++) {
-                for (let y = 0; y < this.size.y; y++) {
-                    this.letterGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.characterGrid[x][y] = undefined;
-                }
-            }
-        }
-        scrollUp() {
-            for (let x = 0; x < this.size.x; x++) {
-                for (let y = 1; y < this.size.y; y++) {
-                    this.letterGrid[x][y - 1] = this.letterGrid[x][y];
-                    this.colorGrid[x][y - 1] = this.colorGrid[x][y];
-                    this.backgroundColorGrid[x][y - 1] = this.backgroundColorGrid[x][y];
-                    this.rotationGrid[x][y - 1] = this.rotationGrid[x][y];
-                    this.characterGrid[x][y - 1] = this.characterGrid[x][y];
-                }
-            }
-            const y = this.size.y - 1;
-            for (let x = 0; x < this.size.x; x++) {
-                this.letterGrid[x][y] = this.colorGrid[x][y] = this.backgroundColorGrid[x][y] = this.rotationGrid[x][y] = this.characterGrid[x][y] = undefined;
-            }
-        }
-        getState() {
-            return {
-                charGrid: this.letterGrid.map(l => [].concat(l)),
-                colorGrid: this.colorGrid.map(l => [].concat(l)),
-                backgroundColorGrid: this.backgroundColorGrid.map(l => [].concat(l)),
-                rotationGrid: this.rotationGrid.map(l => [].concat(l)),
-                symbolGrid: this.characterGrid.map(l => [].concat(l))
-            };
-        }
-        setState(state) {
-            this.letterGrid = state.charGrid.map(l => [].concat(l));
-            this.colorGrid = state.colorGrid.map(l => [].concat(l));
-            this.backgroundColorGrid = state.backgroundColorGrid.map(l => [].concat(l));
-            this.rotationGrid = state.rotationGrid.map(l => [].concat(l));
-            this.characterGrid = state.symbolGrid.map(l => [].concat(l));
         }
     }
 
@@ -2535,7 +3089,7 @@ l l l
     }
 
     /** @ignore */
-    function get({ pos, size, text, isToggle = false, onClick = () => { }, }) {
+    function get({ pos, size, text, isToggle = false, onClick = () => { }, isSmallText = true, }) {
         return {
             pos,
             size,
@@ -2546,6 +3100,7 @@ l l l
             isSelected: false,
             isHovered: false,
             toggleGroup: [],
+            isSmallText,
         };
     }
     /** @ignore */
@@ -2584,7 +3139,9 @@ l l l
             rect(button.pos.x + 1, button.pos.y + 1, button.size.x - 2, button.size.y - 2);
         }
         setColor(button.isHovered ? "black" : "blue");
-        text(button.text, button.pos.x + 3, button.pos.y + 3);
+        text(button.text, button.pos.x + 3, button.pos.y + 3, {
+            isSmallText: button.isSmallText,
+        });
         loadCurrentColor();
     }
 
@@ -2723,7 +3280,7 @@ l l l
      */
     function end(_gameOverText = "GAME OVER") {
         gameOverText = _gameOverText;
-        if (isShowingTime) {
+        if (currentOptions.isShowingTime) {
             exports.time = undefined;
         }
         initGameOver();
@@ -2759,7 +3316,10 @@ l l l
         else {
             pos.set(x);
         }
-        pos.x -= (str.length * letterSize) / 2;
+        pos.x -=
+            (str.length *
+                (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize)) /
+                2;
         pos.y -= letterSize / 2;
         scoreBoards.push({
             str,
@@ -2812,7 +3372,7 @@ l l l
      * @param options
      */
     function play(type, options) {
-        if (!isWaitingRewind && !isRewinding && isSoundEnabled) {
+        if (!isWaitingRewind && !isRewinding && currentOptions.isSoundEnabled) {
             if (options != null && typeof sss.playSoundEffect === "function") {
                 sss.playSoundEffect(type, options);
             }
@@ -2883,7 +3443,7 @@ l l l
         if (isRewinding) {
             return;
         }
-        if (!exports.isReplaying && isRewindEnabled) {
+        if (!exports.isReplaying && currentOptions.isRewindEnabled) {
             initRewind();
         }
         else {
@@ -2915,10 +3475,13 @@ l l l
         isRewindEnabled: false,
         isDrawingParticleFront: false,
         isDrawingScoreFront: false,
+        isUsingSmallText: true,
         isMinifying: false,
         isSoundEnabled: true,
         viewSize: { x: 100, y: 100 },
+        audioSeed: 0,
         seed: 0,
+        audioVolume: 1,
         theme: "simple",
     };
     const seedRandom = new Random();
@@ -2930,21 +3493,12 @@ l l l
         gameOver: updateGameOver,
         rewind: updateRewind,
     };
-    let terminal;
     let hiScore = 0;
     let fastestTime;
     let isNoTitle = true;
-    let seed = 0;
+    let audioSeed = 0;
+    let currentOptions;
     let loopOptions;
-    let isPlayingBgm;
-    let isShowingScore;
-    let isShowingTime;
-    let isReplayEnabled;
-    let isRewindEnabled;
-    let isDrawingParticleFront;
-    let isDrawingScoreFront;
-    let isSoundEnabled;
-    let terminalSize;
     let scoreBoards;
     let isWaitingRewind = false;
     let isRewinding = false;
@@ -2952,6 +3506,7 @@ l l l
     let giveUpButton;
     let gameOverText;
     let gameScriptFile;
+    let localStorageKey;
     /** @ignore */
     function init(settings) {
         const win = window;
@@ -2964,25 +3519,24 @@ l l l
     }
     /** @ignore */
     function onLoad() {
-        let opts;
         if (typeof options !== "undefined" && options != null) {
-            opts = Object.assign(Object.assign({}, defaultOptions), options);
+            currentOptions = Object.assign(Object.assign({}, defaultOptions), options);
         }
         else {
-            opts = defaultOptions;
+            currentOptions = defaultOptions;
         }
         const theme = {
-            name: opts.theme,
+            name: currentOptions.theme,
             isUsingPixi: false,
             isDarkColor: false,
         };
-        if (opts.theme !== "simple" && opts.theme !== "dark") {
+        if (currentOptions.theme !== "simple" && currentOptions.theme !== "dark") {
             theme.isUsingPixi = true;
         }
-        if (opts.theme === "pixel" ||
-            opts.theme === "shapeDark" ||
-            opts.theme === "crt" ||
-            opts.theme === "dark") {
+        if (currentOptions.theme === "pixel" ||
+            currentOptions.theme === "shapeDark" ||
+            currentOptions.theme === "crt" ||
+            currentOptions.theme === "dark") {
             theme.isDarkColor = true;
         }
         loopOptions = {
@@ -2990,22 +3544,15 @@ l l l
             bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
             viewBackground: theme.isDarkColor ? "blue" : "white",
             theme,
-            isSoundEnabled: opts.isSoundEnabled,
+            isSoundEnabled: currentOptions.isSoundEnabled,
         };
-        seed = opts.seed;
-        loopOptions.isCapturing = opts.isCapturing;
-        loopOptions.isCapturingGameCanvasOnly = opts.isCapturingGameCanvasOnly;
-        loopOptions.captureCanvasScale = opts.captureCanvasScale;
-        loopOptions.viewSize = opts.viewSize;
-        isPlayingBgm = opts.isPlayingBgm;
-        isShowingScore = opts.isShowingScore && !opts.isShowingTime;
-        isShowingTime = opts.isShowingTime;
-        isReplayEnabled = opts.isReplayEnabled;
-        isRewindEnabled = opts.isRewindEnabled;
-        isDrawingParticleFront = opts.isDrawingParticleFront;
-        isDrawingScoreFront = opts.isDrawingScoreFront;
-        isSoundEnabled = opts.isSoundEnabled;
-        if (opts.isMinifying) {
+        audioSeed = currentOptions.audioSeed + currentOptions.seed;
+        loopOptions.isCapturing = currentOptions.isCapturing;
+        loopOptions.isCapturingGameCanvasOnly =
+            currentOptions.isCapturingGameCanvasOnly;
+        loopOptions.captureCanvasScale = currentOptions.captureCanvasScale;
+        loopOptions.viewSize = currentOptions.viewSize;
+        if (currentOptions.isMinifying) {
             showMinifiedScript();
         }
         init$2(_init, _update, loopOptions);
@@ -3015,24 +3562,25 @@ l l l
             description != null &&
             description.trim().length > 0) {
             isNoTitle = false;
-            seed += getHash(description);
+            audioSeed += getHash(description);
         }
         if (typeof title !== "undefined" &&
             title != null &&
             title.trim().length > 0) {
             isNoTitle = false;
             document.title = title;
-            seed += getHash(title);
+            audioSeed += getHash(title);
+            localStorageKey = `crisp-game-${encodeURIComponent(title)}-${audioSeed}`;
+            hiScore = loadHighScore();
         }
         if (typeof characters !== "undefined" && characters != null) {
             defineCharacters(characters, "a");
         }
-        if (isSoundEnabled) {
-            sss.init(seed);
+        if (currentOptions.isSoundEnabled) {
+            sss.init(audioSeed);
+            sss.setVolume(0.1 * currentOptions.audioVolume);
         }
-        const sz = loopOptions.viewSize;
-        terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };
-        terminal = new Terminal(terminalSize);
+        loopOptions.viewSize;
         setColor("black");
         if (isNoTitle) {
             initInGame();
@@ -3080,7 +3628,7 @@ l l l
         if (s > hiScore) {
             hiScore = s;
         }
-        if (isShowingTime && exports.time != null) {
+        if (currentOptions.isShowingTime && exports.time != null) {
             if (fastestTime == null || fastestTime > exports.time) {
                 fastestTime = exports.time;
             }
@@ -3088,27 +3636,26 @@ l l l
         exports.score = 0;
         exports.time = 0;
         scoreBoards = [];
-        if (isPlayingBgm && isSoundEnabled) {
+        if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
             playBgm();
         }
         const randomSeed = seedRandom.getInt(999999999);
         random.setSeed(randomSeed);
-        if (isReplayEnabled || isRewindEnabled) {
+        if (currentOptions.isReplayEnabled || currentOptions.isRewindEnabled) {
             initRecord(randomSeed);
             initFrameStates();
             exports.isReplaying = false;
         }
     }
     function updateInGame() {
-        terminal.clear();
         clear$1();
-        if (!isDrawingParticleFront) {
+        if (!currentOptions.isDrawingParticleFront) {
             update$2();
         }
-        if (!isDrawingScoreFront) {
+        if (!currentOptions.isDrawingScoreFront) {
             updateScoreBoards();
         }
-        if (isReplayEnabled || isRewindEnabled) {
+        if (currentOptions.isReplayEnabled || currentOptions.isRewindEnabled) {
             recordInput({
                 pos: vec(pos),
                 isPressed: isPressed,
@@ -3119,15 +3666,14 @@ l l l
         if (typeof update === "function") {
             update();
         }
-        if (isDrawingParticleFront) {
+        if (currentOptions.isDrawingParticleFront) {
             update$2();
         }
-        if (isDrawingScoreFront) {
+        if (currentOptions.isDrawingScoreFront) {
             updateScoreBoards();
         }
         drawScoreOrTime();
-        terminal.draw();
-        if (isShowingTime && exports.time != null) {
+        if (currentOptions.isShowingTime && exports.time != null) {
             exports.time++;
         }
     }
@@ -3135,7 +3681,6 @@ l l l
         state = "title";
         exports.ticks = -1;
         init$1();
-        terminal.clear();
         clear$1();
         if (isRecorded()) {
             initReplay(random);
@@ -3148,7 +3693,7 @@ l l l
             return;
         }
         clear$1();
-        if (isReplayEnabled && isRecorded()) {
+        if (currentOptions.isReplayEnabled && isRecorded()) {
             replayInput();
             exports.inp = {
                 p: pos,
@@ -3156,35 +3701,42 @@ l l l
                 ijp: isJustPressed,
                 ijr: isJustReleased,
             };
-            if (!isDrawingParticleFront) {
+            if (!currentOptions.isDrawingParticleFront) {
                 update$2();
             }
             update();
-            if (isDrawingParticleFront) {
+            if (currentOptions.isDrawingParticleFront) {
                 update$2();
             }
         }
-        if (exports.ticks === 0) {
-            drawScoreOrTime();
-            if (typeof title !== "undefined" && title != null) {
-                terminal.print(title, Math.floor(terminalSize.x - title.length) / 2, Math.ceil(terminalSize.y * 0.2));
-            }
+        drawScoreOrTime();
+        if (typeof title !== "undefined" && title != null) {
+            let maxLineLength = 0;
+            title.split("\n").forEach((l) => {
+                if (l.length > maxLineLength) {
+                    maxLineLength = l.length;
+                }
+            });
+            const x = Math.floor((size.x - maxLineLength * letterSize) / 2);
+            title.split("\n").forEach((l, i) => {
+                print(l, x, Math.floor(size.y * 0.25) + i * letterSize);
+            });
         }
-        if (exports.ticks === 30 || exports.ticks == 40) {
-            if (typeof description !== "undefined" && description != null) {
-                let maxLineLength = 0;
-                description.split("\n").forEach((l) => {
-                    if (l.length > maxLineLength) {
-                        maxLineLength = l.length;
-                    }
+        if (typeof description !== "undefined" && description != null) {
+            let maxLineLength = 0;
+            description.split("\n").forEach((l) => {
+                if (l.length > maxLineLength) {
+                    maxLineLength = l.length;
+                }
+            });
+            const lw = currentOptions.isUsingSmallText ? smallLetterWidth : letterSize;
+            const x = Math.floor((size.x - maxLineLength * lw) / 2);
+            description.split("\n").forEach((l, i) => {
+                print(l, x, Math.floor(size.y / 2) + i * letterSize, {
+                    isSmallText: currentOptions.isUsingSmallText,
                 });
-                const x = Math.floor((terminalSize.x - maxLineLength) / 2);
-                description.split("\n").forEach((l, i) => {
-                    terminal.print(l, x, Math.floor(terminalSize.y / 2) + i);
-                });
-            }
+            });
         }
-        terminal.draw();
     }
     function initGameOver() {
         state = "gameOver";
@@ -3193,15 +3745,20 @@ l l l
         }
         exports.ticks = -1;
         drawGameOver();
-        if (isPlayingBgm && isSoundEnabled) {
+        if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
             stopBgm();
+        }
+        const s = Math.floor(exports.score);
+        if (s > hiScore) {
+            saveHighScore(s);
         }
     }
     function updateGameOver() {
         if ((exports.isReplaying || exports.ticks > 20) && isJustPressed) {
             initInGame();
         }
-        else if (exports.ticks === (isReplayEnabled ? 120 : 300) && !isNoTitle) {
+        else if (exports.ticks === (currentOptions.isReplayEnabled ? 120 : 300) &&
+            !isNoTitle) {
             initTitle();
         }
     }
@@ -3209,8 +3766,7 @@ l l l
         if (exports.isReplaying) {
             return;
         }
-        terminal.print(gameOverText, Math.floor((terminalSize.x - gameOverText.length) / 2), Math.floor(terminalSize.y / 2));
-        terminal.draw();
+        print(gameOverText, Math.floor((size.x - gameOverText.length * letterSize) / 2), Math.floor(size.y / 2));
     }
     function initRewind() {
         state = "rewind";
@@ -3219,13 +3775,15 @@ l l l
             pos: { x: size.x - 39, y: 11 },
             size: { x: 36, y: 7 },
             text: "Rewind",
+            isSmallText: currentOptions.isUsingSmallText,
         });
         giveUpButton = get({
             pos: { x: size.x - 39, y: size.y - 19 },
             size: { x: 36, y: 7 },
             text: "GiveUp",
+            isSmallText: currentOptions.isUsingSmallText,
         });
-        if (isPlayingBgm && isSoundEnabled) {
+        if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
             stopBgm();
         }
         if (theme.isUsingPixi) {
@@ -3234,7 +3792,6 @@ l l l
         }
     }
     function updateRewind() {
-        terminal.clear();
         clear$1();
         update();
         drawScoreOrTime();
@@ -3257,10 +3814,7 @@ l l l
             isWaitingRewind = isRewinding = false;
             end();
         }
-        else {
-            terminal.draw();
-        }
-        if (isShowingTime && exports.time != null) {
+        if (currentOptions.isShowingTime && exports.time != null) {
             exports.time++;
         }
     }
@@ -3268,19 +3822,24 @@ l l l
         isRewinding = false;
         state = "inGame";
         init$1();
-        if (isPlayingBgm && isSoundEnabled) {
+        if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
             playBgm();
         }
     }
     function drawScoreOrTime() {
-        if (isShowingScore) {
-            terminal.print(`${Math.floor(exports.score)}`, 0, 0);
-            const hs = `HI ${hiScore}`;
-            terminal.print(hs, terminalSize.x - hs.length, 0);
+        if (currentOptions.isShowingTime) {
+            drawTime(exports.time, 3, 3);
+            drawTime(fastestTime, size.x -
+                7 * (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize), 3);
         }
-        if (isShowingTime) {
-            drawTime(exports.time, 0, 0);
-            drawTime(fastestTime, 9, 0);
+        else if (currentOptions.isShowingScore) {
+            print(`${Math.floor(exports.score)}`, 3, 3, {
+                isSmallText: currentOptions.isUsingSmallText,
+            });
+            const hs = `HI ${hiScore}`;
+            print(hs, size.x -
+                hs.length *
+                    (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize), 3, { isSmallText: currentOptions.isUsingSmallText });
         }
     }
     function drawTime(time, x, y) {
@@ -3296,7 +3855,7 @@ l l l
             getPaddedNumber(Math.floor((t % 6000) / 100), 2) +
             '"' +
             getPaddedNumber(Math.floor(t % 100), 2);
-        terminal.print(ts, x, y);
+        print(ts, x, y, { isSmallText: currentOptions.isUsingSmallText });
     }
     function getPaddedNumber(v, digit) {
         return ("0000" + v).slice(-digit);
@@ -3305,7 +3864,9 @@ l l l
         saveCurrentColor();
         setColor("black");
         scoreBoards = scoreBoards.filter((sb) => {
-            print(sb.str, sb.pos.x, sb.pos.y);
+            print(sb.str, sb.pos.x, sb.pos.y, {
+                isSmallText: currentOptions.isUsingSmallText,
+            });
             sb.pos.y += sb.vy;
             sb.vy *= 0.9;
             sb.ticks--;
@@ -3321,6 +3882,31 @@ l l l
             hash |= 0;
         }
         return hash;
+    }
+    function saveHighScore(highScore) {
+        if (localStorageKey == null) {
+            return;
+        }
+        try {
+            const gameState = { highScore };
+            localStorage.setItem(localStorageKey, JSON.stringify(gameState));
+        }
+        catch (error) {
+            console.warn("Unable to save high score:", error);
+        }
+    }
+    function loadHighScore() {
+        try {
+            const gameStateString = localStorage.getItem(localStorageKey);
+            if (gameStateString) {
+                const gameState = JSON.parse(gameStateString);
+                return gameState.highScore;
+            }
+        }
+        catch (error) {
+            console.warn("Unable to load high score:", error);
+        }
+        return 0;
     }
     /** @ignore */
     function addGameScript() {
