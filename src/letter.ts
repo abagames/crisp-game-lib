@@ -1,4 +1,5 @@
 import { textPatterns } from "./textPattern";
+import { smallTextPatterns } from "./textPatternSmall";
 import {
   fillRect,
   setColor,
@@ -33,6 +34,7 @@ export type LetterOptions = {
   rotation?: number;
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
+  isSmallText?: boolean;
 };
 
 /**
@@ -117,8 +119,10 @@ export function letters(
 }
 
 const dotCount = 6;
+const smallLetterDotCount = 4;
 const dotSize = 1;
 export const letterSize = dotCount * dotSize;
+export const smallLetterWidth = smallLetterDotCount * dotSize;
 
 export type LetterImage = {
   image: HTMLImageElement | HTMLCanvasElement;
@@ -127,6 +131,7 @@ export type LetterImage = {
 };
 
 let textImages: LetterImage[];
+let smallTextImages: LetterImage[];
 let characterImages: LetterImage[];
 let cachedImages: { [key: string]: LetterImage };
 let isCacheEnabled = false;
@@ -141,6 +146,7 @@ export type Options = {
   rotation?: number;
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
+  isSmallText?: boolean;
   isCharacter?: boolean;
   isCheckingCollision?: boolean;
 };
@@ -151,6 +157,7 @@ export const defaultOptions: Options = {
   rotation: 0,
   mirror: { x: 1, y: 1 },
   scale: { x: 1, y: 1 },
+  isSmallText: false,
   isCharacter: false,
   isCheckingCollision: false,
 };
@@ -162,6 +169,12 @@ export function init() {
   scaledLetterCanvas = document.createElement("canvas");
   scaledLetterContext = scaledLetterCanvas.getContext("2d");
   textImages = textPatterns.map((lp, i) => {
+    return {
+      ...createLetterImages(lp),
+      hitBox: getHitBox(String.fromCharCode(0x21 + i), false),
+    };
+  });
+  smallTextImages = smallTextPatterns.map((lp, i) => {
     return {
       ...createLetterImages(lp),
       hitBox: getHitBox(String.fromCharCode(0x21 + i), false),
@@ -204,6 +217,7 @@ export function print(
   let px = bx;
   let py = Math.floor(y);
   let collision: Collision = { isColliding: { rect: {}, text: {}, char: {} } };
+  const lw = options.isSmallText ? smallLetterWidth : letterSize;
   for (let i = 0; i < str.length; i++) {
     const c = str[i];
     if (c === "\n") {
@@ -230,7 +244,7 @@ export function print(
         },
       };
     }
-    px += letterSize * options.scale.x;
+    px += lw * options.scale.x;
   }
   return collision;
 }
@@ -256,7 +270,11 @@ export function printChar(
     return { isColliding: { rect: {}, text: {}, char: {} } };
   }
   const cc = cca - 0x21;
-  const li = options.isCharacter ? characterImages[cc] : textImages[cc];
+  const li = options.isCharacter
+    ? characterImages[cc]
+    : options.isSmallText
+    ? smallTextImages[cc]
+    : textImages[cc];
   const rotation = wrap(options.rotation, 0, 4);
   if (
     options.color === "black" &&

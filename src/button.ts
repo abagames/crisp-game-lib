@@ -15,6 +15,7 @@ export type Button = {
   isSelected: boolean;
   isHovered: boolean;
   toggleGroup: Button[];
+  isSmallText: boolean;
 };
 
 /** @ignore */
@@ -24,12 +25,14 @@ export function get({
   text,
   isToggle = false,
   onClick = () => {},
+  isSmallText = true,
 }: {
   pos: VectorLike;
   size: VectorLike;
   text: string;
   isToggle?: boolean;
   onClick?: () => void;
+  isSmallText?: boolean;
 }): Button {
   return {
     pos,
@@ -41,6 +44,7 @@ export function get({
     isSelected: false,
     isHovered: false,
     toggleGroup: [],
+    isSmallText,
   };
 }
 
@@ -85,6 +89,8 @@ export function draw(button: Button) {
     );
   }
   setColor(button.isHovered ? "black" : "blue");
-  text(button.text, button.pos.x + 3, button.pos.y + 3);
+  text(button.text, button.pos.x + 3, button.pos.y + 3, {
+    isSmallText: button.isSmallText,
+  });
   loadCurrentColor();
 }

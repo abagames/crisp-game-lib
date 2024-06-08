@@ -1,6 +1,5 @@
 import * as loop from "./loop";
 import * as view from "./view";
-import { Terminal } from "./terminal";
 import * as input from "./input";
 import * as keyboard from "./keyboard";
 import * as pointer from "./pointer";
@@ -8,7 +7,12 @@ import { Vector, VectorLike } from "./vector";
 import { Random } from "./random";
 import * as collision from "./collision";
 import { Color } from "./color";
-import { defineCharacters, print, letterSize } from "./letter";
+import {
+  defineCharacters,
+  print,
+  letterSize,
+  smallLetterWidth,
+} from "./letter";
 import * as _particle from "./particle";
 import { times, remove } from "./util";
 import {
@@ -149,7 +153,10 @@ export function addScore(value: number, x?: number | VectorLike, y?: number) {
   } else {
     pos.set(x);
   }
-  pos.x -= (str.length * letterSize) / 2;
+  pos.x -=
+    (str.length *
+      (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize)) /
+    2;
   pos.y -= letterSize / 2;
   scoreBoards.push({
     str,
@@ -329,6 +336,7 @@ const defaultOptions: Options = {
   isRewindEnabled: false,
   isDrawingParticleFront: false,
   isDrawingScoreFront: false,
+  isUsingSmallText: true,
   isMinifying: false,
   isSoundEnabled: true,
   viewSize: { x: 100, y: 100 },
@@ -364,6 +372,8 @@ declare type Options = {
   isDrawingParticleFront?: boolean;
   /** Display added score points on the front of the screen. */
   isDrawingScoreFront?: boolean;
+  /** Use a small text for a score and a description, default: true. */
+  isUsingSmallText?: boolean;
   /** Show a minified code to the console. */
   /** @ignore */
   isMinifying?: boolean;
@@ -391,14 +401,12 @@ let updateFunc = {
   gameOver: updateGameOver,
   rewind: updateRewind,
 };
-let terminal: Terminal;
 let hiScore = 0;
 let fastestTime: number;
 let isNoTitle = true;
 let audioSeed = 0;
 let currentOptions: Options;
 let loopOptions;
-let terminalSize: VectorLike;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
 let isWaitingRewind = false;
 let isRewinding = false;
@@ -494,8 +502,6 @@ function _init() {
     sss.init(audioSeed);
   }
   const sz = loopOptions.viewSize;
-  terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };
-  terminal = new Terminal(terminalSize);
   view.setColor("black");
   if (isNoTitle) {
     initInGame();
@@ -564,7 +570,6 @@ function initInGame() {
 }
 
 function updateInGame() {
-  terminal.clear();
   view.clear();
   if (!currentOptions.isDrawingParticleFront) {
     _particle.update();
@@ -590,7 +595,6 @@ function updateInGame() {
     updateScoreBoards();
   }
   drawScoreOrTime();
-  terminal.draw();
   if (currentOptions.isShowingTime && time != null) {
     time++;
   }
@@ -600,7 +604,6 @@ function initTitle() {
   state = "title";
   ticks = -1;
   _particle.init();
-  terminal.clear();
   view.clear();
   if (replay.isRecorded()) {
     replay.initReplay(random);
@@ -630,31 +633,34 @@ function updateTitle() {
       _particle.update();
     }
   }
-  if (ticks === 0) {
-    drawScoreOrTime();
-    if (typeof title !== "undefined" && title != null) {
-      terminal.print(
-        title,
-        Math.floor(terminalSize.x - title.length) / 2,
-        Math.ceil(terminalSize.y * 0.2)
-      );
-    }
+  drawScoreOrTime();
+  if (typeof title !== "undefined" && title != null) {
+    let maxLineLength = 0;
+    title.split("\n").forEach((l) => {
+      if (l.length > maxLineLength) {
+        maxLineLength = l.length;
+      }
+    });
+    const x = Math.floor((view.size.x - maxLineLength * letterSize) / 2);
+    title.split("\n").forEach((l, i) => {
+      print(l, x, Math.floor(view.size.y * 0.25) + i * letterSize);
+    });
   }
-  if (ticks === 30 || ticks == 40) {
-    if (typeof description !== "undefined" && description != null) {
-      let maxLineLength = 0;
-      description.split("\n").forEach((l) => {
-        if (l.length > maxLineLength) {
-          maxLineLength = l.length;
-        }
+  if (typeof description !== "undefined" && description != null) {
+    let maxLineLength = 0;
+    description.split("\n").forEach((l) => {
+      if (l.length > maxLineLength) {
+        maxLineLength = l.length;
+      }
+    });
+    const lw = currentOptions.isUsingSmallText ? smallLetterWidth : letterSize;
+    const x = Math.floor((view.size.x - maxLineLength * lw) / 2);
+    description.split("\n").forEach((l, i) => {
+      print(l, x, Math.floor(view.size.y / 2) + i * letterSize, {
+        isSmallText: currentOptions.isUsingSmallText,
       });
-      const x = Math.floor((terminalSize.x - maxLineLength) / 2);
-      description.split("\n").forEach((l, i) => {
-        terminal.print(l, x, Math.floor(terminalSize.y / 2) + i);
-      });
-    }
+    });
   }
-  terminal.draw();
 }
 
 function initGameOver() {
@@ -688,12 +694,11 @@ function drawGameOver() {
   if (isReplaying) {
     return;
   }
-  terminal.print(
+  print(
     gameOverText,
-    Math.floor((terminalSize.x - gameOverText.length) / 2),
-    Math.floor(terminalSize.y / 2)
+    Math.floor((view.size.x - gameOverText.length * letterSize) / 2),
+    Math.floor(view.size.y / 2)
   );
-  terminal.draw();
 }
 
 function initRewind() {
@@ -703,11 +708,13 @@ function initRewind() {
     pos: { x: view.size.x - 39, y: 11 },
     size: { x: 36, y: 7 },
     text: "Rewind",
+    isSmallText: currentOptions.isUsingSmallText,
   });
   giveUpButton = getButton({
     pos: { x: view.size.x - 39, y: view.size.y - 19 },
     size: { x: 36, y: 7 },
     text: "GiveUp",
+    isSmallText: currentOptions.isUsingSmallText,
   });
   if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
     stopBgm();
@@ -719,7 +726,6 @@ function initRewind() {
 }
 
 function updateRewind() {
-  terminal.clear();
   view.clear();
   update();
   drawScoreOrTime();
@@ -740,8 +746,6 @@ function updateRewind() {
   if (giveUpButton.isPressed) {
     isWaitingRewind = isRewinding = false;
     end();
-  } else {
-    terminal.draw();
   }
   if (currentOptions.isShowingTime && time != null) {
     time++;
@@ -758,14 +762,27 @@ function stopRewind() {
 }
 
 function drawScoreOrTime() {
-  if (currentOptions.isShowingScore) {
-    terminal.print(`${Math.floor(score)}`, 0, 0);
-    const hs = `HI ${hiScore}`;
-    terminal.print(hs, terminalSize.x - hs.length, 0);
-  }
   if (currentOptions.isShowingTime) {
-    drawTime(time, 0, 0);
-    drawTime(fastestTime, 9, 0);
+    drawTime(time, 3, 3);
+    drawTime(
+      fastestTime,
+      view.size.x -
+        7 * (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize),
+      3
+    );
+  } else if (currentOptions.isShowingScore) {
+    print(`${Math.floor(score)}`, 3, 3, {
+      isSmallText: currentOptions.isUsingSmallText,
+    });
+    const hs = `HI ${hiScore}`;
+    print(
+      hs,
+      view.size.x -
+        hs.length *
+          (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize),
+      3,
+      { isSmallText: currentOptions.isUsingSmallText }
+    );
   }
 }
 
@@ -783,7 +800,7 @@ function drawTime(time: number, x: number, y: number) {
     getPaddedNumber(Math.floor((t % 6000) / 100), 2) +
     '"' +
     getPaddedNumber(Math.floor(t % 100), 2);
-  terminal.print(ts, x, y);
+  print(ts, x, y, { isSmallText: currentOptions.isUsingSmallText });
 }
 
 function getPaddedNumber(v: number, digit: number) {
@@ -794,7 +811,9 @@ function updateScoreBoards() {
   view.saveCurrentColor();
   view.setColor("black");
   scoreBoards = scoreBoards.filter((sb) => {
-    print(sb.str, sb.pos.x, sb.pos.y);
+    print(sb.str, sb.pos.x, sb.pos.y, {
+      isSmallText: currentOptions.isUsingSmallText,
+    });
     sb.pos.y += sb.vy;
     sb.vy *= 0.9;
     sb.ticks--;
