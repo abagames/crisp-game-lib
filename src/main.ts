@@ -332,6 +332,7 @@ const defaultOptions: Options = {
   isMinifying: false,
   isSoundEnabled: true,
   viewSize: { x: 100, y: 100 },
+  audioSeed: 0,
   seed: 0,
   theme: "simple",
 };
@@ -371,6 +372,8 @@ declare type Options = {
   /** Screen size of the game, default: {x: 100, y: 100}. */
   viewSize?: { x: number; y: number };
   /** Random number seed for BGM and sound effects generation. */
+  audioSeed?: number;
+  /** @ignore */
   seed?: number;
   /** Appearance theme of the game. */
   theme?: ThemeName;
@@ -392,7 +395,7 @@ let terminal: Terminal;
 let hiScore = 0;
 let fastestTime: number;
 let isNoTitle = true;
-let seed = 0;
+let audioSeed = 0;
 let currentOptions: Options;
 let loopOptions;
 let terminalSize: VectorLike;
@@ -451,7 +454,7 @@ export function onLoad() {
     theme,
     isSoundEnabled: currentOptions.isSoundEnabled,
   };
-  seed = currentOptions.seed;
+  audioSeed = currentOptions.audioSeed + currentOptions.seed;
   loopOptions.isCapturing = currentOptions.isCapturing;
   loopOptions.isCapturingGameCanvasOnly =
     currentOptions.isCapturingGameCanvasOnly;
@@ -470,7 +473,7 @@ function _init() {
     description.trim().length > 0
   ) {
     isNoTitle = false;
-    seed += getHash(description);
+    audioSeed += getHash(description);
   }
   if (
     typeof title !== "undefined" &&
@@ -479,13 +482,13 @@ function _init() {
   ) {
     isNoTitle = false;
     document.title = title;
-    seed += getHash(title);
+    audioSeed += getHash(title);
   }
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
   }
   if (currentOptions.isSoundEnabled) {
-    sss.init(seed);
+    sss.init(audioSeed);
   }
   const sz = loopOptions.viewSize;
   terminalSize = { x: Math.floor(sz.x / 6), y: Math.floor(sz.y / 6) };

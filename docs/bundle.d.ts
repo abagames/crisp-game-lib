@@ -22,6 +22,7 @@ declare type Options = {
   isMinifying?: boolean;
   isSoundEnabled?: boolean;
   viewSize?: { x: number; y: number };
+  audioSeed?: number;
   seed?: number;
   theme?: ThemeName;
 };
