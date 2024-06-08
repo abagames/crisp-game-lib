@@ -406,6 +406,7 @@ let rewindButton: Button;
 let giveUpButton: Button;
 let gameOverText: string;
 let gameScriptFile: string;
+let localStorageKey: string;
 
 /** @ignore */
 export function init(settings: {
@@ -483,6 +484,8 @@ function _init() {
     isNoTitle = false;
     document.title = title;
     audioSeed += getHash(title);
+    localStorageKey = `crisp-game-${encodeURIComponent(title)}-${audioSeed}`;
+    hiScore = loadHighScore();
   }
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
@@ -664,6 +667,10 @@ function initGameOver() {
   if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
     stopBgm();
   }
+  const s = Math.floor(score);
+  if (s > hiScore) {
+    saveHighScore(s);
+  }
 }
 
 function updateGameOver() {
@@ -804,6 +811,31 @@ function getHash(v: string) {
     hash |= 0;
   }
   return hash;
+}
+
+function saveHighScore(highScore: number) {
+  if (localStorageKey == null) {
+    return;
+  }
+  try {
+    const gameState = { highScore };
+    localStorage.setItem(localStorageKey, JSON.stringify(gameState));
+  } catch (error) {
+    console.warn("Unable to save high score:", error);
+  }
+}
+
+function loadHighScore() {
+  try {
+    const gameStateString = localStorage.getItem(localStorageKey);
+    if (gameStateString) {
+      const gameState = JSON.parse(gameStateString);
+      return gameState.highScore;
+    }
+  } catch (error) {
+    console.warn("Unable to load high score:", error);
+  }
+  return 0;
 }
 
 /** @ignore */
