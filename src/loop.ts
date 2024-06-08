@@ -24,8 +24,6 @@ export type Options = {
   viewSize?: VectorLike;
   bodyBackground?: string;
   viewBackground?: color.Color;
-  isUsingVirtualPad?: boolean;
-  isFourWaysStick?: boolean;
   isCapturing?: boolean;
   isCapturingGameCanvasOnly?: boolean;
   isSoundEnabled?: boolean;
@@ -39,11 +37,9 @@ const targetFps = 68;
 const deltaTime = 1000 / targetFps;
 let nextFrameTime = 0;
 const defaultOptions: Options = {
-  viewSize: { x: 126, y: 126 },
+  viewSize: { x: 100, y: 100 },
   bodyBackground: "#111",
   viewBackground: "black",
-  isUsingVirtualPad: true,
-  isFourWaysStick: false,
   isCapturing: false,
   isCapturingGameCanvasOnly: false,
   isSoundEnabled: true,
