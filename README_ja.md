@@ -68,17 +68,10 @@ TypeScript を使いたい場合は、`main.js`を`main.ts`にリネームして
 
 ## 機能紹介デモ
 
-- 描画 ([デモ](https://abagames.github.io/crisp-game-lib/?ref_drawing))
-
-[![ref_drawing screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_drawing/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?ref_drawing)
-
-- 衝突判定 ([デモ](https://abagames.github.io/crisp-game-lib/?ref_collision))
-
-[![ref_collision screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_collision/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?ref_collision)
-
-- 入力判定 ([デモ](https://abagames.github.io/crisp-game-lib/?ref_input))
-
-- 音 ([デモ](https://abagames.github.io/crisp-game-lib/?ref_sound))
+[描画](https://abagames.github.io/crisp-game-lib/?ref_drawing) /
+[衝突判定](https://abagames.github.io/crisp-game-lib/?ref_collision) /
+[入力判定](https://abagames.github.io/crisp-game-lib/?ref_input) /
+[音](https://abagames.github.io/crisp-game-lib/?ref_sound)
 
 ## 関連記事
 

@@ -68,17 +68,10 @@ If you want to describe the game using TypeScript, rename `main.js` to `main.ts`
 
 ## Function introduction demo
 
-- Drawing ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_drawing))
-
-[![ref_drawing screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_drawing/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?ref_drawing)
-
-- Collision ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_collision))
-
-[![ref_collision screenshot](https://github.com/abagames/crisp-game-lib-games/raw/main/docs/ref_collision/screenshot.gif)](https://abagames.github.io/crisp-game-lib/?ref_collision)
-
-- Input ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_input))
-
-- Sound ([DEMO](https://abagames.github.io/crisp-game-lib/?ref_sound))
+[Drawing](https://abagames.github.io/crisp-game-lib/?ref_drawing) /
+[Collision](https://abagames.github.io/crisp-game-lib/?ref_collision) /
+[Input](https://abagames.github.io/crisp-game-lib/?ref_input) /
+[Audio](https://abagames.github.io/crisp-game-lib/?ref_sound)
 
 ## Related articles
 
