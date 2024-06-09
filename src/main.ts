@@ -707,6 +707,9 @@ function initGameOver() {
 }
 
 function updateGameOver() {
+  if (ticks === 0 && !view.theme.isUsingPixi) {
+    drawGameOver();
+  }
   if ((isReplaying || ticks > 20) && input.isJustPressed) {
     initInGame();
   } else if (

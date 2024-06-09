@@ -3770,6 +3770,9 @@ lll
         }
     }
     function updateGameOver() {
+        if (exports.ticks === 0 && !theme.isUsingPixi) {
+            drawGameOver();
+        }
         if ((exports.isReplaying || exports.ticks > 20) && isJustPressed) {
             initInGame();
         }
