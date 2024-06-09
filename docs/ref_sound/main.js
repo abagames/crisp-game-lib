@@ -53,7 +53,7 @@ function update() {
     let nextSeed = input.pos.x - bp.x;
     color("blue");
     rect(bp.x + nextSeed, bp.y + 1, 1, 3);
-    text(`${nextSeed}`, 85, bp.y - 3);
+    text(`${nextSeed}`, 90, bp.y - 4, { isSmallText: true });
     if (input.isJustPressed) {
       seed = nextSeed;
       stopBgm();
@@ -63,5 +63,5 @@ function update() {
   }
   color("black");
   rect(bp.x + seed, bp.y + 1, 1, 3);
-  text(`seed: ${seed}`, 5, bp.y - 3);
+  text(`audioSeed: ${seed}`, 5, bp.y - 4, { isSmallText: true });
 }

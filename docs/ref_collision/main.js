@@ -11,11 +11,11 @@ ll l l
 llllll
  l  l
  l  l
-`
+`,
 ];
 
 options = {
-  isShowingScore: false
+  isShowingScore: false,
 };
 
 function update() {
@@ -29,16 +29,22 @@ function update() {
   color("red");
   const cl = rect.apply(this, params);
   color("black");
-  text(`rect(`, 5, 5);
+  text(`rect(`, 5, 5, { isSmallText: true });
   const l = params
     .map((p, i) => `${p}${i < params.length - 1 ? ", " : ""}`)
     .join("");
-  text(`${l}`, 12, 12);
-  text(").isColliding", 5, 19);
+  text(`${l}`, 12, 12, { isSmallText: true });
+  text(").isColliding", 5, 19, { isSmallText: true });
   color("blue");
-  text("{", 5, 26);
-  text(`rect:${JSON.stringify(cl.isColliding.rect)}`, 5, 33);
-  text(`text:${JSON.stringify(cl.isColliding.text)}`, 5, 40);
-  text(`char:${JSON.stringify(cl.isColliding.char)}`, 5, 47);
-  text("}", 5, 54);
+  text("{", 5, 26, { isSmallText: true });
+  text(`rect:${JSON.stringify(cl.isColliding.rect)}`, 9, 33, {
+    isSmallText: true,
+  });
+  text(`text:${JSON.stringify(cl.isColliding.text)}`, 9, 40, {
+    isSmallText: true,
+  });
+  text(`char:${JSON.stringify(cl.isColliding.char)}`, 9, 47, {
+    isSmallText: true,
+  });
+  text("}", 5, 54, { isSmallText: true });
 }

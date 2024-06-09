@@ -102,13 +102,13 @@ function update() {
   color(currentColor);
   drawingFunctions[currentDrawing].apply(this, params);
   color("blue");
-  text("drawing", 115, 5);
-  text("color", 160, 5);
+  text("drawing", 115, 5, { isSmallText: true });
+  text("color", 160, 5, { isSmallText: true });
   drawingButtons.forEach((db) => updateButton(db));
   colorButtons.forEach((cb) => updateButton(cb));
   color("black");
-  text(`color("${currentColor}");`, 5, 5);
-  text(`${currentDrawing}(`, 5, 12);
+  text(`color("${currentColor}");`, 5, 5, { isSmallText: true });
+  text(`${currentDrawing}(`, 5, 12, { isSmallText: true });
   if (params.length <= 4) {
     const l = params
       .map((p, i) => {
@@ -119,8 +119,8 @@ function update() {
         return `${q}${p}${q}${i < params.length - 1 ? ", " : ""}`;
       })
       .join("");
-    text(`${l}`, 12, 19);
-    text(");", 5, 26);
+    text(`${l}`, 12, 19, { isSmallText: true });
+    text(");", 5, 26, { isSmallText: true });
   } else {
     let l1 = "",
       l2 = "";
@@ -131,8 +131,8 @@ function update() {
         l2 += `${p}${i < params.length - 1 ? ", " : ""}`;
       }
     });
-    text(l1, 12, 19);
-    text(`${l2}`, 12, 26);
-    text(");", 5, 33);
+    text(l1, 12, 19, { isSmallText: true });
+    text(`${l2}`, 12, 26, { isSmallText: true });
+    text(");", 5, 33, { isSmallText: true });
   }
 }
