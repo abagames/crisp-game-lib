@@ -224,6 +224,25 @@ declare function char(
 declare function particle(
   x: number,
   y: number,
+  options?: {
+    count?: number;
+    speed?: number;
+    angle?: number;
+    angleWidth?: number;
+  }
+): void;
+declare function particle(
+  pos: VectorLike,
+  options?: {
+    count?: number;
+    speed?: number;
+    angle?: number;
+    angleWidth?: number;
+  }
+): void;
+declare function particle(
+  x: number,
+  y: number,
   count?: number,
   speed?: number,
   angle?: number,

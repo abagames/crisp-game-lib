@@ -180,15 +180,18 @@ export function color(colorName: Color) {
  * Add particles.
  * @param x
  * @param y
- * @param count Count of particles.
- * @param speed Speed of particles.
- * @param angle Angle of particles spreading.
- * @param angleWidth The range of angles over which particles diffuse. If omitted, it spreads in a circular shape.
+ * @param optionsOrCount
+ * angle: Angle of particles spreading \
+ * angleWidth: The range of angles over which particles diffuse. If omitted, it spreads in a circular shape \
+ * count: Count of particles \
+ * speed: Speed of particles
  */
 export function particle(
   x: number | VectorLike,
   y: number,
-  count?: number,
+  optionsOrCount?:
+    | number
+    | { count?: number; speed?: number; angle?: number; angleWidth?: number },
   speed?: number,
   angle?: number,
   angleWidth?: number
@@ -196,10 +199,24 @@ export function particle(
   let pos = new Vector();
   if (typeof x === "number") {
     pos.set(x, y);
-    _particle.add(pos, count, speed, angle, angleWidth);
+    add(pos, optionsOrCount, speed, angle, angleWidth);
   } else {
     pos.set(x);
-    _particle.add(pos, y, count, speed, angle);
+    add(pos, y, optionsOrCount, speed, angle);
+  }
+
+  function add(pos, optionsOrCount, speed, angle, angleWidth) {
+    if (isObject(optionsOrCount)) {
+      const o: {
+        count?: number;
+        speed?: number;
+        angle?: number;
+        angleWidth?: number;
+      } = optionsOrCount;
+      _particle.add(pos, o.count, o.speed, o.angle, o.angleWidth);
+    } else {
+      _particle.add(pos, optionsOrCount, speed, angle, angleWidth);
+    }
   }
 }
 
@@ -217,6 +234,12 @@ export function vec(x?: number | VectorLike, y?: number): Vector {
  * Play a sound effect.
  * @param type
  * @param options
+ * @param options.seed Random seed (default = 0)
+ * @param options.numberOfSounds Number of simultaneous sounds (default = 2)
+ * @param options.volume Sound volume (default = 1)
+ * @param options.pitch MIDI note number
+ * @param options.freq Frequency (Hz)
+ * @param options.note Note string (e.g. "C4", "F#3", "Ab5")
  */
 export function play(
   type: SoundEffectType,
@@ -384,7 +407,7 @@ declare type Options = {
   viewSize?: { x: number; y: number };
   /** Random number seed for BGM and sound effects generation. */
   audioSeed?: number;
-  /** @deprecated Random number seed for BGM and sound effects generation. */
+  /** @deprecated Use audioSeed. */
   seed?: number;
   /** Audio volume, default: 1. */
   audioVolume?: number;
@@ -859,6 +882,10 @@ function loadHighScore() {
     console.warn("Unable to load high score:", error);
   }
   return 0;
+}
+
+function isObject(arg) {
+  return arg != null && arg.constructor === Object;
 }
 
 /** @ignore */

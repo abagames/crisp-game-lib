@@ -3341,20 +3341,30 @@ lll
      * Add particles.
      * @param x
      * @param y
-     * @param count Count of particles.
-     * @param speed Speed of particles.
-     * @param angle Angle of particles spreading.
-     * @param angleWidth The range of angles over which particles diffuse. If omitted, it spreads in a circular shape.
+     * @param optionsOrCount
+     * angle: Angle of particles spreading \
+     * angleWidth: The range of angles over which particles diffuse. If omitted, it spreads in a circular shape \
+     * count: Count of particles \
+     * speed: Speed of particles
      */
-    function particle(x, y, count, speed, angle, angleWidth) {
+    function particle(x, y, optionsOrCount, speed, angle, angleWidth) {
         let pos = new Vector();
         if (typeof x === "number") {
             pos.set(x, y);
-            add(pos, count, speed, angle, angleWidth);
+            add$1(pos, optionsOrCount, speed, angle, angleWidth);
         }
         else {
             pos.set(x);
-            add(pos, y, count, speed, angle);
+            add$1(pos, y, optionsOrCount, speed, angle);
+        }
+        function add$1(pos, optionsOrCount, speed, angle, angleWidth) {
+            if (isObject(optionsOrCount)) {
+                const o = optionsOrCount;
+                add(pos, o.count, o.speed, o.angle, o.angleWidth);
+            }
+            else {
+                add(pos, optionsOrCount, speed, angle, angleWidth);
+            }
         }
     }
     /**
@@ -3370,6 +3380,12 @@ lll
      * Play a sound effect.
      * @param type
      * @param options
+     * @param options.seed Random seed (default = 0)
+     * @param options.numberOfSounds Number of simultaneous sounds (default = 2)
+     * @param options.volume Sound volume (default = 1)
+     * @param options.pitch MIDI note number
+     * @param options.freq Frequency (Hz)
+     * @param options.note Note string (e.g. "C4", "F#3", "Ab5")
      */
     function play(type, options) {
         if (!isWaitingRewind && !isRewinding && currentOptions.isSoundEnabled) {
@@ -3907,6 +3923,9 @@ lll
             console.warn("Unable to load high score:", error);
         }
         return 0;
+    }
+    function isObject(arg) {
+        return arg != null && arg.constructor === Object;
     }
     /** @ignore */
     function addGameScript() {
