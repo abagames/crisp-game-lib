@@ -353,6 +353,7 @@ const defaultOptions: Options = {
   isCapturing: false,
   isCapturingGameCanvasOnly: false,
   captureCanvasScale: 1,
+  captureDurationSec: 5,
   isShowingScore: true,
   isShowingTime: false,
   isReplayEnabled: false,
@@ -382,6 +383,8 @@ declare type Options = {
   isCapturingGameCanvasOnly?: boolean;
   /** Additional setting for isCapturingGameCanvasOnly, set the scale of the output file, default: 1. */
   captureCanvasScale?: number;
+  /** Capture duration in seconds, default: 5. */
+  captureDurationSec?: number;
   /** Show a score and a hi-score, default: true. */
   isShowingScore?: boolean;
   /** Show a time. */
@@ -494,6 +497,7 @@ export function onLoad() {
   loopOptions.isCapturingGameCanvasOnly =
     currentOptions.isCapturingGameCanvasOnly;
   loopOptions.captureCanvasScale = currentOptions.captureCanvasScale;
+  loopOptions.captureDurationSec = currentOptions.captureDurationSec;
   loopOptions.viewSize = currentOptions.viewSize;
   if (currentOptions.isMinifying) {
     showMinifiedScript();

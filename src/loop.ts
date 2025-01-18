@@ -28,6 +28,7 @@ export type Options = {
   isCapturingGameCanvasOnly?: boolean;
   isSoundEnabled?: boolean;
   captureCanvasScale?: number;
+  captureDurationSec?: number;
   theme?: Theme;
 };
 
@@ -65,6 +66,7 @@ export function init(
     options.isCapturing,
     options.isCapturingGameCanvasOnly,
     options.captureCanvasScale,
+    options.captureDurationSec,
     options.theme
   );
   input.init(options.isSoundEnabled ? sss.startAudio : () => {});

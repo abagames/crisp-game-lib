@@ -32,6 +32,7 @@ export function init(
   isCapturing: boolean,
   isCapturingGameCanvasOnly: boolean,
   captureCanvasScale: number,
+  captureDurationSec: number,
   _theme: Theme
 ) {
   size.set(_size);
@@ -143,6 +144,7 @@ image-rendering: pixelated;
       scale: optionCaptureScale,
       capturingFps: 60,
       isSmoothingEnabled: false,
+      durationSec: captureDurationSec,
     });
   }
 }

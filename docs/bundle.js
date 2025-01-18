@@ -327,7 +327,7 @@ void main(void) {
     let isFilling = false;
     let theme;
     let crtFilter;
-    function init$7(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, _theme) {
+    function init$7(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, captureDurationSec, _theme) {
         size.set(_size);
         theme = _theme;
         viewBackground = _viewBackground;
@@ -438,6 +438,7 @@ image-rendering: pixelated;
                 scale: optionCaptureScale,
                 capturingFps: 60,
                 isSmoothingEnabled: false,
+                durationSec: captureDurationSec,
             });
         }
     }
@@ -2749,7 +2750,7 @@ lll
         _update$1 = __update;
         options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
         init$8(options$1.theme.isDarkColor);
-        init$7(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.theme);
+        init$7(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.captureDurationSec, options$1.theme);
         init$3(options$1.isSoundEnabled ? sss.startAudio : () => { });
         init$6();
         _init$1();
@@ -3485,6 +3486,7 @@ lll
         isCapturing: false,
         isCapturingGameCanvasOnly: false,
         captureCanvasScale: 1,
+        captureDurationSec: 5,
         isShowingScore: true,
         isShowingTime: false,
         isReplayEnabled: false,
@@ -3567,6 +3569,7 @@ lll
         loopOptions.isCapturingGameCanvasOnly =
             currentOptions.isCapturingGameCanvasOnly;
         loopOptions.captureCanvasScale = currentOptions.captureCanvasScale;
+        loopOptions.captureDurationSec = currentOptions.captureDurationSec;
         loopOptions.viewSize = currentOptions.viewSize;
         if (currentOptions.isMinifying) {
             showMinifiedScript();

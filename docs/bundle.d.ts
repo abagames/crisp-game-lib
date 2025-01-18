@@ -13,6 +13,7 @@ declare type Options = {
   isCapturing?: boolean;
   isCapturingGameCanvasOnly?: boolean;
   captureCanvasScale?: number;
+  captureDurationSec?: number;
   isShowingScore?: boolean;
   isShowingTime?: boolean;
   isReplayEnabled?: boolean;
