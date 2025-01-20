@@ -19,19 +19,20 @@ export const colors = [
   "light_black",
 ] as const;
 /** @ignore */
-export type Color = typeof colors[number];
+export type Color = (typeof colors)[number] | number;
 export const colorChars = "twrgybpclRGYBPCL";
 type RgbValues = {
   [key in Color]: { r: number; g: number; b: number; a: number };
 };
 let values: RgbValues;
+let colorPaletteValues: { r: number; g: number; b: number; a: number }[];
 
 const rgbNumbers = [
   0xeeeeee, 0xe91e63, 0x4caf50, 0xffc107, 0x3f51b5, 0x9c27b0, 0x03a9f4,
   0x616161,
 ];
 
-export function init(isDarkColor: boolean) {
+export function init(isDarkColor: boolean, colorPalette?: number[][]) {
   const [wr, wb, wg] = getRgb(0, isDarkColor);
   values = fromEntities(
     colors.map((c, i) => {
@@ -63,6 +64,48 @@ export function init(isDarkColor: boolean) {
       a: 1,
     };
   }
+  if (colorPalette != null) {
+    setCustomColorPalette(colorPalette);
+  }
+}
+
+function setCustomColorPalette(colorPalette: number[][]) {
+  colorPaletteValues = colorPalette.map((c) => ({
+    r: c[0],
+    g: c[1],
+    b: c[2],
+    a: 1,
+  }));
+  /* search the closest color for each value and change to the closest color in the palette */
+  for (let i = 0; i < colors.length; i++) {
+    let minDistance = Infinity;
+    let minIndex = -1;
+    for (let j = 0; j < colorPaletteValues.length; j++) {
+      const distance = colorDistance(colorPaletteValues[j], values[colors[i]]);
+      if (distance < minDistance) {
+        minDistance = distance;
+        minIndex = j;
+      }
+    }
+    values[colors[i]] = colorPaletteValues[minIndex];
+  }
+}
+
+function colorDistance(color1, color2) {
+  const weights = { r: 0.299, g: 0.587, b: 0.114 };
+  const rDiff = color1.r - color2.r;
+  const gDiff = color1.g - color2.g;
+  const bDiff = color1.b - color2.b;
+  const isGrayscale2 = color2.r === color2.g && color2.g === color2.b;
+  let distance = Math.sqrt(
+    rDiff * rDiff * weights.r +
+      gDiff * gDiff * weights.g +
+      bDiff * bDiff * weights.b
+  );
+  if (isGrayscale2 && !(color2.r === 0 && color2.g === 0 && color2.b === 0)) {
+    distance *= 1.5;
+  }
+  return distance;
 }
 
 function getRgb(i: number, isDarkColor: boolean) {
@@ -77,8 +120,9 @@ function getRgb(i: number, isDarkColor: boolean) {
   return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
 }
 
-export function colorToNumber(colorName: Color, ratio = 1) {
-  const v = values[colorName];
+export function colorToNumber(color: Color, ratio = 1) {
+  const v =
+    typeof color == "number" ? colorPaletteValues[color] : values[color];
   return (
     (Math.floor(v.r * ratio) << 16) |
     (Math.floor(v.g * ratio) << 8) |
@@ -86,8 +130,9 @@ export function colorToNumber(colorName: Color, ratio = 1) {
   );
 }
 
-export function colorToStyle(colorName: Color, ratio = 1) {
-  const v = values[colorName];
+export function colorToStyle(color: Color, ratio = 1) {
+  const v =
+    typeof color == "number" ? colorPaletteValues[color] : values[color];
   const r = Math.floor(v.r * ratio);
   const g = Math.floor(v.g * ratio);
   const b = Math.floor(v.b * ratio);

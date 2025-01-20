@@ -169,14 +169,14 @@ export function clear() {
   context.fillStyle = colorToStyle(currentColor);
 }
 
-export function setColor(colorName: Color) {
-  if (colorName === currentColor) {
+export function setColor(colorNameOrColorIndex: Color) {
+  if (colorNameOrColorIndex === currentColor) {
     if (theme.isUsingPixi && !isFilling) {
       beginFillColor(colorToNumber(currentColor));
     }
     return;
   }
-  currentColor = colorName;
+  currentColor = colorNameOrColorIndex;
   if (theme.isUsingPixi) {
     if (isFilling) {
       graphics.endFill();
@@ -184,7 +184,7 @@ export function setColor(colorName: Color) {
     beginFillColor(colorToNumber(currentColor));
     return;
   }
-  context.fillStyle = colorToStyle(colorName);
+  context.fillStyle = colorToStyle(colorNameOrColorIndex);
 }
 
 export function beginFillColor(color: number) {

@@ -28,6 +28,7 @@ declare type Options = {
   seed?: number;
   audioVolume?: number;
   theme?: ThemeName;
+  colorPalette?: number[][];
 };
 declare let options: Options;
 declare function update(): void;
@@ -67,7 +68,7 @@ declare type Color =
   | "light_purple"
   | "light_cyan"
   | "light_black";
-declare function color(colorName: Color): void;
+declare function color(colorNameOrColorIndex: Color | number): void;
 
 // Draw functions return a collision info.
 type Collision = {

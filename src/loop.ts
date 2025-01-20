@@ -30,6 +30,7 @@ export type Options = {
   captureCanvasScale?: number;
   captureDurationSec?: number;
   theme?: Theme;
+  colorPalette?: number[][];
 };
 
 let _init: () => void;
@@ -46,6 +47,7 @@ const defaultOptions: Options = {
   isSoundEnabled: true,
   captureCanvasScale: 1,
   theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
+  colorPalette: undefined,
 };
 let options: Options;
 let textCacheEnableTicks = 10;
@@ -58,7 +60,7 @@ export function init(
   _init = __init;
   _update = __update;
   options = { ...defaultOptions, ..._options };
-  color.init(options.theme.isDarkColor);
+  color.init(options.theme.isDarkColor, options.colorPalette);
   view.init(
     options.viewSize,
     options.bodyBackground,

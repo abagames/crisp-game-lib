@@ -172,8 +172,8 @@ export function addScore(value: number, x?: number | VectorLike, y?: number) {
  * Use color("black") to restore and use the original colors.
  * @param colorName
  */
-export function color(colorName: Color) {
-  view.setColor(colorName);
+export function color(colorNameOrColorIndex: Color | number) {
+  view.setColor(colorNameOrColorIndex);
 }
 
 /**
@@ -368,6 +368,7 @@ const defaultOptions: Options = {
   seed: 0,
   audioVolume: 1,
   theme: "simple",
+  colorPalette: undefined,
 };
 
 declare let title: string;
@@ -416,6 +417,8 @@ declare type Options = {
   audioVolume?: number;
   /** Appearance theme of the game. */
   theme?: ThemeName;
+  /** Custom color palette */
+  colorPalette?: number[][];
 };
 declare let options: Options;
 declare function update();
@@ -485,23 +488,22 @@ export function onLoad() {
   ) {
     theme.isDarkColor = true;
   }
+  audioSeed = currentOptions.audioSeed + currentOptions.seed;
+  if (currentOptions.isMinifying) {
+    showMinifiedScript();
+  }
   loopOptions = {
-    viewSize: { x: 100, y: 100 },
+    viewSize: currentOptions.viewSize,
     bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
     viewBackground: theme.isDarkColor ? "blue" : "white",
     theme,
     isSoundEnabled: currentOptions.isSoundEnabled,
+    isCapturing: currentOptions.isCapturing,
+    isCapturingGameCanvasOnly: currentOptions.isCapturingGameCanvasOnly,
+    captureCanvasScale: currentOptions.captureCanvasScale,
+    captureDurationSec: currentOptions.captureDurationSec,
+    colorPalette: currentOptions.colorPalette,
   };
-  audioSeed = currentOptions.audioSeed + currentOptions.seed;
-  loopOptions.isCapturing = currentOptions.isCapturing;
-  loopOptions.isCapturingGameCanvasOnly =
-    currentOptions.isCapturingGameCanvasOnly;
-  loopOptions.captureCanvasScale = currentOptions.captureCanvasScale;
-  loopOptions.captureDurationSec = currentOptions.captureDurationSec;
-  loopOptions.viewSize = currentOptions.viewSize;
-  if (currentOptions.isMinifying) {
-    showMinifiedScript();
-  }
   loop.init(_init, _update, loopOptions);
 }
 
