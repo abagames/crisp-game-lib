@@ -128,6 +128,7 @@ export type LetterImage = {
   image: HTMLImageElement | HTMLCanvasElement;
   texture?; //: PIXI.Texture;
   hitBox: HitBox;
+  size: Vector;
 };
 
 let textImages: LetterImage[];
@@ -168,34 +169,26 @@ export function init() {
   letterContext = letterCanvas.getContext("2d");
   scaledLetterCanvas = document.createElement("canvas");
   scaledLetterContext = scaledLetterCanvas.getContext("2d");
-  textImages = textPatterns.map((lp, i) => {
-    return {
-      ...createLetterImages(lp),
-      hitBox: getHitBox(String.fromCharCode(0x21 + i), false),
-    };
-  });
-  smallTextImages = smallTextPatterns.map((lp, i) => {
-    return {
-      ...createLetterImages(lp),
-      hitBox: getHitBox(String.fromCharCode(0x21 + i), false),
-    };
-  });
-  characterImages = textPatterns.map((lp, i) => {
-    return {
-      ...createLetterImages(lp),
-      hitBox: getHitBox(String.fromCharCode(0x21 + i), true),
-    };
-  });
+  textImages = textPatterns.map((lp, i) =>
+    createLetterImage(lp, String.fromCharCode(0x21 + i), false)
+  );
+  smallTextImages = smallTextPatterns.map((lp, i) =>
+    createLetterImage(lp, String.fromCharCode(0x21 + i), false)
+  );
+  characterImages = textPatterns.map((lp, i) =>
+    createLetterImage(lp, String.fromCharCode(0x21 + i), true)
+  );
   cachedImages = {};
 }
 
 export function defineCharacters(pattern: string[], startLetter: string) {
   const index = startLetter.charCodeAt(0) - 0x21;
   pattern.forEach((lp, i) => {
-    characterImages[index + i] = {
-      ...createLetterImages(lp),
-      hitBox: getHitBox(String.fromCharCode(0x21 + index + i), true),
-    };
+    characterImages[index + i] = createLetterImage(
+      lp,
+      String.fromCharCode(0x21 + index + i),
+      true
+    );
   });
 }
 
@@ -210,15 +203,30 @@ export function print(
   _options: Options = {}
 ): Collision {
   const options = mergeDefaultOptions(_options);
-  x -= (letterSize / 2) * options.scale.x;
-  y -= (letterSize / 2) * options.scale.y;
-  const bx = Math.floor(x);
   let str = _str;
-  let px = bx;
-  let py = Math.floor(y);
+  let px = x;
+  let py = y;
+  let bx;
   let collision: Collision = { isColliding: { rect: {}, text: {}, char: {} } };
   const lw = options.isSmallText ? smallLetterWidth : letterSize;
   for (let i = 0; i < str.length; i++) {
+    if (i === 0) {
+      const cca = str.charCodeAt(0);
+      if (cca < 0x20 || cca > 0x7e) {
+        px = Math.floor(px - (letterSize / 2) * options.scale.x);
+        py = Math.floor(py - (letterSize / 2) * options.scale.y);
+      } else {
+        const cc = cca - 0x21;
+        const li = options.isCharacter
+          ? characterImages[cc]
+          : options.isSmallText
+          ? smallTextImages[cc]
+          : textImages[cc];
+        px = Math.floor(px - (li.size.x / 2) * options.scale.x);
+        py = Math.floor(py - (li.size.y / 2) * options.scale.y);
+      }
+      bx = px;
+    }
     const c = str[i];
     if (c === "\n") {
       px = bx;
@@ -305,25 +313,41 @@ export function printChar(
     );
   }
   let isUsingScaled = false;
+  const size = new Vector(letterSize, letterSize);
+  let canvas: HTMLCanvasElement = letterCanvas;
+  let context: CanvasRenderingContext2D = letterContext;
+  if (li.size.x > letterSize || li.size.y > letterSize) {
+    if (rotation === 0 || rotation === 2) {
+      size.set(li.size.x, li.size.y);
+    } else {
+      const ms = Math.max(li.size.x, li.size.y);
+      size.set(ms, ms);
+    }
+    canvas = document.createElement("canvas");
+    canvas.width = size.x;
+    canvas.height = size.y;
+    context = canvas.getContext("2d");
+    context.imageSmoothingEnabled = false;
+  }
   if (theme.isUsingPixi && (options.scale.x !== 1 || options.scale.y !== 1)) {
-    scaledLetterCanvas.width = letterSize * options.scale.x;
-    scaledLetterCanvas.height = letterSize * options.scale.y;
+    scaledLetterCanvas.width = size.x * options.scale.x;
+    scaledLetterCanvas.height = size.y * options.scale.y;
     scaledLetterContext.imageSmoothingEnabled = false;
     scaledLetterContext.scale(options.scale.x, options.scale.y);
-    createLatterContext(scaledLetterContext, rotation, options, li);
+    createLetterContext(scaledLetterContext, rotation, options, li.image, size);
     isUsingScaled = true;
   }
-  letterContext.clearRect(0, 0, letterSize, letterSize);
-  createLatterContext(letterContext, rotation, options, li);
-  const hitBox = getHitBox(c, options.isCharacter);
+  context.clearRect(0, 0, size.x, size.y);
+  createLetterContext(context, rotation, options, li.image, size);
+  const hitBox = getHitBox(context, size, c, options.isCharacter);
   let texture; //: PIXI.Texture;
   if (isCacheEnabled || theme.isUsingPixi) {
     const cachedImage = document.createElement("img");
-    cachedImage.src = letterCanvas.toDataURL();
+    cachedImage.src = canvas.toDataURL();
     if (theme.isUsingPixi) {
       const textureImage = document.createElement("img");
       textureImage.src = (
-        isUsingScaled ? scaledLetterCanvas : letterCanvas
+        isUsingScaled ? scaledLetterCanvas : canvas
       ).toDataURL();
       texture = PIXI.Texture.from(textureImage);
     }
@@ -332,11 +356,12 @@ export function printChar(
         image: cachedImage,
         texture,
         hitBox,
+        size,
       };
     }
   }
   return drawAndTestLetterImage(
-    { image: letterCanvas, texture, hitBox },
+    { image: canvas, texture, hitBox, size },
     x,
     y,
     options.scale as VectorLike,
@@ -345,22 +370,23 @@ export function printChar(
   );
 }
 
-function createLatterContext(
+function createLetterContext(
   context: CanvasRenderingContext2D,
   rotation,
   options,
-  li
+  image: HTMLImageElement | HTMLCanvasElement,
+  size: Vector
 ) {
   if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
-    context.drawImage(li.image, 0, 0);
+    context.drawImage(image, 0, 0);
   } else {
     context.save();
-    context.translate(letterSize / 2, letterSize / 2);
+    context.translate(size.x / 2, size.y / 2);
     context.rotate((Math.PI / 2) * rotation);
     if (options.mirror.x === -1 || options.mirror.y === -1) {
       context.scale(options.mirror.x, options.mirror.y);
     }
-    context.drawImage(li.image, -letterSize / 2, -letterSize / 2);
+    context.drawImage(image, -size.x / 2, -size.y / 2);
     context.restore();
   }
   if (options.color !== "black") {
@@ -368,7 +394,7 @@ function createLatterContext(
     context.fillStyle = colorToStyle(
       options.color === "transparent" ? "black" : options.color
     );
-    context.fillRect(0, 0, letterSize, letterSize);
+    context.fillRect(0, 0, size.x, size.y);
     context.globalCompositeOperation = "source-over";
   }
 }
@@ -385,7 +411,7 @@ function drawAndTestLetterImage(
     if (scale.x === 1 && scale.y === 1) {
       drawLetterImage(li, x, y);
     } else {
-      drawLetterImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
+      drawLetterImage(li, x, y, li.size.x * scale.x, li.size.y * scale.y);
     }
   }
   if (!isCheckCollision) {
@@ -422,8 +448,8 @@ function drawLetterImage(
     graphics.drawRect(
       x,
       y,
-      width == null ? letterSize : width,
-      height == null ? letterSize : height
+      width == null ? li.size.x : width,
+      height == null ? li.size.y : height
     );
     beginFillColor(colorToNumber(currentColor));
     return;
@@ -435,15 +461,13 @@ function drawLetterImage(
   }
 }
 
-function createLetterImages(
+function createLetterImage(
   pattern: string,
-  isSkippingFirstAndLastLine = true
-) {
-  letterContext.clearRect(0, 0, letterSize, letterSize);
+  c: string,
+  isCharacter: boolean
+): LetterImage {
   let p = pattern.split("\n");
-  if (isSkippingFirstAndLastLine) {
-    p = p.slice(1, p.length - 1);
-  }
+  p = p.slice(1, p.length - 1);
   let pw = 0;
   p.forEach((l) => {
     pw = Math.max(l.length, pw);
@@ -451,16 +475,27 @@ function createLetterImages(
   const xPadding = Math.max(Math.ceil((dotCount - pw) / 2), 0);
   const ph = p.length;
   const yPadding = Math.max(Math.ceil((dotCount - ph) / 2), 0);
+  const size = new Vector(
+    Math.max(dotCount, pw) * dotSize,
+    Math.max(dotCount, ph) * dotSize
+  );
+  let canvas: HTMLCanvasElement = letterCanvas;
+  let context: CanvasRenderingContext2D = letterContext;
+  if (size.x > letterSize || size.y > letterSize) {
+    canvas = document.createElement("canvas");
+    canvas.width = size.x;
+    canvas.height = size.y;
+    context = canvas.getContext("2d");
+    context.imageSmoothingEnabled = false;
+  }
+  context.clearRect(0, 0, size.x, size.y);
   p.forEach((l, y) => {
-    if (y + yPadding >= dotCount) {
-      return;
-    }
-    for (let x = 0; x < dotCount - xPadding; x++) {
+    for (let x = 0; x < pw; x++) {
       const c = l.charAt(x);
       let ci = colorChars.indexOf(c);
       if (c !== "" && ci >= 1) {
-        letterContext.fillStyle = colorToStyle(colors[ci]);
-        letterContext.fillRect(
+        context.fillStyle = colorToStyle(colors[ci]);
+        context.fillRect(
           (x + xPadding) * dotSize,
           (y + yPadding) * dotSize,
           dotSize,
@@ -470,14 +505,20 @@ function createLetterImages(
     }
   });
   const image = document.createElement("img");
-  image.src = letterCanvas.toDataURL();
+  image.src = canvas.toDataURL();
+  const hitBox = getHitBox(context, size, c, isCharacter);
   if (theme.isUsingPixi) {
-    return { image, texture: PIXI.Texture.from(image) };
+    return { image, texture: PIXI.Texture.from(image), size, hitBox };
   }
-  return { image };
+  return { image, size, hitBox };
 }
 
-function getHitBox(c: string, isCharacter: boolean) {
+function getHitBox(
+  context: CanvasRenderingContext2D,
+  size: VectorLike,
+  c: string,
+  isCharacter: boolean
+) {
   const b: HitBox = {
     pos: new Vector(letterSize, letterSize),
     size: new Vector(),
@@ -488,10 +529,10 @@ function getHitBox(c: string, isCharacter: boolean) {
   } else {
     b.collision.isColliding.text[c] = true;
   }
-  const d = letterContext.getImageData(0, 0, letterSize, letterSize).data;
+  const d = context.getImageData(0, 0, size.x, size.y).data;
   let i = 0;
-  for (let y = 0; y < letterSize; y++) {
-    for (let x = 0; x < letterSize; x++) {
+  for (let y = 0; y < size.y; y++) {
+    for (let x = 0; x < size.x; x++) {
       if (d[i + 3] > 0) {
         if (x < b.pos.x) {
           b.pos.x = x;
@@ -504,8 +545,8 @@ function getHitBox(c: string, isCharacter: boolean) {
     }
   }
   i = 0;
-  for (let y = 0; y < letterSize; y++) {
-    for (let x = 0; x < letterSize; x++) {
+  for (let y = 0; y < size.y; y++) {
+    for (let x = 0; x < size.x; x++) {
       if (d[i + 3] > 0) {
         if (x > b.pos.x + b.size.x - 1) {
           b.size.x = x - b.pos.x + 1;
