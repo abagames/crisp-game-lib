@@ -466,6 +466,9 @@ function createLetterImage(
   c: string,
   isCharacter: boolean
 ): LetterImage {
+  if (pattern.indexOf(".") >= 0) {
+    return createLetterImageFromFile(pattern, c);
+  }
   let p = pattern.split("\n");
   p = p.slice(1, p.length - 1);
   let pw = 0;
@@ -511,6 +514,45 @@ function createLetterImage(
     return { image, texture: PIXI.Texture.from(image), size, hitBox };
   }
   return { image, size, hitBox };
+}
+
+function createLetterImageFromFile(pattern: string, c: string) {
+  const image = document.createElement("img");
+  image.src = pattern;
+  const size = new Vector();
+  const hitBox = {
+    pos: new Vector(),
+    size: new Vector(),
+    collision: { isColliding: { char: {}, text: {} } },
+  };
+  let result;
+  if (theme.isUsingPixi) {
+    result = {
+      image,
+      texture: PIXI.Texture.from(image),
+      size: new Vector(),
+      hitBox,
+    };
+  } else {
+    result = { image, size, hitBox };
+  }
+  image.onload = () => {
+    result.size.set(image.width * dotSize, image.height * dotSize);
+    const canvas = document.createElement("canvas");
+    canvas.width = result.size.x;
+    canvas.height = result.size.y;
+    const context = canvas.getContext("2d");
+    context.imageSmoothingEnabled = false;
+    context.drawImage(image, 0, 0, result.size.x, result.size.y);
+    const canvasImage = document.createElement("img");
+    canvasImage.src = canvas.toDataURL();
+    result.image = canvasImage;
+    result.hitBox = getHitBox(context, result.size, c, true);
+    if (theme.isUsingPixi) {
+      result.texture = PIXI.Texture.from(canvasImage);
+    }
+  };
+  return result;
 }
 
 function getHitBox(
