@@ -225,11 +225,12 @@
     ];
     const colorChars = "twrgybpclRGYBPCL";
     let values;
+    let colorPaletteValues;
     const rgbNumbers = [
         0xeeeeee, 0xe91e63, 0x4caf50, 0xffc107, 0x3f51b5, 0x9c27b0, 0x03a9f4,
         0x616161,
     ];
-    function init$8(isDarkColor) {
+    function init$8(isDarkColor, colorPalette) {
         const [wr, wb, wg] = getRgb(0, isDarkColor);
         values = fromEntities(colors.map((c, i) => {
             if (i < 1) {
@@ -259,6 +260,44 @@
                 a: 1,
             };
         }
+        if (colorPalette != null) {
+            setCustomColorPalette(colorPalette);
+        }
+    }
+    function setCustomColorPalette(colorPalette) {
+        colorPaletteValues = colorPalette.map((c) => ({
+            r: c[0],
+            g: c[1],
+            b: c[2],
+            a: 1,
+        }));
+        /* search the closest color for each value and change to the closest color in the palette */
+        for (let i = 0; i < colors.length; i++) {
+            let minDistance = Infinity;
+            let minIndex = -1;
+            for (let j = 0; j < colorPaletteValues.length; j++) {
+                const distance = colorDistance(colorPaletteValues[j], values[colors[i]]);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    minIndex = j;
+                }
+            }
+            values[colors[i]] = colorPaletteValues[minIndex];
+        }
+    }
+    function colorDistance(color1, color2) {
+        const weights = { r: 0.299, g: 0.587, b: 0.114 };
+        const rDiff = color1.r - color2.r;
+        const gDiff = color1.g - color2.g;
+        const bDiff = color1.b - color2.b;
+        const isGrayscale2 = color2.r === color2.g && color2.g === color2.b;
+        let distance = Math.sqrt(rDiff * rDiff * weights.r +
+            gDiff * gDiff * weights.g +
+            bDiff * bDiff * weights.b);
+        if (isGrayscale2 && !(color2.r === 0 && color2.g === 0 && color2.b === 0)) {
+            distance *= 1.5;
+        }
+        return distance;
     }
     function getRgb(i, isDarkColor) {
         if (isDarkColor) {
@@ -272,14 +311,14 @@
         const n = rgbNumbers[i];
         return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
     }
-    function colorToNumber(colorName, ratio = 1) {
-        const v = values[colorName];
+    function colorToNumber(color, ratio = 1) {
+        const v = typeof color == "number" ? colorPaletteValues[color] : values[color];
         return ((Math.floor(v.r * ratio) << 16) |
             (Math.floor(v.g * ratio) << 8) |
             Math.floor(v.b * ratio));
     }
-    function colorToStyle(colorName, ratio = 1) {
-        const v = values[colorName];
+    function colorToStyle(color, ratio = 1) {
+        const v = typeof color == "number" ? colorPaletteValues[color] : values[color];
         const r = Math.floor(v.r * ratio);
         const g = Math.floor(v.g * ratio);
         const b = Math.floor(v.b * ratio);
@@ -456,14 +495,14 @@ image-rendering: pixelated;
         context.fillRect(0, 0, size.x, size.y);
         context.fillStyle = colorToStyle(currentColor);
     }
-    function setColor(colorName) {
-        if (colorName === currentColor) {
+    function setColor(colorNameOrColorIndex) {
+        if (colorNameOrColorIndex === currentColor) {
             if (theme.isUsingPixi && !isFilling) {
                 beginFillColor(colorToNumber(currentColor));
             }
             return;
         }
-        currentColor = colorName;
+        currentColor = colorNameOrColorIndex;
         if (theme.isUsingPixi) {
             if (isFilling) {
                 graphics.endFill();
@@ -471,7 +510,7 @@ image-rendering: pixelated;
             beginFillColor(colorToNumber(currentColor));
             return;
         }
-        context.fillStyle = colorToStyle(colorName);
+        context.fillStyle = colorToStyle(colorNameOrColorIndex);
     }
     function beginFillColor(color) {
         endFill();
@@ -1993,6 +2032,7 @@ lll
         mirror: { x: 1, y: 1 },
         scale: { x: 1, y: 1 },
         isSmallText: false,
+        edgeColor: undefined,
         isCharacter: false,
         isCheckingCollision: false,
     };
@@ -2002,21 +2042,15 @@ lll
         letterContext = letterCanvas.getContext("2d");
         scaledLetterCanvas = document.createElement("canvas");
         scaledLetterContext = scaledLetterCanvas.getContext("2d");
-        textImages = textPatterns.map((lp, i) => {
-            return Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + i), false) });
-        });
-        smallTextImages = smallTextPatterns.map((lp, i) => {
-            return Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + i), false) });
-        });
-        characterImages = textPatterns.map((lp, i) => {
-            return Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + i), true) });
-        });
+        textImages = textPatterns.map((lp, i) => createLetterImage(lp, String.fromCharCode(0x21 + i), false));
+        smallTextImages = smallTextPatterns.map((lp, i) => createLetterImage(lp, String.fromCharCode(0x21 + i), false));
+        characterImages = textPatterns.map((lp, i) => createLetterImage(lp, String.fromCharCode(0x21 + i), true));
         cachedImages = {};
     }
     function defineCharacters(pattern, startLetter) {
         const index = startLetter.charCodeAt(0) - 0x21;
         pattern.forEach((lp, i) => {
-            characterImages[index + i] = Object.assign(Object.assign({}, createLetterImages(lp)), { hitBox: getHitBox(String.fromCharCode(0x21 + index + i), true) });
+            characterImages[index + i] = createLetterImage(lp, String.fromCharCode(0x21 + index + i), true);
         });
     }
     function enableCache() {
@@ -2024,15 +2058,31 @@ lll
     }
     function print(_str, x, y, _options = {}) {
         const options = mergeDefaultOptions(_options);
-        x -= (letterSize / 2) * options.scale.x;
-        y -= (letterSize / 2) * options.scale.y;
-        const bx = Math.floor(x);
         let str = _str;
-        let px = bx;
-        let py = Math.floor(y);
+        let px = x;
+        let py = y;
+        let bx;
         let collision = { isColliding: { rect: {}, text: {}, char: {} } };
         const lw = options.isSmallText ? smallLetterWidth : letterSize;
         for (let i = 0; i < str.length; i++) {
+            if (i === 0) {
+                const cca = str.charCodeAt(0);
+                if (cca < 0x20 || cca > 0x7e) {
+                    px = Math.floor(px - (letterSize / 2) * options.scale.x);
+                    py = Math.floor(py - (letterSize / 2) * options.scale.y);
+                }
+                else {
+                    const cc = cca - 0x21;
+                    const li = options.isCharacter
+                        ? characterImages[cc]
+                        : options.isSmallText
+                            ? smallTextImages[cc]
+                            : textImages[cc];
+                    px = Math.floor(px - (li.size.x / 2) * options.scale.x);
+                    py = Math.floor(py - (li.size.y / 2) * options.scale.y);
+                }
+                bx = px;
+            }
             const c = str[i];
             if (c === "\n") {
                 px = bx;
@@ -2079,6 +2129,7 @@ lll
             rotation === 0 &&
             options.mirror.x === 1 &&
             options.mirror.y === 1 &&
+            options.edgeColor == null &&
             (!theme.isUsingPixi || (options.scale.x === 1 && options.scale.y === 1))) {
             return drawAndTestLetterImage(li, x, y, options.scale, options.isCheckingCollision, true);
         }
@@ -2088,24 +2139,44 @@ lll
             return drawAndTestLetterImage(ci, x, y, options.scale, options.isCheckingCollision, options.color !== "transparent");
         }
         let isUsingScaled = false;
+        const size = new Vector(letterSize, letterSize);
+        let canvas = letterCanvas;
+        let context = letterContext;
+        if (li.size.x > letterSize || li.size.y > letterSize) {
+            if (rotation === 0 || rotation === 2) {
+                size.set(li.size.x, li.size.y);
+            }
+            else {
+                const ms = Math.max(li.size.x, li.size.y);
+                size.set(ms, ms);
+            }
+            canvas = document.createElement("canvas");
+            canvas.width = size.x;
+            canvas.height = size.y;
+            context = canvas.getContext("2d");
+            context.imageSmoothingEnabled = false;
+        }
         if (theme.isUsingPixi && (options.scale.x !== 1 || options.scale.y !== 1)) {
-            scaledLetterCanvas.width = letterSize * options.scale.x;
-            scaledLetterCanvas.height = letterSize * options.scale.y;
+            scaledLetterCanvas.width = size.x * options.scale.x;
+            scaledLetterCanvas.height = size.y * options.scale.y;
             scaledLetterContext.imageSmoothingEnabled = false;
             scaledLetterContext.scale(options.scale.x, options.scale.y);
-            createLatterContext(scaledLetterContext, rotation, options, li);
+            createLetterContext(scaledLetterContext, rotation, options, li.image, size);
             isUsingScaled = true;
         }
-        letterContext.clearRect(0, 0, letterSize, letterSize);
-        createLatterContext(letterContext, rotation, options, li);
-        const hitBox = getHitBox(c, options.isCharacter);
+        context.clearRect(0, 0, size.x, size.y);
+        createLetterContext(context, rotation, options, li.image, size);
+        const hitBox = getHitBox(context, size, c, options.isCharacter);
+        if (options.edgeColor != null) {
+            canvas = addEdge(context, size, options.edgeColor);
+        }
         let texture; //: PIXI.Texture;
         if (isCacheEnabled || theme.isUsingPixi) {
             const cachedImage = document.createElement("img");
-            cachedImage.src = letterCanvas.toDataURL();
+            cachedImage.src = canvas.toDataURL();
             if (theme.isUsingPixi) {
                 const textureImage = document.createElement("img");
-                textureImage.src = (isUsingScaled ? scaledLetterCanvas : letterCanvas).toDataURL();
+                textureImage.src = (isUsingScaled ? scaledLetterCanvas : canvas).toDataURL();
                 texture = PIXI.Texture.from(textureImage);
             }
             if (isCacheEnabled) {
@@ -2113,29 +2184,68 @@ lll
                     image: cachedImage,
                     texture,
                     hitBox,
+                    size,
                 };
             }
         }
-        return drawAndTestLetterImage({ image: letterCanvas, texture, hitBox }, x, y, options.scale, options.isCheckingCollision, options.color !== "transparent");
+        return drawAndTestLetterImage({ image: canvas, texture, hitBox, size }, x, y, options.scale, options.isCheckingCollision, options.color !== "transparent");
     }
-    function createLatterContext(context, rotation, options, li) {
+    function addEdge(context, size, color) {
+        const newWidth = size.x + 2;
+        const newHeight = size.y + 2;
+        const directions = [
+            [0, -1],
+            [1, 0],
+            [0, 1],
+            [-1, 0],
+        ];
+        const edgeCanvas = document.createElement("canvas");
+        edgeCanvas.width = newWidth;
+        edgeCanvas.height = newHeight;
+        const edgeContext = edgeCanvas.getContext("2d");
+        edgeContext.imageSmoothingEnabled = false;
+        edgeContext.drawImage(context.canvas, 1, 1);
+        const imageData = edgeContext.getImageData(0, 0, newWidth, newHeight);
+        const data = imageData.data;
+        edgeContext.fillStyle = colorToStyle(color);
+        for (let y = 0; y < newHeight; y++) {
+            for (let x = 0; x < newWidth; x++) {
+                const idx = (y * newWidth + x) * 4;
+                if (data[idx + 3] === 0) {
+                    for (const [dx, dy] of directions) {
+                        const nx = x + dx;
+                        const ny = y + dy;
+                        if (nx >= 0 && nx < newWidth && ny >= 0 && ny < newHeight) {
+                            const neighborIdx = (ny * newWidth + nx) * 4;
+                            if (data[neighborIdx + 3] > 0) {
+                                edgeContext.fillRect(x, y, 1, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return edgeCanvas;
+    }
+    function createLetterContext(context, rotation, options, image, size) {
         if (rotation === 0 && options.mirror.x === 1 && options.mirror.y === 1) {
-            context.drawImage(li.image, 0, 0);
+            context.drawImage(image, 0, 0);
         }
         else {
             context.save();
-            context.translate(letterSize / 2, letterSize / 2);
+            context.translate(size.x / 2, size.y / 2);
             context.rotate((Math.PI / 2) * rotation);
             if (options.mirror.x === -1 || options.mirror.y === -1) {
                 context.scale(options.mirror.x, options.mirror.y);
             }
-            context.drawImage(li.image, -letterSize / 2, -letterSize / 2);
+            context.drawImage(image, -size.x / 2, -size.y / 2);
             context.restore();
         }
         if (options.color !== "black") {
             context.globalCompositeOperation = "source-in";
             context.fillStyle = colorToStyle(options.color === "transparent" ? "black" : options.color);
-            context.fillRect(0, 0, letterSize, letterSize);
+            context.fillRect(0, 0, size.x, size.y);
             context.globalCompositeOperation = "source-over";
         }
     }
@@ -2145,7 +2255,7 @@ lll
                 drawLetterImage(li, x, y);
             }
             else {
-                drawLetterImage(li, x, y, letterSize * scale.x, letterSize * scale.y);
+                drawLetterImage(li, x, y, li.size.x * scale.x, li.size.y * scale.y);
             }
         }
         if (!isCheckCollision) {
@@ -2172,7 +2282,7 @@ lll
                 texture: li.texture,
                 matrix: new PIXI.Matrix().translate(x, y),
             });
-            graphics.drawRect(x, y, width == null ? letterSize : width, height == null ? letterSize : height);
+            graphics.drawRect(x, y, width == null ? li.size.x : width, height == null ? li.size.y : height);
             beginFillColor(colorToNumber(currentColor));
             return;
         }
@@ -2183,12 +2293,12 @@ lll
             context.drawImage(li.image, x, y, width, height);
         }
     }
-    function createLetterImages(pattern, isSkippingFirstAndLastLine = true) {
-        letterContext.clearRect(0, 0, letterSize, letterSize);
-        let p = pattern.split("\n");
-        if (isSkippingFirstAndLastLine) {
-            p = p.slice(1, p.length - 1);
+    function createLetterImage(pattern, c, isCharacter) {
+        if (pattern.indexOf(".") >= 0) {
+            return createLetterImageFromFile(pattern, c);
         }
+        let p = pattern.split("\n");
+        p = p.slice(1, p.length - 1);
         let pw = 0;
         p.forEach((l) => {
             pw = Math.max(l.length, pw);
@@ -2196,27 +2306,75 @@ lll
         const xPadding = Math.max(Math.ceil((dotCount - pw) / 2), 0);
         const ph = p.length;
         const yPadding = Math.max(Math.ceil((dotCount - ph) / 2), 0);
+        const size = new Vector(Math.max(dotCount, pw) * dotSize, Math.max(dotCount, ph) * dotSize);
+        let canvas = letterCanvas;
+        let context = letterContext;
+        if (size.x > letterSize || size.y > letterSize) {
+            canvas = document.createElement("canvas");
+            canvas.width = size.x;
+            canvas.height = size.y;
+            context = canvas.getContext("2d");
+            context.imageSmoothingEnabled = false;
+        }
+        context.clearRect(0, 0, size.x, size.y);
         p.forEach((l, y) => {
-            if (y + yPadding >= dotCount) {
-                return;
-            }
-            for (let x = 0; x < dotCount - xPadding; x++) {
+            for (let x = 0; x < pw; x++) {
                 const c = l.charAt(x);
                 let ci = colorChars.indexOf(c);
                 if (c !== "" && ci >= 1) {
-                    letterContext.fillStyle = colorToStyle(colors[ci]);
-                    letterContext.fillRect((x + xPadding) * dotSize, (y + yPadding) * dotSize, dotSize, dotSize);
+                    context.fillStyle = colorToStyle(colors[ci]);
+                    context.fillRect((x + xPadding) * dotSize, (y + yPadding) * dotSize, dotSize, dotSize);
                 }
             }
         });
         const image = document.createElement("img");
-        image.src = letterCanvas.toDataURL();
+        image.src = canvas.toDataURL();
+        const hitBox = getHitBox(context, size, c, isCharacter);
         if (theme.isUsingPixi) {
-            return { image, texture: PIXI.Texture.from(image) };
+            return { image, texture: PIXI.Texture.from(image), size, hitBox };
         }
-        return { image };
+        return { image, size, hitBox };
     }
-    function getHitBox(c, isCharacter) {
+    function createLetterImageFromFile(pattern, c) {
+        const image = document.createElement("img");
+        image.src = pattern;
+        const size = new Vector();
+        const hitBox = {
+            pos: new Vector(),
+            size: new Vector(),
+            collision: { isColliding: { char: {}, text: {} } },
+        };
+        let result;
+        if (theme.isUsingPixi) {
+            result = {
+                image,
+                texture: PIXI.Texture.from(image),
+                size: new Vector(),
+                hitBox,
+            };
+        }
+        else {
+            result = { image, size, hitBox };
+        }
+        image.onload = () => {
+            result.size.set(image.width * dotSize, image.height * dotSize);
+            const canvas = document.createElement("canvas");
+            canvas.width = result.size.x;
+            canvas.height = result.size.y;
+            const context = canvas.getContext("2d");
+            context.imageSmoothingEnabled = false;
+            context.drawImage(image, 0, 0, result.size.x, result.size.y);
+            const canvasImage = document.createElement("img");
+            canvasImage.src = canvas.toDataURL();
+            result.image = canvasImage;
+            result.hitBox = getHitBox(context, result.size, c, true);
+            if (theme.isUsingPixi) {
+                result.texture = PIXI.Texture.from(canvasImage);
+            }
+        };
+        return result;
+    }
+    function getHitBox(context, size, c, isCharacter) {
         const b = {
             pos: new Vector(letterSize, letterSize),
             size: new Vector(),
@@ -2228,10 +2386,10 @@ lll
         else {
             b.collision.isColliding.text[c] = true;
         }
-        const d = letterContext.getImageData(0, 0, letterSize, letterSize).data;
+        const d = context.getImageData(0, 0, size.x, size.y).data;
         let i = 0;
-        for (let y = 0; y < letterSize; y++) {
-            for (let x = 0; x < letterSize; x++) {
+        for (let y = 0; y < size.y; y++) {
+            for (let x = 0; x < size.x; x++) {
                 if (d[i + 3] > 0) {
                     if (x < b.pos.x) {
                         b.pos.x = x;
@@ -2244,8 +2402,8 @@ lll
             }
         }
         i = 0;
-        for (let y = 0; y < letterSize; y++) {
-            for (let x = 0; x < letterSize; x++) {
+        for (let y = 0; y < size.y; y++) {
+            for (let x = 0; x < size.x; x++) {
                 if (d[i + 3] > 0) {
                     if (x > b.pos.x + b.size.x - 1) {
                         b.size.x = x - b.pos.x + 1;
@@ -2742,6 +2900,7 @@ lll
         isSoundEnabled: true,
         captureCanvasScale: 1,
         theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
+        colorPalette: undefined,
     };
     let options$1;
     let textCacheEnableTicks = 10;
@@ -2749,7 +2908,7 @@ lll
         _init$1 = __init;
         _update$1 = __update;
         options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
-        init$8(options$1.theme.isDarkColor);
+        init$8(options$1.theme.isDarkColor, options$1.colorPalette);
         init$7(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.captureDurationSec, options$1.theme);
         init$3(options$1.isSoundEnabled ? sss.startAudio : () => { });
         init$6();
@@ -3335,8 +3494,8 @@ lll
      * Use color("black") to restore and use the original colors.
      * @param colorName
      */
-    function color(colorName) {
-        setColor(colorName);
+    function color(colorNameOrColorIndex) {
+        setColor(colorNameOrColorIndex);
     }
     /**
      * Add particles.
@@ -3501,6 +3660,7 @@ lll
         seed: 0,
         audioVolume: 1,
         theme: "simple",
+        colorPalette: undefined,
     };
     const seedRandom = new Random();
     const random = new Random();
@@ -3557,23 +3717,22 @@ lll
             currentOptions.theme === "dark") {
             theme.isDarkColor = true;
         }
+        audioSeed = currentOptions.audioSeed + currentOptions.seed;
+        if (currentOptions.isMinifying) {
+            showMinifiedScript();
+        }
         loopOptions = {
-            viewSize: { x: 100, y: 100 },
+            viewSize: currentOptions.viewSize,
             bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
             viewBackground: theme.isDarkColor ? "blue" : "white",
             theme,
             isSoundEnabled: currentOptions.isSoundEnabled,
+            isCapturing: currentOptions.isCapturing,
+            isCapturingGameCanvasOnly: currentOptions.isCapturingGameCanvasOnly,
+            captureCanvasScale: currentOptions.captureCanvasScale,
+            captureDurationSec: currentOptions.captureDurationSec,
+            colorPalette: currentOptions.colorPalette,
         };
-        audioSeed = currentOptions.audioSeed + currentOptions.seed;
-        loopOptions.isCapturing = currentOptions.isCapturing;
-        loopOptions.isCapturingGameCanvasOnly =
-            currentOptions.isCapturingGameCanvasOnly;
-        loopOptions.captureCanvasScale = currentOptions.captureCanvasScale;
-        loopOptions.captureDurationSec = currentOptions.captureDurationSec;
-        loopOptions.viewSize = currentOptions.viewSize;
-        if (currentOptions.isMinifying) {
-            showMinifiedScript();
-        }
         init$2(_init, _update, loopOptions);
     }
     function _init() {

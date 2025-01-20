@@ -35,6 +35,7 @@ export type LetterOptions = {
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
   isSmallText?: boolean;
+  edgeColor?: Color;
 };
 
 /**
@@ -148,6 +149,7 @@ export type Options = {
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
   isSmallText?: boolean;
+  edgeColor?: Color;
   isCharacter?: boolean;
   isCheckingCollision?: boolean;
 };
@@ -159,6 +161,7 @@ export const defaultOptions: Options = {
   mirror: { x: 1, y: 1 },
   scale: { x: 1, y: 1 },
   isSmallText: false,
+  edgeColor: undefined,
   isCharacter: false,
   isCheckingCollision: false,
 };
@@ -289,6 +292,7 @@ export function printChar(
     rotation === 0 &&
     options.mirror.x === 1 &&
     options.mirror.y === 1 &&
+    options.edgeColor == null &&
     (!theme.isUsingPixi || (options.scale.x === 1 && options.scale.y === 1))
   ) {
     return drawAndTestLetterImage(
@@ -340,6 +344,9 @@ export function printChar(
   context.clearRect(0, 0, size.x, size.y);
   createLetterContext(context, rotation, options, li.image, size);
   const hitBox = getHitBox(context, size, c, options.isCharacter);
+  if (options.edgeColor != null) {
+    canvas = addEdge(context, size, options.edgeColor);
+  }
   let texture; //: PIXI.Texture;
   if (isCacheEnabled || theme.isUsingPixi) {
     const cachedImage = document.createElement("img");
@@ -368,6 +375,51 @@ export function printChar(
     options.isCheckingCollision,
     options.color !== "transparent"
   );
+}
+
+function addEdge(
+  context: CanvasRenderingContext2D,
+  size: VectorLike,
+  color: Color
+) {
+  const newWidth = size.x + 2;
+  const newHeight = size.y + 2;
+  const directions = [
+    [0, -1],
+    [1, 0],
+    [0, 1],
+    [-1, 0],
+  ];
+
+  const edgeCanvas = document.createElement("canvas");
+  edgeCanvas.width = newWidth;
+  edgeCanvas.height = newHeight;
+  const edgeContext = edgeCanvas.getContext("2d");
+  edgeContext.imageSmoothingEnabled = false;
+
+  edgeContext.drawImage(context.canvas, 1, 1);
+  const imageData = edgeContext.getImageData(0, 0, newWidth, newHeight);
+  const data = imageData.data;
+  edgeContext.fillStyle = colorToStyle(color);
+  for (let y = 0; y < newHeight; y++) {
+    for (let x = 0; x < newWidth; x++) {
+      const idx = (y * newWidth + x) * 4;
+      if (data[idx + 3] === 0) {
+        for (const [dx, dy] of directions) {
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx >= 0 && nx < newWidth && ny >= 0 && ny < newHeight) {
+            const neighborIdx = (ny * newWidth + nx) * 4;
+            if (data[neighborIdx + 3] > 0) {
+              edgeContext.fillRect(x, y, 1, 1);
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+  return edgeCanvas;
 }
 
 function createLetterContext(

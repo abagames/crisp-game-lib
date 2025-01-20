@@ -194,6 +194,7 @@ declare type LetterOptions = {
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
   isSmallText?: boolean;
+  edgeColor?: Color;
 };
 
 declare function text(
