@@ -3916,7 +3916,7 @@ lll
         if (typeof characters !== "undefined" && characters != null) {
             defineCharacters(characters, "a");
         }
-        if (audioFiles != null) {
+        if (typeof audioFiles !== "undefined" && audioFiles != null) {
             init$3();
             setTempo(currentOptions.audioTempo);
             for (let audioName in audioFiles) {

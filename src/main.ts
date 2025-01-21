@@ -572,7 +572,7 @@ function _init() {
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
   }
-  if (audioFiles != null) {
+  if (typeof audioFiles !== "undefined" && audioFiles != null) {
     audio.init();
     audio.setTempo(currentOptions.audioTempo);
     for (let audioName in audioFiles) {
