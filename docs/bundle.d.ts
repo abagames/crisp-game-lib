@@ -243,6 +243,7 @@ declare function particle(
     speed?: number;
     angle?: number;
     angleWidth?: number;
+    edgeColor?: Color;
   }
 ): void;
 declare function particle(
@@ -252,6 +253,7 @@ declare function particle(
     speed?: number;
     angle?: number;
     angleWidth?: number;
+    edgeColor?: Color;
   }
 ): void;
 declare function particle(

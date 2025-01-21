@@ -3078,7 +3078,7 @@ lll
     function init$1() {
         particles = [];
     }
-    function add(pos, count = 16, speed = 1, angle = 0, angleWidth = Math.PI * 2) {
+    function add(pos, count = 16, speed = 1, angle = 0, angleWidth = Math.PI * 2, edgeColor = undefined) {
         if (count < 1) {
             if (random$1.get() > count) {
                 return;
@@ -3092,6 +3092,7 @@ lll
                 vel: new Vector(speed * random$1.get(0.5, 1), 0).rotate(a),
                 color: currentColor,
                 ticks: clamp(random$1.get(10, 20) * Math.sqrt(Math.abs(speed)), 10, 60),
+                edgeColor,
             };
             particles.push(p);
         }
@@ -3105,8 +3106,14 @@ lll
             }
             p.pos.add(p.vel);
             p.vel.mul(0.98);
+            const x = Math.floor(p.pos.x);
+            const y = Math.floor(p.pos.y);
+            if (p.edgeColor != null) {
+                setColor(p.edgeColor);
+                fillRect(x - 1, y - 1, 3, 3);
+            }
             setColor(p.color);
-            fillRect(Math.floor(p.pos.x), Math.floor(p.pos.y), 1, 1);
+            fillRect(x, y, 1, 1);
             return true;
         });
         loadCurrentColor();
@@ -3654,7 +3661,7 @@ lll
         function add$1(pos, optionsOrCount, speed, angle, angleWidth) {
             if (isObject(optionsOrCount)) {
                 const o = optionsOrCount;
-                add(pos, o.count, o.speed, o.angle, o.angleWidth);
+                add(pos, o.count, o.speed, o.angle, o.angleWidth, o.edgeColor);
             }
             else {
                 add(pos, optionsOrCount, speed, angle, angleWidth);

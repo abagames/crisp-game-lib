@@ -14,6 +14,7 @@ type Particle = {
   pos: Vector;
   vel: Vector;
   color: Color;
+  edgeColor: Color;
   ticks: number;
 };
 
@@ -29,7 +30,8 @@ export function add(
   count = 16,
   speed = 1,
   angle = 0,
-  angleWidth = Math.PI * 2
+  angleWidth = Math.PI * 2,
+  edgeColor: Color = undefined
 ) {
   if (count < 1) {
     if (random.get() > count) {
@@ -44,6 +46,7 @@ export function add(
       vel: new Vector(speed * random.get(0.5, 1), 0).rotate(a),
       color: currentColor,
       ticks: clamp(random.get(10, 20) * Math.sqrt(Math.abs(speed)), 10, 60),
+      edgeColor,
     };
     particles.push(p);
   }
@@ -58,8 +61,14 @@ export function update() {
     }
     p.pos.add(p.vel);
     p.vel.mul(0.98);
+    const x = Math.floor(p.pos.x);
+    const y = Math.floor(p.pos.y);
+    if (p.edgeColor != null) {
+      setColor(p.edgeColor);
+      fillRect(x - 1, y - 1, 3, 3);
+    }
     setColor(p.color);
-    fillRect(Math.floor(p.pos.x), Math.floor(p.pos.y), 1, 1);
+    fillRect(x, y, 1, 1);
     return true;
   });
   loadCurrentColor();

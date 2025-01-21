@@ -192,7 +192,13 @@ export function particle(
   y: number,
   optionsOrCount?:
     | number
-    | { count?: number; speed?: number; angle?: number; angleWidth?: number },
+    | {
+        count?: number;
+        speed?: number;
+        angle?: number;
+        angleWidth?: number;
+        edgeColor?: Color;
+      },
   speed?: number,
   angle?: number,
   angleWidth?: number
@@ -213,8 +219,9 @@ export function particle(
         speed?: number;
         angle?: number;
         angleWidth?: number;
+        edgeColor?: Color;
       } = optionsOrCount;
-      _particle.add(pos, o.count, o.speed, o.angle, o.angleWidth);
+      _particle.add(pos, o.count, o.speed, o.angle, o.angleWidth, o.edgeColor);
     } else {
       _particle.add(pos, optionsOrCount, speed, angle, angleWidth);
     }
