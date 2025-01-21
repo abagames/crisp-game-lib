@@ -30,6 +30,13 @@ declare type Options = {
   audioVolume?: number;
   theme?: ThemeName;
   colorPalette?: number[][];
+  textEdgeColor?: {
+    score?: Color;
+    floatingScore?: Color;
+    title?: Color;
+    description?: Color;
+    gameOver?: Color;
+  };
   bgmName?: string;
   bgmVolume?: number;
   audioTempo?: number;

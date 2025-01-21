@@ -3805,6 +3805,13 @@ lll
         audioVolume: 1,
         theme: "simple",
         colorPalette: undefined,
+        textEdgeColor: {
+            score: undefined,
+            floatingScore: undefined,
+            title: undefined,
+            description: undefined,
+            gameOver: undefined,
+        },
         bgmName: "bgm",
         bgmVolume: 1,
         audioTempo: 120,
@@ -4055,7 +4062,9 @@ lll
             });
             const x = Math.floor((size.x - maxLineLength * letterSize) / 2);
             title.split("\n").forEach((l, i) => {
-                print(l, x, Math.floor(size.y * 0.25) + i * letterSize);
+                print(l, x, Math.floor(size.y * 0.25) + i * letterSize, {
+                    edgeColor: currentOptions.textEdgeColor.title,
+                });
             });
         }
         if (typeof description !== "undefined" && description != null) {
@@ -4070,6 +4079,7 @@ lll
             description.split("\n").forEach((l, i) => {
                 print(l, x, Math.floor(size.y / 2) + i * letterSize, {
                     isSmallText: currentOptions.isUsingSmallText,
+                    edgeColor: currentOptions.textEdgeColor.description,
                 });
             });
         }
@@ -4105,7 +4115,7 @@ lll
         if (exports.isReplaying) {
             return;
         }
-        print(gameOverText, Math.floor((size.x - gameOverText.length * letterSize) / 2), Math.floor(size.y / 2));
+        print(gameOverText, Math.floor((size.x - gameOverText.length * letterSize) / 2), Math.floor(size.y / 2), { edgeColor: currentOptions.textEdgeColor.gameOver });
     }
     function initRewind() {
         state = "rewind";
@@ -4174,11 +4184,15 @@ lll
         else if (currentOptions.isShowingScore) {
             print(`${Math.floor(exports.score)}`, 3, 3, {
                 isSmallText: currentOptions.isUsingSmallText,
+                edgeColor: currentOptions.textEdgeColor.score,
             });
             const hs = `HI ${hiScore}`;
             print(hs, size.x -
                 hs.length *
-                    (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize), 3, { isSmallText: currentOptions.isUsingSmallText });
+                    (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize), 3, {
+                isSmallText: currentOptions.isUsingSmallText,
+                edgeColor: currentOptions.textEdgeColor.score,
+            });
         }
     }
     function drawTime(time, x, y) {
@@ -4194,7 +4208,10 @@ lll
             getPaddedNumber(Math.floor((t % 6000) / 100), 2) +
             '"' +
             getPaddedNumber(Math.floor(t % 100), 2);
-        print(ts, x, y, { isSmallText: currentOptions.isUsingSmallText });
+        print(ts, x, y, {
+            isSmallText: currentOptions.isUsingSmallText,
+            edgeColor: currentOptions.textEdgeColor.score,
+        });
     }
     function getPaddedNumber(v, digit) {
         return ("0000" + v).slice(-digit);
@@ -4205,6 +4222,7 @@ lll
         scoreBoards = scoreBoards.filter((sb) => {
             print(sb.str, sb.pos.x, sb.pos.y, {
                 isSmallText: currentOptions.isUsingSmallText,
+                edgeColor: currentOptions.textEdgeColor.floatingScore,
             });
             sb.pos.y += sb.vy;
             sb.vy *= 0.9;

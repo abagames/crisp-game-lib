@@ -377,6 +377,13 @@ const defaultOptions: Options = {
   audioVolume: 1,
   theme: "simple",
   colorPalette: undefined,
+  textEdgeColor: {
+    score: undefined,
+    floatingScore: undefined,
+    title: undefined,
+    description: undefined,
+    gameOver: undefined,
+  },
   bgmName: "bgm",
   bgmVolume: 1,
   audioTempo: 120,
@@ -429,8 +436,16 @@ declare type Options = {
   audioVolume?: number;
   /** Appearance theme of the game. */
   theme?: ThemeName;
-  /** Custom color palette */
+  /** Custom color palette. */
   colorPalette?: number[][];
+  /** Edge color of the text. */
+  textEdgeColor?: {
+    score?: Color;
+    floatingScore?: Color;
+    title?: Color;
+    description?: Color;
+    gameOver?: Color;
+  };
   /** BGM name of audio file, default: "bgm" */
   bgmName?: string;
   /** BGM volume, default: 1  */
@@ -706,7 +721,9 @@ function updateTitle() {
     });
     const x = Math.floor((view.size.x - maxLineLength * letterSize) / 2);
     title.split("\n").forEach((l, i) => {
-      print(l, x, Math.floor(view.size.y * 0.25) + i * letterSize);
+      print(l, x, Math.floor(view.size.y * 0.25) + i * letterSize, {
+        edgeColor: currentOptions.textEdgeColor.title,
+      });
     });
   }
   if (typeof description !== "undefined" && description != null) {
@@ -721,6 +738,7 @@ function updateTitle() {
     description.split("\n").forEach((l, i) => {
       print(l, x, Math.floor(view.size.y / 2) + i * letterSize, {
         isSmallText: currentOptions.isUsingSmallText,
+        edgeColor: currentOptions.textEdgeColor.description,
       });
     });
   }
@@ -763,7 +781,8 @@ function drawGameOver() {
   print(
     gameOverText,
     Math.floor((view.size.x - gameOverText.length * letterSize) / 2),
-    Math.floor(view.size.y / 2)
+    Math.floor(view.size.y / 2),
+    { edgeColor: currentOptions.textEdgeColor.gameOver }
   );
 }
 
@@ -839,6 +858,7 @@ function drawScoreOrTime() {
   } else if (currentOptions.isShowingScore) {
     print(`${Math.floor(score)}`, 3, 3, {
       isSmallText: currentOptions.isUsingSmallText,
+      edgeColor: currentOptions.textEdgeColor.score,
     });
     const hs = `HI ${hiScore}`;
     print(
@@ -847,7 +867,10 @@ function drawScoreOrTime() {
         hs.length *
           (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize),
       3,
-      { isSmallText: currentOptions.isUsingSmallText }
+      {
+        isSmallText: currentOptions.isUsingSmallText,
+        edgeColor: currentOptions.textEdgeColor.score,
+      }
     );
   }
 }
@@ -866,7 +889,10 @@ function drawTime(time: number, x: number, y: number) {
     getPaddedNumber(Math.floor((t % 6000) / 100), 2) +
     '"' +
     getPaddedNumber(Math.floor(t % 100), 2);
-  print(ts, x, y, { isSmallText: currentOptions.isUsingSmallText });
+  print(ts, x, y, {
+    isSmallText: currentOptions.isUsingSmallText,
+    edgeColor: currentOptions.textEdgeColor.score,
+  });
 }
 
 function getPaddedNumber(v: number, digit: number) {
@@ -879,6 +905,7 @@ function updateScoreBoards() {
   scoreBoards = scoreBoards.filter((sb) => {
     print(sb.str, sb.pos.x, sb.pos.y, {
       isSmallText: currentOptions.isUsingSmallText,
+      edgeColor: currentOptions.textEdgeColor.floatingScore,
     });
     sb.pos.y += sb.vy;
     sb.vy *= 0.9;
