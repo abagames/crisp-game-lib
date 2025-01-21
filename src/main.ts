@@ -23,6 +23,7 @@ import {
 } from "./button";
 import * as replay from "./replay";
 import { Theme, ThemeName } from "./loop";
+import * as audio from "./audio";
 declare const sss;
 declare const Terser;
 declare const cloneDeep;
@@ -242,7 +243,7 @@ export function vec(x?: number | VectorLike, y?: number): Vector {
  * @param options.note Note string (e.g. "C4", "F#3", "Ab5")
  */
 export function play(
-  type: SoundEffectType,
+  type: SoundEffectType | string,
   options?: {
     // Random seed (default = 0)
     seed?: number;
@@ -257,7 +258,9 @@ export function play(
   }
 ) {
   if (!isWaitingRewind && !isRewinding && currentOptions.isSoundEnabled) {
-    if (options != null && typeof sss.playSoundEffect === "function") {
+    const v = options != null && options.volume != null ? options.volume : 1;
+    if (audio.audioContext != null && audio.play(type, v)) {
+    } else if (options != null && typeof sss.playSoundEffect === "function") {
       sss.playSoundEffect(type, options);
     } else {
       sss.play(soundEffectTypeToString[type]);
@@ -272,7 +275,9 @@ let bgmTrack;
  */
 /** @ignore */
 export function playBgm() {
-  if (typeof sss.generateMml === "function") {
+  if (audio.audioContext != null) {
+    audio.play(currentOptions.bgmName, currentOptions.bgmVolume);
+  } else if (typeof sss.generateMml === "function") {
     bgmTrack = sss.playMml(sss.generateMml());
   } else {
     sss.playBgm();
@@ -284,10 +289,13 @@ export function playBgm() {
  */
 /** @ignore */
 export function stopBgm() {
-  if (bgmTrack != null) {
+  if (audio.audioContext != null) {
+    audio.stop(currentOptions.bgmName);
+  } else if (bgmTrack != null) {
     sss.stopMml(bgmTrack);
+  } else {
+    sss.stopBgm();
   }
-  sss.stopBgm();
 }
 
 /**
@@ -369,11 +377,15 @@ const defaultOptions: Options = {
   audioVolume: 1,
   theme: "simple",
   colorPalette: undefined,
+  bgmName: "bgm",
+  bgmVolume: 1,
+  audioTempo: 120,
 };
 
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
+declare let audioFiles: { [key: string]: string };
 /** Game setting options. */
 declare type Options = {
   /** Play BGM. */
@@ -419,6 +431,12 @@ declare type Options = {
   theme?: ThemeName;
   /** Custom color palette */
   colorPalette?: number[][];
+  /** BGM name of audio file, default: "bgm" */
+  bgmName?: string;
+  /** BGM volume, default: 1  */
+  bgmVolume?: number;
+  /** Audio tempo, default: 120 */
+  audioTempo?: number;
 };
 declare let options: Options;
 declare function update();
@@ -455,6 +473,7 @@ export function init(settings: {
   description?: string;
   characters?: string[];
   options?: Options;
+  audioFiles?: { [key: string]: string };
 }) {
   const win: any = window;
   win.update = settings.update;
@@ -462,6 +481,7 @@ export function init(settings: {
   win.description = settings.description;
   win.characters = settings.characters;
   win.options = settings.options;
+  win.audioFiles = settings.audioFiles;
   onLoad();
 }
 
@@ -530,11 +550,21 @@ function _init() {
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
   }
-  if (currentOptions.isSoundEnabled) {
-    sss.init(audioSeed);
-    sss.setVolume(0.1 * currentOptions.audioVolume);
+  if (audioFiles != null) {
+    audio.init();
+    audio.setTempo(currentOptions.audioTempo);
+    for (let audioName in audioFiles) {
+      const a = audio.loadAudioFile(audioName, audioFiles[audioName]);
+      if (audioName === currentOptions.bgmName) {
+        a.isLooping = true;
+      }
+    }
   }
-  const sz = loopOptions.viewSize;
+  if (currentOptions.isSoundEnabled) {
+    sss.init(audioSeed, audio.audioContext);
+    sss.setVolume(0.1 * currentOptions.audioVolume);
+    sss.setTempo(currentOptions.audioTempo);
+  }
   view.setColor("black");
   if (isNoTitle) {
     initInGame();

@@ -3,6 +3,7 @@ import * as letter from "./letter";
 import * as input from "./input";
 import * as color from "./color";
 import { VectorLike } from "./vector";
+import * as audio from "./audio";
 declare const sss;
 
 /** Name for an appearance theme. */
@@ -71,7 +72,13 @@ export function init(
     options.captureDurationSec,
     options.theme
   );
-  input.init(options.isSoundEnabled ? sss.startAudio : () => {});
+  input.init(() => {
+    if (audio.audioContext != null) {
+      audio.start();
+    } else if (options.isSoundEnabled) {
+      sss.startAudio();
+    }
+  });
   letter.init();
   _init();
   update();
@@ -86,6 +93,9 @@ function update() {
   nextFrameTime += deltaTime;
   if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
     nextFrameTime = now + deltaTime;
+  }
+  if (audio.audioContext != null) {
+    audio.update();
   }
   if (options.isSoundEnabled) {
     sss.update();

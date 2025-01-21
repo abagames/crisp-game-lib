@@ -1,6 +1,7 @@
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
+declare let audioFiles: { [key: string]: string };
 declare type ThemeName =
   | "simple"
   | "pixel"
@@ -29,6 +30,9 @@ declare type Options = {
   audioVolume?: number;
   theme?: ThemeName;
   colorPalette?: number[][];
+  bgmName?: string;
+  bgmVolume?: number;
+  audioTempo?: number;
 };
 declare let options: Options;
 declare function update(): void;
@@ -518,7 +522,7 @@ declare type SoundEffectType =
   | "synth"
   | "tone";
 declare function play(
-  type: SoundEffectType,
+  type: SoundEffectType | string,
   options?: {
     seed?: number;
     numberOfSounds?: number;
