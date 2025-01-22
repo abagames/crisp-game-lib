@@ -2169,6 +2169,8 @@ lll
         const hitBox = getHitBox(context, size, c, options.isCharacter);
         if (options.edgeColor != null) {
             canvas = addEdge(context, size, options.edgeColor);
+            size.x += 2;
+            size.y += 2;
         }
         let texture; //: PIXI.Texture;
         if (isCacheEnabled || theme.isUsingPixi) {
@@ -2887,10 +2889,10 @@ lll
     });
 
     let audioContext;
+    let gainNode;
     let tempo;
     let playInterval;
     let quantize;
-    let volume;
     let isStarted = false;
     const audios = {};
     function play$1(name, _volume = 1) {
@@ -2898,7 +2900,7 @@ lll
         if (audio == null) {
             return false;
         }
-        audio.gainNode.gain.value = volume * _volume;
+        audio.gainNode.gain.value = _volume;
         audio.isPlaying = true;
         return true;
     }
@@ -2917,7 +2919,7 @@ lll
             }
         }
     }
-    function stop(name, when = undefined) {
+    function stop$1(name, when = undefined) {
         const audio = audios[name];
         if (audio.source == null) {
             return;
@@ -2933,6 +2935,8 @@ lll
     function init$3() {
         audioContext = new (window.AudioContext ||
             window.webkitAudioContext)();
+        gainNode = audioContext.createGain();
+        gainNode.connect(audioContext.destination);
         setTempo();
         setQuantize();
         setVolume();
@@ -2949,7 +2953,7 @@ lll
         audios[key] = createAudioFromFile(url);
         return audios[key];
     }
-    function start() {
+    function start$1() {
         if (isStarted) {
             return;
         }
@@ -2964,7 +2968,7 @@ lll
         quantize = noteLength > 0 ? 4 / noteLength : undefined;
     }
     function setVolume(_volume = 0.1) {
-        volume = _volume;
+        gainNode.gain.value = _volume;
     }
     function playLater(audio, when) {
         const bufferSourceNode = audioContext.createBufferSource();
@@ -2986,7 +2990,7 @@ lll
             isReady: false,
             isLooping: false,
         };
-        audio.gainNode.connect(audioContext.destination);
+        audio.gainNode.connect(gainNode);
         loadFile(url).then((buffer) => {
             audio.buffer = buffer;
             audio.isReady = true;
@@ -3036,7 +3040,7 @@ lll
         init$8(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.captureDurationSec, options$1.theme);
         init$4(() => {
             if (audioContext != null) {
-                start();
+                start$1();
             }
             else if (options$1.isSoundEnabled) {
                 sss.startAudio();
@@ -3523,6 +3527,67 @@ lll
         return frameStates[i];
     }
 
+    const scale = 4;
+    const recordingFps = 60;
+    const mimeType = "video/webm;codecs=vp8,opus";
+    const type = "video/webm";
+    const fileName = "recording.webm";
+    const videoBitsPerSecond = 100000 * scale;
+    let mediaRecorder;
+    function start(canvas, audioContext, gainNode) {
+        if (mediaRecorder != null) {
+            return;
+        }
+        const virtualCanvas = document.createElement("canvas");
+        virtualCanvas.width = canvas.width * scale;
+        virtualCanvas.height = canvas.height * scale;
+        const context = virtualCanvas.getContext("2d");
+        context.imageSmoothingEnabled = false;
+        const drawLoop = () => {
+            context.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, virtualCanvas.width, virtualCanvas.height);
+            requestAnimationFrame(drawLoop);
+        };
+        drawLoop();
+        const stream = virtualCanvas.captureStream(recordingFps);
+        const audioDestination = audioContext.createMediaStreamDestination();
+        gainNode.connect(audioDestination);
+        const audioStream = audioDestination.stream;
+        const combinedStream = new MediaStream([
+            ...stream.getVideoTracks(),
+            ...audioStream.getAudioTracks(),
+        ]);
+        mediaRecorder = new MediaRecorder(combinedStream, {
+            mimeType,
+            videoBitsPerSecond,
+        });
+        let recordedChunks = [];
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+            recordedChunks = [];
+        };
+        mediaRecorder.start();
+    }
+    function stop() {
+        if (mediaRecorder != null && mediaRecorder.state !== "inactive") {
+            mediaRecorder.stop();
+            mediaRecorder = undefined;
+        }
+    }
+    function isRecording() {
+        return mediaRecorder != null && mediaRecorder.state === "recording";
+    }
+
     const PI = Math.PI;
     const abs = Math.abs;
     const sin = Math.sin;
@@ -3722,7 +3787,7 @@ lll
     /** @ignore */
     function stopBgm() {
         if (audioContext != null) {
-            stop(currentOptions.bgmName);
+            stop$1(currentOptions.bgmName);
         }
         else if (bgmTrack != null) {
             sss.stopMml(bgmTrack);
@@ -3822,6 +3887,7 @@ lll
         bgmName: "bgm",
         bgmVolume: 1,
         audioTempo: 120,
+        isRecording: false,
     };
     const seedRandom = new Random();
     const random = new Random();
@@ -4026,8 +4092,16 @@ lll
         if (currentOptions.isShowingTime && exports.time != null) {
             exports.time++;
         }
+        if (currentOptions.isRecording &&
+            audioContext != null &&
+            !isRecording()) {
+            start(canvas, audioContext, gainNode);
+        }
     }
     function initTitle() {
+        if (currentOptions.isRecording && audioContext != null) {
+            stop();
+        }
         state = "title";
         exports.ticks = -1;
         init$1();

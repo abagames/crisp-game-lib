@@ -40,6 +40,7 @@ declare type Options = {
   bgmName?: string;
   bgmVolume?: number;
   audioTempo?: number;
+  isRecording?: boolean;
 };
 declare let options: Options;
 declare function update(): void;

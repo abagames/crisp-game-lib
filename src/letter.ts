@@ -346,6 +346,8 @@ export function printChar(
   const hitBox = getHitBox(context, size, c, options.isCharacter);
   if (options.edgeColor != null) {
     canvas = addEdge(context, size, options.edgeColor);
+    size.x += 2;
+    size.y += 2;
   }
   let texture; //: PIXI.Texture;
   if (isCacheEnabled || theme.isUsingPixi) {
