@@ -24,6 +24,7 @@ import {
 import * as replay from "./replay";
 import { Theme, ThemeName } from "./loop";
 import * as audio from "./audio";
+import * as recorder from "./recorder";
 declare const sss;
 declare const Terser;
 declare const cloneDeep;
@@ -394,6 +395,7 @@ const defaultOptions: Options = {
   bgmName: "bgm",
   bgmVolume: 1,
   audioTempo: 120,
+  isRecording: false,
 };
 
 declare let title: string;
@@ -459,6 +461,7 @@ declare type Options = {
   bgmVolume?: number;
   /** Audio tempo, default: 120 */
   audioTempo?: number;
+  isRecording?: boolean;
 };
 declare let options: Options;
 declare function update();
@@ -683,9 +686,19 @@ function updateInGame() {
   if (currentOptions.isShowingTime && time != null) {
     time++;
   }
+  if (
+    currentOptions.isRecording &&
+    audio.audioContext != null &&
+    !recorder.isRecording()
+  ) {
+    recorder.start(view.canvas, audio.audioContext, audio.gainNode);
+  }
 }
 
 function initTitle() {
+  if (currentOptions.isRecording && audio.audioContext != null) {
+    recorder.stop();
+  }
   state = "title";
   ticks = -1;
   _particle.init();
