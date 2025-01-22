@@ -1,8 +1,8 @@
 export let audioContext: AudioContext;
-export let tempo: number;
-export let playInterval: number;
-export let quantize: number;
-export let volume: number;
+export let gainNode: GainNode;
+let tempo: number;
+let playInterval: number;
+let quantize: number;
 let isStarted = false;
 
 export type Audio = {
@@ -22,7 +22,7 @@ export function play(name: string, _volume: number = 1): boolean {
   if (audio == null) {
     return false;
   }
-  audio.gainNode.gain.value = volume * _volume;
+  audio.gainNode.gain.value = _volume;
   audio.isPlaying = true;
   return true;
 }
@@ -59,6 +59,8 @@ export function stop(name: string, when: number = undefined) {
 export function init() {
   audioContext = new (window.AudioContext ||
     (window as any).webkitAudioContext)();
+  gainNode = audioContext.createGain();
+  gainNode.connect(audioContext.destination);
   setTempo();
   setQuantize();
   setVolume();
@@ -94,7 +96,7 @@ export function setQuantize(noteLength = 8) {
 }
 
 export function setVolume(_volume = 0.1) {
-  volume = _volume;
+  gainNode.gain.value = _volume;
 }
 
 function playLater(audio: Audio, when: number) {
@@ -118,7 +120,7 @@ function createAudioFromFile(url: string): Audio {
     isReady: false,
     isLooping: false,
   };
-  audio.gainNode.connect(audioContext.destination);
+  audio.gainNode.connect(gainNode);
   loadFile(url).then((buffer) => {
     audio.buffer = buffer;
     audio.isReady = true;
