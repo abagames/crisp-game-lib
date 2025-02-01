@@ -1,11 +1,11 @@
 export let audioContext: AudioContext;
-export let gainNode: GainNode;
+export let gainNodeForAudioFiles: GainNode;
+export let isAudioFilesEnabled = false;
 let tempo: number;
 let playInterval: number;
 let quantize: number;
-let isStarted = false;
 
-export type Audio = {
+export type AudioFile = {
   buffer: AudioBuffer;
   source: AudioBufferSourceNode;
   gainNode: GainNode;
@@ -15,55 +15,50 @@ export type Audio = {
   isLooping: boolean;
 };
 
-const audios: { [key: string]: Audio } = {};
+const audioFiles: { [key: string]: AudioFile } = {};
 
-export function play(name: string, _volume: number = 1): boolean {
-  const audio = audios[name];
-  if (audio == null) {
+export function playAudioFile(name: string, _volume: number = 1): boolean {
+  const af = audioFiles[name];
+  if (af == null) {
     return false;
   }
-  audio.gainNode.gain.value = _volume;
-  audio.isPlaying = true;
+  af.gainNode.gain.value = _volume;
+  af.isPlaying = true;
   return true;
 }
 
-export function update() {
+export function updateForAudioFiles() {
   const currentTime = audioContext.currentTime;
-  for (const name in audios) {
-    const audio = audios[name];
-    if (!audio.isReady || !audio.isPlaying) {
+  for (const name in audioFiles) {
+    const af = audioFiles[name];
+    if (!af.isReady || !af.isPlaying) {
       continue;
     }
-    audio.isPlaying = false;
+    af.isPlaying = false;
     const time = getQuantizedTime(currentTime);
-    if (audio.playedTime == null || time > audio.playedTime) {
-      playLater(audio, time);
-      audio.playedTime = time;
+    if (af.playedTime == null || time > af.playedTime) {
+      playLater(af, time);
+      af.playedTime = time;
     }
   }
 }
 
-export function stop(name: string, when: number = undefined) {
-  const audio = audios[name];
-  if (audio.source == null) {
+export function stopAudioFile(name: string, when: number = undefined) {
+  const af = audioFiles[name];
+  if (af.source == null) {
     return;
   }
   if (when == null) {
-    audio.source.stop();
+    af.source.stop();
   } else {
-    audio.source.stop(when);
+    af.source.stop(when);
   }
-  audio.source = undefined;
+  af.source = undefined;
 }
 
-export function init() {
+export function initAudioContext() {
   audioContext = new (window.AudioContext ||
     (window as any).webkitAudioContext)();
-  gainNode = audioContext.createGain();
-  gainNode.connect(audioContext.destination);
-  setTempo();
-  setQuantize();
-  setVolume();
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       audioContext.suspend();
@@ -73,17 +68,18 @@ export function init() {
   });
 }
 
-export function loadAudioFile(key: string, url: string) {
-  audios[key] = createAudioFromFile(url);
-  return audios[key];
+export function initForAudioFiles() {
+  isAudioFilesEnabled = true;
+  gainNodeForAudioFiles = audioContext.createGain();
+  gainNodeForAudioFiles.connect(audioContext.destination);
+  setTempo();
+  setQuantize();
+  setVolume();
 }
 
-export function start() {
-  if (isStarted) {
-    return;
-  }
-  isStarted = true;
-  resumeAudioContext();
+export function loadAudioFile(key: string, url: string) {
+  audioFiles[key] = createBufferFromFile(url);
+  return audioFiles[key];
 }
 
 export function setTempo(_tempo = 120) {
@@ -96,10 +92,10 @@ export function setQuantize(noteLength = 8) {
 }
 
 export function setVolume(_volume = 0.1) {
-  gainNode.gain.value = _volume;
+  gainNodeForAudioFiles.gain.value = _volume;
 }
 
-function playLater(audio: Audio, when: number) {
+function playLater(audio: AudioFile, when: number) {
   const bufferSourceNode = audioContext.createBufferSource();
   audio.source = bufferSourceNode;
   bufferSourceNode.buffer = audio.buffer;
@@ -110,8 +106,8 @@ function playLater(audio: Audio, when: number) {
   bufferSourceNode.start(when);
 }
 
-function createAudioFromFile(url: string): Audio {
-  const audio: Audio = {
+function createBufferFromFile(url: string): AudioFile {
+  const af: AudioFile = {
     buffer: undefined,
     source: undefined,
     gainNode: audioContext.createGain(),
@@ -120,12 +116,12 @@ function createAudioFromFile(url: string): Audio {
     isReady: false,
     isLooping: false,
   };
-  audio.gainNode.connect(gainNode);
+  af.gainNode.connect(gainNodeForAudioFiles);
   loadFile(url).then((buffer) => {
-    audio.buffer = buffer;
-    audio.isReady = true;
+    af.buffer = buffer;
+    af.isReady = true;
   });
-  return audio;
+  return af;
 }
 
 async function loadFile(url: string): Promise<AudioBuffer> {
@@ -141,8 +137,4 @@ function getQuantizedTime(time: number) {
   }
   const interval = playInterval * quantize;
   return interval > 0 ? Math.ceil(time / interval) * interval : time;
-}
-
-function resumeAudioContext() {
-  audioContext.resume();
 }

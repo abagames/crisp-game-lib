@@ -4,12 +4,13 @@ const mimeType = "video/webm;codecs=vp8,opus";
 const type = "video/webm";
 const fileName = "recording.webm";
 const videoBitsPerSecond = 100000 * scale;
+const masterVolume = 0.7;
 let mediaRecorder: MediaRecorder;
 
 export function start(
   canvas: HTMLCanvasElement,
   audioContext: AudioContext,
-  gainNode: GainNode
+  gainNodes: GainNode[]
 ) {
   if (mediaRecorder != null) {
     return;
@@ -37,6 +38,14 @@ export function start(
 
   const stream = virtualCanvas.captureStream(recordingFps);
   const audioDestination = audioContext.createMediaStreamDestination();
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = masterVolume;
+  gainNodes.forEach((gn) => {
+    if (gn == null) {
+      return;
+    }
+    gn.connect(gainNode);
+  });
   gainNode.connect(audioDestination);
   const audioStream = audioDestination.stream;
   const combinedStream = new MediaStream([

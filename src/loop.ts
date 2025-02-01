@@ -73,11 +73,7 @@ export function init(
     options.theme
   );
   input.init(() => {
-    if (audio.audioContext != null) {
-      audio.start();
-    } else if (options.isSoundEnabled) {
-      sss.startAudio();
-    }
+    audio.audioContext.resume();
   });
   letter.init();
   _init();
@@ -94,8 +90,8 @@ function update() {
   if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
     nextFrameTime = now + deltaTime;
   }
-  if (audio.audioContext != null) {
-    audio.update();
+  if (audio.isAudioFilesEnabled) {
+    audio.updateForAudioFiles();
   }
   if (options.isSoundEnabled) {
     sss.update();

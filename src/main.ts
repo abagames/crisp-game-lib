@@ -267,8 +267,8 @@ export function play(
 ) {
   if (!isWaitingRewind && !isRewinding && currentOptions.isSoundEnabled) {
     const v = options != null && options.volume != null ? options.volume : 1;
-    if (audio.audioContext != null && audio.play(type, v)) {
-    } else if (options != null && typeof sss.playSoundEffect === "function") {
+    if (audio.isAudioFilesEnabled && audio.playAudioFile(type, v)) {
+    } else if (typeof sss.playSoundEffect === "function") {
       sss.playSoundEffect(type, options);
     } else {
       sss.play(soundEffectTypeToString[type]);
@@ -283,8 +283,8 @@ let bgmTrack;
  */
 /** @ignore */
 export function playBgm() {
-  if (audio.audioContext != null) {
-    audio.play(currentOptions.bgmName, currentOptions.bgmVolume);
+  if (isBgmAudioFileReady) {
+    audio.playAudioFile(currentOptions.bgmName, currentOptions.bgmVolume);
   } else if (typeof sss.generateMml === "function") {
     bgmTrack = sss.playMml(sss.generateMml());
   } else {
@@ -297,8 +297,8 @@ export function playBgm() {
  */
 /** @ignore */
 export function stopBgm() {
-  if (audio.audioContext != null) {
-    audio.stop(currentOptions.bgmName);
+  if (isBgmAudioFileReady) {
+    audio.stopAudioFile(currentOptions.bgmName);
   } else if (bgmTrack != null) {
     sss.stopMml(bgmTrack);
   } else {
@@ -461,6 +461,7 @@ declare type Options = {
   bgmVolume?: number;
   /** Audio tempo, default: 120 */
   audioTempo?: number;
+  /** Record from game start to game over as a WebM file */
   isRecording?: boolean;
 };
 declare let options: Options;
@@ -490,6 +491,8 @@ let giveUpButton: Button;
 let gameOverText: string;
 let gameScriptFile: string;
 let localStorageKey: string;
+let sssGainNode: GainNode;
+let isBgmAudioFileReady = false;
 
 /** @ignore */
 export function init(settings: {
@@ -575,18 +578,23 @@ function _init() {
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
   }
+  audio.initAudioContext();
   if (typeof audioFiles !== "undefined" && audioFiles != null) {
-    audio.init();
+    audio.initForAudioFiles();
+    audio.setVolume(0.1 * currentOptions.audioVolume);
     audio.setTempo(currentOptions.audioTempo);
     for (let audioName in audioFiles) {
       const a = audio.loadAudioFile(audioName, audioFiles[audioName]);
       if (audioName === currentOptions.bgmName) {
         a.isLooping = true;
+        isBgmAudioFileReady = true;
       }
     }
   }
   if (currentOptions.isSoundEnabled) {
-    sss.init(audioSeed, audio.audioContext);
+    sssGainNode = audio.audioContext.createGain();
+    sssGainNode.connect(audio.audioContext.destination);
+    sss.init(audioSeed, audio.audioContext, sssGainNode);
     sss.setVolume(0.1 * currentOptions.audioVolume);
     sss.setTempo(currentOptions.audioTempo);
   }
@@ -686,19 +694,15 @@ function updateInGame() {
   if (currentOptions.isShowingTime && time != null) {
     time++;
   }
-  if (
-    currentOptions.isRecording &&
-    audio.audioContext != null &&
-    !recorder.isRecording()
-  ) {
-    recorder.start(view.canvas, audio.audioContext, audio.gainNode);
+  if (currentOptions.isRecording && !recorder.isRecording()) {
+    recorder.start(view.canvas, audio.audioContext, [
+      audio.gainNodeForAudioFiles,
+      sssGainNode,
+    ]);
   }
 }
 
 function initTitle() {
-  if (currentOptions.isRecording && audio.audioContext != null) {
-    recorder.stop();
-  }
   state = "title";
   ticks = -1;
   _particle.init();
@@ -785,13 +789,22 @@ function updateGameOver() {
     drawGameOver();
   }
   if ((isReplaying || ticks > 20) && input.isJustPressed) {
+    stopRecorder();
     initInGame();
   } else if (
     ticks === (currentOptions.isReplayEnabled ? 120 : 300) &&
     !isNoTitle
   ) {
+    stopRecorder();
     initTitle();
   }
+}
+
+function stopRecorder() {
+  if (!currentOptions.isRecording || isReplaying) {
+    return;
+  }
+  recorder.stop();
 }
 
 function drawGameOver() {
