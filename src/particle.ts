@@ -13,8 +13,8 @@ import {
 type Particle = {
   pos: Vector;
   vel: Vector;
-  color: Color;
-  edgeColor: Color;
+  color: Color | number;
+  edgeColor: Color | number;
   ticks: number;
 };
 
@@ -31,7 +31,7 @@ export function add(
   speed = 1,
   angle = 0,
   angleWidth = Math.PI * 2,
-  edgeColor: Color = undefined
+  edgeColor: Color | number = undefined
 ) {
   if (count < 1) {
     if (random.get() > count) {

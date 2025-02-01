@@ -16,10 +16,10 @@ let background = document.createElement("img");
 let captureCanvas: HTMLCanvasElement;
 let captureContext: CanvasRenderingContext2D;
 let calculatedCanvasScale = 1;
-let viewBackground: Color = "black";
+let viewBackground: Color | number = "black";
 
-export let currentColor: Color;
-let savedCurrentColor: Color;
+export let currentColor: Color | number;
+let savedCurrentColor: Color | number;
 let isFilling = false;
 
 export let theme: Theme;
@@ -28,7 +28,7 @@ let crtFilter;
 export function init(
   _size: VectorLike,
   _bodyBackground: string,
-  _viewBackground: Color,
+  _viewBackground: Color | number,
   isCapturing: boolean,
   isCapturingGameCanvasOnly: boolean,
   captureCanvasScale: number,
@@ -169,7 +169,7 @@ export function clear() {
   context.fillStyle = colorToStyle(currentColor);
 }
 
-export function setColor(colorNameOrColorIndex: Color) {
+export function setColor(colorNameOrColorIndex: Color | number) {
   if (colorNameOrColorIndex === currentColor) {
     if (theme.isUsingPixi && !isFilling) {
       beginFillColor(colorToNumber(currentColor));

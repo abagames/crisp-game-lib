@@ -120,7 +120,7 @@ function getRgb(i: number, isDarkColor: boolean) {
   return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
 }
 
-export function colorToNumber(color: Color, ratio = 1) {
+export function colorToNumber(color: Color | number, ratio = 1) {
   const v =
     typeof color == "number" ? colorPaletteValues[color] : values[color];
   return (
@@ -130,7 +130,7 @@ export function colorToNumber(color: Color, ratio = 1) {
   );
 }
 
-export function colorToStyle(color: Color, ratio = 1) {
+export function colorToStyle(color: Color | number, ratio = 1) {
   const v =
     typeof color == "number" ? colorPaletteValues[color] : values[color];
   const r = Math.floor(v.r * ratio);

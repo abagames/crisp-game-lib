@@ -31,11 +31,11 @@ declare type Options = {
   theme?: ThemeName;
   colorPalette?: number[][];
   textEdgeColor?: {
-    score?: Color;
-    floatingScore?: Color;
-    title?: Color;
-    description?: Color;
-    gameOver?: Color;
+    score?: Color | number;
+    floatingScore?: Color | number;
+    title?: Color | number;
+    description?: Color | number;
+    gameOver?: Color | number;
   };
   bgmName?: string;
   bgmVolume?: number;
@@ -200,13 +200,13 @@ declare function arc(
 
 // Draw letters
 declare type LetterOptions = {
-  color?: Color;
-  backgroundColor?: Color;
+  color?: Color | number;
+  backgroundColor?: Color | number;
   rotation?: number;
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
   isSmallText?: boolean;
-  edgeColor?: Color;
+  edgeColor?: Color | number;
 };
 
 declare function text(
@@ -244,7 +244,7 @@ declare function particle(
     speed?: number;
     angle?: number;
     angleWidth?: number;
-    edgeColor?: Color;
+    edgeColor?: Color | number;
   }
 ): void;
 declare function particle(
@@ -254,7 +254,7 @@ declare function particle(
     speed?: number;
     angle?: number;
     angleWidth?: number;
-    edgeColor?: Color;
+    edgeColor?: Color | number;
   }
 ): void;
 declare function particle(

@@ -28,14 +28,14 @@ declare const PIXI;
  * Options for drawing text and characters.
  */
 export type LetterOptions = {
-  color?: Color;
-  backgroundColor?: Color;
+  color?: Color | number;
+  backgroundColor?: Color | number;
   /** A value from 0 to 3 that defines the direction of character rotation. */
   rotation?: number;
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
   isSmallText?: boolean;
-  edgeColor?: Color;
+  edgeColor?: Color | number;
 };
 
 /**
@@ -76,6 +76,16 @@ export function text(
  * ```
  * Pixel arts are assigned from 'a'. `char("a", 0, 0)` draws the character
  * defined by the first element of the `characters` array.
+ *
+ * `characters` array can also specify external image files as corresponding pixel art.
+ * ```js
+ * characters = [
+ * "./jugglingchain/images/background.png",
+ * "./jugglingchain/images/ball.png",
+ * "./jugglingchain/images/arrow.png",
+ * ]
+ * ```
+ *
  * @param str
  * @param x
  * @param y
@@ -143,13 +153,13 @@ let scaledLetterCanvas: HTMLCanvasElement;
 let scaledLetterContext: CanvasRenderingContext2D;
 
 export type Options = {
-  color?: Color;
-  backgroundColor?: Color;
+  color?: Color | number;
+  backgroundColor?: Color | number;
   rotation?: number;
   mirror?: { x?: 1 | -1; y?: 1 | -1 };
   scale?: { x?: number; y?: number };
   isSmallText?: boolean;
-  edgeColor?: Color;
+  edgeColor?: Color | number;
   isCharacter?: boolean;
   isCheckingCollision?: boolean;
 };
@@ -382,7 +392,7 @@ export function printChar(
 function addEdge(
   context: CanvasRenderingContext2D,
   size: VectorLike,
-  color: Color
+  color: Color | number
 ) {
   const newWidth = size.x + 2;
   const newHeight = size.y + 2;
