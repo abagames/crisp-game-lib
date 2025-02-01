@@ -2067,7 +2067,7 @@ lll
         for (let i = 0; i < str.length; i++) {
             if (i === 0) {
                 const cca = str.charCodeAt(0);
-                if (cca < 0x20 || cca > 0x7e) {
+                if (cca < 0x21 || cca > 0x7e) {
                     px = Math.floor(px - (letterSize / 2) * options.scale.x);
                     py = Math.floor(py - (letterSize / 2) * options.scale.y);
                 }
