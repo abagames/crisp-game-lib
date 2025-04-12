@@ -576,6 +576,11 @@ export function onLoad() {
   loop.init(_init, _update, loopOptions);
 }
 
+export function onUnload() {
+  loop.stop()
+  recorder.stop()
+}
+
 function _init() {
   if (
     typeof description !== "undefined" &&

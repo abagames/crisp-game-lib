@@ -52,6 +52,7 @@ const defaultOptions: Options = {
 };
 let options: Options;
 let textCacheEnableTicks = 10;
+let loopFrameRequestId: number | undefined;
 
 export function init(
   __init: () => void,
@@ -81,7 +82,7 @@ export function init(
 }
 
 function update() {
-  requestAnimationFrame(update);
+  loopFrameRequestId = requestAnimationFrame(update);
   const now = window.performance.now();
   if (now < nextFrameTime - targetFps / 12) {
     return;
@@ -104,5 +105,12 @@ function update() {
   textCacheEnableTicks--;
   if (textCacheEnableTicks === 0) {
     letter.enableCache();
+  }
+}
+
+export function stop() {
+  if (loopFrameRequestId) {
+    cancelAnimationFrame(loopFrameRequestId);
+    loopFrameRequestId = undefined;
   }
 }

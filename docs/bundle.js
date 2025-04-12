@@ -2648,14 +2648,14 @@ lll
 
     var keyboard = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        get isPressed () { return isPressed$2; },
+        clearJustPressed: clearJustPressed$2,
+        get code () { return code; },
+        codes: codes,
+        init: init$5,
         get isJustPressed () { return isJustPressed$2; },
         get isJustReleased () { return isJustReleased$2; },
-        codes: codes,
-        get code () { return code; },
-        init: init$5,
-        update: update$6,
-        clearJustPressed: clearJustPressed$2
+        get isPressed () { return isPressed$2; },
+        update: update$6
     });
 
     class Random {
@@ -2837,13 +2837,13 @@ lll
 
     var pointer = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        pos: pos$1,
-        get isPressed () { return isPressed$1; },
+        clearJustPressed: clearJustPressed$1,
+        init: init$4,
         get isJustPressed () { return isJustPressed$1; },
         get isJustReleased () { return isJustReleased$1; },
-        init: init$4,
-        update: update$5,
-        clearJustPressed: clearJustPressed$1
+        get isPressed () { return isPressed$1; },
+        pos: pos$1,
+        update: update$5
     });
 
     /** A pressed position of mouse or touch screen. */
@@ -2888,14 +2888,14 @@ lll
 
     var input = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        get pos () { return pos; },
-        get isPressed () { return isPressed; },
+        clearJustPressed: clearJustPressed,
+        init: init$3,
         get isJustPressed () { return isJustPressed; },
         get isJustReleased () { return isJustReleased; },
-        init: init$3,
-        update: update$4,
-        clearJustPressed: clearJustPressed,
-        set: set
+        get isPressed () { return isPressed; },
+        get pos () { return pos; },
+        set: set,
+        update: update$4
     });
 
     let audioContext;
@@ -3035,6 +3035,7 @@ lll
     };
     let options$1;
     let textCacheEnableTicks = 10;
+    let loopFrameRequestId;
     function init$2(__init, __update, _options) {
         _init$1 = __init;
         _update$1 = __update;
@@ -3049,7 +3050,7 @@ lll
         update$3();
     }
     function update$3() {
-        requestAnimationFrame(update$3);
+        loopFrameRequestId = requestAnimationFrame(update$3);
         const now = window.performance.now();
         if (now < nextFrameTime - targetFps / 12) {
             return;
@@ -3072,6 +3073,12 @@ lll
         textCacheEnableTicks--;
         if (textCacheEnableTicks === 0) {
             enableCache();
+        }
+    }
+    function stop$1() {
+        if (loopFrameRequestId) {
+            cancelAnimationFrame(loopFrameRequestId);
+            loopFrameRequestId = undefined;
         }
     }
 
@@ -3533,6 +3540,7 @@ lll
     const videoBitsPerSecond = 100000 * scale;
     const masterVolume = 0.7;
     let mediaRecorder;
+    let drawLoopFrameRequestId;
     function start(canvas, audioContext, gainNodes) {
         if (mediaRecorder != null) {
             return;
@@ -3544,7 +3552,7 @@ lll
         context.imageSmoothingEnabled = false;
         const drawLoop = () => {
             context.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, virtualCanvas.width, virtualCanvas.height);
-            requestAnimationFrame(drawLoop);
+            drawLoopFrameRequestId = requestAnimationFrame(drawLoop);
         };
         drawLoop();
         const stream = virtualCanvas.captureStream(recordingFps);
@@ -3589,6 +3597,10 @@ lll
         if (mediaRecorder != null && mediaRecorder.state !== "inactive") {
             mediaRecorder.stop();
             mediaRecorder = undefined;
+        }
+        if (drawLoopFrameRequestId) {
+            cancelAnimationFrame(drawLoopFrameRequestId);
+            drawLoopFrameRequestId = undefined;
         }
     }
     function isRecording() {
@@ -3989,6 +4001,10 @@ lll
             colorPalette: currentOptions.colorPalette,
         };
         init$2(_init, _update, loopOptions);
+    }
+    function onUnload() {
+        stop$1();
+        stop();
     }
     function _init() {
         if (typeof description !== "undefined" &&
@@ -4578,6 +4594,7 @@ lll
     exports.ls = ls;
     exports.minifyReplaces = minifyReplaces;
     exports.onLoad = onLoad;
+    exports.onUnload = onUnload;
     exports.particle = particle;
     exports.play = play;
     exports.playBgm = playBgm;
