@@ -15,7 +15,7 @@ export type AudioFile = {
   isLooping: boolean;
 };
 
-const audioFiles: { [key: string]: AudioFile } = {};
+let audioFiles: { [key: string]: AudioFile } = {};
 
 export function playAudioFile(name: string, _volume: number = 1): boolean {
   const af = audioFiles[name];
@@ -54,6 +54,16 @@ export function stopAudioFile(name: string, when: number = undefined) {
     af.source.stop(when);
   }
   af.source = undefined;
+}
+
+export function stopAllAudioFiles(when: number = undefined) {
+  if (!audioFiles) {
+    return;
+  }
+  for (const name in audioFiles) {
+    stopAudioFile(name, when);
+  }
+  audioFiles = {}
 }
 
 export function initAudioContext() {

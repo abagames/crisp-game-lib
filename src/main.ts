@@ -579,6 +579,7 @@ export function onLoad() {
 export function onUnload() {
   loop.stop()
   recorder.stop()
+  audio.stopAllAudioFiles();
 }
 
 function _init() {

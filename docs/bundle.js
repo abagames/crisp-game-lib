@@ -2904,7 +2904,7 @@ lll
     let tempo;
     let playInterval;
     let quantize;
-    const audioFiles$1 = {};
+    let audioFiles$1 = {};
     function playAudioFile(name, _volume = 1) {
         const af = audioFiles$1[name];
         if (af == null) {
@@ -2941,6 +2941,15 @@ lll
             af.source.stop(when);
         }
         af.source = undefined;
+    }
+    function stopAllAudioFiles(when = undefined) {
+        if (!audioFiles$1) {
+            return;
+        }
+        for (const name in audioFiles$1) {
+            stopAudioFile(name, when);
+        }
+        audioFiles$1 = {};
     }
     function initAudioContext() {
         audioContext = new (window.AudioContext ||
@@ -4005,6 +4014,7 @@ lll
     function onUnload() {
         stop$1();
         stop();
+        stopAllAudioFiles();
     }
     function _init() {
         if (typeof description !== "undefined" &&
