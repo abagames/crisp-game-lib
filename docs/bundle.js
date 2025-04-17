@@ -4015,6 +4015,12 @@ lll
         stop$1();
         stop();
         stopAllAudioFiles();
+        window.update = undefined;
+        window.title = undefined;
+        window.description = undefined;
+        window.characters = undefined;
+        window.options = undefined;
+        window.audioFiles = undefined;
     }
     function _init() {
         if (typeof description !== "undefined" &&

@@ -28,6 +28,7 @@ import * as recorder from "./recorder";
 declare const sss;
 declare const Terser;
 declare const cloneDeep;
+declare const window: any;
 
 export type { Vector, VectorLike, Theme, ThemeName };
 export type { Color };
@@ -580,6 +581,12 @@ export function onUnload() {
   loop.stop()
   recorder.stop()
   audio.stopAllAudioFiles();
+  window.update = undefined
+  window.title = undefined
+  window.description = undefined
+  window.characters = undefined
+  window.options = undefined
+  window.audioFiles = undefined
 }
 
 function _init() {
