@@ -6,6 +6,7 @@ const fileName = "recording.webm";
 const videoBitsPerSecond = 100000 * scale;
 const masterVolume = 0.7;
 let mediaRecorder: MediaRecorder;
+let drawLoopFrameRequestId: number | undefined;
 
 export function start(
   canvas: HTMLCanvasElement,
@@ -32,7 +33,7 @@ export function start(
       virtualCanvas.width,
       virtualCanvas.height
     );
-    requestAnimationFrame(drawLoop);
+    drawLoopFrameRequestId = requestAnimationFrame(drawLoop);
   };
   drawLoop();
 
@@ -79,6 +80,10 @@ export function stop() {
   if (mediaRecorder != null && mediaRecorder.state !== "inactive") {
     mediaRecorder.stop();
     mediaRecorder = undefined;
+  }
+  if (drawLoopFrameRequestId) {
+    cancelAnimationFrame(drawLoopFrameRequestId);
+    drawLoopFrameRequestId = undefined;
   }
 }
 

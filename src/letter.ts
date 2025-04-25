@@ -530,7 +530,7 @@ function createLetterImage(
   c: string,
   isCharacter: boolean
 ): LetterImage {
-  if (pattern.indexOf(".") >= 0) {
+  if (pattern.indexOf(".") >= 0 || pattern.indexOf("data:image/") == 0) {
     return createLetterImageFromFile(pattern, c);
   }
   let p = pattern.split("\n");
