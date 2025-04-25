@@ -525,13 +525,12 @@ export function init(settings: {
   options?: Options;
   audioFiles?: { [key: string]: string };
 }) {
-  const win: any = window;
-  win.update = settings.update;
-  win.title = settings.title;
-  win.description = settings.description;
-  win.characters = settings.characters;
-  win.options = settings.options;
-  win.audioFiles = settings.audioFiles;
+  window.update = settings.update;
+  window.title = settings.title;
+  window.description = settings.description;
+  window.characters = settings.characters;
+  window.options = settings.options;
+  window.audioFiles = settings.audioFiles;
   onLoad();
 }
 
@@ -578,15 +577,15 @@ export function onLoad() {
 }
 
 export function onUnload() {
-  loop.stop()
-  recorder.stop()
+  loop.stop();
+  recorder.stop();
   audio.stopAllAudioFiles();
-  window.update = undefined
-  window.title = undefined
-  window.description = undefined
-  window.characters = undefined
-  window.options = undefined
-  window.audioFiles = undefined
+  window.update = undefined;
+  window.title = undefined;
+  window.description = undefined;
+  window.characters = undefined;
+  window.options = undefined;
+  window.audioFiles = undefined;
 }
 
 function _init() {

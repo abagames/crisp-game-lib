@@ -63,7 +63,7 @@ export function stopAllAudioFiles(when: number = undefined) {
   for (const name in audioFiles) {
     stopAudioFile(name, when);
   }
-  audioFiles = {}
+  audioFiles = {};
 }
 
 export function initAudioContext() {

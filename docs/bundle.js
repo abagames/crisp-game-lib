@@ -3962,13 +3962,12 @@ lll
     let isBgmAudioFileReady = false;
     /** @ignore */
     function init(settings) {
-        const win = window;
-        win.update = settings.update;
-        win.title = settings.title;
-        win.description = settings.description;
-        win.characters = settings.characters;
-        win.options = settings.options;
-        win.audioFiles = settings.audioFiles;
+        window.update = settings.update;
+        window.title = settings.title;
+        window.description = settings.description;
+        window.characters = settings.characters;
+        window.options = settings.options;
+        window.audioFiles = settings.audioFiles;
         onLoad();
     }
     /** @ignore */
