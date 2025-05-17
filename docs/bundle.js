@@ -2120,9 +2120,11 @@ lll
         }
         const options = mergeDefaultOptions(_options);
         if (options.backgroundColor !== "transparent") {
+            const lw = options.isSmallText ? smallLetterWidth : letterSize;
+            const xp = options.isSmallText ? 2 : 1;
             saveCurrentColor();
             setColor(options.backgroundColor);
-            fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
+            fillRect(x + xp, y, lw * options.scale.x, letterSize * options.scale.y);
             loadCurrentColor();
         }
         if (cca <= 0x20) {
@@ -3799,13 +3801,14 @@ lll
      * @param options.note Note string (e.g. "C4", "F#3", "Ab5")
      */
     function play(type, options) {
-        if (!isWaitingRewind && !isRewinding && currentOptions.isSoundEnabled) {
-            const v = options != null && options.volume != null ? options.volume : 1;
-            if (isAudioFilesEnabled && playAudioFile(type, v)) ;
-            else if (typeof sss.playSoundEffect === "function") {
+        if (!isWaitingRewind && !isRewinding) {
+            if (isAudioFilesEnabled &&
+                playAudioFile(type, options != null && options.volume != null ? options.volume : 1)) ;
+            else if (currentOptions.isSoundEnabled &&
+                typeof sss.playSoundEffect === "function") {
                 sss.playSoundEffect(type, options);
             }
-            else {
+            else if (currentOptions.isSoundEnabled) {
                 sss.play(soundEffectTypeToString[type]);
             }
         }
@@ -3841,6 +3844,17 @@ lll
         else {
             sss.stopBgm();
         }
+    }
+    /** @ignore */
+    function startRecording() {
+        start(canvas, audioContext, [
+            gainNodeForAudioFiles,
+            sssGainNode,
+        ]);
+    }
+    /** @ignore */
+    function stopRecording() {
+        stop();
     }
     /**
      * Save and load game frame states. Used for realizing a rewind function.
@@ -4012,7 +4026,7 @@ lll
     }
     function onUnload() {
         stop$1();
-        stop();
+        stopRecording();
         stopAllAudioFiles();
         window.update = undefined;
         window.title = undefined;
@@ -4156,10 +4170,7 @@ lll
             exports.time++;
         }
         if (currentOptions.isRecording && !isRecording()) {
-            start(canvas, audioContext, [
-                gainNodeForAudioFiles,
-                sssGainNode,
-            ]);
+            startRecording();
         }
     }
     function initTitle() {
@@ -4259,7 +4270,7 @@ lll
         if (!currentOptions.isRecording || exports.isReplaying) {
             return;
         }
-        stop();
+        stopRecording();
     }
     function drawGameOver() {
         if (exports.isReplaying) {
@@ -4631,7 +4642,9 @@ lll
     exports.sin = sin;
     exports.sl = sl;
     exports.sqrt = sqrt;
+    exports.startRecording = startRecording;
     exports.stopBgm = stopBgm;
+    exports.stopRecording = stopRecording;
     exports.text = text;
     exports.times = times;
     exports.tms = tms;
