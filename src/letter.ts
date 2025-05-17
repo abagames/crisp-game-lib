@@ -282,9 +282,11 @@ export function printChar(
   }
   const options = mergeDefaultOptions(_options);
   if (options.backgroundColor !== "transparent") {
+    const lw = options.isSmallText ? smallLetterWidth : letterSize;
+    const xp = options.isSmallText ? 2 : 1;
     saveCurrentColor();
     setColor(options.backgroundColor);
-    fillRect(x, y, letterSize * options.scale.x, letterSize * options.scale.y);
+    fillRect(x + xp, y, lw * options.scale.x, letterSize * options.scale.y);
     loadCurrentColor();
   }
   if (cca <= 0x20) {
