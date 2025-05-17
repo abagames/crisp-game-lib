@@ -283,12 +283,20 @@ export function play(
     note?: string; // Note string (e.g. "C4", "F#3", "Ab5")
   }
 ) {
-  if (!isWaitingRewind && !isRewinding && currentOptions.isSoundEnabled) {
-    const v = options != null && options.volume != null ? options.volume : 1;
-    if (audio.isAudioFilesEnabled && audio.playAudioFile(type, v)) {
-    } else if (typeof sss.playSoundEffect === "function") {
+  if (!isWaitingRewind && !isRewinding) {
+    if (
+      audio.isAudioFilesEnabled &&
+      audio.playAudioFile(
+        type,
+        options != null && options.volume != null ? options.volume : 1
+      )
+    ) {
+    } else if (
+      currentOptions.isSoundEnabled &&
+      typeof sss.playSoundEffect === "function"
+    ) {
       sss.playSoundEffect(type, options);
-    } else {
+    } else if (currentOptions.isSoundEnabled) {
       sss.play(soundEffectTypeToString[type]);
     }
   }
@@ -326,6 +334,19 @@ export function stopBgm() {
   } else {
     sss.stopBgm();
   }
+}
+
+/** @ignore */
+export function startRecording() {
+  recorder.start(view.canvas, audio.audioContext, [
+    audio.gainNodeForAudioFiles,
+    sssGainNode,
+  ]);
+}
+
+/** @ignore */
+export function stopRecording() {
+  recorder.stop();
 }
 
 /**
@@ -578,7 +599,7 @@ export function onLoad() {
 
 export function onUnload() {
   loop.stop();
-  recorder.stop();
+  stopRecording();
   audio.stopAllAudioFiles();
   window.update = undefined;
   window.title = undefined;
@@ -728,10 +749,7 @@ function updateInGame() {
     time++;
   }
   if (currentOptions.isRecording && !recorder.isRecording()) {
-    recorder.start(view.canvas, audio.audioContext, [
-      audio.gainNodeForAudioFiles,
-      sssGainNode,
-    ]);
+    startRecording();
   }
 }
 
@@ -837,7 +855,7 @@ function stopRecorder() {
   if (!currentOptions.isRecording || isReplaying) {
     return;
   }
-  recorder.stop();
+  stopRecording();
 }
 
 function drawGameOver() {
