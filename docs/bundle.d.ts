@@ -544,6 +544,8 @@ declare function play(
 ): void;
 declare function playBgm(): void;
 declare function stopBgm(): void;
+declare function startRecording(): void;
+declare function stopRecording(): void;
 
 // sounds-some-sounds interface
 // https://github.com/abagames/sounds-some-sounds
@@ -707,4 +709,5 @@ declare function init(settings: {
   description?: string;
   characters?: string[];
   options?: Options;
+  audioFiles?: { [key: string]: string };
 });
