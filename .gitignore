@@ -1,4 +1,6 @@
 node_modules/
 .vscode/
+.claude/
 package-lock.json
 npm-debug.log
+CLAUDE.md

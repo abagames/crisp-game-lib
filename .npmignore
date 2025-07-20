@@ -1,7 +1,9 @@
 docs/*/
 src/
 .vscode/
+.claude/
 package-lock.json
 tsconfig.json
 tsconfig-rollup.json
 rollup.config.js
+CLAUDE.md
