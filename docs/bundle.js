@@ -2650,14 +2650,14 @@ lll
 
     var keyboard = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        get isPressed () { return isPressed$2; },
+        clearJustPressed: clearJustPressed$2,
+        get code () { return code; },
+        codes: codes,
+        init: init$5,
         get isJustPressed () { return isJustPressed$2; },
         get isJustReleased () { return isJustReleased$2; },
-        codes: codes,
-        get code () { return code; },
-        init: init$5,
-        update: update$6,
-        clearJustPressed: clearJustPressed$2
+        get isPressed () { return isPressed$2; },
+        update: update$6
     });
 
     class Random {
@@ -2839,13 +2839,13 @@ lll
 
     var pointer = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        pos: pos$1,
-        get isPressed () { return isPressed$1; },
+        clearJustPressed: clearJustPressed$1,
+        init: init$4,
         get isJustPressed () { return isJustPressed$1; },
         get isJustReleased () { return isJustReleased$1; },
-        init: init$4,
-        update: update$5,
-        clearJustPressed: clearJustPressed$1
+        get isPressed () { return isPressed$1; },
+        pos: pos$1,
+        update: update$5
     });
 
     /** A pressed position of mouse or touch screen. */
@@ -2890,14 +2890,14 @@ lll
 
     var input = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        get pos () { return pos; },
-        get isPressed () { return isPressed; },
+        clearJustPressed: clearJustPressed,
+        init: init$3,
         get isJustPressed () { return isJustPressed; },
         get isJustReleased () { return isJustReleased; },
-        init: init$3,
-        update: update$4,
-        clearJustPressed: clearJustPressed,
-        set: set
+        get isPressed () { return isPressed; },
+        get pos () { return pos; },
+        set: set,
+        update: update$4
     });
 
     let audioContext;
@@ -3552,13 +3552,13 @@ lll
     const masterVolume = 0.7;
     let mediaRecorder;
     let drawLoopFrameRequestId;
-    function start(canvas, audioContext, gainNodes) {
+    function start(canvas, audioContext, gainNodes, logicalSize) {
         if (mediaRecorder != null) {
             return;
         }
         const virtualCanvas = document.createElement("canvas");
-        virtualCanvas.width = canvas.width * scale;
-        virtualCanvas.height = canvas.height * scale;
+        virtualCanvas.width = logicalSize.x * scale;
+        virtualCanvas.height = logicalSize.y * scale;
         const context = virtualCanvas.getContext("2d");
         context.imageSmoothingEnabled = false;
         const drawLoop = () => {
@@ -3628,6 +3628,8 @@ lll
     const floor = Math.floor;
     const round = Math.round;
     const ceil = Math.ceil;
+    const min = Math.min;
+    const max = Math.max;
     /** A variable incremented by one every 1/60 of a second. */
     exports.ticks = 0;
     /** A variable that is one at the beginning of the game, two after 1 minute, and increasing by one every minute. */
@@ -3847,10 +3849,7 @@ lll
     }
     /** @ignore */
     function startRecording() {
-        start(canvas, audioContext, [
-            gainNodeForAudioFiles,
-            sssGainNode,
-        ]);
+        start(canvas, audioContext, [gainNodeForAudioFiles, sssGainNode], size);
     }
     /** @ignore */
     function stopRecording() {
@@ -4618,6 +4617,8 @@ lll
     exports.lc = lc;
     exports.line = line;
     exports.ls = ls;
+    exports.max = max;
+    exports.min = min;
     exports.minifyReplaces = minifyReplaces;
     exports.onLoad = onLoad;
     exports.onUnload = onUnload;
