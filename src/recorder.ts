@@ -11,14 +11,15 @@ let drawLoopFrameRequestId: number | undefined;
 export function start(
   canvas: HTMLCanvasElement,
   audioContext: AudioContext,
-  gainNodes: GainNode[]
+  gainNodes: GainNode[],
+  logicalSize: { x: number; y: number }
 ) {
   if (mediaRecorder != null) {
     return;
   }
   const virtualCanvas = document.createElement("canvas");
-  virtualCanvas.width = canvas.width * scale;
-  virtualCanvas.height = canvas.height * scale;
+  virtualCanvas.width = logicalSize.x * scale;
+  virtualCanvas.height = logicalSize.y * scale;
   const context: CanvasRenderingContext2D = virtualCanvas.getContext("2d");
   context.imageSmoothingEnabled = false;
   const drawLoop = () => {

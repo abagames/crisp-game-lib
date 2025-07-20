@@ -340,10 +340,12 @@ export function stopBgm() {
 
 /** @ignore */
 export function startRecording() {
-  recorder.start(view.canvas, audio.audioContext, [
-    audio.gainNodeForAudioFiles,
-    sssGainNode,
-  ]);
+  recorder.start(
+    view.canvas,
+    audio.audioContext,
+    [audio.gainNodeForAudioFiles, sssGainNode],
+    view.size
+  );
 }
 
 /** @ignore */
