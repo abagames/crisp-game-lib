@@ -482,7 +482,7 @@ declare type Options = {
   isMinifying?: boolean;
   /** Enable BGM and sound effects, default: true. */
   isSoundEnabled?: boolean;
-  /** Screen size of the game, default: {x: 100, y: 100}. */
+  /** Screen size of the game, default: `{x: 100, y: 100}`. */
   viewSize?: { x: number; y: number };
   /** Random number seed for BGM and sound effects generation. */
   audioSeed?: number;
@@ -601,6 +601,7 @@ export function onLoad() {
   loop.init(_init, _update, loopOptions);
 }
 
+/** @ignore */
 export function onUnload() {
   loop.stop();
   stopRecording();
