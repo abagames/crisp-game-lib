@@ -476,6 +476,8 @@ declare function sqrt(v: number): number;
 declare function floor(v: number): number;
 declare function round(v: number): number;
 declare function ceil(v: number): number;
+declare function min(...values: number[]): number;
+declare function max(...values: number[]): number;
 declare function clamp(v: number, low?: number, high?: number): number;
 declare function wrap(v: number, low: number, high: number): number;
 declare function range(v: number): number[];

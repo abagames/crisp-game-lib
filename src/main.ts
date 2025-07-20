@@ -54,6 +54,8 @@ export const pow = Math.pow;
 export const floor = Math.floor;
 export const round = Math.round;
 export const ceil = Math.ceil;
+export const min = Math.min;
+export const max = Math.max;
 /** A variable incremented by one every 1/60 of a second. */
 export let ticks = 0;
 /** A variable that is one at the beginning of the game, two after 1 minute, and increasing by one every minute. */
