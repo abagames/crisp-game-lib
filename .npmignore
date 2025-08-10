@@ -2,6 +2,7 @@ docs/*/
 src/
 .vscode/
 .claude/
+.serena/
 package-lock.json
 tsconfig.json
 tsconfig-rollup.json
