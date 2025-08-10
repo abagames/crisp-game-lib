@@ -12,6 +12,8 @@ English | [日本語](https://github.com/abagames/crisp-game-lib/blob/master/REA
 
 - [Reference of crisp-game-lib](https://abagames.github.io/crisp-game-lib/ref_document/modules.html)
 
+- [LLM Game Development Guide](LLM_GAME_DEVELOPMENT_GUIDE.md) - Comprehensive guide for Large Language Models to assist with crisp-game-lib development, including complete API reference, working examples, and best practices
+
 - [Sample games and sample codes](https://github.com/abagames/crisp-game-lib-11-games/blob/main/README.md)
 
 ## Getting started
