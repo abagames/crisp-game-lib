@@ -55,7 +55,7 @@ npm run watch_games
 # Open http://localhost:4000?my-game
 ```
 
-**Basic game structure for local development:**
+**HTML Template:**
 
 ```html
 <!-- index.html -->
@@ -82,7 +82,10 @@ npm run watch_games
 </html>
 ```
 
+**JavaScript Game Structure:**
+
 ```javascript
+// main.js
 title = "MY GAME";
 description = `[Control instructions]`;
 characters = [];
@@ -102,7 +105,7 @@ function update() {
 npm install crisp-game-lib
 ```
 
-**Template files needed:**
+**HTML Template:**
 
 ```html
 <!-- index.html -->
@@ -124,6 +127,8 @@ npm install crisp-game-lib
   <body style="background: #ddd"></body>
 </html>
 ```
+
+**JavaScript Game Structure:**
 
 ```javascript
 // main.js (supports TypeScript as main.ts)
