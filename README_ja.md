@@ -12,7 +12,7 @@
 
 - [crisp-game-lib のリファレンス](https://abagames.github.io/crisp-game-lib/ref_document/modules.html)
 
-- [LLM ゲーム開発ガイド](LLM_GAME_DEVELOPMENT_GUIDE.md) - Large Language Model（LLM）がcrisp-game-libでのゲーム開発をサポートするための包括的なガイド。完全なAPI リファレンス、動作するサンプル、ベストプラクティスを含む
+- [Crisp Game Lib ガイド](crisp-game-lib-guide.md) - crisp-game-libの包括的な開発ガイド。完全なAPIリファレンス、動作するサンプル、ベストプラクティスを含む。LLMによる開発支援にも対応
 
 - [サンプルゲームとサンプルコード](https://github.com/abagames/crisp-game-lib-11-games/blob/main/README.md)
 
