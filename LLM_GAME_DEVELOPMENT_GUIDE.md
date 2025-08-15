@@ -57,6 +57,31 @@ npm run watch_games
 
 **Basic game structure for local development:**
 
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>My Crisp Game</title>
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1"
+    />
+    <script src="https://unpkg.com/sounds-some-sounds@3.1.1/build/index.js"></script>
+    <script src="https://unpkg.com/gif-capture-canvas@1.1.0/build/index.js"></script>
+    <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
+    <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
+    <script src="https://unpkg.com/crisp-game-lib@1.4.0/docs/bundle.js"></script>
+    <script src="./main.js"></script>
+    <script>
+      window.addEventListener("load", onLoad);
+    </script>
+  </head>
+  <body style="background: #ddd"></body>
+</html>
+```
+
 ```javascript
 title = "MY GAME";
 description = `[Control instructions]`;
