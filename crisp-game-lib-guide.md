@@ -190,7 +190,13 @@ char(addWithCharCode("a", floor(ticks / 30) % 2), player.pos); // Animation
 ```javascript
 // Colors (affects collision detection)
 color("red"); // Built-in: red, green, blue, yellow, purple, cyan, black, white
+color("light_red"); // Light variants: light_red, light_green, light_blue, light_yellow, light_purple, light_cyan, light_black
 color("transparent"); // Invisible but still detects collisions
+
+// Important: White color is ALWAYS invisible because it matches the background:
+// - Light themes (simple, shape): white renders as white on white background
+// - Dark themes (dark, shapeDark, pixel, crt): white renders as black on black background
+// Use light_ colors or other contrasting colors for reliable visibility across all themes
 ```
 
 ```javascript
@@ -601,11 +607,14 @@ if (input.isJustPressed) {
 ### Performance & Best Practices
 
 ```javascript
-// Theme selection for performance
+// Theme selection for performance and appearance
 options = {
-  theme: "simple", // Best mobile performance
-  theme: "dark", // Good performance
-  theme: "pixel", // WebGL, moderate performance
+  theme: "simple", // Best mobile performance, light background
+  theme: "shape", // WebGL, light background
+  theme: "dark", // Good performance, dark background
+  theme: "shapeDark", // WebGL, dark background
+  theme: "pixel", // WebGL, dark background
+  theme: "crt", // WebGL retro theme, dark background
   viewSize: { x: 200, y: 100 }, // Customize screen size
 };
 
