@@ -9,7 +9,7 @@ A comprehensive guide for Large Language Models to assist developers in creating
 3. [Core API Reference](#core-api-reference)
 4. [Game Structure Patterns](#game-structure-patterns)
 5. [Game Examples](#game-examples)
-6. [Performance, Mobile & Best Practices](#performance-mobile--best-practices)
+6. [Performance, Mobile and Best Practices](#performance-mobile-and-best-practices)
 7. [Advanced Topics](#advanced-topics)
 
 ---
@@ -42,7 +42,7 @@ crisp-game-lib is a JavaScript library specifically designed for creating browse
 
 Choose your preferred development approach:
 
-#### Local Development (Live Reload)
+#### Local Development
 
 ```bash
 # Clone and setup
@@ -51,8 +51,6 @@ cd crisp-game-lib && npm install
 
 # Create new game
 cp -r docs/_template docs/my-game
-npm run watch_games
-# Open http://localhost:4000?my-game
 ```
 
 **HTML Template:**
@@ -69,7 +67,6 @@ npm run watch_games
       content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1"
     />
     <script src="https://unpkg.com/sounds-some-sounds@3.1.1/build/index.js"></script>
-    <script src="https://unpkg.com/gif-capture-canvas@1.1.0/build/index.js"></script>
     <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
     <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
     <script src="https://unpkg.com/crisp-game-lib@1.4.0/docs/bundle.js"></script>
@@ -119,7 +116,6 @@ npm install crisp-game-lib
       content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1"
     />
     <script src="https://unpkg.com/sounds-some-sounds@3.1.1/build/index.js"></script>
-    <script src="https://unpkg.com/gif-capture-canvas@1.1.0/build/index.js"></script>
     <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
     <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
     <script type="module" src="./main.js"></script>
@@ -153,7 +149,7 @@ init({ update, title, description, characters, options });
 
 ### Quick Start Example
 
-See the [Game Examples](#game-examples) section for complete playable examples including Jump Hero and Space Blast.
+See the [Game Examples](#game-examples) section for complete playable examples including One-Button Jumper and Top-Down Shooter.
 
 ---
 
@@ -176,8 +172,8 @@ arc(position, radius, thickness, startAngle, endAngle); // Circle/arc
 
 ```javascript
 // Text rendering (normal: 6x6, small: 4x6 pixels per character)
-text("SCORE", x, y);
-text(`SCORE ${score}`, vec(10, 10), { isSmallText: true });
+text("Foo", x, y);
+text(`Foo ${bar}`, 10, 10, { isSmallText: true });
 
 // Custom pixel art characters
 char("a", 50, 50); // From characters array
@@ -271,6 +267,10 @@ score;
 difficulty; // Auto-managed globals
 addScore(points, pos);
 end(); // Game control
+
+// IMPORTANT: Score is automatically displayed by the library
+// Do NOT manually draw score with text() - it's handled automatically
+// The score appears in the top-left corner by default
 
 // Character animation utility
 addWithCharCode(char, offset); // Get character at offset from base
@@ -369,6 +369,7 @@ function update() {
   // Game logic: update objects, check collisions, handle scoring
 
   // Drawing: background, objects, UI
+  // NOTE: Score is automatically displayed - do NOT draw it manually
 
   // Game over conditions
   if (gameOverCondition) {
@@ -427,10 +428,8 @@ Perfect for mobile devices and simple controls.
 title = "JUMP HERO";
 
 description = `
-[Hold] Jump higher
+[Tap] Jump
 `;
-
-options = { viewSize: { x: 200, y: 100 } }; // Custom size for this example
 
 let player, obstacles, ground;
 
@@ -443,12 +442,12 @@ function update() {
 
   // Spawn obstacles
   if (ticks % 120 === 0) {
-    obstacles.push({ pos: vec(220, ground - 10), width: 8 });
+    obstacles.push({ pos: vec(120, ground - 10), width: 8, isPassed: false });
   }
 
   // Player physics
   if (input.isPressed && player.onGround) {
-    player.vy = -3;
+    player.vy = -4;
     play("jump");
   }
 
@@ -456,8 +455,8 @@ function update() {
   player.pos.y += player.vy;
 
   // Ground collision
-  if (player.pos.y >= ground) {
-    player.pos.y = ground;
+  if (player.pos.y >= ground - 4) {
+    player.pos.y = ground - 4;
     player.vy = 0;
     player.onGround = true;
   } else {
@@ -470,30 +469,27 @@ function update() {
 
     // Draw obstacle
     color("red");
-    let obsCol = box(obs.pos, obs.width, 15);
-
-    // Check collision with player
-    color("blue");
-    if (box(player.pos, 8).isColliding.rect.red) {
-      end();
-    }
+    box(obs.pos, obs.width, 20);
 
     // Score when passed
-    if (obs.pos.x < player.pos.x && obs.pos.x > player.pos.x - 2) {
+    if (obs.pos.x < player.pos.x && !obs.isPassed) {
       addScore(10);
+      obs.isPassed = true;
       play("coin");
     }
 
     return obs.pos.x <= -20; // Remove if off-screen
   });
 
-  // Draw player
+  // Draw player and check collision with obstacles
   color("blue");
-  box(player.pos, 8);
+  if (box(player.pos, 8).isColliding.rect.red) {
+    end();
+  }
 
   // Draw ground
   color("green");
-  box(vec(100, ground + 7), 200, 15);
+  rect(0, ground, 100, 100 - ground);
 }
 ```
 
@@ -505,7 +501,7 @@ Classic arcade shooter pattern.
 title = "SPACE BLAST";
 
 description = `
-[Hold] Move and shoot
+[Mouse / Slide] Move
 `;
 
 options = { viewSize: { x: 200, y: 150 } }; // Custom size for shooter example
@@ -581,7 +577,7 @@ function update() {
 
 ---
 
-## Performance, Mobile & Best Practices
+## Performance, Mobile and Best Practices
 
 ### Mobile-Optimized Controls
 
@@ -596,7 +592,7 @@ player.pos.x = input.pos.x;
 
 // Tap zones
 if (input.isJustPressed) {
-  if (input.pos.x < 100) {
+  if (input.pos.x < 50) {
     /* left action */
   } else {
     /* right action */
@@ -604,19 +600,31 @@ if (input.isJustPressed) {
 }
 ```
 
-### Performance & Best Practices
+### Performance and Best Practices
 
 ```javascript
 // Theme selection for performance and appearance
+// Common values: "simple", "shape", "dark", "shapeDark", "pixel", "crt"
 options = {
-  theme: "simple", // Best mobile performance, light background
-  theme: "shape", // WebGL, light background
-  theme: "dark", // Good performance, dark background
-  theme: "shapeDark", // WebGL, dark background
-  theme: "pixel", // WebGL, dark background
-  theme: "crt", // WebGL retro theme, dark background
+  theme: "simple", // Default choice; change to any value above
   viewSize: { x: 200, y: 100 }, // Customize screen size
 };
+
+// CRITICAL: Drawing order for collision detection
+// Objects must be drawn BEFORE checking collision with them
+// ❌ WRONG: This will NOT work
+color("purple");
+if (box(enemy.pos, 5).isColliding.rect.yellow) {
+} // yellow not drawn yet!
+color("yellow");
+box(explosion.pos, 10); // Drawn after enemy check
+
+// ✅ CORRECT: Draw first, then check collision
+color("yellow");
+box(explosion.pos, 10); // Draw explosion FIRST
+color("purple");
+if (box(enemy.pos, 5).isColliding.rect.yellow) {
+} // Now collision works!
 
 // Efficient patterns
 color("red");
@@ -625,6 +633,12 @@ color("blue");
 if (box(player.pos, 8).isColliding.rect.red) {
   /* handle collision */
 }
+
+// ✅ PREFERRED: Use object format for particle()
+particle(enemy.pos, { count: 5, speed: 2, angle: PI });
+
+// ❌ AVOID: Legacy format (harder to read)
+particle(enemy.pos, 5, 2, PI, PI);
 
 // Initialize in first frame, clean up off-screen objects
 if (!ticks) {
@@ -642,14 +656,18 @@ remove(enemies, (enemy) => enemy.pos.x <= -10);
 
 ```javascript
 characters = [
-  `llll
-   l  l
-   l  l
-   llll`,
-  `rrrr
-   r  r
-   r  r
-   rrrr`,
+  `
+llll
+l  l
+l  l
+llll
+`,
+  `
+ ll
+llll
+llll
+ ll
+`,
 ];
 
 // Basic usage
