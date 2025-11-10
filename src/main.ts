@@ -1206,3 +1206,32 @@ export let minifyReplaces = [
   ['"select"', "sl"],
   ['"lucky"', "uc"],
 ];
+
+// Test-only helper functions (guarded by NODE_ENV check)
+// These allow testing of critical code paths that would otherwise be untestable
+
+/**
+ * Test helper to set the isReplaying state.
+ * This enables testing of replay guard behavior in functions like addScore.
+ * @ignore
+ */
+export function __testSetReplaying(value: boolean) {
+  if (process.env.NODE_ENV === "test") {
+    isReplaying = value;
+  }
+}
+
+/**
+ * Test helper to initialize currentOptions.
+ * This enables testing of option-dependent behavior like isUsingSmallText.
+ * @ignore
+ */
+export function __testInitOptions(options: Options) {
+  if (process.env.NODE_ENV === "test") {
+    currentOptions = { ...defaultOptions, ...options };
+    // Initialize scoreBoards if it's not already initialized
+    if (!scoreBoards) {
+      scoreBoards = [];
+    }
+  }
+}

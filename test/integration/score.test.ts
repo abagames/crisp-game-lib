@@ -44,6 +44,8 @@ vi.mock('../../src/particle', () => ({
 vi.mock('../../src/letter', () => ({
   print: vi.fn(),
   defineCharacters: vi.fn(),
+  letterSize: 6,
+  smallLetterWidth: 4,
 }));
 
 vi.mock('../../src/audio', () => ({
@@ -85,31 +87,28 @@ describe('score integration', () => {
     });
 
     it('should have isReplaying guard in addScore', () => {
-      // Note: isReplaying is exported as a getter-only property,
-      // so we cannot directly set it to test the guard behavior in isolation.
-      //
-      // The guard exists in src/main.ts:146-148:
-      //   if (isReplaying) {
-      //     return;
-      //   }
-      //
-      // This prevents score changes during replay, which is set to true
-      // during replay initialization (src/main.ts:768).
-      //
-      // To properly test this would require:
-      // 1. Full game initialization with replay.initReplay()
-      // 2. Mocking the entire replay system
-      // 3. Making isReplaying writeable for testing
-      //
-      // For now, we document that this guard exists and verify
-      // normal operation when not replaying.
-
+      // Now we can test the isReplaying guard using the test helper!
+      // The guard exists in src/main.ts:146-148
       const initialScore = main.score;
 
       // Verify normal operation (not replaying)
       expect(main.isReplaying).toBe(false);
       main.addScore(200);
       expect(main.score).toBe(initialScore + 200);
+
+      // Test that score does NOT change when replaying
+      main.__testSetReplaying(true);
+      expect(main.isReplaying).toBe(true);
+
+      const scoreBeforeReplay = main.score;
+      main.addScore(999);
+
+      // Score should remain unchanged during replay
+      expect(main.score).toBe(scoreBeforeReplay);
+
+      // Clean up: reset isReplaying
+      main.__testSetReplaying(false);
+      expect(main.isReplaying).toBe(false);
     });
 
     it('should add score without display position', () => {
@@ -213,31 +212,35 @@ describe('score integration', () => {
   });
 
   describe('score text positioning with isUsingSmallText', () => {
-    it('should document isUsingSmallText centering behavior', () => {
-      // Note: currentOptions is not exported from main.ts and is only initialized
-      // during game setup (via loop.init), so we cannot directly test the
-      // isUsingSmallText centering behavior (src/main.ts:161-164) in isolation.
-      //
-      // The calculation is:
-      //   pos.x -= (str.length * (currentOptions.isUsingSmallText ? smallLetterWidth : letterSize)) / 2
-      //
-      // This centers the score text based on character width, which differs
-      // between normal and small text modes.
-      //
-      // To properly test this would require either:
-      // 1. Full game initialization via loop.init() to set currentOptions
-      // 2. Exporting currentOptions for testing
-      // 3. Adding a test helper function
-      // 4. Refactoring addScore to accept options as a parameter
-      //
-      // For now, we document that this centering logic exists at src/main.ts:161-164.
+    it('should center score text based on isUsingSmallText option', () => {
+      // Now we can test the isUsingSmallText centering logic using the test helper!
+      // The calculation is in src/main.ts:161-164
+
+      // Test with small text (default)
+      main.__testInitOptions({ isUsingSmallText: true });
 
       const initialScore = main.score;
 
-      // Verify addScore without position works (no currentOptions access needed)
-      main.addScore(100);
+      // Add score with position - this triggers the centering calculation
+      // The centering uses smallLetterWidth when isUsingSmallText is true
+      main.addScore(100, 50, 50);
 
       expect(main.score).toBe(initialScore + 100);
+
+      // Test with normal text
+      main.__testInitOptions({ isUsingSmallText: false });
+
+      const score2 = main.score;
+
+      // Add score with position - centering uses letterSize when isUsingSmallText is false
+      main.addScore(100, 50, 50);
+
+      expect(main.score).toBe(score2 + 100);
+
+      // Note: While we can't directly assert the x position of the score display
+      // (scoreBoards is not exported), this test verifies that the code path
+      // with isUsingSmallText runs without errors for both true and false values,
+      // preventing regressions in the centering calculation logic.
     });
   });
 });

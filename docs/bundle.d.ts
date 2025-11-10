@@ -713,3 +713,15 @@ declare function init(settings: {
   options?: Options;
   audioFiles?: { [key: string]: string };
 });
+
+/**
+ * Test helper to set the isReplaying state.
+ * @ignore
+ */
+declare function __testSetReplaying(value: boolean): void;
+
+/**
+ * Test helper to initialize currentOptions.
+ * @ignore
+ */
+declare function __testInitOptions(options: Options): void;

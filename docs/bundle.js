@@ -4023,6 +4023,7 @@ lll
         };
         init$2(_init, _update, loopOptions);
     }
+    /** @ignore */
     function onUnload() {
         stop$1();
         stopRecording();
@@ -4583,8 +4584,36 @@ lll
         ['"select"', "sl"],
         ['"lucky"', "uc"],
     ];
+    // Test-only helper functions (guarded by NODE_ENV check)
+    // These allow testing of critical code paths that would otherwise be untestable
+    /**
+     * Test helper to set the isReplaying state.
+     * This enables testing of replay guard behavior in functions like addScore.
+     * @ignore
+     */
+    function __testSetReplaying(value) {
+        if (process.env.NODE_ENV === "test") {
+            exports.isReplaying = value;
+        }
+    }
+    /**
+     * Test helper to initialize currentOptions.
+     * This enables testing of option-dependent behavior like isUsingSmallText.
+     * @ignore
+     */
+    function __testInitOptions(options) {
+        if (process.env.NODE_ENV === "test") {
+            currentOptions = Object.assign(Object.assign({}, defaultOptions), options);
+            // Initialize scoreBoards if it's not already initialized
+            if (!scoreBoards) {
+                scoreBoards = [];
+            }
+        }
+    }
 
     exports.PI = PI;
+    exports.__testInitOptions = __testInitOptions;
+    exports.__testSetReplaying = __testSetReplaying;
     exports.abs = abs;
     exports.addGameScript = addGameScript;
     exports.addScore = addScore;
