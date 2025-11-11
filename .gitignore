@@ -4,7 +4,6 @@ node_modules/
 .serena/
 package-lock.json
 npm-debug.log
-CLAUDE.md
 
 # Test coverage
 coverage/
