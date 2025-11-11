@@ -94,7 +94,7 @@ function update() {
   if (audio.isAudioFilesEnabled) {
     audio.updateForAudioFiles();
   }
-  if (options.isSoundEnabled) {
+  if (audio.isSoundsSomeSoundsLibraryEnabled) {
     sss.update();
   }
   input.update();

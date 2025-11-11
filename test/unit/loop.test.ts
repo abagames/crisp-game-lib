@@ -35,6 +35,7 @@ vi.mock('../../src/audio', () => ({
     resume: vi.fn(),
   },
   isAudioFilesEnabled: false,
+  isSoundsSomeSoundsLibraryEnabled: false,
   updateForAudioFiles: vi.fn(),
 }));
 

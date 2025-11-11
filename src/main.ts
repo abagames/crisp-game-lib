@@ -25,7 +25,6 @@ import * as replay from "./replay";
 import { Theme, ThemeName } from "./loop";
 import * as audio from "./audio";
 import * as recorder from "./recorder";
-declare const sss;
 declare const Terser;
 declare const cloneDeep;
 declare const window: any;
@@ -38,6 +37,7 @@ export type { LetterOptions } from "./letter";
 export { clamp, wrap, range, times, remove, addWithCharCode } from "./util";
 export { rect, box, bar, line, arc } from "./rect";
 export { text, char } from "./letter";
+export { playBgm, stopBgm, SoundEffectType } from "./audio";
 /** Input state from the mouse, touch screen, or keyboard. */
 export { input };
 /** @ignore */
@@ -68,20 +68,7 @@ export let time: number;
 /** A variable that becomes `true` if the game is replaying. */
 /** @ignore */
 export let isReplaying = false;
-/** Type of sound effects. */
-export type SoundEffectType =
-  | "coin"
-  | "laser"
-  | "explosion"
-  | "powerUp"
-  | "hit"
-  | "jump"
-  | "select"
-  | "lucky"
-  | "random"
-  | "click"
-  | "synth"
-  | "tone";
+
 /**
  * Get a random float value.
  * If **high** parameter isn't specified, return a value from 0 to **lowOrHigh**.
@@ -271,7 +258,7 @@ export function vec(x?: number | VectorLike, y?: number): Vector {
  * @param options.note Note string (e.g. "C4", "F#3", "Ab5")
  */
 export function play(
-  type: SoundEffectType | string,
+  type: audio.SoundEffectType | string,
   options?: {
     // Random seed (default = 0)
     seed?: number;
@@ -286,55 +273,7 @@ export function play(
   }
 ) {
   if (!isWaitingRewind && !isRewinding) {
-    if (
-      audio.isAudioFilesEnabled &&
-      audio.playAudioFile(
-        type,
-        options != null && options.volume != null ? options.volume : 1
-      )
-    ) {
-    } else if (
-      currentOptions.isSoundEnabled &&
-      typeof sss.playSoundEffect === "function"
-    ) {
-      sss.playSoundEffect(type, options);
-    } else if (currentOptions.isSoundEnabled) {
-      sss.play(soundEffectTypeToString[type]);
-    }
-  }
-}
-
-let bgmTrack;
-
-/**
- * Play a background music
- */
-/** @ignore */
-export function playBgm() {
-  if (
-    isBgmAudioFileReady &&
-    audio.playAudioFile(currentOptions.bgmName, currentOptions.bgmVolume)
-  ) {
-  } else if (typeof sss.generateMml === "function") {
-    bgmTrack = sss.playMml(sss.generateMml(), {
-      volume: currentOptions.bgmVolume,
-    });
-  } else {
-    sss.playBgm();
-  }
-}
-
-/**
- * Stop a background music
- */
-/** @ignore */
-export function stopBgm() {
-  if (isBgmAudioFileReady) {
-    audio.stopAudioFile(currentOptions.bgmName);
-  } else if (bgmTrack != null) {
-    sss.stopMml(bgmTrack);
-  } else {
-    sss.stopBgm();
+    audio.play(type, options);
   }
 }
 
@@ -343,7 +282,7 @@ export function startRecording() {
   recorder.start(
     view.canvas,
     audio.audioContext,
-    [audio.gainNodeForAudioFiles, sssGainNode],
+    [audio.gainNodeForAudioFiles, audio.sssGainNode],
     view.size
   );
 }
@@ -397,20 +336,6 @@ export function rewind() {
   }
 }
 
-const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
-  coin: "c",
-  laser: "l",
-  explosion: "e",
-  powerUp: "p",
-  hit: "h",
-  jump: "j",
-  select: "s",
-  lucky: "u",
-  random: "r",
-  click: "i",
-  synth: "y",
-  tone: "t",
-};
 const defaultOptions: Options = {
   isPlayingBgm: false,
   isCapturing: false,
@@ -448,7 +373,6 @@ const defaultOptions: Options = {
 declare let title: string;
 declare let description: string;
 declare let characters: string[];
-declare let audioFiles: { [key: string]: string };
 /** Game setting options. */
 declare type Options = {
   /** Play BGM. */
@@ -538,8 +462,6 @@ let giveUpButton: Button;
 let gameOverText: string;
 let gameScriptFile: string;
 let localStorageKey: string;
-let sssGainNode: GainNode;
-let isBgmAudioFileReady = false;
 
 /** @ignore */
 export function init(settings: {
@@ -637,26 +559,13 @@ function _init() {
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
   }
-  audio.initAudioContext();
-  if (typeof audioFiles !== "undefined" && audioFiles != null) {
-    audio.initForAudioFiles();
-    audio.setVolume(0.1 * currentOptions.audioVolume);
-    audio.setTempo(currentOptions.audioTempo);
-    for (let audioName in audioFiles) {
-      const a = audio.loadAudioFile(audioName, audioFiles[audioName]);
-      if (audioName === currentOptions.bgmName) {
-        a.isLooping = true;
-        isBgmAudioFileReady = true;
-      }
-    }
-  }
-  if (currentOptions.isSoundEnabled) {
-    sssGainNode = audio.audioContext.createGain();
-    sssGainNode.connect(audio.audioContext.destination);
-    sss.init(audioSeed, audio.audioContext, sssGainNode);
-    sss.setVolume(0.1 * currentOptions.audioVolume);
-    sss.setTempo(currentOptions.audioTempo);
-  }
+  audio.init({
+    audioSeed,
+    audioVolume: currentOptions.audioVolume,
+    audioTempo: currentOptions.audioTempo,
+    bgmName: currentOptions.bgmName,
+    bgmVolume: currentOptions.bgmVolume,
+  });
   view.setColor("black");
   if (isNoTitle) {
     initInGame();
@@ -713,7 +622,7 @@ function initInGame() {
   time = 0;
   scoreBoards = [];
   if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
-    playBgm();
+    audio.playBgm();
   }
   const randomSeed = seedRandom.getInt(999999999);
   random.setSeed(randomSeed);
@@ -832,7 +741,7 @@ function initGameOver() {
   ticks = -1;
   drawGameOver();
   if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
-    stopBgm();
+    audio.stopBgm();
   }
   const s = Math.floor(score);
   if (s > hiScore) {
@@ -891,7 +800,7 @@ function initRewind() {
     isSmallText: currentOptions.isUsingSmallText,
   });
   if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
-    stopBgm();
+    audio.stopBgm();
   }
   if (view.theme.isUsingPixi) {
     drawButton(rewindButton);
@@ -931,7 +840,7 @@ function stopRewind() {
   state = "inGame";
   _particle.init();
   if (currentOptions.isPlayingBgm && currentOptions.isSoundEnabled) {
-    playBgm();
+    audio.playBgm();
   }
 }
 

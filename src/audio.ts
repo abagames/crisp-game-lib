@@ -1,11 +1,36 @@
-export let audioContext: AudioContext;
-export let gainNodeForAudioFiles: GainNode;
-export let isAudioFilesEnabled = false;
-let tempo: number;
-let playInterval: number;
-let quantize: number;
+declare const sss;
+declare let audioFiles: { [key: string]: string };
 
-export type AudioFile = {
+/** Type of sound effects. */
+export type SoundEffectType =
+  | "coin"
+  | "laser"
+  | "explosion"
+  | "powerUp"
+  | "hit"
+  | "jump"
+  | "select"
+  | "lucky"
+  | "random"
+  | "click"
+  | "synth"
+  | "tone";
+const soundEffectTypeToString: { [key in SoundEffectType]: string } = {
+  coin: "c",
+  laser: "l",
+  explosion: "e",
+  powerUp: "p",
+  hit: "h",
+  jump: "j",
+  select: "s",
+  lucky: "u",
+  random: "r",
+  click: "i",
+  synth: "y",
+  tone: "t",
+};
+
+type AudioFileState = {
   buffer: AudioBuffer;
   source: AudioBufferSourceNode;
   gainNode: GainNode;
@@ -15,10 +40,133 @@ export type AudioFile = {
   isLooping: boolean;
 };
 
-let audioFiles: { [key: string]: AudioFile } = {};
+export let audioContext: AudioContext;
+let isSoundEnabled = false;
 
-export function playAudioFile(name: string, _volume: number = 1): boolean {
-  const af = audioFiles[name];
+export let isSoundsSomeSoundsLibraryEnabled = false;
+export let sssGainNode: GainNode;
+let sssBgmTrack;
+
+export let isAudioFilesEnabled = false;
+let isBgmAudioFileReady = false;
+export let gainNodeForAudioFiles: GainNode;
+let audioFilePlayInterval: number;
+let audioFileQuantize: number;
+let audioFileStates: { [key: string]: AudioFileState } = {};
+let bgmName: string;
+let bgmVolume: number;
+
+export function init(options: {
+  audioSeed: number;
+  audioVolume: number;
+  audioTempo: number;
+  bgmName: string;
+  bgmVolume: number;
+}) {
+  bgmName = options.bgmName;
+  bgmVolume = options.bgmVolume;
+  if (typeof sss !== "undefined" && sss !== null) {
+    isSoundsSomeSoundsLibraryEnabled = isSoundEnabled = true;
+  }
+  if (typeof audioFiles !== "undefined" && audioFiles != null) {
+    isAudioFilesEnabled = isSoundEnabled = true;
+  }
+  if (!isSoundEnabled) {
+    return false;
+  }
+  audioContext = new (window.AudioContext ||
+    (window as any).webkitAudioContext)();
+  if (isAudioFilesEnabled) {
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        audioContext.suspend();
+      } else {
+        audioContext.resume();
+      }
+    });
+    initForAudioFiles();
+    setAudioFileVolume(0.1 * options.audioVolume);
+    setAudioFileTempo(options.audioTempo);
+    for (let audioName in audioFiles) {
+      const a = loadAudioFile(audioName, audioFiles[audioName]);
+      if (audioName === bgmName) {
+        a.isLooping = true;
+        isBgmAudioFileReady = true;
+      }
+    }
+  }
+  if (isSoundsSomeSoundsLibraryEnabled) {
+    sssGainNode = audioContext.createGain();
+    sssGainNode.connect(audioContext.destination);
+    sss.init(options.audioSeed, audioContext, sssGainNode);
+    sss.setVolume(0.1 * options.audioVolume);
+    sss.setTempo(options.audioTempo);
+  }
+  return true;
+}
+
+export function play(
+  type: SoundEffectType | string,
+  options?: {
+    seed?: number;
+    numberOfSounds?: number;
+    volume?: number;
+    pitch?: number;
+    freq?: number;
+    note?: string;
+  }
+) {
+  if (
+    isAudioFilesEnabled &&
+    playAudioFile(
+      type,
+      options != null && options.volume != null ? options.volume : 1
+    )
+  ) {
+  } else if (
+    isSoundsSomeSoundsLibraryEnabled &&
+    typeof sss.playSoundEffect === "function"
+  ) {
+    sss.playSoundEffect(type, options);
+  } else if (isSoundsSomeSoundsLibraryEnabled) {
+    sss.play(soundEffectTypeToString[type]);
+  }
+}
+
+/**
+ * Play a background music
+ */
+/** @ignore */
+export function playBgm() {
+  if (isBgmAudioFileReady && playAudioFile(bgmName, bgmVolume)) {
+  } else if (
+    isSoundsSomeSoundsLibraryEnabled &&
+    typeof sss.generateMml === "function"
+  ) {
+    sssBgmTrack = sss.playMml(sss.generateMml(), {
+      volume: bgmVolume,
+    });
+  } else if (isSoundsSomeSoundsLibraryEnabled) {
+    sss.playBgm();
+  }
+}
+
+/**
+ * Stop a background music
+ */
+/** @ignore */
+export function stopBgm() {
+  if (isBgmAudioFileReady) {
+    stopAudioFile(bgmName);
+  } else if (sssBgmTrack != null) {
+    sss.stopMml(sssBgmTrack);
+  } else if (isSoundsSomeSoundsLibraryEnabled) {
+    sss.stopBgm();
+  }
+}
+
+function playAudioFile(name: string, _volume: number = 1): boolean {
+  const af = audioFileStates[name];
   if (af == null) {
     return false;
   }
@@ -29,8 +177,8 @@ export function playAudioFile(name: string, _volume: number = 1): boolean {
 
 export function updateForAudioFiles() {
   const currentTime = audioContext.currentTime;
-  for (const name in audioFiles) {
-    const af = audioFiles[name];
+  for (const name in audioFileStates) {
+    const af = audioFileStates[name];
     if (!af.isReady || !af.isPlaying) {
       continue;
     }
@@ -43,8 +191,8 @@ export function updateForAudioFiles() {
   }
 }
 
-export function stopAudioFile(name: string, when: number = undefined) {
-  const af = audioFiles[name];
+function stopAudioFile(name: string, when: number = undefined) {
+  const af = audioFileStates[name];
   if (af.source == null) {
     return;
   }
@@ -57,55 +205,42 @@ export function stopAudioFile(name: string, when: number = undefined) {
 }
 
 export function stopAllAudioFiles(when: number = undefined) {
-  if (!audioFiles) {
+  if (!audioFileStates) {
     return;
   }
-  for (const name in audioFiles) {
+  for (const name in audioFileStates) {
     stopAudioFile(name, when);
   }
-  audioFiles = {};
-}
-
-export function initAudioContext() {
-  audioContext = new (window.AudioContext ||
-    (window as any).webkitAudioContext)();
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      audioContext.suspend();
-    } else {
-      audioContext.resume();
-    }
-  });
+  audioFileStates = {};
 }
 
 export function initForAudioFiles() {
   isAudioFilesEnabled = true;
   gainNodeForAudioFiles = audioContext.createGain();
   gainNodeForAudioFiles.connect(audioContext.destination);
-  setTempo();
-  setQuantize();
-  setVolume();
+  setAudioFileTempo();
+  setAudioFileQuantize();
+  setAudioFileVolume();
 }
 
 export function loadAudioFile(key: string, url: string) {
-  audioFiles[key] = createBufferFromFile(url);
-  return audioFiles[key];
+  audioFileStates[key] = createBufferFromFile(url);
+  return audioFileStates[key];
 }
 
-export function setTempo(_tempo = 120) {
-  tempo = _tempo;
-  playInterval = 60 / tempo;
+export function setAudioFileTempo(tempo = 120) {
+  audioFilePlayInterval = 60 / tempo;
 }
 
-export function setQuantize(noteLength = 8) {
-  quantize = noteLength > 0 ? 4 / noteLength : undefined;
+export function setAudioFileQuantize(noteLength = 8) {
+  audioFileQuantize = noteLength > 0 ? 4 / noteLength : undefined;
 }
 
-export function setVolume(_volume = 0.1) {
+export function setAudioFileVolume(_volume = 0.1) {
   gainNodeForAudioFiles.gain.value = _volume;
 }
 
-function playLater(audio: AudioFile, when: number) {
+function playLater(audio: AudioFileState, when: number) {
   const bufferSourceNode = audioContext.createBufferSource();
   audio.source = bufferSourceNode;
   bufferSourceNode.buffer = audio.buffer;
@@ -116,8 +251,8 @@ function playLater(audio: AudioFile, when: number) {
   bufferSourceNode.start(when);
 }
 
-function createBufferFromFile(url: string): AudioFile {
-  const af: AudioFile = {
+function createBufferFromFile(url: string): AudioFileState {
+  const af: AudioFileState = {
     buffer: undefined,
     source: undefined,
     gainNode: audioContext.createGain(),
@@ -127,14 +262,14 @@ function createBufferFromFile(url: string): AudioFile {
     isLooping: false,
   };
   af.gainNode.connect(gainNodeForAudioFiles);
-  loadFile(url).then((buffer) => {
+  fetchAudioFile(url).then((buffer) => {
     af.buffer = buffer;
     af.isReady = true;
   });
   return af;
 }
 
-async function loadFile(url: string): Promise<AudioBuffer> {
+async function fetchAudioFile(url: string): Promise<AudioBuffer> {
   const response = await fetch(url);
   const arrayBuffer = await response.arrayBuffer();
   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
@@ -142,9 +277,9 @@ async function loadFile(url: string): Promise<AudioBuffer> {
 }
 
 function getQuantizedTime(time: number) {
-  if (quantize == null) {
+  if (audioFileQuantize == null) {
     return time;
   }
-  const interval = playInterval * quantize;
+  const interval = audioFilePlayInterval * audioFileQuantize;
   return interval > 0 ? Math.ceil(time / interval) * interval : time;
 }

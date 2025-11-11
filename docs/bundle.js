@@ -230,7 +230,7 @@
         0xeeeeee, 0xe91e63, 0x4caf50, 0xffc107, 0x3f51b5, 0x9c27b0, 0x03a9f4,
         0x616161,
     ];
-    function init$8(isDarkColor, colorPalette) {
+    function init$9(isDarkColor, colorPalette) {
         const [wr, wb, wg] = getRgb(0, isDarkColor);
         values = fromEntities(colors.map((c, i) => {
             if (i < 1) {
@@ -366,7 +366,7 @@ void main(void) {
     let isFilling = false;
     let theme;
     let crtFilter;
-    function init$7(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, captureDurationSec, _theme) {
+    function init$8(_size, _bodyBackground, _viewBackground, isCapturing, isCapturingGameCanvasOnly, captureCanvasScale, captureDurationSec, _theme) {
         size.set(_size);
         theme = _theme;
         viewBackground = _viewBackground;
@@ -2046,7 +2046,7 @@ lll
         isCharacter: false,
         isCheckingCollision: false,
     };
-    function init$6() {
+    function init$7() {
         letterCanvas = document.createElement("canvas");
         letterCanvas.width = letterCanvas.height = letterSize;
         letterContext = letterCanvas.getContext("2d");
@@ -2598,7 +2598,7 @@ lll
     let pressingCode = {};
     let pressedCode = {};
     let releasedCode = {};
-    function init$5(_options) {
+    function init$6(_options) {
         options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
         code = fromEntities(codes.map((c) => [
             c,
@@ -2653,7 +2653,7 @@ lll
         clearJustPressed: clearJustPressed$2,
         get code () { return code; },
         codes: codes,
-        init: init$5,
+        init: init$6,
         get isJustPressed () { return isJustPressed$2; },
         get isJustReleased () { return isJustReleased$2; },
         get isPressed () { return isPressed$2; },
@@ -2733,7 +2733,7 @@ lll
     let isDown = false;
     let isClicked = false;
     let isReleased = false;
-    function init$4(_screen, _pixelSize, _options) {
+    function init$5(_screen, _pixelSize, _options) {
         options$2 = Object.assign(Object.assign({}, defaultOptions$2), _options);
         screen = _screen;
         pixelSize = new Vector(_pixelSize.x + options$2.padding.x * 2, _pixelSize.y + options$2.padding.y * 2);
@@ -2840,7 +2840,7 @@ lll
     var pointer = /*#__PURE__*/Object.freeze({
         __proto__: null,
         clearJustPressed: clearJustPressed$1,
-        init: init$4,
+        init: init$5,
         get isJustPressed () { return isJustPressed$1; },
         get isJustReleased () { return isJustReleased$1; },
         get isPressed () { return isPressed$1; },
@@ -2857,11 +2857,11 @@ lll
     /** A variable that becomes `true` when the button is just released. */
     let isJustReleased = false;
     /** @ignore */
-    function init$3(onInputDownOrUp) {
-        init$5({
+    function init$4(onInputDownOrUp) {
+        init$6({
             onKeyDown: onInputDownOrUp,
         });
-        init$4(canvas, size, {
+        init$5(canvas, size, {
             onPointerDownOrUp: onInputDownOrUp,
             anchor: new Vector(0.5, 0.5),
         });
@@ -2891,7 +2891,7 @@ lll
     var input = /*#__PURE__*/Object.freeze({
         __proto__: null,
         clearJustPressed: clearJustPressed,
-        init: init$3,
+        init: init$4,
         get isJustPressed () { return isJustPressed; },
         get isJustReleased () { return isJustReleased; },
         get isPressed () { return isPressed; },
@@ -2900,15 +2900,120 @@ lll
         update: update$4
     });
 
+    const soundEffectTypeToString = {
+        coin: "c",
+        laser: "l",
+        explosion: "e",
+        powerUp: "p",
+        hit: "h",
+        jump: "j",
+        select: "s",
+        lucky: "u",
+        random: "r",
+        click: "i",
+        synth: "y",
+        tone: "t",
+    };
     let audioContext;
-    let gainNodeForAudioFiles;
+    let isSoundEnabled = false;
+    let isSoundsSomeSoundsLibraryEnabled = false;
+    let sssGainNode;
+    let sssBgmTrack;
     let isAudioFilesEnabled = false;
-    let tempo;
-    let playInterval;
-    let quantize;
-    let audioFiles$1 = {};
+    let isBgmAudioFileReady = false;
+    let gainNodeForAudioFiles;
+    let audioFilePlayInterval;
+    let audioFileQuantize;
+    let audioFileStates = {};
+    let bgmName;
+    let bgmVolume;
+    function init$3(options) {
+        bgmName = options.bgmName;
+        bgmVolume = options.bgmVolume;
+        if (typeof sss !== "undefined" && sss !== null) {
+            isSoundsSomeSoundsLibraryEnabled = isSoundEnabled = true;
+        }
+        if (typeof audioFiles !== "undefined" && audioFiles != null) {
+            isAudioFilesEnabled = isSoundEnabled = true;
+        }
+        if (!isSoundEnabled) {
+            return false;
+        }
+        audioContext = new (window.AudioContext ||
+            window.webkitAudioContext)();
+        if (isAudioFilesEnabled) {
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden) {
+                    audioContext.suspend();
+                }
+                else {
+                    audioContext.resume();
+                }
+            });
+            initForAudioFiles();
+            setAudioFileVolume(0.1 * options.audioVolume);
+            setAudioFileTempo(options.audioTempo);
+            for (let audioName in audioFiles) {
+                const a = loadAudioFile(audioName, audioFiles[audioName]);
+                if (audioName === bgmName) {
+                    a.isLooping = true;
+                    isBgmAudioFileReady = true;
+                }
+            }
+        }
+        if (isSoundsSomeSoundsLibraryEnabled) {
+            sssGainNode = audioContext.createGain();
+            sssGainNode.connect(audioContext.destination);
+            sss.init(options.audioSeed, audioContext, sssGainNode);
+            sss.setVolume(0.1 * options.audioVolume);
+            sss.setTempo(options.audioTempo);
+        }
+        return true;
+    }
+    function play$1(type, options) {
+        if (isAudioFilesEnabled &&
+            playAudioFile(type, options != null && options.volume != null ? options.volume : 1)) ;
+        else if (isSoundsSomeSoundsLibraryEnabled &&
+            typeof sss.playSoundEffect === "function") {
+            sss.playSoundEffect(type, options);
+        }
+        else if (isSoundsSomeSoundsLibraryEnabled) {
+            sss.play(soundEffectTypeToString[type]);
+        }
+    }
+    /**
+     * Play a background music
+     */
+    /** @ignore */
+    function playBgm() {
+        if (isBgmAudioFileReady && playAudioFile(bgmName, bgmVolume)) ;
+        else if (isSoundsSomeSoundsLibraryEnabled &&
+            typeof sss.generateMml === "function") {
+            sssBgmTrack = sss.playMml(sss.generateMml(), {
+                volume: bgmVolume,
+            });
+        }
+        else if (isSoundsSomeSoundsLibraryEnabled) {
+            sss.playBgm();
+        }
+    }
+    /**
+     * Stop a background music
+     */
+    /** @ignore */
+    function stopBgm() {
+        if (isBgmAudioFileReady) {
+            stopAudioFile(bgmName);
+        }
+        else if (sssBgmTrack != null) {
+            sss.stopMml(sssBgmTrack);
+        }
+        else if (isSoundsSomeSoundsLibraryEnabled) {
+            sss.stopBgm();
+        }
+    }
     function playAudioFile(name, _volume = 1) {
-        const af = audioFiles$1[name];
+        const af = audioFileStates[name];
         if (af == null) {
             return false;
         }
@@ -2918,8 +3023,8 @@ lll
     }
     function updateForAudioFiles() {
         const currentTime = audioContext.currentTime;
-        for (const name in audioFiles$1) {
-            const af = audioFiles$1[name];
+        for (const name in audioFileStates) {
+            const af = audioFileStates[name];
             if (!af.isReady || !af.isPlaying) {
                 continue;
             }
@@ -2932,7 +3037,7 @@ lll
         }
     }
     function stopAudioFile(name, when = undefined) {
-        const af = audioFiles$1[name];
+        const af = audioFileStates[name];
         if (af.source == null) {
             return;
         }
@@ -2945,46 +3050,33 @@ lll
         af.source = undefined;
     }
     function stopAllAudioFiles(when = undefined) {
-        if (!audioFiles$1) {
+        if (!audioFileStates) {
             return;
         }
-        for (const name in audioFiles$1) {
+        for (const name in audioFileStates) {
             stopAudioFile(name, when);
         }
-        audioFiles$1 = {};
-    }
-    function initAudioContext() {
-        audioContext = new (window.AudioContext ||
-            window.webkitAudioContext)();
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
-                audioContext.suspend();
-            }
-            else {
-                audioContext.resume();
-            }
-        });
+        audioFileStates = {};
     }
     function initForAudioFiles() {
         isAudioFilesEnabled = true;
         gainNodeForAudioFiles = audioContext.createGain();
         gainNodeForAudioFiles.connect(audioContext.destination);
-        setTempo();
-        setQuantize();
-        setVolume();
+        setAudioFileTempo();
+        setAudioFileQuantize();
+        setAudioFileVolume();
     }
     function loadAudioFile(key, url) {
-        audioFiles$1[key] = createBufferFromFile(url);
-        return audioFiles$1[key];
+        audioFileStates[key] = createBufferFromFile(url);
+        return audioFileStates[key];
     }
-    function setTempo(_tempo = 120) {
-        tempo = _tempo;
-        playInterval = 60 / tempo;
+    function setAudioFileTempo(tempo = 120) {
+        audioFilePlayInterval = 60 / tempo;
     }
-    function setQuantize(noteLength = 8) {
-        quantize = noteLength > 0 ? 4 / noteLength : undefined;
+    function setAudioFileQuantize(noteLength = 8) {
+        audioFileQuantize = noteLength > 0 ? 4 / noteLength : undefined;
     }
-    function setVolume(_volume = 0.1) {
+    function setAudioFileVolume(_volume = 0.1) {
         gainNodeForAudioFiles.gain.value = _volume;
     }
     function playLater(audio, when) {
@@ -3008,23 +3100,23 @@ lll
             isLooping: false,
         };
         af.gainNode.connect(gainNodeForAudioFiles);
-        loadFile(url).then((buffer) => {
+        fetchAudioFile(url).then((buffer) => {
             af.buffer = buffer;
             af.isReady = true;
         });
         return af;
     }
-    async function loadFile(url) {
+    async function fetchAudioFile(url) {
         const response = await fetch(url);
         const arrayBuffer = await response.arrayBuffer();
         const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
         return audioBuffer;
     }
     function getQuantizedTime(time) {
-        if (quantize == null) {
+        if (audioFileQuantize == null) {
             return time;
         }
-        const interval = playInterval * quantize;
+        const interval = audioFilePlayInterval * audioFileQuantize;
         return interval > 0 ? Math.ceil(time / interval) * interval : time;
     }
 
@@ -3051,12 +3143,12 @@ lll
         _init$1 = __init;
         _update$1 = __update;
         options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
-        init$8(options$1.theme.isDarkColor, options$1.colorPalette);
-        init$7(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.captureDurationSec, options$1.theme);
-        init$3(() => {
+        init$9(options$1.theme.isDarkColor, options$1.colorPalette);
+        init$8(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.captureDurationSec, options$1.theme);
+        init$4(() => {
             audioContext.resume();
         });
-        init$6();
+        init$7();
         _init$1();
         update$3();
     }
@@ -3073,7 +3165,7 @@ lll
         if (isAudioFilesEnabled) {
             updateForAudioFiles();
         }
-        if (options$1.isSoundEnabled) {
+        if (isSoundsSomeSoundsLibraryEnabled) {
             sss.update();
         }
         update$4();
@@ -3804,47 +3896,7 @@ lll
      */
     function play(type, options) {
         if (!isWaitingRewind && !isRewinding) {
-            if (isAudioFilesEnabled &&
-                playAudioFile(type, options != null && options.volume != null ? options.volume : 1)) ;
-            else if (currentOptions.isSoundEnabled &&
-                typeof sss.playSoundEffect === "function") {
-                sss.playSoundEffect(type, options);
-            }
-            else if (currentOptions.isSoundEnabled) {
-                sss.play(soundEffectTypeToString[type]);
-            }
-        }
-    }
-    let bgmTrack;
-    /**
-     * Play a background music
-     */
-    /** @ignore */
-    function playBgm() {
-        if (isBgmAudioFileReady &&
-            playAudioFile(currentOptions.bgmName, currentOptions.bgmVolume)) ;
-        else if (typeof sss.generateMml === "function") {
-            bgmTrack = sss.playMml(sss.generateMml(), {
-                volume: currentOptions.bgmVolume,
-            });
-        }
-        else {
-            sss.playBgm();
-        }
-    }
-    /**
-     * Stop a background music
-     */
-    /** @ignore */
-    function stopBgm() {
-        if (isBgmAudioFileReady) {
-            stopAudioFile(currentOptions.bgmName);
-        }
-        else if (bgmTrack != null) {
-            sss.stopMml(bgmTrack);
-        }
-        else {
-            sss.stopBgm();
+            play$1(type, options);
         }
     }
     /** @ignore */
@@ -3901,20 +3953,6 @@ lll
             end();
         }
     }
-    const soundEffectTypeToString = {
-        coin: "c",
-        laser: "l",
-        explosion: "e",
-        powerUp: "p",
-        hit: "h",
-        jump: "j",
-        select: "s",
-        lucky: "u",
-        random: "r",
-        click: "i",
-        synth: "y",
-        tone: "t",
-    };
     const defaultOptions = {
         isPlayingBgm: false,
         isCapturing: false,
@@ -3971,8 +4009,6 @@ lll
     let gameOverText;
     let gameScriptFile;
     let localStorageKey;
-    let sssGainNode;
-    let isBgmAudioFileReady = false;
     /** @ignore */
     function init(settings) {
         window.update = settings.update;
@@ -4054,26 +4090,13 @@ lll
         if (typeof characters !== "undefined" && characters != null) {
             defineCharacters(characters, "a");
         }
-        initAudioContext();
-        if (typeof audioFiles !== "undefined" && audioFiles != null) {
-            initForAudioFiles();
-            setVolume(0.1 * currentOptions.audioVolume);
-            setTempo(currentOptions.audioTempo);
-            for (let audioName in audioFiles) {
-                const a = loadAudioFile(audioName, audioFiles[audioName]);
-                if (audioName === currentOptions.bgmName) {
-                    a.isLooping = true;
-                    isBgmAudioFileReady = true;
-                }
-            }
-        }
-        if (currentOptions.isSoundEnabled) {
-            sssGainNode = audioContext.createGain();
-            sssGainNode.connect(audioContext.destination);
-            sss.init(audioSeed, audioContext, sssGainNode);
-            sss.setVolume(0.1 * currentOptions.audioVolume);
-            sss.setTempo(currentOptions.audioTempo);
-        }
+        init$3({
+            audioSeed,
+            audioVolume: currentOptions.audioVolume,
+            audioTempo: currentOptions.audioTempo,
+            bgmName: currentOptions.bgmName,
+            bgmVolume: currentOptions.bgmVolume,
+        });
         setColor("black");
         if (isNoTitle) {
             initInGame();
