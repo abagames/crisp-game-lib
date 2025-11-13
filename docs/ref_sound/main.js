@@ -38,7 +38,7 @@ function update() {
         },
       })
     );
-    sss.setSeed(seed);
+    setAudioSeed(seed);
     playBgm();
   }
   playingButtons.forEach((pb) => {
@@ -57,7 +57,7 @@ function update() {
     if (input.isJustPressed) {
       seed = nextSeed;
       stopBgm();
-      sss.setSeed(seed);
+      setAudioSeed(seed);
       playBgm();
     }
   }

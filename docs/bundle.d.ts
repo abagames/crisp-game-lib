@@ -546,6 +546,7 @@ declare function play(
 ): void;
 declare function playBgm(): void;
 declare function stopBgm(): void;
+declare function setAudioSeed(seed: number): void;
 declare function startRecording(): void;
 declare function stopRecording(): void;
 

@@ -37,7 +37,13 @@ export type { LetterOptions } from "./letter";
 export { clamp, wrap, range, times, remove, addWithCharCode } from "./util";
 export { rect, box, bar, line, arc } from "./rect";
 export { text, char } from "./letter";
-export { playBgm, stopBgm, SoundEffectType } from "./audio";
+export {
+  playBgm,
+  stopBgm,
+  setSeed as setAudioSeed,
+  SoundEffectType,
+  algoChipSession,
+} from "./audio";
 /** Input state from the mouse, touch screen, or keyboard. */
 export { input };
 /** @ignore */
@@ -282,7 +288,7 @@ export function startRecording() {
   recorder.start(
     view.canvas,
     audio.audioContext,
-    [audio.gainNodeForAudioFiles, audio.sssGainNode],
+    [audio.gainNodeForAudioFiles, audio.algoChipGainNode, audio.sssGainNode],
     view.size
   );
 }
@@ -451,7 +457,6 @@ let updateFunc = {
 let hiScore = 0;
 let fastestTime: number;
 let isNoTitle = true;
-let audioSeed = 0;
 let currentOptions: Options;
 let loopOptions;
 let scoreBoards: { str: string; pos: Vector; vy: number; ticks: number }[];
@@ -504,7 +509,6 @@ export function onLoad() {
   ) {
     theme.isDarkColor = true;
   }
-  audioSeed = currentOptions.audioSeed + currentOptions.seed;
   if (currentOptions.isMinifying) {
     showMinifiedScript();
   }
@@ -527,7 +531,7 @@ export function onLoad() {
 export function onUnload() {
   loop.stop();
   stopRecording();
-  audio.stopAllAudioFiles();
+  audio.unload();
   window.update = undefined;
   window.title = undefined;
   window.description = undefined;
@@ -536,7 +540,8 @@ export function onUnload() {
   window.audioFiles = undefined;
 }
 
-function _init() {
+async function _init() {
+  let audioSeed = currentOptions.audioSeed + currentOptions.seed;
   if (
     typeof description !== "undefined" &&
     description != null &&
@@ -559,13 +564,15 @@ function _init() {
   if (typeof characters !== "undefined" && characters != null) {
     defineCharacters(characters, "a");
   }
-  audio.init({
-    audioSeed,
-    audioVolume: currentOptions.audioVolume,
-    audioTempo: currentOptions.audioTempo,
-    bgmName: currentOptions.bgmName,
-    bgmVolume: currentOptions.bgmVolume,
-  });
+  if (currentOptions.isSoundEnabled) {
+    currentOptions.isSoundEnabled = await audio.init({
+      audioSeed,
+      audioVolume: currentOptions.audioVolume,
+      audioTempo: currentOptions.audioTempo,
+      bgmName: currentOptions.bgmName,
+      bgmVolume: currentOptions.bgmVolume,
+    });
+  }
   view.setColor("black");
   if (isNoTitle) {
     initInGame();

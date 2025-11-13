@@ -4,7 +4,6 @@ import * as input from "./input";
 import * as color from "./color";
 import { VectorLike } from "./vector";
 import * as audio from "./audio";
-declare const sss;
 
 /** Name for an appearance theme. */
 export type ThemeName =
@@ -54,7 +53,7 @@ let options: Options;
 let textCacheEnableTicks = 10;
 let loopFrameRequestId: number | undefined;
 
-export function init(
+export async function init(
   __init: () => void,
   __update: () => void,
   _options?: Options
@@ -74,10 +73,10 @@ export function init(
     options.theme
   );
   input.init(() => {
-    audio.audioContext.resume();
+    audio.resume();
   });
   letter.init();
-  _init();
+  await _init();
   update();
 }
 
@@ -91,12 +90,7 @@ function update() {
   if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
     nextFrameTime = now + deltaTime;
   }
-  if (audio.isAudioFilesEnabled) {
-    audio.updateForAudioFiles();
-  }
-  if (audio.isSoundsSomeSoundsLibraryEnabled) {
-    sss.update();
-  }
+  audio.update();
   input.update();
   _update();
   if (options.isCapturing) {

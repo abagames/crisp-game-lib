@@ -2630,7 +2630,7 @@ lll
             releasedCode[e.code] = true;
         });
     }
-    function update$6() {
+    function update$7() {
         isJustPressed$2 = !isPressed$2 && isKeyPressed;
         isJustReleased$2 = isPressed$2 && isKeyReleased;
         isKeyPressed = isKeyReleased = false;
@@ -2657,7 +2657,7 @@ lll
         get isJustPressed () { return isJustPressed$2; },
         get isJustReleased () { return isJustReleased$2; },
         get isPressed () { return isPressed$2; },
-        update: update$6
+        update: update$7
     });
 
     class Random {
@@ -2763,7 +2763,7 @@ lll
             onUp();
         }, { passive: false });
     }
-    function update$5() {
+    function update$6() {
         calcPointerPos(cursorPos.x, cursorPos.y, pos$1);
         if (options$2.isDebugMode && !pos$1.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
             updateDebug();
@@ -2845,7 +2845,7 @@ lll
         get isJustReleased () { return isJustReleased$1; },
         get isPressed () { return isPressed$1; },
         pos: pos$1,
-        update: update$5
+        update: update$6
     });
 
     /** A pressed position of mouse or touch screen. */
@@ -2867,9 +2867,9 @@ lll
         });
     }
     /** @ignore */
-    function update$4() {
+    function update$5() {
+        update$7();
         update$6();
-        update$5();
         pos = pos$1;
         isPressed = isPressed$2 || isPressed$1;
         isJustPressed = isJustPressed$2 || isJustPressed$1;
@@ -2897,7 +2897,7 @@ lll
         get isPressed () { return isPressed; },
         get pos () { return pos; },
         set: set,
-        update: update$4
+        update: update$5
     });
 
     const soundEffectTypeToString = {
@@ -2916,6 +2916,15 @@ lll
     };
     let audioContext;
     let isSoundEnabled = false;
+    let audioSeed;
+    let audioVolume;
+    let isAlgoChipLibraryEnabled = false;
+    let algoChipGainNode;
+    exports.algoChipSession = void 0;
+    let algoChipBgm;
+    let algoChipBgmSeed;
+    let algoChipSes = {};
+    let disposeVisibilityController;
     let isSoundsSomeSoundsLibraryEnabled = false;
     let sssGainNode;
     let sssBgmTrack;
@@ -2927,10 +2936,18 @@ lll
     let audioFileStates = {};
     let bgmName;
     let bgmVolume;
-    function init$3(options) {
+    async function init$3(options) {
+        audioSeed = options.audioSeed;
+        audioVolume = options.audioVolume;
         bgmName = options.bgmName;
         bgmVolume = options.bgmVolume;
-        if (typeof sss !== "undefined" && sss !== null) {
+        if (typeof AlgoChip !== "undefined" &&
+            AlgoChip !== null &&
+            typeof AlgoChipUtil !== "undefined" &&
+            AlgoChipUtil !== null) {
+            isAlgoChipLibraryEnabled = isSoundEnabled = true;
+        }
+        else if (typeof sss !== "undefined" && sss !== null) {
             isSoundsSomeSoundsLibraryEnabled = isSoundEnabled = true;
         }
         if (typeof audioFiles !== "undefined" && audioFiles != null) {
@@ -2951,7 +2968,7 @@ lll
                 }
             });
             initForAudioFiles();
-            setAudioFileVolume(0.1 * options.audioVolume);
+            setAudioFileVolume(0.1 * audioVolume);
             setAudioFileTempo(options.audioTempo);
             for (let audioName in audioFiles) {
                 const a = loadAudioFile(audioName, audioFiles[audioName]);
@@ -2961,11 +2978,24 @@ lll
                 }
             }
         }
+        if (isAlgoChipLibraryEnabled) {
+            algoChipGainNode = audioContext.createGain();
+            algoChipGainNode.connect(audioContext.destination);
+            exports.algoChipSession = AlgoChipUtil.createAudioSession({
+                audioContext,
+                gainNode: algoChipGainNode,
+                workletBasePath: "https://abagames.github.io/algo-chip/worklets/",
+            });
+            await exports.algoChipSession.ensureReady();
+            exports.algoChipSession.setBgmVolume(0.5 * audioVolume);
+            disposeVisibilityController =
+                AlgoChipUtil.createVisibilityController(exports.algoChipSession);
+        }
         if (isSoundsSomeSoundsLibraryEnabled) {
             sssGainNode = audioContext.createGain();
             sssGainNode.connect(audioContext.destination);
-            sss.init(options.audioSeed, audioContext, sssGainNode);
-            sss.setVolume(0.1 * options.audioVolume);
+            sss.init(audioSeed, audioContext, sssGainNode);
+            sss.setVolume(0.1 * audioVolume);
             sss.setTempo(options.audioTempo);
         }
         return true;
@@ -2973,6 +3003,39 @@ lll
     function play$1(type, options) {
         if (isAudioFilesEnabled &&
             playAudioFile(type, options != null && options.volume != null ? options.volume : 1)) ;
+        else if (exports.algoChipSession != null) {
+            let t = type;
+            let seed = audioSeed;
+            if (t === "powerUp") {
+                t = "powerup";
+            }
+            else if (t === "random" || t === "lucky") {
+                t = "explosion";
+                seed++;
+            }
+            let baseFrequency;
+            if ((options === null || options === void 0 ? void 0 : options.freq) != null) {
+                baseFrequency = options.freq;
+            }
+            else if ((options === null || options === void 0 ? void 0 : options.pitch) != null) {
+                baseFrequency = 2 ** ((options.pitch - 69) / 12) * 440;
+            }
+            const seOptions = { seed, type: t, baseFrequency };
+            const seKey = JSON.stringify(seOptions);
+            if (algoChipSes[seKey] == null) {
+                algoChipSes[seKey] = exports.algoChipSession.generateSe(seOptions);
+            }
+            exports.algoChipSession.playSe(algoChipSes[seKey], {
+                volume: audioVolume * ((options === null || options === void 0 ? void 0 : options.volume) != null ? options === null || options === void 0 ? void 0 : options.volume : 1) * 0.7,
+                duckingDb: -8,
+                quantize: {
+                    loopAware: true,
+                    phase: "next",
+                    quantizeTo: "half_beat",
+                    fallbackTempo: 120,
+                },
+            });
+        }
         else if (isSoundsSomeSoundsLibraryEnabled &&
             typeof sss.playSoundEffect === "function") {
             sss.playSoundEffect(type, options);
@@ -2981,12 +3044,37 @@ lll
             sss.play(soundEffectTypeToString[type]);
         }
     }
+    /** @ignore */
+    function setSeed(seed) {
+        audioSeed = seed;
+        if (isSoundsSomeSoundsLibraryEnabled) {
+            sss.setSeed(seed);
+        }
+    }
     /**
      * Play a background music
      */
     /** @ignore */
-    function playBgm() {
+    async function playBgm() {
         if (isBgmAudioFileReady && playAudioFile(bgmName, bgmVolume)) ;
+        else if (exports.algoChipSession != null) {
+            if (algoChipBgm == null || algoChipBgmSeed != audioSeed) {
+                algoChipBgmSeed = audioSeed;
+                const random = new Random();
+                random.setSeed(audioSeed);
+                const calmEnergetic = random.get(-0.9, 0.9);
+                const percussiveMelodic = random.get(-0.9, 0.9);
+                algoChipBgm = await exports.algoChipSession.generateBgm({
+                    seed: audioSeed,
+                    lengthInMeasures: 32,
+                    twoAxisStyle: { calmEnergetic, percussiveMelodic },
+                    overrides: {
+                        tempo: "medium",
+                    },
+                });
+            }
+            exports.algoChipSession.playBgm(algoChipBgm, { loop: true });
+        }
         else if (isSoundsSomeSoundsLibraryEnabled &&
             typeof sss.generateMml === "function") {
             sssBgmTrack = sss.playMml(sss.generateMml(), {
@@ -3005,11 +3093,41 @@ lll
         if (isBgmAudioFileReady) {
             stopAudioFile(bgmName);
         }
+        else if (exports.algoChipSession != null) {
+            exports.algoChipSession.stopBgm();
+        }
         else if (sssBgmTrack != null) {
             sss.stopMml(sssBgmTrack);
         }
         else if (isSoundsSomeSoundsLibraryEnabled) {
             sss.stopBgm();
+        }
+    }
+    function update$4() {
+        if (isAudioFilesEnabled) {
+            updateForAudioFiles();
+        }
+        if (isSoundsSomeSoundsLibraryEnabled) {
+            sss.update();
+        }
+    }
+    function resume() {
+        if (audioContext != null) {
+            audioContext.resume();
+        }
+        if (exports.algoChipSession != null) {
+            exports.algoChipSession.resumeAudioContext();
+        }
+    }
+    function unload() {
+        if (isAudioFilesEnabled) {
+            stopAllAudioFiles();
+        }
+        if (isAlgoChipLibraryEnabled) {
+            disposeVisibilityController();
+            if (exports.algoChipSession != null) {
+                exports.algoChipSession.close();
+            }
         }
     }
     function playAudioFile(name, _volume = 1) {
@@ -3139,17 +3257,17 @@ lll
     let options$1;
     let textCacheEnableTicks = 10;
     let loopFrameRequestId;
-    function init$2(__init, __update, _options) {
+    async function init$2(__init, __update, _options) {
         _init$1 = __init;
         _update$1 = __update;
         options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
         init$9(options$1.theme.isDarkColor, options$1.colorPalette);
         init$8(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.captureDurationSec, options$1.theme);
         init$4(() => {
-            audioContext.resume();
+            resume();
         });
         init$7();
-        _init$1();
+        await _init$1();
         update$3();
     }
     function update$3() {
@@ -3162,13 +3280,8 @@ lll
         if (nextFrameTime < now || nextFrameTime > now + deltaTime * 2) {
             nextFrameTime = now + deltaTime;
         }
-        if (isAudioFilesEnabled) {
-            updateForAudioFiles();
-        }
-        if (isSoundsSomeSoundsLibraryEnabled) {
-            sss.update();
-        }
         update$4();
+        update$5();
         _update$1();
         if (options$1.isCapturing) {
             capture();
@@ -3901,7 +4014,7 @@ lll
     }
     /** @ignore */
     function startRecording() {
-        start(canvas, audioContext, [gainNodeForAudioFiles, sssGainNode], size);
+        start(canvas, audioContext, [gainNodeForAudioFiles, algoChipGainNode, sssGainNode], size);
     }
     /** @ignore */
     function stopRecording() {
@@ -3998,7 +4111,6 @@ lll
     let hiScore = 0;
     let fastestTime;
     let isNoTitle = true;
-    let audioSeed = 0;
     let currentOptions;
     let loopOptions;
     let scoreBoards;
@@ -4041,7 +4153,6 @@ lll
             currentOptions.theme === "dark") {
             theme.isDarkColor = true;
         }
-        audioSeed = currentOptions.audioSeed + currentOptions.seed;
         if (currentOptions.isMinifying) {
             showMinifiedScript();
         }
@@ -4063,7 +4174,7 @@ lll
     function onUnload() {
         stop$1();
         stopRecording();
-        stopAllAudioFiles();
+        unload();
         window.update = undefined;
         window.title = undefined;
         window.description = undefined;
@@ -4071,7 +4182,8 @@ lll
         window.options = undefined;
         window.audioFiles = undefined;
     }
-    function _init() {
+    async function _init() {
+        let audioSeed = currentOptions.audioSeed + currentOptions.seed;
         if (typeof description !== "undefined" &&
             description != null &&
             description.trim().length > 0) {
@@ -4090,13 +4202,15 @@ lll
         if (typeof characters !== "undefined" && characters != null) {
             defineCharacters(characters, "a");
         }
-        init$3({
-            audioSeed,
-            audioVolume: currentOptions.audioVolume,
-            audioTempo: currentOptions.audioTempo,
-            bgmName: currentOptions.bgmName,
-            bgmVolume: currentOptions.bgmVolume,
-        });
+        if (currentOptions.isSoundEnabled) {
+            currentOptions.isSoundEnabled = await init$3({
+                audioSeed,
+                audioVolume: currentOptions.audioVolume,
+                audioTempo: currentOptions.audioTempo,
+                bgmName: currentOptions.bgmName,
+                bgmVolume: currentOptions.bgmVolume,
+            });
+        }
         setColor("black");
         if (isNoTitle) {
             initInGame();
@@ -4692,6 +4806,7 @@ lll
     exports.rndi = rndi;
     exports.rnds = rnds;
     exports.round = round;
+    exports.setAudioSeed = setSeed;
     exports.sin = sin;
     exports.sl = sl;
     exports.sqrt = sqrt;
