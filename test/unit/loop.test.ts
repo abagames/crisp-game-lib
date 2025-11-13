@@ -1,48 +1,36 @@
 /**
  * Unit tests for src/loop.ts
  *
- * Tests:
- * 1. init calls view/color/input in the correct order
- * 2. Frame skip correction (nextFrameTime adjustment)
- * 3. textCacheEnableTicks enable timing
+ * The refactored loop is now responsible purely for scheduling and per-frame
+ * updates, so these tests focus on verifying timing, dependency updates, and
+ * capture behavior rather than subsystem initialization.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { setupFakeTimers, getClock, advanceFrame } from '../helpers/setup';
-import * as loop from '../../src/loop';
 
-// Mock dependencies
-vi.mock('../../src/view', () => ({
-  init: vi.fn(),
+// Mock dependencies that loop interacts with each frame.
+const viewMock = vi.hoisted(() => ({
   capture: vi.fn(),
 }));
 
-vi.mock('../../src/color', () => ({
-  init: vi.fn(),
-}));
-
-vi.mock('../../src/input', () => ({
-  init: vi.fn(),
+const inputMock = vi.hoisted(() => ({
   update: vi.fn(),
 }));
 
-vi.mock('../../src/letter', () => ({
-  init: vi.fn(),
+const letterMock = vi.hoisted(() => ({
   enableCache: vi.fn(),
 }));
 
-vi.mock('../../src/audio', () => ({
-  audioContext: {
-    resume: vi.fn(),
-  },
-  isAudioFilesEnabled: false,
-  isSoundsSomeSoundsLibraryEnabled: false,
-  updateForAudioFiles: vi.fn(),
+const audioMock = vi.hoisted(() => ({
+  update: vi.fn(),
 }));
 
-// Mock global sss
-global.sss = {
-  update: vi.fn(),
-};
+vi.mock('../../src/view', () => viewMock);
+vi.mock('../../src/input', () => inputMock);
+vi.mock('../../src/letter', () => letterMock);
+vi.mock('../../src/audio', () => audioMock);
+
+let loop: typeof import('../../src/loop');
 
 describe('loop', () => {
   setupFakeTimers();
@@ -50,10 +38,12 @@ describe('loop', () => {
   let mockInit: () => void;
   let mockUpdate: () => void;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockInit = vi.fn();
     mockUpdate = vi.fn();
     vi.clearAllMocks();
+    vi.resetModules();
+    loop = await import('../../src/loop');
   });
 
   afterEach(() => {
@@ -61,129 +51,56 @@ describe('loop', () => {
   });
 
   describe('init', () => {
-    it('should call initialization functions in correct order', async () => {
+    it('should use mocked dependencies', async () => {
       const viewModule = await import('../../src/view');
-      const colorModule = await import('../../src/color');
+      const audioModule = await import('../../src/audio');
       const inputModule = await import('../../src/input');
       const letterModule = await import('../../src/letter');
 
-      const calls: string[] = [];
-
-      vi.mocked(colorModule.init).mockImplementation(() => {
-        calls.push('color.init');
-      });
-
-      vi.mocked(viewModule.init).mockImplementation(() => {
-        calls.push('view.init');
-      });
-
-      vi.mocked(inputModule.init).mockImplementation(() => {
-        calls.push('input.init');
-      });
-
-      vi.mocked(letterModule.init).mockImplementation(() => {
-        calls.push('letter.init');
-      });
-
-      mockInit.mockImplementation(() => {
-        calls.push('user.init');
-      });
-
-      loop.init(mockInit, mockUpdate);
-
-      // Verify initialization order
-      expect(calls).toEqual([
-        'color.init',
-        'view.init',
-        'input.init',
-        'letter.init',
-        'user.init',
-      ]);
+      expect(viewModule.capture).toBe(viewMock.capture);
+      expect(audioModule.update).toBe(audioMock.update);
+      expect(inputModule.update).toBe(inputMock.update);
+      expect(letterModule.enableCache).toBe(letterMock.enableCache);
     });
 
-    it('should merge options with defaults', async () => {
-      const viewModule = await import('../../src/view');
-      const colorModule = await import('../../src/color');
+    it('should run user init and start the animation loop', async () => {
+      await loop.init(mockInit, mockUpdate, false);
 
-      const customOptions = {
-        viewSize: { x: 200, y: 150 },
-        theme: { name: 'pixel' as const, isUsingPixi: true, isDarkColor: false },
-      };
+      expect(mockInit).toHaveBeenCalledTimes(1);
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
 
-      loop.init(mockInit, mockUpdate, customOptions);
-
-      // Verify color.init was called with theme's isDarkColor
-      expect(colorModule.init).toHaveBeenCalledWith(false, undefined);
-
-      // Verify view.init was called with merged options
-      expect(viewModule.init).toHaveBeenCalledWith(
-        { x: 200, y: 150 },
-        '#111',
-        'black',
-        false,
-        false,
-        1,
-        undefined,
-        customOptions.theme
-      );
+      advanceFrame();
+      expect(mockUpdate).toHaveBeenCalledTimes(2);
     });
   });
 
-  describe('update loop', () => {
-    it('should initialize update loop with requestAnimationFrame', () => {
-      loop.init(mockInit, mockUpdate);
+  describe('per-frame behavior', () => {
+    it('should update audio and input every frame', async () => {
+      await loop.init(mockInit, mockUpdate, false);
+      expect(audioMock.update).toHaveBeenCalledTimes(1);
+      expect(inputMock.update).toHaveBeenCalledTimes(1);
 
-      // Verify that init was called
-      // Note: mockUpdate is called asynchronously via requestAnimationFrame,
-      // so we just verify that the initialization succeeded
-      expect(mockInit).toHaveBeenCalled();
+      advanceFrame();
+
+      expect(audioMock.update).toHaveBeenCalledTimes(2);
+      expect(inputMock.update).toHaveBeenCalledTimes(2);
     });
-  });
 
-  describe('frame skip correction and timing', () => {
-    it('should have frame timing logic with nextFrameTime', async () => {
-      loop.init(mockInit, mockUpdate);
+    it('should enable the letter cache after the configured delay', async () => {
+      await loop.init(mockInit, mockUpdate, false);
+      expect(letterMock.enableCache).not.toHaveBeenCalled();
 
-      // The loop implements frame skip correction and time clamping in src/loop.ts:84-108:
-      // - Line 87-89: Skips frames if called too early (now < nextFrameTime - targetFps/12)
-      // - Line 90: Advances nextFrameTime by deltaTime each frame
-      // - Line 91-93: Clamps nextFrameTime if too far in past/future to prevent catch-up
-      //
-      // These mechanisms ensure stable frame timing even when:
-      // - Browser throttles requestAnimationFrame (e.g., tab in background)
-      // - Performance varies between frames
-      // - Large time jumps occur
+      for (let i = 0; i < 9; i += 1) {
+        advanceFrame();
+      }
 
-      // Verify init was called, confirming the loop is set up
-      expect(mockInit).toHaveBeenCalled();
-    });
-  });
-
-  describe('textCacheEnableTicks', () => {
-    it('should have letter.enableCache mechanism in update loop', async () => {
-      const letterModule = await import('../../src/letter');
-
-      // Clear mocks to ensure clean state
-      vi.clearAllMocks();
-
-      loop.init(mockInit, mockUpdate);
-
-      // The text cache enablement is controlled by textCacheEnableTicks
-      // which decrements each frame and calls letter.enableCache when it reaches 0
-      // (src/loop.ts:105-108)
-
-      // Verify that the mechanism is in place
-      expect(letterModule.enableCache).toBeDefined();
-
-      // Note: Testing the exact frame count with fake timers and requestAnimationFrame
-      // is challenging due to the interaction between fake timers, RAF, and performance.now
-      // The key verification is that the mechanism exists and is called during the loop
+      expect(letterMock.enableCache).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('stop', () => {
     it('should cancel animation frame', () => {
-      loop.init(mockInit, mockUpdate);
+      loop.init(mockInit, mockUpdate, false);
 
       loop.stop();
 
@@ -195,31 +112,19 @@ describe('loop', () => {
   });
 
   describe('capture mode', () => {
-    it('should pass isCapturing option correctly', async () => {
-      const viewModule = await import('../../src/view');
+    it('should call view.capture on every frame when enabled', async () => {
+      await loop.init(mockInit, mockUpdate, true);
+      expect(viewMock.capture).toHaveBeenCalledTimes(1);
 
-      loop.init(mockInit, mockUpdate, { isCapturing: true });
-
-      // Verify that view.init was called with isCapturing: true
-      const initCalls = vi.mocked(viewModule.init).mock.calls;
-      expect(initCalls.length).toBeGreaterThan(0);
-      // The 4th argument (index 3) should be isCapturing: true
-      expect(initCalls[0][3]).toBe(true);
+      advanceFrame();
+      expect(viewMock.capture).toHaveBeenCalledTimes(2);
     });
-  });
 
-  describe('sound', () => {
-    it('should handle isSoundEnabled option', () => {
-      // Test that sound options are accepted
-      loop.init(mockInit, mockUpdate, { isSoundEnabled: true });
-      expect(mockInit).toHaveBeenCalled();
+    it('should skip view.capture when capturing is disabled', async () => {
+      await loop.init(mockInit, mockUpdate, false);
+      advanceFrame();
 
-      // Note: Testing the actual sss.update call within the requestAnimationFrame loop
-      // is complex with fake-timers. The key is that the option is accepted and used.
-      loop.stop();
-
-      loop.init(mockInit, mockUpdate, { isSoundEnabled: false });
-      expect(mockInit).toHaveBeenCalled();
+      expect(viewMock.capture).not.toHaveBeenCalled();
     });
   });
 });

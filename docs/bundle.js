@@ -2035,7 +2035,7 @@ lll
     let letterContext;
     let scaledLetterCanvas;
     let scaledLetterContext;
-    const defaultOptions$4 = {
+    const defaultOptions$3 = {
         color: "black",
         backgroundColor: "transparent",
         rotation: 0,
@@ -2432,12 +2432,12 @@ lll
         return b;
     }
     function mergeDefaultOptions(_options) {
-        let options = Object.assign(Object.assign({}, defaultOptions$4), _options);
+        let options = Object.assign(Object.assign({}, defaultOptions$3), _options);
         if (_options.scale != null) {
-            options.scale = Object.assign(Object.assign({}, defaultOptions$4.scale), _options.scale);
+            options.scale = Object.assign(Object.assign({}, defaultOptions$3.scale), _options.scale);
         }
         if (_options.mirror != null) {
-            options.mirror = Object.assign(Object.assign({}, defaultOptions$4.mirror), _options.mirror);
+            options.mirror = Object.assign(Object.assign({}, defaultOptions$3.mirror), _options.mirror);
         }
         return options;
     }
@@ -2588,10 +2588,10 @@ lll
         "BrowserBack",
     ];
     let code;
-    const defaultOptions$3 = {
+    const defaultOptions$2 = {
         onKeyDown: undefined,
     };
-    let options$3;
+    let options$2;
     let isKeyPressing = false;
     let isKeyPressed = false;
     let isKeyReleased = false;
@@ -2599,7 +2599,7 @@ lll
     let pressedCode = {};
     let releasedCode = {};
     function init$6(_options) {
-        options$3 = Object.assign(Object.assign({}, defaultOptions$3), _options);
+        options$2 = Object.assign(Object.assign({}, defaultOptions$2), _options);
         code = fromEntities(codes.map((c) => [
             c,
             {
@@ -2611,8 +2611,8 @@ lll
         document.addEventListener("keydown", (e) => {
             isKeyPressing = isKeyPressed = true;
             pressingCode[e.code] = pressedCode[e.code] = true;
-            if (options$3.onKeyDown != null) {
-                options$3.onKeyDown();
+            if (options$2.onKeyDown != null) {
+                options$2.onKeyDown();
             }
             if (e.code === "AltLeft" ||
                 e.code === "AltRight" ||
@@ -2716,7 +2716,7 @@ lll
     let isPressed$1 = false;
     let isJustPressed$1 = false;
     let isJustReleased$1 = false;
-    let defaultOptions$2 = {
+    let defaultOptions$1 = {
         isDebugMode: false,
         anchor: new Vector(),
         padding: new Vector(),
@@ -2724,7 +2724,7 @@ lll
     };
     let screen;
     let pixelSize;
-    let options$2;
+    let options$1;
     const debugRandom = new Random();
     const debugPos = new Vector();
     const debugMoveVel = new Vector();
@@ -2734,12 +2734,12 @@ lll
     let isClicked = false;
     let isReleased = false;
     function init$5(_screen, _pixelSize, _options) {
-        options$2 = Object.assign(Object.assign({}, defaultOptions$2), _options);
+        options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
         screen = _screen;
-        pixelSize = new Vector(_pixelSize.x + options$2.padding.x * 2, _pixelSize.y + options$2.padding.y * 2);
-        cursorPos.set(screen.offsetLeft + screen.clientWidth * (0.5 - options$2.anchor.x), screen.offsetTop + screen.clientWidth * (0.5 - options$2.anchor.y));
-        if (options$2.isDebugMode) {
-            debugPos.set(screen.offsetLeft + screen.clientWidth * (0.5 - options$2.anchor.x), screen.offsetTop + screen.clientWidth * (0.5 - options$2.anchor.y));
+        pixelSize = new Vector(_pixelSize.x + options$1.padding.x * 2, _pixelSize.y + options$1.padding.y * 2);
+        cursorPos.set(screen.offsetLeft + screen.clientWidth * (0.5 - options$1.anchor.x), screen.offsetTop + screen.clientWidth * (0.5 - options$1.anchor.y));
+        if (options$1.isDebugMode) {
+            debugPos.set(screen.offsetLeft + screen.clientWidth * (0.5 - options$1.anchor.x), screen.offsetTop + screen.clientWidth * (0.5 - options$1.anchor.y));
         }
         document.addEventListener("mousedown", (e) => {
             onDown(e.pageX, e.pageY);
@@ -2765,7 +2765,7 @@ lll
     }
     function update$6() {
         calcPointerPos(cursorPos.x, cursorPos.y, pos$1);
-        if (options$2.isDebugMode && !pos$1.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
+        if (options$1.isDebugMode && !pos$1.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
             updateDebug();
             pos$1.set(debugPos);
             isJustPressed$1 = !isPressed$1 && debugIsDown;
@@ -2787,12 +2787,12 @@ lll
         if (screen == null) {
             return;
         }
-        v.x = Math.round(((x - screen.offsetLeft) / screen.clientWidth + options$2.anchor.x) *
+        v.x = Math.round(((x - screen.offsetLeft) / screen.clientWidth + options$1.anchor.x) *
             pixelSize.x -
-            options$2.padding.x);
-        v.y = Math.round(((y - screen.offsetTop) / screen.clientHeight + options$2.anchor.y) *
+            options$1.padding.x);
+        v.y = Math.round(((y - screen.offsetTop) / screen.clientHeight + options$1.anchor.y) *
             pixelSize.y -
-            options$2.padding.y);
+            options$1.padding.y);
     }
     function updateDebug() {
         if (debugMoveVel.length > 0) {
@@ -2822,8 +2822,8 @@ lll
     function onDown(x, y) {
         cursorPos.set(x, y);
         isDown = isClicked = true;
-        if (options$2.onPointerDownOrUp != null) {
-            options$2.onPointerDownOrUp();
+        if (options$1.onPointerDownOrUp != null) {
+            options$1.onPointerDownOrUp();
         }
     }
     function onMove(x, y) {
@@ -2832,8 +2832,8 @@ lll
     function onUp(e) {
         isDown = false;
         isReleased = true;
-        if (options$2.onPointerDownOrUp != null) {
-            options$2.onPointerDownOrUp();
+        if (options$1.onPointerDownOrUp != null) {
+            options$1.onPointerDownOrUp();
         }
     }
 
@@ -3243,30 +3243,13 @@ lll
     const targetFps = 68;
     const deltaTime = 1000 / targetFps;
     let nextFrameTime = 0;
-    const defaultOptions$1 = {
-        viewSize: { x: 100, y: 100 },
-        bodyBackground: "#111",
-        viewBackground: "black",
-        isCapturing: false,
-        isCapturingGameCanvasOnly: false,
-        isSoundEnabled: true,
-        captureCanvasScale: 1,
-        theme: { name: "simple", isUsingPixi: false, isDarkColor: false },
-        colorPalette: undefined,
-    };
-    let options$1;
     let textCacheEnableTicks = 10;
     let loopFrameRequestId;
-    async function init$2(__init, __update, _options) {
+    let isCapturing;
+    async function init$2(__init, __update, _isCapturing) {
         _init$1 = __init;
         _update$1 = __update;
-        options$1 = Object.assign(Object.assign({}, defaultOptions$1), _options);
-        init$9(options$1.theme.isDarkColor, options$1.colorPalette);
-        init$8(options$1.viewSize, options$1.bodyBackground, options$1.viewBackground, options$1.isCapturing, options$1.isCapturingGameCanvasOnly, options$1.captureCanvasScale, options$1.captureDurationSec, options$1.theme);
-        init$4(() => {
-            resume();
-        });
-        init$7();
+        isCapturing = _isCapturing;
         await _init$1();
         update$3();
     }
@@ -3283,7 +3266,7 @@ lll
         update$4();
         update$5();
         _update$1();
-        if (options$1.isCapturing) {
+        if (isCapturing) {
             capture();
         }
         textCacheEnableTicks--;
@@ -4112,7 +4095,6 @@ lll
     let fastestTime;
     let isNoTitle = true;
     let currentOptions;
-    let loopOptions;
     let scoreBoards;
     let isWaitingRewind = false;
     let isRewinding = false;
@@ -4139,36 +4121,10 @@ lll
         else {
             currentOptions = defaultOptions;
         }
-        const theme = {
-            name: currentOptions.theme,
-            isUsingPixi: false,
-            isDarkColor: false,
-        };
-        if (currentOptions.theme !== "simple" && currentOptions.theme !== "dark") {
-            theme.isUsingPixi = true;
-        }
-        if (currentOptions.theme === "pixel" ||
-            currentOptions.theme === "shapeDark" ||
-            currentOptions.theme === "crt" ||
-            currentOptions.theme === "dark") {
-            theme.isDarkColor = true;
-        }
         if (currentOptions.isMinifying) {
             showMinifiedScript();
         }
-        loopOptions = {
-            viewSize: currentOptions.viewSize,
-            bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
-            viewBackground: theme.isDarkColor ? "blue" : "white",
-            theme,
-            isSoundEnabled: currentOptions.isSoundEnabled,
-            isCapturing: currentOptions.isCapturing,
-            isCapturingGameCanvasOnly: currentOptions.isCapturingGameCanvasOnly,
-            captureCanvasScale: currentOptions.captureCanvasScale,
-            captureDurationSec: currentOptions.captureDurationSec,
-            colorPalette: currentOptions.colorPalette,
-        };
-        init$2(_init, _update, loopOptions);
+        init$2(_init, _update, currentOptions.isCapturing);
     }
     /** @ignore */
     function onUnload() {
@@ -4183,6 +4139,28 @@ lll
         window.audioFiles = undefined;
     }
     async function _init() {
+        const theme = {
+            name: currentOptions.theme,
+            isUsingPixi: false,
+            isDarkColor: false,
+        };
+        if (currentOptions.theme !== "simple" && currentOptions.theme !== "dark") {
+            theme.isUsingPixi = true;
+        }
+        if (currentOptions.theme === "pixel" ||
+            currentOptions.theme === "shapeDark" ||
+            currentOptions.theme === "crt" ||
+            currentOptions.theme === "dark") {
+            theme.isDarkColor = true;
+        }
+        const bodyBackground = theme.isDarkColor ? "#101010" : "#e0e0e0";
+        const viewBackground = theme.isDarkColor ? "blue" : "white";
+        init$9(theme.isDarkColor, currentOptions.colorPalette);
+        init$8(currentOptions.viewSize, bodyBackground, viewBackground, currentOptions.isCapturing, currentOptions.isCapturingGameCanvasOnly, currentOptions.captureCanvasScale, currentOptions.captureDurationSec, theme);
+        init$4(() => {
+            resume();
+        });
+        init$7();
         let audioSeed = currentOptions.audioSeed + currentOptions.seed;
         if (typeof description !== "undefined" &&
             description != null &&

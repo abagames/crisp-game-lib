@@ -6,12 +6,13 @@ import * as pointer from "./pointer";
 import { Vector, VectorLike } from "./vector";
 import { Random } from "./random";
 import * as collision from "./collision";
-import { Color } from "./color";
+import { Color, init as initColor } from "./color";
 import {
   defineCharacters,
   print,
   letterSize,
   smallLetterWidth,
+  init as initLetter,
 } from "./letter";
 import * as _particle from "./particle";
 import { times, remove } from "./util";
@@ -22,14 +23,13 @@ import {
   Button,
 } from "./button";
 import * as replay from "./replay";
-import { Theme, ThemeName } from "./loop";
 import * as audio from "./audio";
 import * as recorder from "./recorder";
 declare const Terser;
 declare const cloneDeep;
 declare const window: any;
 
-export type { Vector, VectorLike, Theme, ThemeName };
+export type { Vector, VectorLike };
 export type { Color };
 export type { Options };
 export type { Collision } from "./collision";
@@ -74,6 +74,20 @@ export let time: number;
 /** A variable that becomes `true` if the game is replaying. */
 /** @ignore */
 export let isReplaying = false;
+/** Name for an appearance theme. */
+export type ThemeName =
+  | "simple"
+  | "pixel"
+  | "shape"
+  | "shapeDark"
+  | "crt"
+  | "dark";
+/** @ignore */
+export type Theme = {
+  name: ThemeName;
+  isUsingPixi: boolean;
+  isDarkColor: boolean;
+};
 
 /**
  * Get a random float value.
@@ -493,38 +507,10 @@ export function onLoad() {
   } else {
     currentOptions = defaultOptions;
   }
-  const theme = {
-    name: currentOptions.theme,
-    isUsingPixi: false,
-    isDarkColor: false,
-  };
-  if (currentOptions.theme !== "simple" && currentOptions.theme !== "dark") {
-    theme.isUsingPixi = true;
-  }
-  if (
-    currentOptions.theme === "pixel" ||
-    currentOptions.theme === "shapeDark" ||
-    currentOptions.theme === "crt" ||
-    currentOptions.theme === "dark"
-  ) {
-    theme.isDarkColor = true;
-  }
   if (currentOptions.isMinifying) {
     showMinifiedScript();
   }
-  loopOptions = {
-    viewSize: currentOptions.viewSize,
-    bodyBackground: theme.isDarkColor ? "#101010" : "#e0e0e0",
-    viewBackground: theme.isDarkColor ? "blue" : "white",
-    theme,
-    isSoundEnabled: currentOptions.isSoundEnabled,
-    isCapturing: currentOptions.isCapturing,
-    isCapturingGameCanvasOnly: currentOptions.isCapturingGameCanvasOnly,
-    captureCanvasScale: currentOptions.captureCanvasScale,
-    captureDurationSec: currentOptions.captureDurationSec,
-    colorPalette: currentOptions.colorPalette,
-  };
-  loop.init(_init, _update, loopOptions);
+  loop.init(_init, _update, currentOptions.isCapturing);
 }
 
 /** @ignore */
@@ -541,6 +527,39 @@ export function onUnload() {
 }
 
 async function _init() {
+  const theme = {
+    name: currentOptions.theme,
+    isUsingPixi: false,
+    isDarkColor: false,
+  };
+  if (currentOptions.theme !== "simple" && currentOptions.theme !== "dark") {
+    theme.isUsingPixi = true;
+  }
+  if (
+    currentOptions.theme === "pixel" ||
+    currentOptions.theme === "shapeDark" ||
+    currentOptions.theme === "crt" ||
+    currentOptions.theme === "dark"
+  ) {
+    theme.isDarkColor = true;
+  }
+  const bodyBackground = theme.isDarkColor ? "#101010" : "#e0e0e0";
+  const viewBackground = theme.isDarkColor ? "blue" : "white";
+  initColor(theme.isDarkColor, currentOptions.colorPalette);
+  view.init(
+    currentOptions.viewSize,
+    bodyBackground,
+    viewBackground,
+    currentOptions.isCapturing,
+    currentOptions.isCapturingGameCanvasOnly,
+    currentOptions.captureCanvasScale,
+    currentOptions.captureDurationSec,
+    theme
+  );
+  input.init(() => {
+    audio.resume();
+  });
+  initLetter();
   let audioSeed = currentOptions.audioSeed + currentOptions.seed;
   if (
     typeof description !== "undefined" &&
