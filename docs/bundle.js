@@ -312,17 +312,37 @@
         return [(n & 0xff0000) >> 16, (n & 0xff00) >> 8, n & 0xff];
     }
     function colorToNumber(color, ratio = 1) {
-        const v = typeof color == "number" ? colorPaletteValues[color] : values[color];
+        const v = resolveColorValue(color);
         return ((Math.floor(v.r * ratio) << 16) |
             (Math.floor(v.g * ratio) << 8) |
             Math.floor(v.b * ratio));
     }
     function colorToStyle(color, ratio = 1) {
-        const v = typeof color == "number" ? colorPaletteValues[color] : values[color];
+        const v = resolveColorValue(color);
         const r = Math.floor(v.r * ratio);
         const g = Math.floor(v.g * ratio);
         const b = Math.floor(v.b * ratio);
         return v.a < 1 ? `rgba(${r},${g},${b},${v.a})` : `rgb(${r},${g},${b})`;
+    }
+    function resolveColorValue(color) {
+        if (typeof color === "number") {
+            if (colorPaletteValues == null) {
+                throw new Error(`color(${color}) is invalid because no custom color palette is defined.`);
+            }
+            const paletteColor = colorPaletteValues[color];
+            if (paletteColor == null) {
+                throw new Error(`color(${color}) is out of bounds for the current color palette (length: ${colorPaletteValues.length}).`);
+            }
+            return paletteColor;
+        }
+        if (values == null) {
+            throw new Error(`color("${color}") was used before the color system was initialized.`);
+        }
+        const namedColor = values[color];
+        if (namedColor == null) {
+            throw new Error(`Unknown color "${color}". Supported colors: ${colors.join(", ")}.`);
+        }
+        return namedColor;
     }
 
     const gridFilterFragment = `
@@ -2014,7 +2034,7 @@ lll
                 return print(str, x, y, Object.assign({ isCharacter, isCheckingCollision: true, color: currentColor }, options));
             }
             else {
-                throw "invalid params";
+                throw new Error(`${isCharacter ? "char" : "text"}(): expected numeric y when x is a number.`);
             }
         }
         else {
@@ -3336,7 +3356,7 @@ lll
      * @returns Information about objects that collided during drawing.
      */
     function rect(x, y, width, height) {
-        return drawRect(false, x, y, width, height);
+        return drawRect(false, x, y, width, height, "rect");
     }
     /**
      * Draw a box.
@@ -3347,7 +3367,7 @@ lll
      * @returns Information about objects that collided during drawing.
      */
     function box(x, y, width, height) {
-        return drawRect(true, x, y, width, height);
+        return drawRect(true, x, y, width, height, "box");
     }
     /**
      * Draw a bar, which is a line specified by the center coordinates and length.
@@ -3397,7 +3417,7 @@ lll
                 }
             }
             else {
-                throw "invalid params";
+                throwLineParamsError("when x1 is a number, y1 must also be a number.");
             }
         }
         else {
@@ -3408,7 +3428,7 @@ lll
                     thickness = y2;
                 }
                 else {
-                    throw "invalid params";
+                    throwLineParamsError("when x1 is a Vector and y1 is a number, x2 must be a number representing the new y-coordinate.");
                 }
             }
             else {
@@ -3418,7 +3438,7 @@ lll
                     thickness = x2;
                 }
                 else {
-                    throw "invalid params";
+                    throwLineParamsError("when both endpoints are Vectors, the last argument must be the thickness (number).");
                 }
             }
         }
@@ -3491,7 +3511,7 @@ lll
         concatTmpHitBoxes();
         return collision;
     }
-    function drawRect(isAlignCenter, x, y, width, height) {
+    function drawRect(isAlignCenter, x, y, width, height, fnName = "rect") {
         if (typeof x === "number") {
             if (typeof y === "number") {
                 if (typeof width === "number") {
@@ -3507,7 +3527,7 @@ lll
                 }
             }
             else {
-                throw "invalid params";
+                throwRectParamsError(fnName, "when x is a number, y must also be a number.");
             }
         }
         else {
@@ -3519,13 +3539,19 @@ lll
                     return addRect(isAlignCenter, x.x, x.y, y, width);
                 }
                 else {
-                    throw "invalid params";
+                    throwRectParamsError(fnName, "when x is a Vector and y is a number, width must be a number.");
                 }
             }
             else {
                 return addRect(isAlignCenter, x.x, x.y, y.x, y.y);
             }
         }
+    }
+    function throwLineParamsError(message) {
+        throw new Error(`line(): ${message}`);
+    }
+    function throwRectParamsError(fnName, message) {
+        throw new Error(`${fnName}(): ${message}`);
     }
     function drawLine(p, l, thickness, isAddingToTmp = false) {
         let isDrawing = true;
@@ -4090,6 +4116,7 @@ lll
         inGame: updateInGame,
         gameOver: updateGameOver,
         rewind: updateRewind,
+        error: updateRuntimeError,
     };
     let hiScore = 0;
     let fastestTime;
@@ -4103,6 +4130,7 @@ lll
     let gameOverText;
     let gameScriptFile;
     let localStorageKey;
+    let runtimeErrorLines;
     /** @ignore */
     function init(settings) {
         window.update = settings.update;
@@ -4199,6 +4227,10 @@ lll
         }
     }
     function _update() {
+        if (state === "error") {
+            updateRuntimeError();
+            return;
+        }
         exports.df = exports.difficulty = exports.ticks / 3600 + 1;
         exports.tc = exports.ticks;
         const prevScore = exports.score;
@@ -4212,7 +4244,13 @@ lll
             ijr: isJustReleased,
         };
         clear();
-        updateFunc[state]();
+        try {
+            updateFunc[state]();
+        }
+        catch (error) {
+            handleUpdateError(error);
+            return;
+        }
         if (theme.isUsingPixi) {
             endFill();
             if (theme.name === "crt") {
@@ -4470,6 +4508,125 @@ lll
                 edgeColor: currentOptions.textEdgeColor.score,
             });
         }
+    }
+    function handleUpdateError(error) {
+        console.error("Error inside update():", error);
+        if (state === "error" && runtimeErrorLines != null) {
+            updateRuntimeError();
+            return;
+        }
+        runtimeErrorLines = createRuntimeErrorLines(error);
+        state = "error";
+        stopBgmForError();
+        updateRuntimeError();
+    }
+    function updateRuntimeError() {
+        if (runtimeErrorLines == null || runtimeErrorLines.length === 0) {
+            runtimeErrorLines = ["UPDATE ERROR", "See console for details."];
+        }
+        const optionsForText = currentOptions !== null && currentOptions !== void 0 ? currentOptions : defaultOptions;
+        const lw = optionsForText.isUsingSmallText ? smallLetterWidth : letterSize;
+        const totalHeight = runtimeErrorLines.length * letterSize;
+        const startY = Math.max(0, Math.floor((size.y - totalHeight) / 2));
+        safeResetViewColor();
+        clear$1();
+        runtimeErrorLines.forEach((line, index) => {
+            const x = Math.max(0, Math.floor((size.x - line.length * lw) / 2));
+            print(line, x, startY + index * letterSize, {
+                isSmallText: optionsForText.isUsingSmallText,
+                edgeColor: optionsForText.textEdgeColor.gameOver,
+            });
+        });
+    }
+    function safeResetViewColor() {
+        try {
+            setColor("black");
+        }
+        catch (
+        /** ignore */
+        _error) {
+            // Ignore; we simply leave the previous color in place.
+        }
+    }
+    function stopBgmForError() {
+        if ((currentOptions === null || currentOptions === void 0 ? void 0 : currentOptions.isPlayingBgm) &&
+            currentOptions.isSoundEnabled &&
+            typeof stopBgm === "function") {
+            stopBgm();
+        }
+    }
+    function createRuntimeErrorLines(error) {
+        const message = extractRuntimeErrorMessage(error);
+        const lines = wrapRuntimeErrorMessage(message);
+        const fullLines = ["UPDATE ERROR", ...lines];
+        fullLines.push("See console for details.");
+        return fullLines;
+    }
+    function extractRuntimeErrorMessage(error) {
+        var _a, _b;
+        if (error instanceof Error) {
+            const message = (_a = error.message) === null || _a === void 0 ? void 0 : _a.trim();
+            if (error.name && message && message.length > 0) {
+                return `${error.name}: ${message}`;
+            }
+            return (_b = message !== null && message !== void 0 ? message : error.name) !== null && _b !== void 0 ? _b : "Unknown error";
+        }
+        if (typeof error === "string") {
+            return error;
+        }
+        try {
+            return JSON.stringify(error);
+        }
+        catch (
+        /** ignore */
+        _) {
+            return "Unknown error";
+        }
+    }
+    function wrapRuntimeErrorMessage(message) {
+        const optionsForText = currentOptions !== null && currentOptions !== void 0 ? currentOptions : defaultOptions;
+        const lw = optionsForText.isUsingSmallText ? smallLetterWidth : letterSize;
+        const maxCharsPerLine = Math.max(6, Math.floor(size.x / lw) - 2);
+        const maxLines = 4;
+        const normalizedSegments = message
+            .split(/\r?\n/)
+            .map((segment) => segment.trim())
+            .filter((segment) => segment.length > 0);
+        if (normalizedSegments.length === 0) {
+            normalizedSegments.push("Unknown error");
+        }
+        const lines = [];
+        normalizedSegments.forEach((segment) => {
+            if (lines.length >= maxLines) {
+                return;
+            }
+            lines.push(...wrapSegment(segment, maxCharsPerLine, maxLines - lines.length));
+        });
+        return lines;
+    }
+    function wrapSegment(segment, maxCharsPerLine, remainingLineBudget) {
+        if (segment.length <= maxCharsPerLine) {
+            return [segment];
+        }
+        const results = [];
+        let rest = segment;
+        while (rest.length > 0 && results.length < remainingLineBudget) {
+            if (rest.length <= maxCharsPerLine) {
+                results.push(rest);
+                rest = "";
+                break;
+            }
+            let splitIndex = rest.lastIndexOf(" ", maxCharsPerLine);
+            if (splitIndex <= 0) {
+                splitIndex = maxCharsPerLine;
+            }
+            results.push(rest.slice(0, splitIndex).trim());
+            rest = rest.slice(splitIndex).trim();
+        }
+        if (rest.length > 0 && results.length < remainingLineBudget) {
+            results.push(rest);
+        }
+        return results;
     }
     function drawTime(time, x, y) {
         if (time == null) {

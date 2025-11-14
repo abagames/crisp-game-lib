@@ -121,8 +121,7 @@ function getRgb(i: number, isDarkColor: boolean) {
 }
 
 export function colorToNumber(color: Color | number, ratio = 1) {
-  const v =
-    typeof color == "number" ? colorPaletteValues[color] : values[color];
+  const v = resolveColorValue(color);
   return (
     (Math.floor(v.r * ratio) << 16) |
     (Math.floor(v.g * ratio) << 8) |
@@ -131,10 +130,38 @@ export function colorToNumber(color: Color | number, ratio = 1) {
 }
 
 export function colorToStyle(color: Color | number, ratio = 1) {
-  const v =
-    typeof color == "number" ? colorPaletteValues[color] : values[color];
+  const v = resolveColorValue(color);
   const r = Math.floor(v.r * ratio);
   const g = Math.floor(v.g * ratio);
   const b = Math.floor(v.b * ratio);
   return v.a < 1 ? `rgba(${r},${g},${b},${v.a})` : `rgb(${r},${g},${b})`;
+}
+
+function resolveColorValue(color: Color | number) {
+  if (typeof color === "number") {
+    if (colorPaletteValues == null) {
+      throw new Error(
+        `color(${color}) is invalid because no custom color palette is defined.`
+      );
+    }
+    const paletteColor = colorPaletteValues[color];
+    if (paletteColor == null) {
+      throw new Error(
+        `color(${color}) is out of bounds for the current color palette (length: ${colorPaletteValues.length}).`
+      );
+    }
+    return paletteColor;
+  }
+  if (values == null) {
+    throw new Error(
+      `color("${color}") was used before the color system was initialized.`
+    );
+  }
+  const namedColor = values[color];
+  if (namedColor == null) {
+    throw new Error(
+      `Unknown color "${color}". Supported colors: ${colors.join(", ")}.`
+    );
+  }
+  return namedColor;
 }

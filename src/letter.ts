@@ -117,7 +117,9 @@ export function letters(
         ...options,
       });
     } else {
-      throw "invalid params";
+      throw new Error(
+        `${isCharacter ? "char" : "text"}(): expected numeric y when x is a number.`
+      );
     }
   } else {
     return print(str, x.x, x.y, {

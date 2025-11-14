@@ -25,7 +25,7 @@ export function rect(
   width?: number | VectorLike,
   height?: number
 ) {
-  return drawRect(false, x, y, width, height);
+  return drawRect(false, x, y, width, height, "rect");
 }
 
 /**
@@ -42,7 +42,7 @@ export function box(
   width?: number | VectorLike,
   height?: number
 ) {
-  return drawRect(true, x, y, width, height);
+  return drawRect(true, x, y, width, height, "box");
 }
 
 /**
@@ -105,7 +105,9 @@ export function line(
         thickness = y2;
       }
     } else {
-      throw "invalid params";
+      throwLineParamsError(
+        "when x1 is a number, y1 must also be a number."
+      );
     }
   } else {
     if (typeof y1 === "number") {
@@ -114,7 +116,9 @@ export function line(
         p2.set(y1, x2);
         thickness = y2;
       } else {
-        throw "invalid params";
+        throwLineParamsError(
+          "when x1 is a Vector and y1 is a number, x2 must be a number representing the new y-coordinate."
+        );
       }
     } else {
       if (typeof x2 === "number") {
@@ -122,7 +126,9 @@ export function line(
         p2.set(y1);
         thickness = x2;
       } else {
-        throw "invalid params";
+        throwLineParamsError(
+          "when both endpoints are Vectors, the last argument must be the thickness (number)."
+        );
       }
     }
   }
@@ -220,7 +226,8 @@ function drawRect(
   x: number | VectorLike,
   y: number | VectorLike,
   width?: number | VectorLike,
-  height?: number
+  height?: number,
+  fnName = "rect"
 ) {
   if (typeof x === "number") {
     if (typeof y === "number") {
@@ -234,7 +241,10 @@ function drawRect(
         return addRect(isAlignCenter, x, y, width.x, width.y);
       }
     } else {
-      throw "invalid params";
+      throwRectParamsError(
+        fnName,
+        "when x is a number, y must also be a number."
+      );
     }
   } else {
     if (typeof y === "number") {
@@ -243,12 +253,23 @@ function drawRect(
       } else if (typeof width === "number") {
         return addRect(isAlignCenter, x.x, x.y, y, width);
       } else {
-        throw "invalid params";
+        throwRectParamsError(
+          fnName,
+          "when x is a Vector and y is a number, width must be a number."
+        );
       }
     } else {
       return addRect(isAlignCenter, x.x, x.y, y.x, y.y);
     }
   }
+}
+
+function throwLineParamsError(message: string): never {
+  throw new Error(`line(): ${message}`);
+}
+
+function throwRectParamsError(fnName: string, message: string): never {
+  throw new Error(`${fnName}(): ${message}`);
 }
 
 function drawLine(

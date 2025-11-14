@@ -460,13 +460,14 @@ declare function update();
 
 const seedRandom = new Random();
 const random = new Random();
-type State = "title" | "inGame" | "gameOver" | "rewind";
+type State = "title" | "inGame" | "gameOver" | "rewind" | "error";
 let state: State;
 let updateFunc = {
   title: updateTitle,
   inGame: updateInGame,
   gameOver: updateGameOver,
   rewind: updateRewind,
+  error: updateRuntimeError,
 };
 let hiScore = 0;
 let fastestTime: number;
@@ -481,6 +482,7 @@ let giveUpButton: Button;
 let gameOverText: string;
 let gameScriptFile: string;
 let localStorageKey: string;
+let runtimeErrorLines: string[] | undefined;
 
 /** @ignore */
 export function init(settings: {
@@ -602,6 +604,10 @@ async function _init() {
 }
 
 function _update() {
+  if (state === "error") {
+    updateRuntimeError();
+    return;
+  }
   df = difficulty = ticks / 3600 + 1;
   tc = ticks;
   const prevScore = score;
@@ -615,7 +621,12 @@ function _update() {
     ijr: input.isJustReleased,
   };
   collision.clear();
-  updateFunc[state]();
+  try {
+    updateFunc[state]();
+  } catch (error) {
+    handleUpdateError(error);
+    return;
+  }
   if (view.theme.isUsingPixi) {
     view.endFill();
     if (view.theme.name === "crt") {
@@ -897,6 +908,138 @@ function drawScoreOrTime() {
       }
     );
   }
+}
+
+function handleUpdateError(error: unknown) {
+  console.error("Error inside update():", error);
+  if (state === "error" && runtimeErrorLines != null) {
+    updateRuntimeError();
+    return;
+  }
+  runtimeErrorLines = createRuntimeErrorLines(error);
+  state = "error";
+  stopBgmForError();
+  updateRuntimeError();
+}
+
+function updateRuntimeError() {
+  if (runtimeErrorLines == null || runtimeErrorLines.length === 0) {
+    runtimeErrorLines = ["UPDATE ERROR", "See console for details."];
+  }
+  const optionsForText = currentOptions ?? defaultOptions;
+  const lw = optionsForText.isUsingSmallText ? smallLetterWidth : letterSize;
+  const totalHeight = runtimeErrorLines.length * letterSize;
+  const startY = Math.max(0, Math.floor((view.size.y - totalHeight) / 2));
+  safeResetViewColor();
+  view.clear();
+  runtimeErrorLines.forEach((line, index) => {
+    const x = Math.max(0, Math.floor((view.size.x - line.length * lw) / 2));
+    print(line, x, startY + index * letterSize, {
+      isSmallText: optionsForText.isUsingSmallText,
+      edgeColor: optionsForText.textEdgeColor.gameOver,
+    });
+  });
+}
+
+function safeResetViewColor() {
+  try {
+    view.setColor("black");
+  } catch (
+    /** ignore */
+    _error
+  ) {
+    // Ignore; we simply leave the previous color in place.
+  }
+}
+
+function stopBgmForError() {
+  if (
+    currentOptions?.isPlayingBgm &&
+    currentOptions.isSoundEnabled &&
+    typeof audio.stopBgm === "function"
+  ) {
+    audio.stopBgm();
+  }
+}
+
+function createRuntimeErrorLines(error: unknown): string[] {
+  const message = extractRuntimeErrorMessage(error);
+  const lines = wrapRuntimeErrorMessage(message);
+  const fullLines = ["UPDATE ERROR", ...lines];
+  fullLines.push("See console for details.");
+  return fullLines;
+}
+
+function extractRuntimeErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    const message = error.message?.trim();
+    if (error.name && message && message.length > 0) {
+      return `${error.name}: ${message}`;
+    }
+    return message ?? error.name ?? "Unknown error";
+  }
+  if (typeof error === "string") {
+    return error;
+  }
+  try {
+    return JSON.stringify(error);
+  } catch (
+    /** ignore */
+    _
+  ) {
+    return "Unknown error";
+  }
+}
+
+function wrapRuntimeErrorMessage(message: string): string[] {
+  const optionsForText = currentOptions ?? defaultOptions;
+  const lw = optionsForText.isUsingSmallText ? smallLetterWidth : letterSize;
+  const maxCharsPerLine = Math.max(6, Math.floor(view.size.x / lw) - 2);
+  const maxLines = 4;
+  const normalizedSegments = message
+    .split(/\r?\n/)
+    .map((segment) => segment.trim())
+    .filter((segment) => segment.length > 0);
+  if (normalizedSegments.length === 0) {
+    normalizedSegments.push("Unknown error");
+  }
+  const lines: string[] = [];
+  normalizedSegments.forEach((segment) => {
+    if (lines.length >= maxLines) {
+      return;
+    }
+    lines.push(...wrapSegment(segment, maxCharsPerLine, maxLines - lines.length));
+  });
+  return lines;
+}
+
+function wrapSegment(
+  segment: string,
+  maxCharsPerLine: number,
+  remainingLineBudget: number
+): string[] {
+  if (segment.length <= maxCharsPerLine) {
+    return [segment];
+  }
+  const results: string[] = [];
+  let rest = segment;
+  while (rest.length > 0 && results.length < remainingLineBudget) {
+    if (rest.length <= maxCharsPerLine) {
+      results.push(rest);
+      rest = "";
+      break;
+    }
+    let splitIndex = rest.lastIndexOf(" ", maxCharsPerLine);
+    if (splitIndex <= 0) {
+      splitIndex = maxCharsPerLine;
+    }
+    results.push(rest.slice(0, splitIndex).trim());
+    rest = rest.slice(splitIndex).trim();
+  }
+  if (rest.length > 0 && results.length < remainingLineBudget) {
+    results.push(rest);
+  }
+  return results;
 }
 
 function drawTime(time: number, x: number, y: number) {
