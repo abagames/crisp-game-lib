@@ -69,7 +69,7 @@ cp -r docs/_template docs/my-game
     <script src="https://unpkg.com/sounds-some-sounds@3.1.1/build/index.js"></script>
     <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
     <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
-    <script src="https://unpkg.com/crisp-game-lib@1.4.0/docs/bundle.js"></script>
+    <script src="https://unpkg.com/crisp-game-lib@latest/docs/bundle.js"></script>
     <script src="./main.js"></script>
     <script>
       window.addEventListener("load", onLoad);
