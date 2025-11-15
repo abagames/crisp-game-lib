@@ -66,9 +66,15 @@ cp -r docs/_template docs/my-game
       name="viewport"
       content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1"
     />
-    <script src="https://unpkg.com/sounds-some-sounds@3.1.1/build/index.js"></script>
+    <!-- Load 'algo-chip' if options.isSoundEnabled is true -->
+    <script src="https://unpkg.com/algo-chip@1.0.2/packages/core/dist/algo-chip.umd.js"></script>
+    <script src="https://unpkg.com/algo-chip@1.0.2/packages/util/dist/algo-chip-util.umd.js"></script>
+    <!-- Load 'gif-capture-canvas' if you plan to enable options.isCapturing -->
+    <script src="https://unpkg.com/gif-capture-canvas@1.1.0/build/index.js"></script>
+    <!-- Load 'pixi' when using shape/shapeDark/pixel/crt themes -->
     <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
     <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
+
     <script src="https://unpkg.com/crisp-game-lib@latest/docs/bundle.js"></script>
     <script src="./main.js"></script>
     <script>
@@ -115,9 +121,15 @@ npm install crisp-game-lib
       name="viewport"
       content="width=device-width, height=device-height, user-scalable=no, initial-scale=1, maximum-scale=1"
     />
-    <script src="https://unpkg.com/sounds-some-sounds@3.1.1/build/index.js"></script>
+    <!-- Load 'algo-chip' if options.isSoundEnabled is true -->
+    <script src="https://unpkg.com/algo-chip@1.0.2/packages/core/dist/algo-chip.umd.js"></script>
+    <script src="https://unpkg.com/algo-chip@1.0.2/packages/util/dist/algo-chip-util.umd.js"></script>
+    <!-- Load 'gif-capture-canvas' if you plan to enable options.isCapturing -->
+    <script src="https://unpkg.com/gif-capture-canvas@1.1.0/build/index.js"></script>
+    <!-- Load 'pixi' when using shape/shapeDark/pixel/crt themes -->
     <script src="https://unpkg.com/pixi.js@5.3.0/dist/pixi.min.js"></script>
     <script src="https://unpkg.com/pixi-filters@3.1.1/dist/pixi-filters.js"></script>
+
     <script type="module" src="./main.js"></script>
   </head>
   <body style="background: #ddd"></body>
