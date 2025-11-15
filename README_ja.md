@@ -16,7 +16,11 @@
 
 - [Crisp Game Lib ガイド](crisp-game-lib-guide.md) - crisp-game-lib の包括的な開発ガイド。完全な API リファレンス、動作するサンプル、ベストプラクティスを含む。LLM による開発支援にも対応
 
-- [サンプルゲームとサンプルコード](https://github.com/abagames/crisp-game-lib-11-games/blob/main/README.md)
+- サンプルゲームとコードは
+  [crisp-game-lib-12-games](https://github.com/abagames/crisp-game-lib-12-games/blob/main/README.md)
+  および [crisp-game-lib-11-games](https://github.com/abagames/crisp-game-lib-11-games/blob/main/README.md)
+  にまとまっています。
+  このリポジトリにも[`docs/`](docs/)配下に多数のサンプルゲームが同梱されており、そのままコピーして改造できます。
 
 ## 始め方
 

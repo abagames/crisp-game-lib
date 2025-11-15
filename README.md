@@ -16,7 +16,10 @@ English | [日本語](https://github.com/abagames/crisp-game-lib/blob/master/REA
 
 - [Crisp Game Lib Guide](crisp-game-lib-guide.md) - Comprehensive development guide for crisp-game-lib, including complete API reference, working examples, and best practices. Especially useful for LLM-assisted development
 
-- [Sample games and sample codes](https://github.com/abagames/crisp-game-lib-11-games/blob/main/README.md)
+- Sample games and sample codes are collected in the dedicated bundles
+  [crisp-game-lib-12-games](https://github.com/abagames/crisp-game-lib-12-games/blob/main/README.md)
+  and [crisp-game-lib-11-games](https://github.com/abagames/crisp-game-lib-11-games/blob/main/README.md).
+  This repository also ships dozens of sample game directories under [`docs/`](docs/) that you can copy and tweak immediately.
 
 ## Getting started
 
